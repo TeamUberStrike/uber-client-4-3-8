@@ -1,0 +1,77 @@
+fileFormatVersion: 2
+guid: dde098ed11ce62041a3fe1fe989b631b
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: Santa_Scythe
+    7400000: Take 001 //// 1
+    7400002: scythe_1 //// 1
+    7400004: scythe_2 //// 1
+    7400006: scythe_1 //// SantaScythe
+    7400008: scythe_2 //// SantaScythe
+  serializedVersion: 10
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: scythe_1
+      firstFrame: 1
+      lastFrame: 12
+      wrapMode: 0
+      loop: 0
+    - name: scythe_2
+      firstFrame: 13
+      lastFrame: 24
+      wrapMode: 0
+      loop: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 2
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 111
+        second: 605fa900
+    Santa_Scythe:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200

@@ -1,0 +1,2434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Login" xml:space="preserve">
+    <value>Oturum Aç</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>E-posta Adresi</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Parola</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>Beni Hatırla</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Çık</value>
+  </data>
+  <data name="OkCaps" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="ChangeTeam" xml:space="preserve">
+    <value>Takım Değiştir</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Devam et</value>
+  </data>
+  <data name="DeathMatch" xml:space="preserve">
+    <value>Ölümüne Eşleşme</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>Tam ekran</value>
+  </data>
+  <data name="Headshot" xml:space="preserve">
+    <value>Tam kafadan!</value>
+  </data>
+  <data name="KillsRemain" xml:space="preserve">
+    <value>Kalan Ölümler</value>
+  </data>
+  <data name="Nutshot" xml:space="preserve">
+    <value>Belden aşağı!</value>
+  </data>
+  <data name="Respawn" xml:space="preserve">
+    <value>Yeniden Dirilme</value>
+  </data>
+  <data name="ShowMenu" xml:space="preserve">
+    <value>Menüyü Göster</value>
+  </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>Kayıt Ol</value>
+  </data>
+  <data name="TeamDeathMatch" xml:space="preserve">
+    <value>Ölümüne Takım Eşleşmesi</value>
+  </data>
+  <data name="TeamElimination" xml:space="preserve">
+    <value>Takım Elemesi</value>
+  </data>
+  <data name="YouDied" xml:space="preserve">
+    <value>Öldün!</value>
+  </data>
+  <data name="Absorption" xml:space="preserve">
+    <value>Soğurma</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Kabul Et</value>
+  </data>
+  <data name="AcceptingClanInvitation" xml:space="preserve">
+    <value>Klan daveti kabul ediliyor...</value>
+  </data>
+  <data name="AccountExistsMsg" xml:space="preserve">
+    <value>Bu hesapla ilişkilendirilmiş bir UberStrike hesabı zaten mevcut.</value>
+  </data>
+  <data name="AccountIsInvalid" xml:space="preserve">
+    <value>Hesap geçersiz.</value>
+  </data>
+  <data name="Accuracy" xml:space="preserve">
+    <value>Hassasiyet</value>
+  </data>
+  <data name="AddFriends" xml:space="preserve">
+    <value>Arkadaş Ekle</value>
+  </data>
+  <data name="AdvancedCaps" xml:space="preserve">
+    <value>GELİŞMİŞ</value>
+  </data>
+  <data name="AdvancedWater" xml:space="preserve">
+    <value>Gelişmiş Su</value>
+  </data>
+  <data name="ALeaderCannotLeaveHisOwnClanMsg" xml:space="preserve">
+    <value>Bir lider kendi klanından ayrılamaz.\nKlanı sadece dağıtabilirsin.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Hepsi</value>
+  </data>
+  <data name="AreYouSureQuitMsg" xml:space="preserve">
+    <value>Uberstrike'den çıkmak istediğine emin misin?</value>
+  </data>
+  <data name="AreYouSureLogoutMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="AuthenticatingAccount" xml:space="preserve">
+    <value>Hesabın doğrulanıyor...</value>
+  </data>
+  <data name="BackCaps" xml:space="preserve">
+    <value>GERİ</value>
+  </data>
+  <data name="BangYouJustReachedLevelN" xml:space="preserve">
+    <value>Bum!Ulaştın</value>
+  </data>
+  <data name="BestWeaponByAccuracy" xml:space="preserve">
+    <value>Hassaslığa göre En İyi Silah</value>
+  </data>
+  <data name="BestWeaponByDamageDealt" xml:space="preserve">
+    <value>Verilen Hasara göre En İyi Silah</value>
+  </data>
+  <data name="BestWeaponByHits" xml:space="preserve">
+    <value>İsabete göre En İyi Silah</value>
+  </data>
+  <data name="BestWeaponByKills" xml:space="preserve">
+    <value>Bu davet artık mevcut değil.\nSüresi dolmuş veya geri çekilmiş olabilir.</value>
+  </data>
+  <data name="BetweenYouAndN" xml:space="preserve">
+    <value>Sen ve {0} Arasında</value>
+  </data>
+  <data name="BloomEffect" xml:space="preserve">
+    <value>Çiçek Efekti</value>
+  </data>
+  <data name="Blue" xml:space="preserve">
+    <value>Mavi</value>
+  </data>
+  <data name="Boots" xml:space="preserve">
+    <value>Kovmalar</value>
+  </data>
+  <data name="BothTeamsHadAndEqualNumberOfKills" xml:space="preserve">
+    <value>Eşleşme sonunda iki takımda eşit ölüm sayısına sahipti.</value>
+  </data>
+  <data name="BothTeamsHadAndEqualNumberOfWins" xml:space="preserve">
+    <value>Eşleşme sonunda iki tamda eşit kazanma sayısına sahipti.</value>
+  </data>
+  <data name="Bounty" xml:space="preserve">
+    <value>Ödül</value>
+  </data>
+  <data name="Busy" xml:space="preserve">
+    <value>Meşgul</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Satın Al</value>
+  </data>
+  <data name="BuyAClanLicense" xml:space="preserve">
+    <value>- Dükkandan bir lisans satın al</value>
+  </data>
+  <data name="BuyCaps" xml:space="preserve">
+    <value>Satın Al</value>
+  </data>
+  <data name="BuyItem" xml:space="preserve">
+    <value>Öğe Satın Al</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="CancelCaps" xml:space="preserve">
+    <value>İPTAL</value>
+  </data>
+  <data name="CancelingInvitation" xml:space="preserve">
+    <value>Davet iptal ediliyor...</value>
+  </data>
+  <data name="CancelingInvitationErrorMsg" xml:space="preserve">
+    <value>{0} için gönderilen davet iptal edilirken bir hata oluştu.</value>
+  </data>
+  <data name="CancelInvite" xml:space="preserve">
+    <value>Daveti İptal Et</value>
+  </data>
+  <data name="CancelInviteConfirmation" xml:space="preserve">
+    <value>Davet Onayını İptal Et</value>
+  </data>
+  <data name="CancelInviteToN" xml:space="preserve">
+    <value>{0} için gönderilen daveti iptal etmek ister misin?</value>
+  </data>
+  <data name="CancelInviteWarningMsg" xml:space="preserve">
+    <value>Bu eylem, {0} için gönderilen klan davetini iptal edecektir.</value>
+  </data>
+  <data name="Cannons" xml:space="preserve">
+    <value>Toplar</value>
+  </data>
+  <data name="CannotFindPlayerData" xml:space="preserve">
+    <value>Bu oyuncu için veri bulunamıyor.</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>Kapasite</value>
+  </data>
+  <data name="CapacityDesc" xml:space="preserve">
+    <value>Burada, şu anda bu sunucuda oynamakta olan oyuncuların sayısı gösterilmektedir.</value>
+  </data>
+  <data name="ChangePosition" xml:space="preserve">
+    <value>Konum Değiştir</value>
+  </data>
+  <data name="ChangeServer" xml:space="preserve">
+    <value>Sunucu Değiştir</value>
+  </data>
+  <data name="ChangingToTeamN" xml:space="preserve">
+    <value>{0} takıma geçiliyor</value>
+  </data>
+  <data name="ChatBtnTooltip" xml:space="preserve">
+    <value>Arkadaşlarınla sohbet et ve onların oyunlarına katıl.</value>
+  </data>
+  <data name="ChatCaps" xml:space="preserve">
+    <value>SOHBET</value>
+  </data>
+  <data name="CheatingWillResultInAPermanentBan" xml:space="preserve">
+    <value>Hile yapıldığında süresiz yasak uygulanacaktır!</value>
+  </data>
+  <data name="CheckAvailability" xml:space="preserve">
+    <value>Kullanırlığını Kontrol Et</value>
+  </data>
+  <data name="CheckingAvailableGameServers" xml:space="preserve">
+    <value>Kullanılabilir oyun sunucularını kontrol ediyor...</value>
+  </data>
+  <data name="CheckingClanStatus" xml:space="preserve">
+    <value>Klan durumu kontrol ediliyor...</value>
+  </data>
+  <data name="CheckMail" xml:space="preserve">
+    <value>Posta Kontrol Et</value>
+  </data>
+  <data name="ChooseAGameCaps" xml:space="preserve">
+    <value>BİR OYUN SEÇ</value>
+  </data>
+  <data name="ChooseAMap" xml:space="preserve">
+    <value>Bir Harita Seç</value>
+  </data>
+  <data name="ChooseCharacterName" xml:space="preserve">
+    <value>ADINI SEÇ</value>
+  </data>
+  <data name="ChooseYourRegionCaps" xml:space="preserve">
+    <value>BÖLGENİ SEÇ</value>
+  </data>
+  <data name="ClanAlreadyHasPendingRequestMsg" xml:space="preserve">
+    <value>Bu klana daha önce talep göndermişsin.\nBu yüzden başka bir tane gönderemezsin.</value>
+  </data>
+  <data name="ClanBtnTooltip" xml:space="preserve">
+    <value>Bir klan yarat veya yönet.</value>
+  </data>
+  <data name="ClanCreateSuccessMsg" xml:space="preserve">
+    <value>Tebrikler! {0} klanını başarılı bir şekilde yarattın.\nÜyeleri katılmaları için davet edebilir ve forumlardaki klan savaşları için kayıt olabilirsin!</value>
+  </data>
+  <data name="ClanDataNotFoundMsg" xml:space="preserve">
+    <value>Klan için herhangi bir veri bulunamadı.\nBir hata oluştu veya daha önce dağıtılmış.</value>
+  </data>
+  <data name="ClanDescriptionInvalidCharsMsg" xml:space="preserve">
+    <value>Seçtiğin açıklamada\ngeçersiz karakterler bulunuyor(muhtemelen tuhaf karakterler).\nLütfen farklı bir tane belirt.</value>
+  </data>
+  <data name="ClanDescriptionRestrictedWordsMsg" xml:space="preserve">
+    <value>Seçtiğin açıklama yasaklanmış kelimeler içeriyor.\nLütfen farklı bir tane belirt.</value>
+  </data>
+  <data name="ClanFullMsg" xml:space="preserve">
+    <value>Bu klan dolu. Dolu olan bir klana üyelik\ntalebi gönderemezsin.</value>
+  </data>
+  <data name="ClanHQCaps" xml:space="preserve">
+    <value>KLAN KARARGAHI</value>
+  </data>
+  <data name="ClanInvitationDeletedMsg" xml:space="preserve">
+    <value>Bu davet artık mevcut değil.\nSüresi dolmuş veya geri çekilmiş olabilir.</value>
+  </data>
+  <data name="ClanMottoInvalidMsg" xml:space="preserve">
+    <value>Seçtiğin slogan\ngeçersiz karakterle içeriyor (muhtemelen tuhaf karakterler).\nLütfen farklı bir tane belirt.</value>
+  </data>
+  <data name="ClanMottoRestrictedWordsMsg" xml:space="preserve">
+    <value>Seçtiğin slogan yasaklanmış kelimeler içeriyor.\nLütfen farklı bir tane belirt.</value>
+  </data>
+  <data name="ClanNameInUseMsg" xml:space="preserve">
+    <value>Bu klan ismi kullanılıyor.\nLütfen farklı bir tane seç.</value>
+  </data>
+  <data name="ClanNameInvlidMsg" xml:space="preserve">
+    <value>Seçtiğin isim alfasayısal olmayan karakterle içeriyor.\nLütfen başka bir tane belirt.</value>
+  </data>
+  <data name="ClanNameRestrictedWordsMsg" xml:space="preserve">
+    <value>Seçtiğin isim yasaklı kelimeler içeriyor.\nLütfen başka bir tane belirt.</value>
+  </data>
+  <data name="ClanNCreatedCaps" xml:space="preserve">
+    <value>{0} KLANI YARATILDI</value>
+  </data>
+  <data name="ClanRequestsYouHAveNPendingRequests" xml:space="preserve">
+    <value>Klan Talepleri - Bekleyen {0} klan talebin var, {1}</value>
+  </data>
+  <data name="Clans" xml:space="preserve">
+    <value>Klanlar</value>
+  </data>
+  <data name="ClansCaps" xml:space="preserve">
+    <value>KLANLAR</value>
+  </data>
+  <data name="ClanStatusErrorMsg" xml:space="preserve">
+    <value>Oyuncu durumu kontrol edilirken hata oluştu.\nLütfen biraz sonra tekrar dene.</value>
+  </data>
+  <data name="ClanTagInUseMsg" xml:space="preserve">
+    <value>Bu klan etiketi kullanımda.\nLütfen farklı bir tane seç.</value>
+  </data>
+  <data name="ClanTagInvalidMsg" xml:space="preserve">
+    <value>Bu klan etiketi alfasayısal olmayan karakterler içeriyor.\nLütfen farklı bir tane belirt.</value>
+  </data>
+  <data name="ClanTagRestrictedWordsMsg" xml:space="preserve">
+    <value>Seçtiğin etiket yasaklanmış kelimeler içeriyor.\nLütfen farklı bir tane belirt.</value>
+  </data>
+  <data name="ClickHereBuyCreditsMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="ColorCorrection" xml:space="preserve">
+    <value>Renk Düzeltmesi</value>
+  </data>
+  <data name="ComeBackTomorrowForEvenMorePoints" xml:space="preserve">
+    <value>Daha fazla puan için yarın yeniden gel!</value>
+  </data>
+  <data name="CongratulationsGrantedLicenseMsg" xml:space="preserve">
+    <value>Tebrikler, korsanlık lisansı sahibi oldun!\n\Hadi biraz eğlenelim!</value>
+  </data>
+  <data name="ConnectingToLobby" xml:space="preserve">
+    <value>Lobiye bağlanıyor...</value>
+  </data>
+  <data name="ConnectingToServer" xml:space="preserve">
+    <value>Sunucuya bağlanıyor.</value>
+  </data>
+  <data name="ConnectionSlowMsg" xml:space="preserve">
+    <value>Bu sunucuya olan bağlantın yavaş. Oyun performansın normalden daha düşük olabilir.</value>
+  </data>
+  <data name="CreateAClan" xml:space="preserve">
+    <value>Bir Klan yarat</value>
+  </data>
+  <data name="CreateAClanAndInviteYourFriends" xml:space="preserve">
+    <value>Bir klan yarat ve katılmaları için arkadaşlarını davet et!</value>
+  </data>
+  <data name="CreateAClanCaps" xml:space="preserve">
+    <value>BİR KLAN YARAT</value>
+  </data>
+  <data name="CreateCaps" xml:space="preserve">
+    <value>YARAT</value>
+  </data>
+  <data name="CreatedN" xml:space="preserve">
+    <value>Yaratılan: {0}</value>
+  </data>
+  <data name="CreateGameCaps" xml:space="preserve">
+    <value>OYUN YARAT</value>
+  </data>
+  <data name="CreateYourCharacterCaps" xml:space="preserve">
+    <value>KARAKTERİNİ YARAT</value>
+  </data>
+  <data name="CreatingAccount" xml:space="preserve">
+    <value>Hesap yaratılıyor...</value>
+  </data>
+  <data name="CreatingAccountMsg" xml:space="preserve">
+    <value>Hesabın yaratılıyor.\nLütfen biraz bekle.</value>
+  </data>
+  <data name="Credits" xml:space="preserve">
+    <value>Hazırlayanlar</value>
+  </data>
+  <data name="CurrentXP" xml:space="preserve">
+    <value>Mevcut DP:</value>
+  </data>
+  <data name="DailyRewardCaps" xml:space="preserve">
+    <value>GÜNDELİK ÖDÜL</value>
+  </data>
+  <data name="Damage" xml:space="preserve">
+    <value>Hasar</value>
+  </data>
+  <data name="DamageXP" xml:space="preserve">
+    <value>HASAR DP'si</value>
+  </data>
+  <data name="DataError" xml:space="preserve">
+    <value>Veri Hatası</value>
+  </data>
+  <data name="DataInvalidMsg" xml:space="preserve">
+    <value>Bu veri fazlasıyla geçersiz. O kadar geçersiz ki bu hataya sebep oldu.</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Gün</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>Gün Önce</value>
+  </data>
+  <data name="DeathsCaps" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Deaths" xml:space="preserve">
+    <value>Ölümler</value>
+  </data>
+  <data name="DeleteThreadCaps" xml:space="preserve">
+    <value>BAŞLIĞI SİL</value>
+  </data>
+  <data name="DemoteMember" xml:space="preserve">
+    <value>Üyenin Rütbesini Düşür</value>
+  </data>
+  <data name="DisbandClan" xml:space="preserve">
+    <value>Tebrikler! {0} klanını başarılı bir şekilde yarattın.\nÜyeleri katılmaları için davet edebilir ve forumlardaki klan savaşları için kayıt olabilirsin!</value>
+  </data>
+  <data name="DisbandClanCaps" xml:space="preserve">
+    <value>KLANI DAĞIT</value>
+  </data>
+  <data name="DisbandClanErrorMsg" xml:space="preserve">
+    <value>{0} klanını dağıtma talebin gerçekleştirilirken bir hata oluştu.\nLütfen biraz sonra tekrar dene.</value>
+  </data>
+  <data name="DisbandClanN" xml:space="preserve">
+    <value>{0} klanını dağıtmak istiyor musun?</value>
+  </data>
+  <data name="DisbandClanSuccessMsg" xml:space="preserve">
+    <value>{0} klanı dağıtıldı.</value>
+  </data>
+  <data name="DisbandClanWarningMsg" xml:space="preserve">
+    <value>Klanını dağıttığın zaman bütün klan bilgis\nUberStrike veritabanından tamamen silinecektir. Dağıtıldıktan sonra klan tamamen ortadan kalkacaktır.</value>
+  </data>
+  <data name="DiscardCaps" xml:space="preserve">
+    <value>ÇÖPE AT</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Bitti</value>
+  </data>
+  <data name="DownloadClanRequestErrorMsg" xml:space="preserve">
+    <value>Klan verisini indirirken hata oluştu. Lütfen biraz sonra tekrar dene.</value>
+  </data>
+  <data name="DownloadingClanData" xml:space="preserve">
+    <value>Klan verisi indiriliyor...</value>
+  </data>
+  <data name="DownloadingClanDataErrorMsg" xml:space="preserve">
+    <value>Klan verisini indirirken hata oluştu.\nLütfen biraz sonra tekrar dene.</value>
+  </data>
+  <data name="DownloadingRequestData" xml:space="preserve">
+    <value>Talep verisi indiriliyor...</value>
+  </data>
+  <data name="DoYouReallyWantToRemoveNFromYourFriendsList" xml:space="preserve">
+    <value>{0} adlı arkadaşını gerçekten arkadaş listesinden silmek istiyor musun?</value>
+  </data>
+  <data name="DoYouWantToDeleteTheConversation" xml:space="preserve">
+    <value>Sohbeti silmek istiyor musun?</value>
+  </data>
+  <data name="DragToEquipTheN" xml:space="preserve">
+    <value>{0} öğesini kuşanmak için sürükle</value>
+  </data>
+  <data name="Draw" xml:space="preserve">
+    <value>Berabere!</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Süre</value>
+  </data>
+  <data name="EffectsVolume" xml:space="preserve">
+    <value>Efekt Hacmi:</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-posta</value>
+  </data>
+  <data name="EmailAddressAndNameInUseMsg" xml:space="preserve">
+    <value>Mucizevi bir tesadüf sonucunda seçtiğim e-posta adresi VE isim kullanılmakta. Farklı birer tane seçmen gerekiyor.</value>
+  </data>
+  <data name="EmailAddressInUseMsg" xml:space="preserve">
+    <value>Bu e-posta adresi kullanımda. Lütfen farklı bir e-posta adresi kullan.</value>
+  </data>
+  <data name="EmailAddressIsInvalid" xml:space="preserve">
+    <value>E-posta adresi geçersiz.</value>
+  </data>
+  <data name="EmailInvalidMsg" xml:space="preserve">
+    <value>Bu e-posta adresi geçersiz. Ya yanlış yazdın ya da sistemimizi kandırmaya çalışan şeytani bir bilgisayar korsanısın!</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>Boş</value>
+  </data>
+  <data name="EnableCustomizers" xml:space="preserve">
+    <value>Özelleştiricileri Etkinleştir</value>
+  </data>
+  <data name="EnableGamepad" xml:space="preserve">
+    <value>Oyun Tablasını Etkinleştir</value>
+  </data>
+  <data name="EnterGameName" xml:space="preserve">
+    <value>Oyuna adı gir</value>
+  </data>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Parola Gir</value>
+  </data>
+  <data name="EnterYourEmailAddress" xml:space="preserve">
+    <value>E-posta Adresini Gir</value>
+  </data>
+  <data name="EnterYourName" xml:space="preserve">
+    <value>Adını Gir</value>
+  </data>
+  <data name="EnterYourPassword" xml:space="preserve">
+    <value>Şifreni Gir</value>
+  </data>
+  <data name="Equip" xml:space="preserve">
+    <value>Kuşan</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="ErrorCreatingClan" xml:space="preserve">
+    <value>Klan yaratılırken bir hata oluştu.\nLütfen daha sonra tekrar dene.</value>
+  </data>
+  <data name="ErrorInvitingNToJoinClanN" xml:space="preserve">
+    <value>{0} adlı oyuncuyu {1} klanına davet ederken bir hata oluştu.\nLütfen biraz sonra tekrar dene.</value>
+  </data>
+  <data name="ErrorInvitingToJoinClanN" xml:space="preserve">
+    <value>Oyuncuyu {0} klanına davet ederken bir hata oluştu.</value>
+  </data>
+  <data name="ErrorSendingMessage" xml:space="preserve">
+    <value>Mesaj gönderilirken hata oluştu, lütfen daha sonra tekrar dene...</value>
+  </data>
+  <data name="ExitFullscreen" xml:space="preserve">
+    <value>Tam ekrandan çık.</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>Süresi Doldu</value>
+  </data>
+  <data name="Face" xml:space="preserve">
+    <value>Yüz</value>
+  </data>
+  <data name="FailedToGetContacts" xml:space="preserve">
+    <value>Kişileri alma işlemi başarısız oldu</value>
+  </data>
+  <data name="FailedToRegister" xml:space="preserve">
+    <value>Kayıt işlemi başarısız oldu</value>
+  </data>
+  <data name="FailedToRemoveNFromYourFriendList" xml:space="preserve">
+    <value>{0} adlı oyuncuyu arkadaş listenden çıkarma işlemi başarısız oldu!</value>
+  </data>
+  <data name="FailedToSendYourMessage" xml:space="preserve">
+    <value>Mesajını gönderme işlemi başarısız oldu!</value>
+  </data>
+  <data name="FastCaps" xml:space="preserve">
+    <value>HIZLI</value>
+  </data>
+  <data name="FiltersCaps" xml:space="preserve">
+    <value>FİLTRELER</value>
+  </data>
+  <data name="FrameRate" xml:space="preserve">
+    <value>Kare Oranı</value>
+  </data>
+  <data name="LowGravity" xml:space="preserve">
+    <value>Düşük yerçekimi</value>
+  </data>
+  <data name="Instakill" xml:space="preserve">
+    <value>Instakill</value>
+  </data>
+  <data name="NinjaArena" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="SniperArena" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="CannonArena" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="FriendRequest" xml:space="preserve">
+    <value>Arkadaşlık Talebi</value>
+  </data>
+  <data name="FriendRequestCaps" xml:space="preserve">
+    <value>ARKADAŞLIK TALEBİ</value>
+  </data>
+  <data name="FriendRequestsYouHaveNPendingRequests" xml:space="preserve">
+    <value>Arkadaşlık Talepleri - {0} tane bekleyen arkadaşlık talebin var, {1}</value>
+  </data>
+  <data name="FriendsCaps" xml:space="preserve">
+    <value>ARKADAŞLAR</value>
+  </data>
+  <data name="Full" xml:space="preserve">
+    <value>Dolu</value>
+  </data>
+  <data name="FunctionalItem" xml:space="preserve">
+    <value>Fonksiyonel Öğe</value>
+  </data>
+  <data name="FunctionalItems" xml:space="preserve">
+    <value>Fonksiyonel Öğeler</value>
+  </data>
+  <data name="Game" xml:space="preserve">
+    <value>Oyun</value>
+  </data>
+  <data name="GameName" xml:space="preserve">
+    <value>Oyun Adı</value>
+  </data>
+  <data name="GameNotFull" xml:space="preserve">
+    <value>Oyun dolu değil</value>
+  </data>
+  <data name="Gamepad" xml:space="preserve">
+    <value>Oyun Tablası</value>
+  </data>
+  <data name="Games" xml:space="preserve">
+    <value>Oyunlar</value>
+  </data>
+  <data name="GamesNotFound" xml:space="preserve">
+    <value>Oyun bulunamadı.</value>
+  </data>
+  <data name="GameType" xml:space="preserve">
+    <value>Oyun Türü</value>
+  </data>
+  <data name="Gear" xml:space="preserve">
+    <value>Teçhizat</value>
+  </data>
+  <data name="GeneralCaps" xml:space="preserve">
+    <value>GENEL</value>
+  </data>
+  <data name="BuyCreditsCaps" xml:space="preserve">
+    <value>KREDİ AL!</value>
+  </data>
+  <data name="GettingClan" xml:space="preserve">
+    <value>Oyuncu klan verisi alınıyor...</value>
+  </data>
+  <data name="GettingInventory" xml:space="preserve">
+    <value>Oyuncu envanteri alınıyor...</value>
+  </data>
+  <data name="GettingLabsData" xml:space="preserve">
+    <value>Laboratuvar verileri alınıyor...</value>
+  </data>
+  <data name="GettingLoadout" xml:space="preserve">
+    <value>Oyuncu çıkışları alınıyor...</value>
+  </data>
+  <data name="GettingStats" xml:space="preserve">
+    <value>Oyuncu istatistikleri alınıyor...</value>
+  </data>
+  <data name="Gloves" xml:space="preserve">
+    <value>Eldivenler</value>
+  </data>
+  <data name="GoCaps" xml:space="preserve">
+    <value>BAŞLA!</value>
+  </data>
+  <data name="GoFullscreen" xml:space="preserve">
+    <value>Tam ekrana geç.</value>
+  </data>
+  <data name="Handguns" xml:space="preserve">
+    <value>Tabancalar</value>
+  </data>
+  <data name="HardcoreMode" xml:space="preserve">
+    <value>Ekstrem Modu</value>
+  </data>
+  <data name="HaveAtLeastOneFriend" xml:space="preserve">
+    <value>- En az 1 arkadaş sahibi olmalısın</value>
+  </data>
+  <data name="Head" xml:space="preserve">
+    <value>Kafa</value>
+  </data>
+  <data name="HeadshotXP" xml:space="preserve">
+    <value>TAM KAFADAN DP'si</value>
+  </data>
+  <data name="HelpBtnTooltip" xml:space="preserve">
+    <value>Oyunu gerçekten nasıl oynayacağını öğren.</value>
+  </data>
+  <data name="HelpCaps" xml:space="preserve">
+    <value>YARDIM</value>
+  </data>
+  <data name="HereYouCanCreateYourOwnClan" xml:space="preserve">
+    <value>Burada kendi klanını yaratabilirsin.</value>
+  </data>
+  <data name="HiYoureInvitedToJoinMyClanN" xml:space="preserve">
+    <value>Merhaba, {0} adlı klanıma katılmak için davet edildin.</value>
+  </data>
+  <data name="Holo" xml:space="preserve">
+    <value>Holo</value>
+  </data>
+  <data name="HomeBtnTooltip" xml:space="preserve">
+    <value>Zepline geri dön.</value>
+  </data>
+  <data name="HomeCaps" xml:space="preserve">
+    <value>ANA SAYFA</value>
+  </data>
+  <data name="IAgreeToThe" xml:space="preserve">
+    <value>Tamama tıklayarak şunları kabul ediyorsun;</value>
+  </data>
+  <data name="IfTheErrorPersistsBugReportTaskbar" xml:space="preserve">
+    <value>Eğer hata devam ederse lütfen görev çubuğundaki hata raporlamayı\nkullan.</value>
+  </data>
+  <data name="Ignore" xml:space="preserve">
+    <value>Yoksay</value>
+  </data>
+  <data name="IgnoringClanInvitation" xml:space="preserve">
+    <value>Klan daveti yoksayılıyor...</value>
+  </data>
+  <data name="Impact" xml:space="preserve">
+    <value>Etki</value>
+  </data>
+  <data name="InboxBtnTooltip" xml:space="preserve">
+    <value>Arkadaşlarından mesaj al.</value>
+  </data>
+  <data name="InboxCaps" xml:space="preserve">
+    <value>GELENLER KUTUSU</value>
+  </data>
+  <data name="InGame" xml:space="preserve">
+    <value>Oyunda</value>
+  </data>
+  <data name="InivitingNToJoinClanN" xml:space="preserve">
+    <value>{0} adlı oyuncu {1} klanına katılmak için davet ediliyor...</value>
+  </data>
+  <data name="InMyClan" xml:space="preserve">
+    <value>Klanımda</value>
+  </data>
+  <data name="InvalidData" xml:space="preserve">
+    <value>Geçersiz veri alındı.</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>Envanter</value>
+  </data>
+  <data name="InventoryCaps" xml:space="preserve">
+    <value>ENVANTER</value>
+  </data>
+  <data name="InvertMouseButtons" xml:space="preserve">
+    <value>Fare Tuşlarını Ters Çevir</value>
+  </data>
+  <data name="InvitationCancelled" xml:space="preserve">
+    <value>Davet İptal Edildi</value>
+  </data>
+  <data name="InvitationPending" xml:space="preserve">
+    <value>Davet Bekliyor</value>
+  </data>
+  <data name="InvitationToJoinClanNHasBeenSent" xml:space="preserve">
+    <value>{0} klanına katılma daveti\ngönderildi.</value>
+  </data>
+  <data name="Invite" xml:space="preserve">
+    <value>Davet Et!</value>
+  </data>
+  <data name="InviteFriends" xml:space="preserve">
+    <value>Arkadaş Davet Et</value>
+  </data>
+  <data name="InvitePlayer" xml:space="preserve">
+    <value>Oyuncu Davet Et</value>
+  </data>
+  <data name="InvitingToJoinClan" xml:space="preserve">
+    <value>Klana katılma daveti gönderiliyor...</value>
+  </data>
+  <data name="JoinBlueCaps" xml:space="preserve">
+    <value>MAVİYE KATIL</value>
+  </data>
+  <data name="JoinCaps" xml:space="preserve">
+    <value>KATIL</value>
+  </data>
+  <data name="JoinDate" xml:space="preserve">
+    <value>Katılma Tarihi</value>
+  </data>
+  <data name="JoinRedCaps" xml:space="preserve">
+    <value>KIRMIZIYA KATIL</value>
+  </data>
+  <data name="JoinClanSuccessMsg" xml:space="preserve">
+    <value>Başarıyla klan katıldınız.</value>
+  </data>
+  <data name="JoinClanErrorMsg" xml:space="preserve">
+    <value>Klana katılmada bir hata oluştu</value>
+  </data>
+  <data name="JustForFun" xml:space="preserve">
+    <value>Eğlence olsun diye</value>
+  </data>
+  <data name="KDR" xml:space="preserve">
+    <value>KDR</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>Klavye</value>
+  </data>
+  <data name="KeyButton" xml:space="preserve">
+    <value>Tuş/Düğme</value>
+  </data>
+  <data name="Kills" xml:space="preserve">
+    <value>Öldürmeler</value>
+  </data>
+  <data name="KillXP" xml:space="preserve">
+    <value>ÖLDÜRME DP'si</value>
+  </data>
+  <data name="LabsCaps" xml:space="preserve">
+    <value>LABORATUVAR</value>
+  </data>
+  <data name="LastDay" xml:space="preserve">
+    <value>Son Gün</value>
+  </data>
+  <data name="LastOnlineN" xml:space="preserve">
+    <value>En Son Çevrimiçi: {0}</value>
+  </data>
+  <data name="Launchers" xml:space="preserve">
+    <value>Roket Atarlar</value>
+  </data>
+  <data name="Leader" xml:space="preserve">
+    <value>Lider</value>
+  </data>
+  <data name="LeaderN" xml:space="preserve">
+    <value>Lider: {0}</value>
+  </data>
+  <data name="LeaveClan" xml:space="preserve">
+    <value>Klandan Ayrıl</value>
+  </data>
+  <data name="LeaveClanCaps" xml:space="preserve">
+    <value>KLANDAN AYRIL</value>
+  </data>
+  <data name="LeaveClanErrorMsg" xml:space="preserve">
+    <value>{0} klanından ayrılma talebini gerçekleştirirken bir hata oluştu. Lütfen biraz sonra tekrar dene.</value>
+  </data>
+  <data name="LeaveClanN" xml:space="preserve">
+    <value>{0} klanından ayrılmak istiyor musun?</value>
+  </data>
+  <data name="LeaveClanSuccessMsg" xml:space="preserve">
+    <value>{0} klanından başarıyla ayrıldın.</value>
+  </data>
+  <data name="LeaveClanWarningMsg" xml:space="preserve">
+    <value>Ayrıldıktan sonra artık klan bildirimi almayacak ve isminin yanında klan rozeti görmeyeceksin.</value>
+  </data>
+  <data name="LeavingClanN" xml:space="preserve">
+    <value>{0} Klanı'ndan Ayrılınıyor...</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Seviye</value>
+  </data>
+  <data name="LevelAndXP" xml:space="preserve">
+    <value>Seviye ve DP</value>
+  </data>
+  <data name="LimitFramerate" xml:space="preserve">
+    <value>KareSayısı'nı Sınırla:</value>
+  </data>
+  <data name="LoadingGameList" xml:space="preserve">
+    <value>Oyun listesi yükleniyor...</value>
+  </data>
+  <data name="LoadoutCaps" xml:space="preserve">
+    <value>LOADOUT</value>
+  </data>
+  <data name="LoginFailed" xml:space="preserve">
+    <value>Giriş Başarısız</value>
+  </data>
+  <data name="Low" xml:space="preserve">
+    <value>Alçak</value>
+  </data>
+  <data name="LowerBody" xml:space="preserve">
+    <value>Alt Beden</value>
+  </data>
+  <data name="LowerBodyArmor" xml:space="preserve">
+    <value>Alt Beden Zırhı</value>
+  </data>
+  <data name="Machineguns" xml:space="preserve">
+    <value>Makinelisilahlar</value>
+  </data>
+  <data name="ManageYourClan" xml:space="preserve">
+    <value>Klanını yönet</value>
+  </data>
+  <data name="Map" xml:space="preserve">
+    <value>Harita</value>
+  </data>
+  <data name="MasterVolume" xml:space="preserve">
+    <value>Ana Ses:</value>
+  </data>
+  <data name="MatchPerformance" xml:space="preserve">
+    <value>Maç Performansı</value>
+  </data>
+  <data name="MaxPlayers" xml:space="preserve">
+    <value>Maksimum Oyuncu</value>
+  </data>
+  <data name="MedCaps" xml:space="preserve">
+    <value>MED</value>
+  </data>
+  <data name="Melee" xml:space="preserve">
+    <value>Yakın Dövüş</value>
+  </data>
+  <data name="MeleeWeapons" xml:space="preserve">
+    <value>Yakın Dövüş Silahları</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>Üye</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Mesaj:</value>
+  </data>
+  <data name="MessageCaps" xml:space="preserve">
+    <value>MESAJ:</value>
+  </data>
+  <data name="MessagesCaps" xml:space="preserve">
+    <value>MESAJLAR</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Dakika</value>
+  </data>
+  <data name="Misc" xml:space="preserve">
+    <value>Çeşitli</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="Moderate" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>Ay Önce</value>
+  </data>
+  <data name="MostArmorPickedUp" xml:space="preserve">
+    <value>En Çok Alınan Zırh</value>
+  </data>
+  <data name="MostCannonKills" xml:space="preserve">
+    <value>En Çok Top Atışı Öldürüşü</value>
+  </data>
+  <data name="MostConsecutiveSnipes" xml:space="preserve">
+    <value>Art Arda En Çok Siper Atışı</value>
+  </data>
+  <data name="MostDamageDealt" xml:space="preserve">
+    <value>Verilen En Yüksek Hasar</value>
+  </data>
+  <data name="MostDamageReceived" xml:space="preserve">
+    <value>En Yüksek Hasar Alındı</value>
+  </data>
+  <data name="MostDeadlyWeapons" xml:space="preserve">
+    <value>En Ölümcül Silahlar</value>
+  </data>
+  <data name="MostHandgunKills" xml:space="preserve">
+    <value>En Çok Tabancayla Öldürüş</value>
+  </data>
+  <data name="MostHeadshots" xml:space="preserve">
+    <value>En Çok Kafa Vuruşu</value>
+  </data>
+  <data name="MostHealthPickedUp" xml:space="preserve">
+    <value>En Çok Alınan Sağlık</value>
+  </data>
+  <data name="MostKills" xml:space="preserve">
+    <value>En Çok Öldürüş</value>
+  </data>
+  <data name="MostLauncherKills" xml:space="preserve">
+    <value>En Çok Mancınık Öldürüşü</value>
+  </data>
+  <data name="MostMachinegunKills" xml:space="preserve">
+    <value>En Çok Makineli Tüfek Öldürüşü</value>
+  </data>
+  <data name="MostMeleeKills" xml:space="preserve">
+    <value>En Çok Yakın Dövüş Öldürüşü</value>
+  </data>
+  <data name="MostNutshots" xml:space="preserve">
+    <value>En Çok Hayalardan Vuruş</value>
+  </data>
+  <data name="MostShotgunKills" xml:space="preserve">
+    <value>En Çok Çifte Tüfek Öldürüşü</value>
+  </data>
+  <data name="MostSniperRifleKills" xml:space="preserve">
+    <value>En Çok Dürbünlü Tüfek Öldürüşü</value>
+  </data>
+  <data name="MostSplattergunKills" xml:space="preserve">
+    <value>En Çok Fırlatıcı Öldürüşü</value>
+  </data>
+  <data name="MostValuablePlayers" xml:space="preserve">
+    <value>En Değerli Oyuncular</value>
+  </data>
+  <data name="MostXPEarned" xml:space="preserve">
+    <value>Kazanılan En Çok DP</value>
+  </data>
+  <data name="MotionBlur" xml:space="preserve">
+    <value>Hareket Lekesi</value>
+  </data>
+  <data name="Motto" xml:space="preserve">
+    <value>Slogan</value>
+  </data>
+  <data name="MottoN" xml:space="preserve">
+    <value>Slogan: {0}</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>Fare</value>
+  </data>
+  <data name="MouseSensitivity" xml:space="preserve">
+    <value>Fare Hassasiyeti:</value>
+  </data>
+  <data name="Movement" xml:space="preserve">
+    <value>Hareket</value>
+  </data>
+  <data name="MusicVolume" xml:space="preserve">
+    <value>Müzik Seviyesi:</value>
+  </data>
+  <data name="Mute" xml:space="preserve">
+    <value>Sesi kapat.</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="NameInUseMsg" xml:space="preserve">
+    <value>Bu isim kullanılmaktadır. Lütfen başka bir isim seç.</value>
+  </data>
+  <data name="NameInvalidCharsMsg" xml:space="preserve">
+    <value>Bu isim geçersiz karakter içermektedir</value>
+  </data>
+  <data name="NameN" xml:space="preserve">
+    <value>İsim: {0}</value>
+  </data>
+  <data name="NameTooManySpacesMsg" xml:space="preserve">
+    <value>Bu isim çok fazla aralık içermektedir.</value>
+  </data>
+  <data name="NameTooShortMsg" xml:space="preserve">
+    <value>Çok kısa isim.</value>
+  </data>
+  <data name="NClanInformation" xml:space="preserve">
+    <value>[{0}] Klan Bilgileri</value>
+  </data>
+  <data name="NClanRoster" xml:space="preserve">
+    <value>[{0}] Klan Görev Listesi</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Ağ Hatası</value>
+  </data>
+  <data name="NewAndSaleItems" xml:space="preserve">
+    <value>Yeni ve İndirimli Ürünler</value>
+  </data>
+  <data name="NewHereSignUpAndPlayForFree" xml:space="preserve">
+    <value>Yeni misin? KAYIT OL ve ücretsiz oyna!</value>
+  </data>
+  <data name="NewMessage" xml:space="preserve">
+    <value>Yeni Mesaj</value>
+  </data>
+  <data name="NextCaps" xml:space="preserve">
+    <value>SONRAKİ</value>
+  </data>
+  <data name="NiceJobThatWasSeriousCarnage" xml:space="preserve">
+    <value>İyi iş, tam bir katliamdı!</value>
+  </data>
+  <data name="NinetyDays" xml:space="preserve">
+    <value>90 Gün</value>
+  </data>
+  <data name="NIsNoLongerAMemberOfClanN" xml:space="preserve">
+    <value>{0} artık {1} klanı üyesi değil</value>
+  </data>
+  <data name="NIsNoLongerInvitedToJoinClanN" xml:space="preserve">
+    <value>{0} artık {1} klanına davetli değil.</value>
+  </data>
+  <data name="NMembersNOnline" xml:space="preserve">
+    <value>{0}/{1} üye ({2} çevrimiçi)</value>
+  </data>
+  <data name="NNeedsAClanLicenseToBeLeader" xml:space="preserve">
+    <value>{0} bir klanın lideri olabilmek için Klan Lisansı'na ihtiyaç duymaktadır.\nKlan Lisansı {0} tarafından Dükkan'dan alınabilen\nözel bir parçadır.</value>
+  </data>
+  <data name="NNeedsToBeLevelFourToBeAClanLeader" xml:space="preserve">
+    <value>{0} bir klanın lideri olabilmek için en az\n 4 seviyesinde olmalıdır.</value>
+  </data>
+  <data name="NNeedsToHaveOneFriendToBeAClanLeader" xml:space="preserve">
+    <value>{0} bir klanın lideri olabilmek için en az 1 arkadaşa\nsahip olmalıdır.</value>
+  </data>
+  <data name="NoConversationSelected" xml:space="preserve">
+    <value>Konuşma Seçilmedi</value>
+  </data>
+  <data name="NoFriendlyFire" xml:space="preserve">
+    <value>Dost Ateşi Yok</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Hiç</value>
+  </data>
+  <data name="NoSelectedItems" xml:space="preserve">
+    <value>Seçili Parça Yok</value>
+  </data>
+  <data name="NoThanks" xml:space="preserve">
+    <value>Hayır Teşekkürler</value>
+  </data>
+  <data name="NotPasswordProtected" xml:space="preserve">
+    <value>Şifre korumalı değil</value>
+  </data>
+  <data name="NPercentOff" xml:space="preserve">
+    <value>%{0:N0} İndirim!</value>
+  </data>
+  <data name="NPlayers" xml:space="preserve">
+    <value>{0} Oyuncu</value>
+  </data>
+  <data name="NTeamWins" xml:space="preserve">
+    <value>{0} Takımı Kazandı!</value>
+  </data>
+  <data name="NutshotXP" xml:space="preserve">
+    <value>HAYAVURUŞU DP</value>
+  </data>
+  <data name="OffensiveNameMsg" xml:space="preserve">
+    <value>Bu isim rahatsızlık verici kelimeler içermektedir.</value>
+  </data>
+  <data name="Officer" xml:space="preserve">
+    <value>Subay</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Çevrimdışı</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="OneDay" xml:space="preserve">
+    <value>1 Gün</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Çevrimiçi</value>
+  </data>
+  <data name="OnlyYourClanLeaderCanDoThis" xml:space="preserve">
+    <value>Bunu yalnızca klan lideri yapabilir.</value>
+  </data>
+  <data name="OptionsBtnTooltip" xml:space="preserve">
+    <value>Kontrolleri, görselleri ve oyun seçeneklerini ayarla</value>
+  </data>
+  <data name="OptionsCaps" xml:space="preserve">
+    <value>SEÇENEKLER</value>
+  </data>
+  <data name="PasswordDoNotMatch" xml:space="preserve">
+    <value>Şifreler uyuşmuyor.</value>
+  </data>
+  <data name="PasswordIncorrect" xml:space="preserve">
+    <value>Şifre yanlış</value>
+  </data>
+  <data name="PasswordInvalidCharsMsg" xml:space="preserve">
+    <value>Şifre en az 6 karakterden oluşmalıdır.</value>
+  </data>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>Geçersiz şifre.</value>
+  </data>
+  <data name="PasswordProtected" xml:space="preserve">
+    <value>Şifre Korumalı</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="PendingRequestsCaps" xml:space="preserve">
+    <value>İSTEKLER GÖNDERİLİYOR</value>
+  </data>
+  <data name="PerformanceReportCaps" xml:space="preserve">
+    <value>PERFORMANS RAPORU</value>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>Kalıcı</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Kişisel</value>
+  </data>
+  <data name="PersonalRecordsPerLife" xml:space="preserve">
+    <value>Kişisel Rekorlar (Hayat Başı)</value>
+  </data>
+  <data name="Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="PlayBtnTooltip" xml:space="preserve">
+    <value>Diğer oyuncuların oyunlarına katıl.</value>
+  </data>
+  <data name="PlayCaps" xml:space="preserve">
+    <value>OYNA</value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value>Oyuncu</value>
+  </data>
+  <data name="PlayerAlreadyHasPendingClanInviteMsg" xml:space="preserve">
+    <value>Bu kullanıcının beklemekte olan bir daveti bulunmaktadır.\nBaşka bir davet gönderemezsiniz.</value>
+  </data>
+  <data name="PlayerAlreadyInClanMsg" xml:space="preserve">
+    <value>Bu oyuncu zaten bir klan üyesi. Bir klanın üyesi olan oyuncuları\nkendi klanınıza davet edemezsiniz.</value>
+  </data>
+  <data name="PlayerCaps" xml:space="preserve">
+    <value>OYUNCU:</value>
+  </data>
+  <data name="PlayerLevelNMinusRestriction" xml:space="preserve">
+    <value>[Oyuncu Seviyesi &lt;{0} Sınırlama=\"\"]</value>
+  </data>
+  <data name="PlayerLevelNPlusRestriction" xml:space="preserve">
+    <value>[Oyuncu Seviyesi {0}+ Sınırlama]</value>
+  </data>
+  <data name="PlayerLevelNRestriction" xml:space="preserve">
+    <value>[Oyuncu Seviyesi {0} Sınırlama]</value>
+  </data>
+  <data name="PlayerLevelNToNRestriction" xml:space="preserve">
+    <value>[Oyuncu Seviyesi {0}-{1} Kısıtlama]</value>
+  </data>
+  <data name="Players" xml:space="preserve">
+    <value>Oyuncular</value>
+  </data>
+  <data name="PlayersOnline" xml:space="preserve">
+    <value>Çevrimiçi Oyuncular</value>
+  </data>
+  <data name="PleaseAgreeTOSMsg" xml:space="preserve">
+    <value>Lütfen Hizmet Koşulları'nı kabul et.</value>
+  </data>
+  <data name="PleaseProvideValidEmailPasswordMsg" xml:space="preserve">
+    <value>Lütfen geçerli bir e-posta adresi ve şifre gir.\nBu e-posta ileride oyuna giriş için kullanılacaktır.</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Lütfen bekle</value>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Puan</value>
+  </data>
+  <data name="PointsEarnedN" xml:space="preserve">
+    <value>Kazanılan Puan {0}</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Pozisyon</value>
+  </data>
+  <data name="PressRefreshToSeeCurrentGames" xml:space="preserve">
+    <value>Mevcut oyunları görmek için Yeniden Yükle butonuna bas</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Fiyat</value>
+  </data>
+  <data name="PrimaryWeapon" xml:space="preserve">
+    <value>Birincil</value>
+  </data>
+  <data name="PrivateChat" xml:space="preserve">
+    <value>Özel Konuşma</value>
+  </data>
+  <data name="PrivateersLicense" xml:space="preserve">
+    <value>Korsanlar\nLisans</value>
+  </data>
+  <data name="PrivateersLicenseGranted" xml:space="preserve">
+    <value>Korsan Lisansı Verildi!</value>
+  </data>
+  <data name="PrivatePosition" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="ProblemBuyingItem" xml:space="preserve">
+    <value>Hatalı Parça Alımı</value>
+  </data>
+  <data name="ProcessingLogin" xml:space="preserve">
+    <value>Giriş Yapılıyor...</value>
+  </data>
+  <data name="ProcessingTransactionPleaseWait" xml:space="preserve">
+    <value>Satış yapılıyor, lütfen bekle...</value>
+  </data>
+  <data name="PromoteMember" xml:space="preserve">
+    <value>Üyeyi Yükselt</value>
+  </data>
+  <data name="QualitySettings" xml:space="preserve">
+    <value>Kalite Ayarları</value>
+  </data>
+  <data name="QuickItem" xml:space="preserve">
+    <value>Hızlı Parça</value>
+  </data>
+  <data name="QuickItems" xml:space="preserve">
+    <value>Hızlı Ürünler</value>
+  </data>
+  <data name="QuickSearch" xml:space="preserve">
+    <value>Hızlı Arama</value>
+  </data>
+  <data name="QuitCaps" xml:space="preserve">
+    <value>ÇIK</value>
+  </data>
+  <data name="RateOfFire" xml:space="preserve">
+    <value>Atış Hızı</value>
+  </data>
+  <data name="ReachLevelFour" xml:space="preserve">
+    <value>- Seviye 4'e Ulaşın</value>
+  </data>
+  <data name="ReadyCaps" xml:space="preserve">
+    <value>HAZIR</value>
+  </data>
+  <data name="RecentPickupWeapons" xml:space="preserve">
+    <value>Son Pick-up Silahlar</value>
+  </data>
+  <data name="Recoil" xml:space="preserve">
+    <value>Geri çekilme</value>
+  </data>
+  <data name="Red" xml:space="preserve">
+    <value>Kırmızı</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="RefreshCaps" xml:space="preserve">
+    <value>YENİLE</value>
+  </data>
+  <data name="RefreshingServer" xml:space="preserve">
+    <value>Sunucuyu yenile</value>
+  </data>
+  <data name="RejectClanInvitation" xml:space="preserve">
+    <value>Klan Davetini Reddet</value>
+  </data>
+  <data name="RejectTheClanInvitationFromN" xml:space="preserve">
+    <value>{0} isimli oyuncudan gelen klan daveti reddedilsin mi?</value>
+  </data>
+  <data name="RemainingXP" xml:space="preserve">
+    <value>Kalan DP:</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Kaldır</value>
+  </data>
+  <data name="RemoveFriendCaps" xml:space="preserve">
+    <value>ARKADAŞI ÇIKAR</value>
+  </data>
+  <data name="RemoveMember" xml:space="preserve">
+    <value>Üyeyi Çıkar</value>
+  </data>
+  <data name="RemoveMemberCaps" xml:space="preserve">
+    <value>ÜYEYİ ÇIKAR</value>
+  </data>
+  <data name="RemoveMemberErrorMsg" xml:space="preserve">
+    <value>{0}, {1} klanından çıkarılamadı.\nLütfen daha sonra tekrar dene.</value>
+  </data>
+  <data name="RemoveMemberWarningMsg" xml:space="preserve">
+    <value>İsimleri yanında klan rozeti görmeyecek ve klan bildirimi almayacaklar.</value>
+  </data>
+  <data name="RemoveNFromClanN" xml:space="preserve">
+    <value>{0}, {1} klanından çıkarılsın mı?</value>
+  </data>
+  <data name="RemovingNFromClanN" xml:space="preserve">
+    <value>{0}, {1} klanından çıkarılıyor...</value>
+  </data>
+  <data name="Renew" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="Reply" xml:space="preserve">
+    <value>Yanıtla</value>
+  </data>
+  <data name="ReportBug" xml:space="preserve">
+    <value>Hata bildir.</value>
+  </data>
+  <data name="ReportPlayer" xml:space="preserve">
+    <value>Bir oyuncuyu şikayet et.</value>
+  </data>
+  <data name="RequestNoLongerExistsMsg" xml:space="preserve">
+    <value>Bu istek artık geçerli değil.\nSüresi dolmuş veya geri çekilmiş olabilir.</value>
+  </data>
+  <data name="RequestsCaps" xml:space="preserve">
+    <value>İSTEKLER</value>
+  </data>
+  <data name="ResetDefaults" xml:space="preserve">
+    <value>Varsayılanları Sıfırla</value>
+  </data>
+  <data name="ResetFiltersCaps" xml:space="preserve">
+    <value>FİLTRELERİ SIFIRLAYIN</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>Tekrar dene</value>
+  </data>
+  <data name="RetypeYourPassword" xml:space="preserve">
+    <value>Şifrenizi tekrar Girin</value>
+  </data>
+  <data name="Round" xml:space="preserve">
+    <value>Tur</value>
+  </data>
+  <data name="RoundEndCaps" xml:space="preserve">
+    <value>TUR BİTTİ!</value>
+  </data>
+  <data name="RoundStartsInN" xml:space="preserve">
+    <value>Tur {0} da başlıyor!</value>
+  </data>
+  <data name="RoundTime" xml:space="preserve">
+    <value>Tur Zamanı</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="SearchMessages" xml:space="preserve">
+    <value>Mesajlarda Ara</value>
+  </data>
+  <data name="SecondaryWeapon" xml:space="preserve">
+    <value>İkincil</value>
+  </data>
+  <data name="SelectWeapon" xml:space="preserve">
+    <value>Silah Seç:</value>
+  </data>
+  <data name="SelectYourLoadoutCaps" xml:space="preserve">
+    <value>YÜK ÇIKIŞINIZI SEÇİN</value>
+  </data>
+  <data name="SendCaps" xml:space="preserve">
+    <value>GÖNDER</value>
+  </data>
+  <data name="SendingMessageToN" xml:space="preserve">
+    <value>{0} a Mesaj gönderiyor...</value>
+  </data>
+  <data name="SendMessage" xml:space="preserve">
+    <value>Mesaj Yolla</value>
+  </data>
+  <data name="SendMessageCaps" xml:space="preserve">
+    <value>MESAJ GÖNDER</value>
+  </data>
+  <data name="SentInvites" xml:space="preserve">
+    <value>Davetiye Gönder</value>
+  </data>
+  <data name="ServerError" xml:space="preserve">
+    <value>Sunucu Hatası</value>
+  </data>
+  <data name="ServerFull" xml:space="preserve">
+    <value>Sunucu dolu</value>
+  </data>
+  <data name="ServerFullMsg" xml:space="preserve">
+    <value>Bu sunucu dolu. Farklı bir sunucu seçin.</value>
+  </data>
+  <data name="ServerIsNotReachable" xml:space="preserve">
+    <value>Sunucu erişilebilir değil</value>
+  </data>
+  <data name="ServerName" xml:space="preserve">
+    <value>Sunucu Adı</value>
+  </data>
+  <data name="ServerNameDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="SettingUp" xml:space="preserve">
+    <value>Kuruluyor...</value>
+  </data>
+  <data name="SevenDays" xml:space="preserve">
+    <value>7 Gün</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Paylaşın!</value>
+  </data>
+  <data name="ShareTheFunWithYourFaceBookFriends" xml:space="preserve">
+    <value>Facebook arkadaşlarınızla eğlenceli paylaş!</value>
+  </data>
+  <data name="ShopBtnTooltip" xml:space="preserve">
+    <value>Kahramanınızı tekmeleme silahları ve dişli çarklarla donatın!</value>
+  </data>
+  <data name="ShopCaps" xml:space="preserve">
+    <value>ALIŞVERİŞ</value>
+  </data>
+  <data name="Shotguns" xml:space="preserve">
+    <value>Tüfekler</value>
+  </data>
+  <data name="SingleWeaponLimit" xml:space="preserve">
+    <value>Tek Silah Sınırı</value>
+  </data>
+  <data name="SkinTone" xml:space="preserve">
+    <value>Ten Rengi</value>
+  </data>
+  <data name="SlowCaps" xml:space="preserve">
+    <value>YAVAŞ</value>
+  </data>
+  <data name="SmackdownXP" xml:space="preserve">
+    <value>MAĞLUP ETME DP</value>
+  </data>
+  <data name="SniperRifles" xml:space="preserve">
+    <value>Keskin Nişancı Tüfekleri</value>
+  </data>
+  <data name="SocNetInvalidMsg" xml:space="preserve">
+    <value>Geldiğin sosyal ağ yanlış.</value>
+  </data>
+  <data name="Spectate" xml:space="preserve">
+    <value>İzleyici Ol</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>Hız</value>
+  </data>
+  <data name="SpeedDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="KillLimit" xml:space="preserve">
+    <value>Öldürme Limiti</value>
+  </data>
+  <data name="Splatterguns" xml:space="preserve">
+    <value>Fırlatıcı Silahlar</value>
+  </data>
+  <data name="StartTypingTheNameOfAFriend" xml:space="preserve">
+    <value>Bir arkadaşınızın adını yazmaya başlayın</value>
+  </data>
+  <data name="StatsBtnTooltip" xml:space="preserve">
+    <value>Karakter istatistiklerini kontrol et.</value>
+  </data>
+  <data name="ProfileCaps" xml:space="preserve">
+    <value>PROFİL</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Konum</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Konu:</value>
+  </data>
+  <data name="SuicideXP" xml:space="preserve">
+    <value>XP İNTİHAR</value>
+  </data>
+  <data name="Tag" xml:space="preserve">
+    <value>Etiket</value>
+  </data>
+  <data name="TermsOfService" xml:space="preserve">
+    <value>Hizmet Şartları</value>
+  </data>
+  <data name="TertiaryWeapon" xml:space="preserve">
+    <value>Tersiyer</value>
+  </data>
+  <data name="TheAmountYouTriedToPurchaseIsInvalid" xml:space="preserve">
+    <value>Üzgünüz, bu sarf malzemesi için azami miktar {0}!</value>
+  </data>
+  <data name="TheNTeamHadTheMostKillsAtMatchEnd" xml:space="preserve">
+    <value>{0} takım maç sonunda en çok öldüren takım.</value>
+  </data>
+  <data name="ThereAreNoPendingRequestsForN" xml:space="preserve">
+    <value>{0} için bekleyen istek bulunmamaktadır.</value>
+  </data>
+  <data name="ThirtyDays" xml:space="preserve">
+    <value>30 Gün</value>
+  </data>
+  <data name="ThisActionCannotBeUndoneCaps" xml:space="preserve">
+    <value>BU EYLEM SİLİNEMEZ.</value>
+  </data>
+  <data name="ThisGameIsFull" xml:space="preserve">
+    <value>Bu oyun dolu.</value>
+  </data>
+  <data name="ThisGameNoLongerExists" xml:space="preserve">
+    <value>Bu oyun artık yok.</value>
+  </data>
+  <data name="ThisIsAListOfPeopleYouHaveAskedToJoinClanNotAccepted" xml:space="preserve">
+    <value>Bu klana katılmak için sorduğunuz ve henüz kabul etmemiş kişilerin listesidir.</value>
+  </data>
+  <data name="ThisIsTheOfficialNameOfYourClan" xml:space="preserve">
+    <value>Bu klanın resmi adıdır.</value>
+  </data>
+  <data name="ThisIsYourOfficialClanMotto" xml:space="preserve">
+    <value>Bu resmi klan sloganınızdır.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedForDuration" xml:space="preserve">
+    <value>Bu ürün belirli bir süre için satın alınamaz.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedFromTheShop" xml:space="preserve">
+    <value>Bu ürün Mağazadan satın alınamaz.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedFromTheUnderground" xml:space="preserve">
+    <value>Bu öğe Yeraltından satın alınamaz.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedPermanently" xml:space="preserve">
+    <value>Bu ürün kalıcı olarak satın alınamaz.</value>
+  </data>
+  <data name="ThisItemCannotBeRented" xml:space="preserve">
+    <value>Bu öğe kiralanamaz.</value>
+  </data>
+  <data name="ThisItemIsNotForSale" xml:space="preserve">
+    <value>Bu öğe satılık değil!</value>
+  </data>
+  <data name="ThisItemIsOutOfStock" xml:space="preserve">
+    <value>Bu ürün şuan stokta.</value>
+  </data>
+  <data name="ThisPackIsDisabled" xml:space="preserve">
+    <value>Bu paket devre dışı bırakıldı.</value>
+  </data>
+  <data name="ThisTagGetsDisplayedNextToYourName" xml:space="preserve">
+    <value>Bu etiket klan üyelerinin adlarının yanında görüntülenir.</value>
+  </data>
+  <data name="ThisWillChangeNPositionToN" xml:space="preserve">
+    <value>Bu {0} konumunu {1} ile değişecektir.</value>
+  </data>
+  <data name="TiedForWinner" xml:space="preserve">
+    <value>Kazanan için Bağlandı!</value>
+  </data>
+  <data name="TimeLimit" xml:space="preserve">
+    <value>Süre Limiti</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Kime:</value>
+  </data>
+  <data name="ToCreateAClanYouStillNeedTo" xml:space="preserve">
+    <value>Bir klan oluşturmak için, şunu yapmanız gerekir:</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Bugün</value>
+  </data>
+  <data name="TopBlues" xml:space="preserve">
+    <value>Top Mavi</value>
+  </data>
+  <data name="TopReds" xml:space="preserve">
+    <value>Top Kırmızılar</value>
+  </data>
+  <data name="TrainingCaps" xml:space="preserve">
+    <value>EĞİTİM</value>
+  </data>
+  <data name="TrainingModeCaps" xml:space="preserve">
+    <value>EĞİTİM MODU</value>
+  </data>
+  <data name="TrainingModeDesc" xml:space="preserve">
+    <value>Eğitim modu etrafında seni başından vurmak isteyen diğer oyuncuların stresi olmaksızın alıştırma yapmanı sağlar.</value>
+  </data>
+  <data name="TranserClanSuccessMsg" xml:space="preserve">
+    <value>{0} klan liderliği başarıyla\n için {1} e transfer edildi.</value>
+  </data>
+  <data name="TransferClanErrorMsg" xml:space="preserve">
+    <value>Klan {0} ın {1} için liderlik transferinde hata.\nLütfen biraz sonra tekrar deneyin ..</value>
+  </data>
+  <data name="TransferClanLeaderhsipToN" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TransferClanWarningMsg" xml:space="preserve">
+    <value>Artık bu klanın lideri olamayacaksınız.</value>
+  </data>
+  <data name="TransferLeadership" xml:space="preserve">
+    <value>Liderlik Transferi</value>
+  </data>
+  <data name="TransferLeadershipCaps" xml:space="preserve">
+    <value>LİDERLİK TRANSFERİ</value>
+  </data>
+  <data name="TransferringLeadershipOfClanNtoN" xml:space="preserve">
+    <value>{0} a {1} klan liderlik aktarımı</value>
+  </data>
+  <data name="Try" xml:space="preserve">
+    <value>dene</value>
+  </data>
+  <data name="TryThe" xml:space="preserve">
+    <value>deneyin</value>
+  </data>
+  <data name="TryYourWeapons" xml:space="preserve">
+    <value>Silahlarınızı deneyin</value>
+  </data>
+  <data name="TypePasswordHere" xml:space="preserve">
+    <value>Şifreyi Buraya Yazın</value>
+  </data>
+  <data name="UndergroundCaps" xml:space="preserve">
+    <value>YERALTI</value>
+  </data>
+  <data name="UnequippingDuplicateFunctionalItemClass" xml:space="preserve">
+    <value>Teçhizsiz çoğaltılabilir\n fonksiyonlu öğe sınıfı.</value>
+  </data>
+  <data name="UnequippingDuplicateQuickItemClass" xml:space="preserve">
+    <value>Teçhizsiz yedek\nhızlı öğe sınıfı.</value>
+  </data>
+  <data name="UnequippingDuplicateWeaponClass" xml:space="preserve">
+    <value>Teçhizsiz yedek\n silah sınıfı.</value>
+  </data>
+  <data name="UnexpectedReturn" xml:space="preserve">
+    <value>Beklenmeyen Dönüş</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Bilinmeyen</value>
+  </data>
+  <data name="Unmute" xml:space="preserve">
+    <value>Sesi kapatınız.</value>
+  </data>
+  <data name="UnreadyCaps" xml:space="preserve">
+    <value>HAZIR DEĞİL.</value>
+  </data>
+  <data name="UnspecifiedErrorMsg" xml:space="preserve">
+    <value>Bilinmeyen bir hata/ngizlice pop-up görünmesine yol açmıştır.\nBunu rapor edebilirseniz çok iyi olur.</value>
+  </data>
+  <data name="UpdateMemberErrorMsg" xml:space="preserve">
+    <value>Üye güncellemesinde hata {0}. \n Lütfen biraz sonra tekrar deneyiniz.</value>
+  </data>
+  <data name="UpdateMemberStatus" xml:space="preserve">
+    <value>Üyelik Durumunuzu Güncelleyin.</value>
+  </data>
+  <data name="UpdateMemberSuccessMsg" xml:space="preserve">
+    <value>{0} ile ilgili üyelik durumunuz başarıyla güncellenmiştir.</value>
+  </data>
+  <data name="UpdateMemberWarningMsg" xml:space="preserve">
+    <value>Bu {0} pozisyonunu\n {1} ile değiştirecektir.</value>
+  </data>
+  <data name="UpdateNPosition" xml:space="preserve">
+    <value>{0} konumunu kaydetmek ister misiniz?</value>
+  </data>
+  <data name="UpdatingInventory" xml:space="preserve">
+    <value>Stok Güncelleniyor</value>
+  </data>
+  <data name="UpdatingItemMall" xml:space="preserve">
+    <value>Malzeme Merkezi Güncelleniyor</value>
+  </data>
+  <data name="UpdatingMemberStatusOfN" xml:space="preserve">
+    <value>{0}'ın üyelik durumu güncelleniyor...</value>
+  </data>
+  <data name="UpperBody" xml:space="preserve">
+    <value>Üst Vücut</value>
+  </data>
+  <data name="UpperBodyArmor" xml:space="preserve">
+    <value>Üst Gövde Zırhı</value>
+  </data>
+  <data name="UseThisFormToSendClanInvitations" xml:space="preserve">
+    <value>Bu formu arkadaşlarınıza klan daveti yapmak için kullanınız.</value>
+  </data>
+  <data name="Velocity" xml:space="preserve">
+    <value>Hız</value>
+  </data>
+  <data name="VerifyPassword" xml:space="preserve">
+    <value>Şifrenizi Doğrulayın</value>
+  </data>
+  <data name="ViewOutstandingInvitesAndRequests" xml:space="preserve">
+    <value>Askıda bekleyen davetleri ve istekleri görüntüle</value>
+  </data>
+  <data name="Volume" xml:space="preserve">
+    <value>Ses</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Uyarı</value>
+  </data>
+  <data name="WaterQuality" xml:space="preserve">
+    <value>Su Kalitesi</value>
+  </data>
+  <data name="WeaponClassRecords" xml:space="preserve">
+    <value>Silah Sınıfı Kayıtları</value>
+  </data>
+  <data name="WeaponLoadout" xml:space="preserve">
+    <value>Silah Loadout</value>
+  </data>
+  <data name="WeaponPerformaceTotal" xml:space="preserve">
+    <value>Silah Performansı (Toplamda)</value>
+  </data>
+  <data name="Weapons" xml:space="preserve">
+    <value>Silahlar</value>
+  </data>
+  <data name="WeaponsCaps" xml:space="preserve">
+    <value>SİLAHLAR</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Hoşgeldiniz</value>
+  </data>
+  <data name="WelcomeToUS" xml:space="preserve">
+    <value>UberStrike'a Hoşgeldiniz</value>
+  </data>
+  <data name="WereUpdatingTheItemMallPleaseWait" xml:space="preserve">
+    <value>Ürün mağazasını güncelliyoruz, lütfen bekleyiniz...</value>
+  </data>
+  <data name="WereUpdatingYourInventoryPleaseWait" xml:space="preserve">
+    <value>Stoklarınızı güncelliyoruz, lütfen bekleyiniz...</value>
+  </data>
+  <data name="WonWithAScoreOf" xml:space="preserve">
+    <value>skoru ile kazanın</value>
+  </data>
+  <data name="XPEarnedN" xml:space="preserve">
+    <value>XP Kazanıldı {0}</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Dün</value>
+  </data>
+  <data name="YouAlreadyMasteredThisLevel" xml:space="preserve">
+    <value>Zaten bu Seviyeye hakimsiniz!</value>
+  </data>
+  <data name="YouAlreadyOwnThisItem" xml:space="preserve">
+    <value>Bu ürüne zaten sahipsiniz.</value>
+  </data>
+  <data name="YouCannotPurchaseThisItemForMoreThanNDays" xml:space="preserve">
+    <value>{0} günden daha çok bu ürünü satın alamazsınız.</value>
+  </data>
+  <data name="YouCantChangeYourClanInfoOnceCreated" xml:space="preserve">
+    <value>Klanınız oluşturulduktan sonra  bilgilerinizden herhangi birini değiştiremezsiniz, bu nedenle iyi değerlendirin!</value>
+  </data>
+  <data name="YouDontHaveEnoughPointsOrCreditsToPurchaseThisItem" xml:space="preserve">
+    <value>Bu ürünü satın alabilmek için yeterli puanınız veya krediniz bulunmamaktadır.</value>
+  </data>
+  <data name="YouDontNeedToEquipLicenses" xml:space="preserve">
+    <value>\nLisanslarlar hazırlamanıza gerek yok.</value>
+  </data>
+  <data name="YouDontPermissionToPerformThisAction" xml:space="preserve">
+    <value>Bu eylemi gerçekleştirebilmek için doğru izinine sahip değilsiniz.</value>
+  </data>
+  <data name="YouHaveNFriends" xml:space="preserve">
+    <value>{0} Arkadaşınız var.</value>
+  </data>
+  <data name="YouHaveNNewMessages" xml:space="preserve">
+    <value>{0} Mesajınız var.</value>
+  </data>
+  <data name="YouHaveNoFriends" xml:space="preserve">
+    <value>Hiç arkadaşınız yok.</value>
+  </data>
+  <data name="YouHaveOnlyOneFriend" xml:space="preserve">
+    <value>Sadece 1 arkadaşınız var</value>
+  </data>
+  <data name="YouHaveToReachLevelNToJoinThisGame" xml:space="preserve">
+    <value>Bu oyuna katılabilmek için {0} Seviyesine ulaşmanız gerekir!</value>
+  </data>
+  <data name="YouNeedAClanLicenseToCreateClanMsg" xml:space="preserve">
+    <value>Klan oluşturabilmek için Klan Lisansına ihtiyacınız var.\nKlan Lisansı Mağazadan satın alabileceğiniz özel bir üründür.</value>
+  </data>
+  <data name="YouNeedAtLeastOneFriendToCreateAClan" xml:space="preserve">
+    <value>Klan oluşturabilmek için en az 1 arkadaşınız olmalı.</value>
+  </data>
+  <data name="YouNeedMoreCreditsToBuyThisItem" xml:space="preserve">
+    <value>Bu parçayı satın alabilmek için daha fazla krediye ihtiyacınız var.</value>
+  </data>
+  <data name="YouNeedToBeAtLeastLevelFourToCreateAClan" xml:space="preserve">
+    <value>Klan oluşturabilmek için en az seviye 4 de olmanız gerekir.</value>
+  </data>
+  <data name="YouNeedToBeLevelNToBuyThisItem" xml:space="preserve">
+    <value>Bu ürünü satın alabilmeniz için {0} Seviyede olmanız gerekir.</value>
+  </data>
+  <data name="YouNeedToEarnMorePointsToBuyThisItem" xml:space="preserve">
+    <value>Bu ürünü satın alabilmeniz için daha fazla puan kazanmanız gerekir.</value>
+  </data>
+  <data name="YourAccountHasBeenBanned" xml:space="preserve">
+    <value>Hesabınız\n yasaklandı.</value>
+  </data>
+  <data name="YourAreNoLongerAMemberOfClanN" xml:space="preserve">
+    <value>Artık klanın bir üyesi değilsiniz {0}.</value>
+  </data>
+  <data name="YourClanIsBeingCreated" xml:space="preserve">
+    <value>Klanınız oluşturuluyor...</value>
+  </data>
+  <data name="YourFriendRequestIsAlreadySent" xml:space="preserve">
+    <value>Arkadaşlık isteğiniz önceden gönderildi!</value>
+  </data>
+  <data name="YourGameNameIsInvalid" xml:space="preserve">
+    <value>Oyun İsminiz geçerli değil</value>
+  </data>
+  <data name="YourLevelIsTooLowToBuyThisItem" xml:space="preserve">
+    <value>Bu ürünü satın alabilmek için seviyeniz çok düşük.</value>
+  </data>
+  <data name="YourMessageHasBeenSent" xml:space="preserve">
+    <value>Mesajınız gönderildi!</value>
+  </data>
+  <data name="YourMessageHasNotBeenSent" xml:space="preserve">
+    <value>Mesajınız gönderildi!</value>
+  </data>
+  <data name="YourRequestHasBeenSent" xml:space="preserve">
+    <value>İsteğiniz gönderildi!</value>
+  </data>
+  <data name="YourProfileCaps" xml:space="preserve">
+    <value>PROFİLİNİZ</value>
+  </data>
+  <data name="YouveAlreadyInvitedThatPlayer" xml:space="preserve">
+    <value>Oyuncuyu zaten davet etmiştiniz!</value>
+  </data>
+  <data name="AddAsFriend" xml:space="preserve">
+    <value>Arkadaş olarak Ekle</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Always" xml:space="preserve">
+    <value>Her zaman</value>
+  </data>
+  <data name="AreYouSureYouWantToLeaveTheGame" xml:space="preserve">
+    <value>Oyunu bırakmak istediğinizden emin misiniz</value>
+  </data>
+  <data name="AudioCaps" xml:space="preserve">
+    <value>SES</value>
+  </data>
+  <data name="AutoEquipWeapons" xml:space="preserve">
+    <value>Otomatik Donatımlı Silahlar</value>
+  </data>
+  <data name="AutoPickupWeapons" xml:space="preserve">
+    <value>Auto Pickup Silahlar</value>
+  </data>
+  <data name="BugType" xml:space="preserve">
+    <value>Dinleme Cihazı Çeşidi</value>
+  </data>
+  <data name="ChangingToBlueTeam" xml:space="preserve">
+    <value>Mavi Takımı Değiştirme.</value>
+  </data>
+  <data name="ChangingToRedTeam" xml:space="preserve">
+    <value>Kırmızı Takımı Değiştirme</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="ChatInClan" xml:space="preserve">
+    <value>KLANDA CHAT YAPIN.</value>
+  </data>
+  <data name="ChatInLobby" xml:space="preserve">
+    <value>KULİSTE CHAT YAP</value>
+  </data>
+  <data name="ChatWith" xml:space="preserve">
+    <value>ile chat</value>
+  </data>
+  <data name="Cheaters" xml:space="preserve">
+    <value>Hileciler</value>
+  </data>
+  <data name="Clan" xml:space="preserve">
+    <value>Klan</value>
+  </data>
+  <data name="ClickToRespawn" xml:space="preserve">
+    <value>Yeniden doğuş için tıklayınız!</value>
+  </data>
+  <data name="CongratulationsYouKilledYourself" xml:space="preserve">
+    <value>Tebrikler. Kendinizi öldürdünüz.</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Kişiler</value>
+  </data>
+  <data name="ControlsCaps" xml:space="preserve">
+    <value>KONTROLLER</value>
+  </data>
+  <data name="Crash" xml:space="preserve">
+    <value>Kaza</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detaylar</value>
+  </data>
+  <data name="DisconnectionIn" xml:space="preserve">
+    <value>da Kopukluk</value>
+  </data>
+  <data name="DontSpamTheLobbyChat" xml:space="preserve">
+    <value>Kulis chatini spamlemeyiniz!</value>
+  </data>
+  <data name="EnableRagdoll" xml:space="preserve">
+    <value>Ragdoll'u Etkinleştirin.</value>
+  </data>
+  <data name="EnterAMessageHere" xml:space="preserve">
+    <value>Burada bir mesaj yazın</value>
+  </data>
+  <data name="EnterAMessageInGameHere" xml:space="preserve">
+    <value>Burada oyunda bir mesaj yazın</value>
+  </data>
+  <data name="EnterAMessageToClanHere" xml:space="preserve">
+    <value>Burada klana bir mesaj yazın</value>
+  </data>
+  <data name="EnterAMessageToLobbyHere" xml:space="preserve">
+    <value>Burada kulise bir mesaj yazın</value>
+  </data>
+  <data name="EnteredTrainingMode" xml:space="preserve">
+    <value>girilen Eğitim Modu!</value>
+  </data>
+  <data name="FirstTime" xml:space="preserve">
+    <value>İlk Kez</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Frekans</value>
+  </data>
+  <data name="Friends" xml:space="preserve">
+    <value>Arkadaşlar</value>
+  </data>
+  <data name="Gameplay" xml:space="preserve">
+    <value>Oyunoyna</value>
+  </data>
+  <data name="Graphics" xml:space="preserve">
+    <value>Grafikler</value>
+  </data>
+  <data name="HeadshotFromN" xml:space="preserve">
+    <value>{0} dan Kafavuruş.</value>
+  </data>
+  <data name="HowToReproduceIt" xml:space="preserve">
+    <value>Tekrardan nasıl üretilir?</value>
+  </data>
+  <data name="InviteToClan" xml:space="preserve">
+    <value>Klane için Davet</value>
+  </data>
+  <data name="IsNotOnline" xml:space="preserve">
+    <value>online değil</value>
+  </data>
+  <data name="JoinedTheGame" xml:space="preserve">
+    <value>oyuna katıldı.</value>
+  </data>
+  <data name="JoinGame" xml:space="preserve">
+    <value>Oyuna Katılın</value>
+  </data>
+  <data name="KilledByN" xml:space="preserve">
+    <value>{0} tarafından öldürüldü.</value>
+  </data>
+  <data name="LeaveCaps" xml:space="preserve">
+    <value>BIRAK</value>
+  </data>
+  <data name="LeaveGameWarningMsg" xml:space="preserve">
+    <value>Eğer tur bitmeden bırakırsanız  bu turda kazandığınız bütün XP leri ve Puanları kaybedersiniz!\Terk etmek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="LeavingGame" xml:space="preserve">
+    <value>Oyunu Terk</value>
+  </data>
+  <data name="LeftTheGame" xml:space="preserve">
+    <value>oyunu bırak</value>
+  </data>
+  <data name="Lobby" xml:space="preserve">
+    <value>Kulis</value>
+  </data>
+  <data name="MoreInfo" xml:space="preserve">
+    <value>Daha fazla bilgi...</value>
+  </data>
+  <data name="NKilledThemself" xml:space="preserve">
+    <value>kendini öldürdü.</value>
+  </data>
+  <data name="NKillsLeft" xml:space="preserve">
+    <value>{0} Sol Öldürür!</value>
+  </data>
+  <data name="NoMatchFound" xml:space="preserve">
+    <value>Eşleşme Bulunamadı</value>
+  </data>
+  <data name="NoPlayerSelected" xml:space="preserve">
+    <value>Oyuncu seçilmedi</value>
+  </data>
+  <data name="NoPlayersToReport" xml:space="preserve">
+    <value>Rapor edilebilecek Oyuncu bulunmamaktadır.</value>
+  </data>
+  <data name="NutshotFromN" xml:space="preserve">
+    <value>{0} dan Nutshot.</value>
+  </data>
+  <data name="OneKillLeft" xml:space="preserve">
+    <value>Bir Ölüm Kaldı!</value>
+  </data>
+  <data name="OnlyOneTeamChangePerLife" xml:space="preserve">
+    <value>Yaşam suresince sadece bir defa takım değişimi.</value>
+  </data>
+  <data name="OpenThisLinkInANewBrowserWindow" xml:space="preserve">
+    <value>Bu linki yeni bir browser penceresinde açınız</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>Diğerleri</value>
+  </data>
+  <data name="PlayerNames" xml:space="preserve">
+    <value>Oyuncu İsimleri</value>
+  </data>
+  <data name="Private" xml:space="preserve">
+    <value>Özel</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>Rapor</value>
+  </data>
+  <data name="ReportBugCaps" xml:space="preserve">
+    <value>HATA RAPORU</value>
+  </data>
+  <data name="ReportBugSuccessMsg" xml:space="preserve">
+    <value>Hata başarılı bir şekilde rapor edilmiştir!</value>
+  </data>
+  <data name="ReportPlayerCaps" xml:space="preserve">
+    <value>Oyuncuyu Raporla</value>
+  </data>
+  <data name="ReportPlayerErrorMsg" xml:space="preserve">
+    <value>Sunucularımıza bağlı olmadığınız için raporunuz gönderilmemiştir.</value>
+  </data>
+  <data name="ReportPlayerInfoMsg" xml:space="preserve">
+    <value>Bu formda UberStrike oynarken tespit ettiğiniz yasadışı faaliyetleri rapor edebilirsiniz.</value>
+  </data>
+  <data name="ReportPlayerSuccessMsg" xml:space="preserve">
+    <value>Raporunuz incelenmek üzere gönderildi!\n\n Cemiyetimizi temiz tuttuğunuz için teşekkürler.</value>
+  </data>
+  <data name="ReportPlayerWarningMsg" xml:space="preserve">
+    <value>'{0}' oyuncusunu rapor etmek istediğinizden emin misiniz?\n\nSahte raporlar suçtur!</value>
+  </data>
+  <data name="ReportType" xml:space="preserve">
+    <value>Tür Rapor edin</value>
+  </data>
+  <data name="SelectAPlayer" xml:space="preserve">
+    <value>Bir Oyuncu Seçin</value>
+  </data>
+  <data name="SelectType" xml:space="preserve">
+    <value>Tür Seçin</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Gönder</value>
+  </data>
+  <data name="ServerDown" xml:space="preserve">
+    <value>Sunucu Aşağı</value>
+  </data>
+  <data name="ShopTutorialMsg01" xml:space="preserve">
+    <value>Test Alanına Hoşgeldiniz!</value>
+  </data>
+  <data name="ShopTutorialMsg02" xml:space="preserve">
+    <value>Oyundan çıkmak istediğinizde 'ESC' ya da 'Backspace' tuşuna basın.</value>
+  </data>
+  <data name="SmackdownFromN" xml:space="preserve">
+    <value>{0} dan Yüzleşme.</value>
+  </data>
+  <data name="Sometimes" xml:space="preserve">
+    <value>Bazen</value>
+  </data>
+  <data name="SysInfoCaps" xml:space="preserve">
+    <value>SYS BİLGİ</value>
+  </data>
+  <data name="TheCommunicator" xml:space="preserve">
+    <value>Haberci</value>
+  </data>
+  <data name="TrainingBtnTooltip" xml:space="preserve">
+    <value>Uberstrike'ı yalnız oyuncu modunda deneyin.</value>
+  </data>
+  <data name="TrainingTutorialMsg01" xml:space="preserve">
+    <value>Temek Eğitime Hoşgeldiniz!</value>
+  </data>
+  <data name="TrainingTutorialMsg02" xml:space="preserve">
+    <value>Bu mesajlara son vermek için {0} a basın.</value>
+  </data>
+  <data name="TrainingTutorialMsg03" xml:space="preserve">
+    <value>Tamam, hadi başlayalım...</value>
+  </data>
+  <data name="TrainingTutorialMsg04" xml:space="preserve">
+    <value>Etrada bakınmak için fareyi kullanabilirsiniz.</value>
+  </data>
+  <data name="TrainingTutorialMsg05" xml:space="preserve">
+    <value>{0}{1}{2}{3}  tuşlarını kahramanınızı hareket ettirmek için kullanın.</value>
+  </data>
+  <data name="TrainingTutorialMsg06" xml:space="preserve">
+    <value>Vurmak için, {0} kullanın.</value>
+  </data>
+  <data name="TrainingTutorialMsg07" xml:space="preserve">
+    <value>{0} Diğer silahı seçmek için {0} kullanın.\nÖnceki silahı kullanmak için {1} kullanın.</value>
+  </data>
+  <data name="TrainingTutorialMsg08" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} tuşlarını \n direk olarak silah seçmek için kullanabilirsiniz\n.</value>
+  </data>
+  <data name="TrainingTutorialMsg09" xml:space="preserve">
+    <value>Çömelmek için, {0} tuşuna basılı tutun.</value>
+  </data>
+  <data name="TrainingTutorialMsg10" xml:space="preserve">
+    <value>Tam ekran moduna geçmek için {0} kullanın.</value>
+  </data>
+  <data name="TrainingTutorialMsg11" xml:space="preserve">
+    <value>Başlamanız için gereken herşey bu kadar. Yolun açık olsun!</value>
+  </data>
+  <data name="UnassignedKeyMappingsWarningMsg" xml:space="preserve">
+    <value>Atanmış anahtar eşleştirmeler var!\nLütfen Denetim Ayarlarınızı kontrol ediniz.</value>
+  </data>
+  <data name="UserInterface" xml:space="preserve">
+    <value>Kullanıcı Arayüzü</value>
+  </data>
+  <data name="VideoCaps" xml:space="preserve">
+    <value>VİDEO</value>
+  </data>
+  <data name="WaitingForOtherPlayers" xml:space="preserve">
+    <value>Diğer oyuncular bekleniyor...</value>
+  </data>
+  <data name="WhatHappened" xml:space="preserve">
+    <value>Ne oldu?</value>
+  </data>
+  <data name="YouAreOnTheBlueTeam" xml:space="preserve">
+    <value>Mavi Takımdasınız.</value>
+  </data>
+  <data name="YouAreOnTheRedTeam" xml:space="preserve">
+    <value>Kırmızı Takımdasınız.</value>
+  </data>
+  <data name="YouCannotChangeToATeamWithEqual" xml:space="preserve">
+    <value>Eşit ya da daha fazla oyuncuyla bir takım\n değiştiremezsiniz.</value>
+  </data>
+  <data name="YouKilledN" xml:space="preserve">
+    <value>{0} öldürdünüz.</value>
+  </data>
+  <data name="YouShotNInTheHead" xml:space="preserve">
+    <value>{0} başından vurdunuz</value>
+  </data>
+  <data name="YouShotNInTheNuts" xml:space="preserve">
+    <value>{0} Hayalarından vurdunuz.</value>
+  </data>
+  <data name="YouSmackedDownN" xml:space="preserve">
+    <value>{0} Yere serdiniz.</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Genel</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Yuva</value>
+  </data>
+  <data name="HomeHelpDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Introduction" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="IntroHelpDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>Ürünler</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Oyna</value>
+  </data>
+  <data name="PlayHelpDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Shop" xml:space="preserve">
+    <value>Alışveriş</value>
+  </data>
+  <data name="ShopHelpDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="ProfileHelpDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="GunsNStuffCaps" xml:space="preserve">
+    <value>SİLAHLARI DOLDURUN</value>
+  </data>
+  <data name="MainMenuPlayTooltip" xml:space="preserve">
+    <value>Anında benzer bir seviyede diğer oyuncularla\n bir oyuna bağlanın ve tekmeleyin!</value>
+  </data>
+  <data name="MainMenuQuitTooltip" xml:space="preserve">
+    <value>Uberstrike Terket.</value>
+  </data>
+  <data name="MainMenuShopTooltip" xml:space="preserve">
+    <value>Rakiplerinizi ile karşıya gelmeden önce kitle imha silahlarından\n bazılarını tutun.</value>
+  </data>
+  <data name="MainMenuTrainTooltip" xml:space="preserve">
+    <value>Uberstrike oynamayı ve Pwnage önlemeyi öğrenin.\nTek oyunculu Eğitim.</value>
+  </data>
+  <data name="FindingAServerToJoin" xml:space="preserve">
+    <value>Katılım için sunucu arıyor...</value>
+  </data>
+  <data name="LostParadise2" xml:space="preserve">
+    <value>Kayıp Cevher 2</value>
+  </data>
+  <data name="MonkeyIsland2" xml:space="preserve">
+    <value>Maymunlar Adası 2</value>
+  </data>
+  <data name="TemplOfTheRaven" xml:space="preserve">
+    <value>Raven Tapınağı</value>
+  </data>
+  <data name="TheWarehouse" xml:space="preserve">
+    <value>Depo</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>Hafta</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Ay</value>
+  </data>
+  <data name="ThreeMonths" xml:space="preserve">
+    <value>3 Ay</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Kapalı</value>
+  </data>
+  <data name="MIDescriptionMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="LPDescriptionMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TWDescriptionMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TORDescriptionMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="GTDescriptionMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="FWDescriptionMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="SGDescriptionMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="DMModeDescriptionMsg" xml:space="preserve">
+    <value>Hareket eden herşeyi vurun. Turun sonunda en çok öldüren kazanır.</value>
+  </data>
+  <data name="TDMModeDescriptionMsg" xml:space="preserve">
+    <value>Takımda olmayan herkesi vur. Turun sonunda en çok öldüren takım kazanır.</value>
+  </data>
+  <data name="ELMModeDescriptionMsg" xml:space="preserve">
+    <value>Düşman ekipteki tüm oyuncular ortadan kaldırın. Turun sonunda oyuncuları ile ayakta kalan takım kazanır.</value>
+  </data>
+  <data name="Effects" xml:space="preserve">
+    <value>Etkiler</value>
+  </data>
+  <data name="ScreenResolution" xml:space="preserve">
+    <value>Ekran Çözünürlüğü</value>
+  </data>
+  <data name="MaxRounds" xml:space="preserve">
+    <value>Max Tur</value>
+  </data>
+  <data name="MaxKills" xml:space="preserve">
+    <value>Max Öldürme</value>
+  </data>
+  <data name="NewItem" xml:space="preserve">
+    <value>Yeni Ürün</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Şimdi değil</value>
+  </data>
+  <data name="Congratulations" xml:space="preserve">
+    <value>Tebrikler</value>
+  </data>
+  <data name="YouHaveBeenGrantedNItems" xml:space="preserve">
+    <value>Size ücretsiz {0} ürün verildi! Onları donatmak için stoğunuza gidin!</value>
+  </data>
+  <data name="NoItems" xml:space="preserve">
+    <value>Ürün yok</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>Yorum mevcut değil.</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Standart</value>
+  </data>
+  <data name="EliminateAllYourEnemies" xml:space="preserve">
+    <value>Tüm düşmanlarınızdan kurtulun!</value>
+  </data>
+  <data name="FinalRoundCaps" xml:space="preserve">
+    <value>FİNAL TURU</value>
+  </data>
+  <data name="FinalRoundX" xml:space="preserve">
+    <value>Final Turu {0}</value>
+  </data>
+  <data name="NRoundsLeft" xml:space="preserve">
+    <value>{0} Tur Kaldı!</value>
+  </data>
+  <data name="RedCaps" xml:space="preserve">
+    <value>KIRMIZI</value>
+  </data>
+  <data name="BlueCaps" xml:space="preserve">
+    <value>MAVİ</value>
+  </data>
+  <data name="Following" xml:space="preserve">
+    <value>İzleme</value>
+  </data>
+  <data name="Nobody" xml:space="preserve">
+    <value>Hiç kimse</value>
+  </data>
+  <data name="SpectatorMode" xml:space="preserve">
+    <value>Seyirci Modunda</value>
+  </data>
+  <data name="YouAreNotLoggedIn" xml:space="preserve">
+    <value>Bağlı değilsiniz!</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Güncelleme Mevcut</value>
+  </data>
+  <data name="UberStrikeIsOutOfDatePleaseRefreshPage" xml:space="preserve">
+    <value>UberStrike v {0} güncel değil.Tarayıcı pencerenizi güncellemek için v{1} \nyenile!</value>
+  </data>
+  <data name="UberStrikeIsOutOfDatePleaseDownloadClient" xml:space="preserve">
+    <value>UberStrik v{0}güncel değil, güncel olanı v{1}. Yeni müşteriyi :\n{2} \nyükleyin.</value>
+  </data>
+  <data name="UberStrikeIsOutOfDateVisitWebsite" xml:space="preserve">
+    <value>UberStrike v{0} güncel değil. UberStrike.com u v{1} almak için ziyaret\n edin!</value>
+  </data>
+  <data name="UberStrikeIsOutOfDateUpdateMacApp" xml:space="preserve">
+    <value>UberStrike v{0} güncel değil, son sürümü v{1}. \n Lütfen Mac App Store'dan  güncelleyiniz.</value>
+  </data>
+  <data name="ConnectionProblem" xml:space="preserve">
+    <value>Bağlantı Sorunu</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>Etkin hiç bir internet bağlantısı algılanmadı. UberStrike oynamak için bir \ninternet bağlantısı gereklidir.\nLütfen bağlantınızı kontrol edin ve tekrar deneyin.</value>
+  </data>
+  <data name="ErrorWebservices" xml:space="preserve">
+    <value>Hizmet ile ilgili bir sorun var gibi gözüküyor. Uberstrike yeniden başlatın ve yeniden oturum açmayı deneyin. Bu sorun devam ederse support@cmune.com başvurun. Teşekkür ederiz!</value>
+  </data>
+  <data name="ErrorReadingConfiguration" xml:space="preserve">
+    <value>Yapılandırmada Okuma Hatası</value>
+  </data>
+  <data name="ThereWasProblemRetrievingWebplayerConfiguration" xml:space="preserve">
+    <value>Webplayer yapılandırmasında bir sorun var. Lütfen support@cmune.com a email gönderin</value>
+  </data>
+  <data name="RefreshWallet" xml:space="preserve">
+    <value>Cüzdanı Yenile</value>
+  </data>
+  <data name="IfYouPurchasedCreditsClickOKToRefreshYourWallet" xml:space="preserve">
+    <value>Eğer kredi aldıysanız, cüzdan ve stok yenilemek için Tamam'ı tıklatın.</value>
+  </data>
+  <data name="ClanInvite" xml:space="preserve">
+    <value>Klan Davet</value>
+  </data>
+  <data name="YouAlreadyInClanMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Hits" xml:space="preserve">
+    <value>Vuruşlar</value>
+  </data>
+  <data name="BlueLevelTooltip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="GideonsTower" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="SkyGarden" xml:space="preserve">
+    <value>GökBahçe</value>
+  </data>
+  <data name="FortWinter" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="AqualabResearchHub" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="CuberStrike" xml:space="preserve">
+    <value>CuberStrike</value>
+  </data>
+  <data name="TuberStrike" xml:space="preserve">
+    <value>TuberStrike</value>
+  </data>
+  <data name="AccountHistory" xml:space="preserve">
+    <value>HESAP GEÇMİŞİ</value>
+  </data>
+  <data name="RecommendedLoadoutCaps" xml:space="preserve">
+    <value>ÖNERİLEN LOADOUT</value>
+  </data>
+  <data name="MostEfficientWeaponCaps" xml:space="preserve">
+    <value>EN ETKİLİ SİLAH</value>
+  </data>
+  <data name="RecommendedArmorCaps" xml:space="preserve">
+    <value>ÖNERİLEN ZIRH</value>
+  </data>
+  <data name="StaffPickCaps" xml:space="preserve">
+    <value>EKİBİN SEÇİMİ</value>
+  </data>
+  <data name="RecommendedWeaponCaps" xml:space="preserve">
+    <value>ÖNERİLEN SİLAH</value>
+  </data>
+  <data name="PackOneAmount" xml:space="preserve">
+    <value>10 Kullanım</value>
+  </data>
+  <data name="PackTwoAmount" xml:space="preserve">
+    <value>100 Kullanım</value>
+  </data>
+  <data name="PackThreeAmount" xml:space="preserve">
+    <value>1000 Kullanım</value>
+  </data>
+  <data name="DiscountPercentOff" xml:space="preserve">
+    <value>%{0} İndirim!</value>
+  </data>
+  <data name="MessageQuickItemsTry" xml:space="preserve">
+    <value>HızlıParçalar bu eğitim modunda tükenmeyecektir</value>
+  </data>
+  <data name="ClickHereGetCreditsMsg" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="FriendlyFire" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="GetCreditsCaps" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="StatsCaps" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="YourStatsCaps" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Stats" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="StatsHelpDesc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Instasplat" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="SplatLimit" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="" xml:space="preserve">
+    <value></value>
+  </data>
+</root>

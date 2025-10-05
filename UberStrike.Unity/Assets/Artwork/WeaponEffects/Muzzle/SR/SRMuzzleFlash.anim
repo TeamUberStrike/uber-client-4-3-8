@@ -1,0 +1,137 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!74 &7400000
+AnimationClip:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: SRMuzzleFlash
+  serializedVersion: 3
+  m_Compressed: 0
+  m_RotationCurves: []
+  m_CompressedRotationCurves: []
+  m_PositionCurves: []
+  m_ScaleCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: {x: 1, y: 1, z: .100000009}
+        inSlope: {x: 6, y: 6, z: 58.7999992}
+        outSlope: {x: 6, y: 10.6789846, z: 33.9841919}
+        tangentMode: 0
+      - time: .0833333358
+        value: {x: 1.5, y: 1.5, z: 2}
+        inSlope: {x: -.0225464404, y: 2.2310853, z: 9.87491989}
+        outSlope: {x: 2.40000057, y: 2.40000057, z: 0}
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    path: 
+  m_FloatCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 1
+        inSlope: -12
+        outSlope: -19.9474316
+        tangentMode: 1
+      - time: .0833333358
+        value: 0
+        inSlope: -6.07118845
+        outSlope: -0
+        tangentMode: 17
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: _TintColor.a
+    path: 
+    classID: 21
+    script: {fileID: 0}
+  m_SampleRate: 60
+  m_WrapMode: 2
+  m_Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_EditorCurves:
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 1
+        inSlope: 6
+        outSlope: 6
+        tangentMode: 10
+      - time: .0833333358
+        value: 1.5
+        inSlope: -.0225464404
+        outSlope: 2.40000057
+        tangentMode: 1
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: m_LocalScale.x
+    path: 
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 1
+        inSlope: 6
+        outSlope: 10.6789846
+        tangentMode: 1
+      - time: .0833333358
+        value: 1.5
+        inSlope: 2.2310853
+        outSlope: 2.40000057
+        tangentMode: 1
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: m_LocalScale.y
+    path: 
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: .100000009
+        inSlope: 58.7999992
+        outSlope: 33.9841919
+        tangentMode: 1
+      - time: .0833333358
+        value: 2
+        inSlope: 9.87491989
+        outSlope: 0
+        tangentMode: 1
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: m_LocalScale.z
+    path: 
+    classID: 4
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 1
+        inSlope: -12
+        outSlope: -19.9474316
+        tangentMode: 1
+      - time: .0833333358
+        value: 0
+        inSlope: -6.07118845
+        outSlope: -0
+        tangentMode: 17
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+    attribute: _TintColor.a
+    path: 
+    classID: 21
+    script: {fileID: 0}
+  m_EulerEditorCurves: []
+  m_Events: []
+--- !u!1002 &7400001
+EditorExtensionImpl:
+  serializedVersion: 6

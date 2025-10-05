@@ -1,0 +1,2472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Login">
+    <value>Login</value>
+  </data>
+  <data name="EmailAddress">
+    <value>Email Address</value>
+  </data>
+  <data name="Password">
+    <value>Password</value>
+  </data>
+  <data name="RememberMe">
+    <value>Remember Me</value>
+  </data>
+  <data name="Quit">
+    <value>Quit</value>
+  </data>
+  <data name="OkCaps">
+    <value>OK</value>
+  </data>
+  <data name="ChangeTeam">
+    <value>Change Team</value>
+  </data>
+  <data name="Continue">
+    <value>Continue</value>
+  </data>
+  <data name="DeathMatch">
+    <value>Death Match</value>
+  </data>
+  <data name="Fullscreen">
+    <value>Fullscreen</value>
+  </data>
+  <data name="Headshot">
+    <value>Headshot!</value>
+  </data>
+  <data name="KillsRemain">
+    <value>Kills Remain</value>
+  </data>
+  <data name="Nutshot">
+    <value>Nutshot!</value>
+  </data>
+  <data name="Respawn">
+    <value>Respawn</value>
+  </data>
+  <data name="ShowMenu">
+    <value>Show Menu</value>
+  </data>
+  <data name="SignUp">
+    <value>Sign Up</value>
+  </data>
+  <data name="TeamDeathMatch">
+    <value>Team Death Match</value>
+  </data>
+  <data name="TeamElimination">
+    <value>Team Elimination</value>
+  </data>
+  <data name="YouDied">
+    <value>You Died!</value>
+  </data>
+  <data name="Absorption">
+    <value>Absorption</value>
+  </data>
+  <data name="Accept">
+    <value>Accept</value>
+  </data>
+  <data name="AcceptingClanInvitation">
+    <value>Accepting clan invitation...</value>
+  </data>
+  <data name="AccountExistsMsg">
+    <value>This account already has a UberStrike account associated with it.</value>
+  </data>
+  <data name="AccountIsInvalid">
+    <value>Account is invalid.</value>
+  </data>
+  <data name="Accuracy">
+    <value>Accuracy</value>
+  </data>
+  <data name="AddFriends">
+    <value>Add Friends</value>
+  </data>
+  <data name="AdvancedCaps">
+    <value>ADVANCED</value>
+  </data>
+  <data name="AdvancedWater">
+    <value>Advanced Water</value>
+  </data>
+  <data name="ALeaderCannotLeaveHisOwnClanMsg">
+    <value>A leader cannot leave his own clan.\nYou can only disband it.</value>
+  </data>
+  <data name="All">
+    <value>All</value>
+  </data>
+  <data name="AreYouSureQuitMsg">
+    <value>Are you sure you want to quit Uberstrike?</value>
+  </data>
+  <data name="AreYouSureLogoutMsg">
+    <value>Are you sure you want to logout of Uberstrike?</value>
+  </data>
+  <data name="AuthenticatingAccount">
+    <value>Authenticating your account...</value>
+  </data>
+  <data name="BackCaps">
+    <value>BACK</value>
+  </data>
+  <data name="BangYouJustReachedLevelN">
+    <value>Bang! You just reached</value>
+  </data>
+  <data name="BestWeaponByAccuracy">
+    <value>Best Weapon by Accuracy</value>
+  </data>
+  <data name="BestWeaponByDamageDealt">
+    <value>Best Weapon by Damage Dealt</value>
+  </data>
+  <data name="BestWeaponByHits">
+    <value>Best Weapon by Hits</value>
+  </data>
+  <data name="BestWeaponByKills">
+    <value>Best Weapon by Kills</value>
+  </data>
+  <data name="BetweenYouAndN">
+    <value>Between You and {0}</value>
+  </data>
+  <data name="BloomEffect">
+    <value>Bloom Effect</value>
+  </data>
+  <data name="Blue">
+    <value>Blue</value>
+  </data>
+  <data name="Boots">
+    <value>Boots</value>
+  </data>
+  <data name="BothTeamsHadAndEqualNumberOfKills">
+    <value>Both teams had an equal number of kills at match end.</value>
+  </data>
+  <data name="BothTeamsHadAndEqualNumberOfWins">
+    <value>Both teams had an equal number of wins at match end.</value>
+  </data>
+  <data name="Bounty">
+    <value>Bounty</value>
+  </data>
+  <data name="Busy">
+    <value>Busy</value>
+  </data>
+  <data name="Buy">
+    <value>Buy</value>
+  </data>
+  <data name="BuyAClanLicense">
+    <value>- Buy a clan license in the Shop</value>
+  </data>
+  <data name="BuyCaps">
+    <value>BUY</value>
+  </data>
+  <data name="BuyItem">
+    <value>Buy Item</value>
+  </data>
+  <data name="Cancel">
+    <value>Cancel</value>
+  </data>
+  <data name="CancelCaps">
+    <value>CANCEL</value>
+  </data>
+  <data name="CancelingInvitation">
+    <value>Canceling invitation...</value>
+  </data>
+  <data name="CancelingInvitationErrorMsg">
+    <value>There has been an error canceling the invitation to {0}.</value>
+  </data>
+  <data name="CancelInvite">
+    <value>Cancel Invite</value>
+  </data>
+  <data name="CancelInviteConfirmation">
+    <value>Cancel Invite Confirmation</value>
+  </data>
+  <data name="CancelInviteToN">
+    <value>Cancel invite to {0}?</value>
+  </data>
+  <data name="CancelInviteWarningMsg">
+    <value>This will cancel the clan invitation to {0}.</value>
+  </data>
+  <data name="Cannons">
+    <value>Cannons</value>
+  </data>
+  <data name="CannotFindPlayerData">
+    <value>Cannot find any data for that player.</value>
+  </data>
+  <data name="Capacity">
+    <value>Capacity</value>
+  </data>
+  <data name="CapacityDesc">
+    <value>This refers to the amount of players that are currently playing on this game server.</value>
+  </data>
+  <data name="ChangePosition">
+    <value>Change Position</value>
+  </data>
+  <data name="ChangeServer">
+    <value>Change Server</value>
+  </data>
+  <data name="ChangingToTeamN">
+    <value>Changing to team {0}</value>
+  </data>
+  <data name="ChatBtnTooltip">
+    <value>Chat with friends and join their games.</value>
+  </data>
+  <data name="ChatCaps">
+    <value>CHAT</value>
+  </data>
+  <data name="CheatingWillResultInAPermanentBan">
+    <value>Cheating will result in a permanent ban!</value>
+  </data>
+  <data name="CheckAvailability">
+    <value>Check Availability</value>
+  </data>
+  <data name="CheckingAvailableGameServers">
+    <value>Checking available game servers...</value>
+  </data>
+  <data name="CheckingClanStatus">
+    <value>Checking clan status...</value>
+  </data>
+  <data name="CheckMail">
+    <value>Check Mail</value>
+  </data>
+  <data name="ChooseAGameCaps">
+    <value>CHOOSE A GAME</value>
+  </data>
+  <data name="ChooseAMap">
+    <value>Choose a Map</value>
+  </data>
+  <data name="ChooseCharacterName">
+    <value>CHOOSE YOUR NAME</value>
+  </data>
+  <data name="ChooseYourRegionCaps">
+    <value>CHOOSE YOUR REGION</value>
+  </data>
+  <data name="ClanAlreadyHasPendingRequestMsg">
+    <value>This clan already has a pending request from you.\nYou cannot send another one.</value>
+  </data>
+  <data name="ClanBtnTooltip">
+    <value>Create or manage a clan.</value>
+  </data>
+  <data name="ClanCreateSuccessMsg">
+    <value>Congratulations! You have successfully created the {0} clan.\nInvite some members to join and sign up for clan wars on the forums!</value>
+  </data>
+  <data name="ClanDataNotFoundMsg">
+    <value>Cannot find any data for that clan.\nEither an error has occurred or it has just disbanded.</value>
+  </data>
+  <data name="ClanDescriptionInvalidCharsMsg">
+    <value>The description you have chosen contains\ninvalid characters(probably the weird ones).\nPlease specify a different one.</value>
+  </data>
+  <data name="ClanDescriptionRestrictedWordsMsg">
+    <value>The description you have chosen contains restricted words.\nPlease specify a different one.</value>
+  </data>
+  <data name="ClanFullMsg">
+    <value>This clan is full. You cannot request membership\nto a clan that is full.</value>
+  </data>
+  <data name="ClanHQCaps">
+    <value>CLAN HQ</value>
+  </data>
+  <data name="ClanInvitationDeletedMsg">
+    <value>This invitation no longer exists.\nIt may have expired or been withdrawn.</value>
+  </data>
+  <data name="ClanMottoInvalidMsg">
+    <value>The motto you have chosen contains\ninvalid characters (probably the weird ones).\nPlease specify a different one.</value>
+  </data>
+  <data name="ClanMottoRestrictedWordsMsg">
+    <value>The motto you have chosen contains restricted words.\nPlease specify a different one.</value>
+  </data>
+  <data name="ClanNameInUseMsg">
+    <value>This clan name is already in use.\nPlease choose a different one.</value>
+  </data>
+  <data name="ClanNameInvlidMsg">
+    <value>The name you have chosen contains non-alphanumeric characters.\nPlease specify a different one.</value>
+  </data>
+  <data name="ClanNameRestrictedWordsMsg">
+    <value>The name you have chosen contains restricted words.\nPlease specify a different one.</value>
+  </data>
+  <data name="ClanNCreatedCaps">
+    <value>CLAN {0} CREATED</value>
+  </data>
+  <data name="ClanRequestsYouHAveNPendingRequests">
+    <value>Clan Requests - You have {0} pending clan request{1}</value>
+  </data>
+  <data name="Clans">
+    <value>Clans</value>
+  </data>
+  <data name="ClansCaps">
+    <value>CLANS</value>
+  </data>
+  <data name="ClanStatusErrorMsg">
+    <value>Error checking player clan status.\nPlease try again in a moment.</value>
+  </data>
+  <data name="ClanTagInUseMsg">
+    <value>This clan tag is already in use.\nPlease choose a different one.</value>
+  </data>
+  <data name="ClanTagInvalidMsg">
+    <value>This clan tag contains non-alphanumeric characters.\nPlease specify a different one.</value>
+  </data>
+  <data name="ClanTagRestrictedWordsMsg">
+    <value>The tag you have chosen contains restricted words.\nPlease specify a different one.</value>
+  </data>
+  <data name="ClickHereBuyCreditsMsg">
+    <value>Click Here to buy UberStrike Credits!</value>
+  </data>
+  <data name="ColorCorrection">
+    <value>Color Correction</value>
+  </data>
+  <data name="ComeBackTomorrowForEvenMorePoints">
+    <value>Come back tomorrow for even more points!</value>
+  </data>
+  <data name="CongratulationsGrantedLicenseMsg">
+    <value>Congratulations, you have just been granted the privateers license!\n\nLet's have some fun!</value>
+  </data>
+  <data name="ConnectingToLobby">
+    <value>Connecting to Lobby...</value>
+  </data>
+  <data name="ConnectingToServer">
+    <value>Connecting to server.</value>
+  </data>
+  <data name="ConnectionSlowMsg">
+    <value>Your connection to this server is slow. Your game performance may be sub-optimal.</value>
+  </data>
+  <data name="CreateAClan">
+    <value>Create a Clan</value>
+  </data>
+  <data name="CreateAClanAndInviteYourFriends">
+    <value>Create a clan and invite your friends to join!</value>
+  </data>
+  <data name="CreateAClanCaps">
+    <value>CREATE A CLAN</value>
+  </data>
+  <data name="CreateCaps">
+    <value>CREATE</value>
+  </data>
+  <data name="CreatedN">
+    <value>Created: {0}</value>
+  </data>
+  <data name="CreateGameCaps">
+    <value>CREATE GAME</value>
+  </data>
+  <data name="CreateYourCharacterCaps">
+    <value>CREATE YOUR CHARACTER</value>
+  </data>
+  <data name="CreatingAccount">
+    <value>Creating Account...</value>
+  </data>
+  <data name="CreatingAccountMsg">
+    <value>Creating your account.\nPlease wait a moment.</value>
+  </data>
+  <data name="Credits">
+    <value>Credits</value>
+  </data>
+  <data name="CurrentXP">
+    <value>Current XP:</value>
+  </data>
+  <data name="DailyRewardCaps">
+    <value>DAILY REWARD</value>
+  </data>
+  <data name="Damage">
+    <value>Damage</value>
+  </data>
+  <data name="DamageXP">
+    <value>DAMAGE XP</value>
+  </data>
+  <data name="DataError">
+    <value>Data Error</value>
+  </data>
+  <data name="DataInvalidMsg">
+    <value>That data is extremely invalid. It's so invalid that it has caused this error.</value>
+  </data>
+  <data name="Day">
+    <value>Day</value>
+  </data>
+  <data name="DaysAgo">
+    <value>Days Ago</value>
+  </data>
+  <data name="DeathsCaps">
+    <value>DEATHS</value>
+  </data>
+  <data name="Deaths">
+    <value>Deaths</value>
+  </data>
+  <data name="DeleteThreadCaps">
+    <value>DELETE THREAD</value>
+  </data>
+  <data name="DemoteMember">
+    <value>Demote Member</value>
+  </data>
+  <data name="DisbandClan">
+    <value>Disband Clan</value>
+  </data>
+  <data name="DisbandClanCaps">
+    <value>DISBAND CLAN</value>
+  </data>
+  <data name="DisbandClanErrorMsg">
+    <value>There has been an error processing your request to disband clan {0}.\nPlease try again in a moment.</value>
+  </data>
+  <data name="DisbandClanN">
+    <value>Disband clan {0}?</value>
+  </data>
+  <data name="DisbandClanSuccessMsg">
+    <value>Clan {0} has been disbanded.</value>
+  </data>
+  <data name="DisbandClanWarningMsg">
+    <value>Disbanding your clan will completely remove all clan information from the\nUberStrike database. After disbanding, the clan will no longer exist.</value>
+  </data>
+  <data name="DiscardCaps">
+    <value>DISCARD</value>
+  </data>
+  <data name="Done">
+    <value>Done</value>
+  </data>
+  <data name="DownloadClanRequestErrorMsg">
+    <value>Error downloading clan request data. Please try again in a moment.</value>
+  </data>
+  <data name="DownloadingClanData">
+    <value>Downloading clan data...</value>
+  </data>
+  <data name="DownloadingClanDataErrorMsg">
+    <value>Error downloading clan data.\nPlease try again in a moment.</value>
+  </data>
+  <data name="DownloadingRequestData">
+    <value>Downloading request data...</value>
+  </data>
+  <data name="DoYouReallyWantToRemoveNFromYourFriendsList">
+    <value>Do you really want to remove {0} from your friends list?</value>
+  </data>
+  <data name="DoYouWantToDeleteTheConversation">
+    <value>Do you want to delete the conversation?</value>
+  </data>
+  <data name="DragToEquipTheN">
+    <value>Drag to equip the {0}</value>
+  </data>
+  <data name="Draw">
+    <value>Draw!</value>
+  </data>
+  <data name="Duration">
+    <value>Duration</value>
+  </data>
+  <data name="EffectsVolume">
+    <value>Effects Volume:</value>
+  </data>
+  <data name="Email">
+    <value>Email</value>
+  </data>
+  <data name="EmailAddressAndNameInUseMsg">
+    <value>By some miracle coincidence, both the email address AND the name you've chosen are in use. You'll have to choose different ones.</value>
+  </data>
+  <data name="EmailAddressInUseMsg">
+    <value>This email address is already in use. Please use another email address.</value>
+  </data>
+  <data name="EmailAddressIsInvalid">
+    <value>Email address is invalid.</value>
+  </data>
+  <data name="EmailInvalidMsg">
+    <value>That email address is invalid. Either you typed it wrong or you're an evil hacker trying to fool our system!</value>
+  </data>
+  <data name="Empty">
+    <value>Empty</value>
+  </data>
+  <data name="EnableCustomizers">
+    <value>Enable Customizers</value>
+  </data>
+  <data name="EnableGamepad">
+    <value>Enable Gamepad</value>
+  </data>
+  <data name="EnterGameName">
+    <value>Enter game name</value>
+  </data>
+  <data name="EnterPassword">
+    <value>Enter Password</value>
+  </data>
+  <data name="EnterYourEmailAddress">
+    <value>Enter Your Email Address</value>
+  </data>
+  <data name="EnterYourName">
+    <value>Enter Your Name</value>
+  </data>
+  <data name="EnterYourPassword">
+    <value>Enter Your Password</value>
+  </data>
+  <data name="Equip">
+    <value>Equip</value>
+  </data>
+  <data name="Error">
+    <value>Error</value>
+  </data>
+  <data name="ErrorCreatingClan">
+    <value>Error creating clan.\nPlease try again later.</value>
+  </data>
+  <data name="ErrorInvitingNToJoinClanN">
+    <value>Error inviting {0} to join clan {1}.\nPlease try again in a moment.</value>
+  </data>
+  <data name="ErrorInvitingToJoinClanN">
+    <value>There was an error inviting the player to clan {0}.</value>
+  </data>
+  <data name="ErrorSendingMessage">
+    <value>Error sending message, Please try again later...</value>
+  </data>
+  <data name="ExitFullscreen">
+    <value>Exit fullscreen.</value>
+  </data>
+  <data name="Expired">
+    <value>Expired</value>
+  </data>
+  <data name="Face">
+    <value>Face</value>
+  </data>
+  <data name="FailedToGetContacts">
+    <value>Failed to get contacts</value>
+  </data>
+  <data name="FailedToRegister">
+    <value>Failed to register</value>
+  </data>
+  <data name="FailedToRemoveNFromYourFriendList">
+    <value>Failed to remove {0} from your friend list!</value>
+  </data>
+  <data name="FailedToSendYourMessage">
+    <value>Failed to send your message!</value>
+  </data>
+  <data name="FastCaps">
+    <value>FAST</value>
+  </data>
+  <data name="FiltersCaps">
+    <value>FILTERS</value>
+  </data>
+  <data name="FrameRate">
+    <value>Frame Rate</value>
+  </data>
+  <data name="LowGravity">
+    <value>Low Gravity</value>
+  </data>
+  <data name="Instakill">
+    <value>Instakill</value>
+  </data>
+  <data name="NinjaArena">
+    <value>Ninja Arena</value>
+  </data>
+  <data name="SniperArena">
+    <value>Sniper Arena</value>
+  </data>
+  <data name="CannonArena">
+    <value>Cannon Arena</value>
+  </data>
+  <data name="FriendRequest">
+    <value>Friend Request</value>
+  </data>
+  <data name="FriendRequestCaps">
+    <value>FRIEND REQUEST</value>
+  </data>
+  <data name="FriendRequestsYouHaveNPendingRequests">
+    <value>Friend Requests - You have {0} pending friend request{1}</value>
+  </data>
+  <data name="FriendsCaps">
+    <value>FRIENDS</value>
+  </data>
+  <data name="Full">
+    <value>Full</value>
+  </data>
+  <data name="FunctionalItem">
+    <value>Functional Item</value>
+  </data>
+  <data name="FunctionalItems">
+    <value>Functional Items</value>
+  </data>
+  <data name="Game">
+    <value>Game</value>
+  </data>
+  <data name="GameName">
+    <value>Game Name</value>
+  </data>
+  <data name="GameNotFull">
+    <value>Game not full</value>
+  </data>
+  <data name="Gamepad">
+    <value>Gamepad</value>
+  </data>
+  <data name="Games">
+    <value>Games</value>
+  </data>
+  <data name="GamesNotFound">
+    <value>Games not found.</value>
+  </data>
+  <data name="GameType">
+    <value>Game Type</value>
+  </data>
+  <data name="Gear">
+    <value>Gear</value>
+  </data>
+  <data name="GeneralCaps">
+    <value>GENERAL</value>
+  </data>
+  <data name="BuyCreditsCaps">
+    <value>GET CREDITS!</value>
+  </data>
+  <data name="GettingClan">
+    <value>Getting player clan data...</value>
+  </data>
+  <data name="GettingInventory">
+    <value>Getting player inventory...</value>
+  </data>
+  <data name="GettingLabsData">
+    <value>Getting labs data...</value>
+  </data>
+  <data name="GettingLoadout">
+    <value>Getting player loadout...</value>
+  </data>
+  <data name="GettingStats">
+    <value>Getting player statistics...</value>
+  </data>
+  <data name="Gloves">
+    <value>Gloves</value>
+  </data>
+  <data name="GoCaps">
+    <value>GO!</value>
+  </data>
+  <data name="GoFullscreen">
+    <value>Go fullscreen.</value>
+  </data>
+  <data name="Handguns">
+    <value>Handguns</value>
+  </data>
+  <data name="HardcoreMode">
+    <value>Hardcore Mode</value>
+  </data>
+  <data name="HaveAtLeastOneFriend">
+    <value>- Have at least 1 friend</value>
+  </data>
+  <data name="Head">
+    <value>Head</value>
+  </data>
+  <data name="HeadshotXP">
+    <value>HEADSHOT XP</value>
+  </data>
+  <data name="HelpBtnTooltip">
+    <value>Learn how to really play the game.</value>
+  </data>
+  <data name="HelpCaps">
+    <value>HELP</value>
+  </data>
+  <data name="HereYouCanCreateYourOwnClan">
+    <value>Here you can create your own clan.</value>
+  </data>
+  <data name="HiYoureInvitedToJoinMyClanN">
+    <value>Hi, you're invited to join my clan, {0}.</value>
+  </data>
+  <data name="Holo">
+    <value>Holo</value>
+  </data>
+  <data name="HomeBtnTooltip">
+    <value>Back to the blimp.</value>
+  </data>
+  <data name="HomeCaps">
+    <value>HOME</value>
+  </data>
+  <data name="IAgreeToThe">
+    <value>By clicking OK you agree to the</value>
+  </data>
+  <data name="IfTheErrorPersistsBugReportTaskbar">
+    <value>If the error persists, please use\nthe bug reporting feature on the taskbar.</value>
+  </data>
+  <data name="Ignore">
+    <value>Ignore</value>
+  </data>
+  <data name="IgnoringClanInvitation">
+    <value>Ignoring clan invitation...</value>
+  </data>
+  <data name="Impact">
+    <value>Impact</value>
+  </data>
+  <data name="InboxBtnTooltip">
+    <value>Receive messages from your friends.</value>
+  </data>
+  <data name="InboxCaps">
+    <value>INBOX</value>
+  </data>
+  <data name="InGame">
+    <value>In Game</value>
+  </data>
+  <data name="InivitingNToJoinClanN">
+    <value>Inviting {0} to join clan {1}...</value>
+  </data>
+  <data name="InMyClan">
+    <value>In my clan</value>
+  </data>
+  <data name="Instakill">
+    <value>Instakill</value>
+  </data>
+  <data name="InvalidData">
+    <value>Invalid data has been supplied.</value>
+  </data>
+  <data name="Inventory">
+    <value>Inventory</value>
+  </data>
+  <data name="InventoryCaps">
+    <value>INVENTORY</value>
+  </data>
+  <data name="InvertMouseButtons">
+    <value>Invert Mouse Buttons</value>
+  </data>
+  <data name="InvitationCancelled">
+    <value>Invitation Cancelled</value>
+  </data>
+  <data name="InvitationPending">
+    <value>Invitation Pending</value>
+  </data>
+  <data name="InvitationToJoinClanNHasBeenSent">
+    <value>Invitation to join clan {0}\nhas been sent.</value>
+  </data>
+  <data name="Invite">
+    <value>Invite!</value>
+  </data>
+  <data name="InviteFriends">
+    <value>Invite Friends</value>
+  </data>
+  <data name="InvitePlayer">
+    <value>Invite Player</value>
+  </data>
+  <data name="InvitingToJoinClan">
+    <value>Inviting to join clan...</value>
+  </data>
+  <data name="JoinBlueCaps">
+    <value>JOIN BLUE</value>
+  </data>
+  <data name="JoinCaps">
+    <value>JOIN</value>
+  </data>
+  <data name="JoinDate">
+    <value>Join Date</value>
+  </data>
+  <data name="JoinRedCaps">
+    <value>JOIN RED</value>
+  </data>
+  <data name="JoinClanSuccessMsg">
+    <value>You have successfully joined the clan.</value>
+  </data>
+  <data name="JoinClanErrorMsg">
+    <value>There was an error joining the clan.</value>
+  </data>
+  <data name="JustForFun">
+    <value>Just for fun</value>
+  </data>
+  <data name="KDR">
+    <value>KDR</value>
+  </data>
+  <data name="Keyboard">
+    <value>Keyboard</value>
+  </data>
+  <data name="KeyButton">
+    <value>Key/Button</value>
+  </data>
+  <data name="Kills">
+    <value>Kills</value>
+  </data>
+  <data name="KillXP">
+    <value>KILL XP</value>
+  </data>
+  <data name="LabsCaps">
+    <value>LABS</value>
+  </data>
+  <data name="LastDay">
+    <value>Last Day</value>
+  </data>
+  <data name="LastOnlineN">
+    <value>Last Online: {0}</value>
+  </data>
+  <data name="Launchers">
+    <value>Launchers</value>
+  </data>
+  <data name="Leader">
+    <value>Leader</value>
+  </data>
+  <data name="LeaderN">
+    <value>Leader: {0}</value>
+  </data>
+  <data name="LeaveClan">
+    <value>Leave Clan</value>
+  </data>
+  <data name="LeaveClanCaps">
+    <value>LEAVE CLAN</value>
+  </data>
+  <data name="LeaveClanErrorMsg">
+    <value>There has been an error processing your request to leave clan {0}. Please try again in a moment.</value>
+  </data>
+  <data name="LeaveClanN">
+    <value>Leave clan {0}?</value>
+  </data>
+  <data name="LeaveClanSuccessMsg">
+    <value>You have successfully left the clan {0}.</value>
+  </data>
+  <data name="LeaveClanWarningMsg">
+    <value>After leaving you will no longer receive clan notifications or have the clan tag displayed next to your name.</value>
+  </data>
+  <data name="LeavingClanN">
+    <value>Leaving Clan {0}...</value>
+  </data>
+  <data name="Level">
+    <value>Level</value>
+  </data>
+  <data name="LevelAndXP">
+    <value>Level &amp; XP</value>
+  </data>
+  <data name="LimitFramerate">
+    <value>Limit FrameRate:</value>
+  </data>
+  <data name="LoadingGameList">
+    <value>Loading game list...</value>
+  </data>
+  <data name="LoadoutCaps">
+    <value>LOADOUT</value>
+  </data>
+  <data name="LoginFailed">
+    <value>Login Failed</value>
+  </data>
+  <data name="Low">
+    <value>Low</value>
+  </data>
+  <data name="LowerBody">
+    <value>Lower Body</value>
+  </data>
+  <data name="LowerBodyArmor">
+    <value>Lower Body Armor</value>
+  </data>
+  <data name="LowGravity">
+    <value>Low gravity</value>
+  </data>
+  <data name="Machineguns">
+    <value>Machineguns</value>
+  </data>
+  <data name="ManageYourClan">
+    <value>Manage your clan</value>
+  </data>
+  <data name="Map">
+    <value>Map</value>
+  </data>
+  <data name="MasterVolume">
+    <value>Master Volume:</value>
+  </data>
+  <data name="MatchPerformance">
+    <value>Match Performance</value>
+  </data>
+  <data name="MaxPlayers">
+    <value>Max Players</value>
+  </data>
+  <data name="MedCaps">
+    <value>MED</value>
+  </data>
+  <data name="Melee">
+    <value>Melee</value>
+  </data>
+  <data name="MeleeWeapons">
+    <value>Melee Weapons</value>
+  </data>
+  <data name="Member">
+    <value>Member</value>
+  </data>
+  <data name="Message">
+    <value>Message:</value>
+  </data>
+  <data name="MessageCaps">
+    <value>MESSAGE:</value>
+  </data>
+  <data name="MessagesCaps">
+    <value>MESSAGES</value>
+  </data>
+  <data name="Minutes">
+    <value>Minutes</value>
+  </data>
+  <data name="Misc">
+    <value>Misc</value>
+  </data>
+  <data name="Mode">
+    <value>Mode</value>
+  </data>
+  <data name="Moderate">
+    <value>Moderate</value>
+  </data>
+  <data name="MonthsAgo">
+    <value>Months Ago</value>
+  </data>
+  <data name="MostArmorPickedUp">
+    <value>Most Armor Picked Up</value>
+  </data>
+  <data name="MostCannonKills">
+    <value>Most Cannon Kills</value>
+  </data>
+  <data name="MostConsecutiveSnipes">
+    <value>Most Consecutive Snipes</value>
+  </data>
+  <data name="MostDamageDealt">
+    <value>Most Damage Dealt</value>
+  </data>
+  <data name="MostDamageReceived">
+    <value>Most Damage Received</value>
+  </data>
+  <data name="MostDeadlyWeapons">
+    <value>Most Deadly Weapons</value>
+  </data>
+  <data name="MostHandgunKills">
+    <value>Most Handgun Kills</value>
+  </data>
+  <data name="MostHeadshots">
+    <value>Most Headshots</value>
+  </data>
+  <data name="MostHealthPickedUp">
+    <value>Most Health Picked Up</value>
+  </data>
+  <data name="MostKills">
+    <value>Most Kills</value>
+  </data>
+  <data name="MostLauncherKills">
+    <value>Most Launcher Kills</value>
+  </data>
+  <data name="MostMachinegunKills">
+    <value>Most Machinegun Kills</value>
+  </data>
+  <data name="MostMeleeKills">
+    <value>Most Melee Kills</value>
+  </data>
+  <data name="MostNutshots">
+    <value>Most Nutshots</value>
+  </data>
+  <data name="MostShotgunKills">
+    <value>Most Shotgun Kills</value>
+  </data>
+  <data name="MostSniperRifleKills">
+    <value>Most Sniper Rifle Kills</value>
+  </data>
+  <data name="MostSplattergunKills">
+    <value>Most Splattergun Kills</value>
+  </data>
+  <data name="MostValuablePlayers">
+    <value>Most Valuable Players</value>
+  </data>
+  <data name="MostXPEarned">
+    <value>Most XP Earned</value>
+  </data>
+  <data name="MotionBlur">
+    <value>Motion Blur</value>
+  </data>
+  <data name="Motto">
+    <value>Motto</value>
+  </data>
+  <data name="MottoN">
+    <value>Motto: {0}</value>
+  </data>
+  <data name="Mouse">
+    <value>Mouse</value>
+  </data>
+  <data name="MouseSensitivity">
+    <value>Mouse Sensitivity:</value>
+  </data>
+  <data name="Movement">
+    <value>Movement</value>
+  </data>
+  <data name="MusicVolume">
+    <value>Music Volume:</value>
+  </data>
+  <data name="Mute">
+    <value>Mute audio.</value>
+  </data>
+  <data name="Name">
+    <value>Name</value>
+  </data>
+  <data name="NameInUseMsg">
+    <value>This name has already been taken. Please choose another one.</value>
+  </data>
+  <data name="NameInvalidCharsMsg">
+    <value>That name contains invalid characters.</value>
+  </data>
+  <data name="NameN">
+    <value>Name: {0}</value>
+  </data>
+  <data name="NameTooManySpacesMsg">
+    <value>That name has too many spaces.</value>
+  </data>
+  <data name="NameTooShortMsg">
+    <value>That name is too short.</value>
+  </data>
+  <data name="NClanInformation">
+    <value>[{0}] Clan Information</value>
+  </data>
+  <data name="NClanRoster">
+    <value>[{0}] Clan Roster</value>
+  </data>
+  <data name="NetworkError">
+    <value>Network Error</value>
+  </data>
+  <data name="NewAndSaleItems">
+    <value>New And Sale Items</value>
+  </data>
+  <data name="NewHereSignUpAndPlayForFree">
+    <value>New here? SIGN UP and play for free!</value>
+  </data>
+  <data name="NewMessage">
+    <value>New Message</value>
+  </data>
+  <data name="NextCaps">
+    <value>NEXT</value>
+  </data>
+  <data name="NiceJobThatWasSeriousCarnage">
+    <value>Nice job, that was some serious carnage!</value>
+  </data>
+  <data name="NinetyDays">
+    <value>90 Days</value>
+  </data>
+  <data name="NIsNoLongerAMemberOfClanN">
+    <value>{0} is no longer a member of clan {1}</value>
+  </data>
+  <data name="NIsNoLongerInvitedToJoinClanN">
+    <value>{0} is no longer invited to jon clan {1}.</value>
+  </data>
+  <data name="NMembersNOnline">
+    <value>{0}/{1} members ({2} online)</value>
+  </data>
+  <data name="NNeedsAClanLicenseToBeLeader">
+    <value>{0} need a Clan License to be leader of a clan.\nThe Clan License is a special item\nthat {0} can buy in the Shop.</value>
+  </data>
+  <data name="NNeedsToBeLevelFourToBeAClanLeader">
+    <value>{0} need to be at least level 4\nto be leader of a clan.</value>
+  </data>
+  <data name="NNeedsToHaveOneFriendToBeAClanLeader">
+    <value>{0} need to have at least 1 friend\nto be leader of a clan.</value>
+  </data>
+  <data name="NoConversationSelected">
+    <value>No Conversation Selected</value>
+  </data>
+  <data name="NoFriendlyFire">
+    <value>No Friendly Fire</value>
+  </data>
+  <data name="None">
+    <value>None</value>
+  </data>
+  <data name="NoSelectedItems">
+    <value>No Selected Items</value>
+  </data>
+  <data name="NoThanks">
+    <value>No Thanks</value>
+  </data>
+  <data name="NotPasswordProtected">
+    <value>Not password protected</value>
+  </data>
+  <data name="NPercentOff">
+    <value>{0:N0}% Off!</value>
+  </data>
+  <data name="NPlayers">
+    <value>{0} Players</value>
+  </data>
+  <data name="NTeamWins">
+    <value>{0} Team Wins!</value>
+  </data>
+  <data name="NutshotXP">
+    <value>NUTSHOT XP</value>
+  </data>
+  <data name="OffensiveNameMsg">
+    <value>The name contains offensive words.</value>
+  </data>
+  <data name="Officer">
+    <value>Officer</value>
+  </data>
+  <data name="Offline">
+    <value>Offline</value>
+  </data>
+  <data name="On">
+    <value>On</value>
+  </data>
+  <data name="OneDay">
+    <value>1 Day</value>
+  </data>
+  <data name="Online">
+    <value>Online</value>
+  </data>
+  <data name="OnlyYourClanLeaderCanDoThis">
+    <value>Only your clan leader can do this.</value>
+  </data>
+  <data name="OptionsBtnTooltip">
+    <value>Configure controls, visual and gameplay options.</value>
+  </data>
+  <data name="OptionsCaps">
+    <value>OPTIONS</value>
+  </data>
+  <data name="PasswordDoNotMatch">
+    <value>Passwords do not match.</value>
+  </data>
+  <data name="PasswordIncorrect">
+    <value>Password Incorrect</value>
+  </data>
+  <data name="PasswordInvalidCharsMsg">
+    <value>Password should have at least 6 characters.</value>
+  </data>
+  <data name="PasswordIsInvalid">
+    <value>Password is invalid.</value>
+  </data>
+  <data name="PasswordProtected">
+    <value>Password Protected</value>
+  </data>
+  <data name="PasswordsDoNotMatch">
+    <value>Passwords do not match.</value>
+  </data>
+  <data name="PendingRequestsCaps">
+    <value>PENDING REQUESTS</value>
+  </data>
+  <data name="PerformanceReportCaps">
+    <value>PERFORMANCE REPORT</value>
+  </data>
+  <data name="Permanent">
+    <value>Permanent</value>
+  </data>
+  <data name="Personal">
+    <value>Personal</value>
+  </data>
+  <data name="PersonalRecordsPerLife">
+    <value>Personal Records (per Life)</value>
+  </data>
+  <data name="Ping">
+    <value>Ping</value>
+  </data>
+  <data name="PlayBtnTooltip">
+    <value>Join other players games.</value>
+  </data>
+  <data name="PlayCaps">
+    <value>PLAY</value>
+  </data>
+  <data name="Player">
+    <value>Player</value>
+  </data>
+  <data name="PlayerAlreadyHasPendingClanInviteMsg">
+    <value>This player already has a pending invitation.\nYou cannot send another one.</value>
+  </data>
+  <data name="PlayerAlreadyInClanMsg">
+    <value>This player is already in a clan. You cannot invite players\nto join your clan if they are already in a clan.</value>
+  </data>
+  <data name="PlayerCaps">
+    <value>PLAYER:</value>
+  </data>
+  <data name="PlayerLevelNMinusRestriction">
+    <value>[Player Level &lt;{0} Restriction=\"\"]</value>
+  </data>
+  <data name="PlayerLevelNPlusRestriction">
+    <value>[Player Level {0}+ Restriction]</value>
+  </data>
+  <data name="PlayerLevelNRestriction">
+    <value>[Player Level {0} Restriction]</value>
+  </data>
+  <data name="PlayerLevelNToNRestriction">
+    <value>[Player Level {0}-{1} Restriction]</value>
+  </data>
+  <data name="Players">
+    <value>Players</value>
+  </data>
+  <data name="PlayersOnline">
+    <value>Players Online</value>
+  </data>
+  <data name="PleaseAgreeTOSMsg">
+    <value>Please agree to the Terms of Service.</value>
+  </data>
+  <data name="PleaseProvideValidEmailPasswordMsg">
+    <value>Please provide a valid email address and password.\nThis email will be used as your login in future.</value>
+  </data>
+  <data name="PleaseWait">
+    <value>Please wait</value>
+  </data>
+  <data name="Points">
+    <value>Points</value>
+  </data>
+  <data name="PointsEarnedN">
+    <value>Points Earned {0}</value>
+  </data>
+  <data name="Position">
+    <value>Position</value>
+  </data>
+  <data name="PressRefreshToSeeCurrentGames">
+    <value>Press Refresh to see current games</value>
+  </data>
+  <data name="Price">
+    <value>Price</value>
+  </data>
+  <data name="PrimaryWeapon">
+    <value>Primary</value>
+  </data>
+  <data name="PrivateChat">
+    <value>Private Chat</value>
+  </data>
+  <data name="PrivateersLicense">
+    <value>Privateers\nLicense</value>
+  </data>
+  <data name="PrivateersLicenseGranted">
+    <value>Privateers License Granted!</value>
+  </data>
+  <data name="PrivatePosition">
+    <value>Private Chat</value>
+  </data>
+  <data name="ProblemBuyingItem">
+    <value>Problem Buying Item</value>
+  </data>
+  <data name="ProcessingLogin">
+    <value>Processing Login...</value>
+  </data>
+  <data name="ProcessingTransactionPleaseWait">
+    <value>Processing transaction, please wait...</value>
+  </data>
+  <data name="PromoteMember">
+    <value>Promote Member</value>
+  </data>
+  <data name="QualitySettings">
+    <value>Quality Settings</value>
+  </data>
+  <data name="QuickItem">
+    <value>Quick Item</value>
+  </data>
+  <data name="QuickItems">
+    <value>Quick Items</value>
+  </data>
+  <data name="QuickSearch">
+    <value>Quick Search</value>
+  </data>
+  <data name="QuitCaps">
+    <value>QUIT</value>
+  </data>
+  <data name="RateOfFire">
+    <value>Rate of Fire</value>
+  </data>
+  <data name="ReachLevelFour">
+    <value>- Reach Level 4</value>
+  </data>
+  <data name="ReadyCaps">
+    <value>READY</value>
+  </data>
+  <data name="RecentPickupWeapons">
+    <value>Recent Pick-up Weapons</value>
+  </data>
+  <data name="Recoil">
+    <value>Recoil</value>
+  </data>
+  <data name="Red">
+    <value>Red</value>
+  </data>
+  <data name="Refresh">
+    <value>Refresh</value>
+  </data>
+  <data name="RefreshCaps">
+    <value>REFRESH</value>
+  </data>
+  <data name="RefreshingServer">
+    <value>Refreshing server</value>
+  </data>
+  <data name="RejectClanInvitation">
+    <value>Reject Clan Invitation</value>
+  </data>
+  <data name="RejectTheClanInvitationFromN">
+    <value>Reject the clan invitation from {0}?</value>
+  </data>
+  <data name="RemainingXP">
+    <value>Remaining XP:</value>
+  </data>
+  <data name="Remove">
+    <value>Remove</value>
+  </data>
+  <data name="RemoveFriendCaps">
+    <value>REMOVE FRIEND</value>
+  </data>
+  <data name="RemoveMember">
+    <value>Remove Member</value>
+  </data>
+  <data name="RemoveMemberCaps">
+    <value>REMOVE MEMBER</value>
+  </data>
+  <data name="RemoveMemberErrorMsg">
+    <value>Error removing {0} from clan {1}.\nPlease try again in a moment.</value>
+  </data>
+  <data name="RemoveMemberWarningMsg">
+    <value>The clan tag will not show up next to their name and they will not receive clan notifications.</value>
+  </data>
+  <data name="RemoveNFromClanN">
+    <value>Remove {0} from clan {1}?</value>
+  </data>
+  <data name="RemovingNFromClanN">
+    <value>Removing {0} from clan {1}...</value>
+  </data>
+  <data name="Renew">
+    <value>Renew</value>
+  </data>
+  <data name="Reply">
+    <value>Reply</value>
+  </data>
+  <data name="ReportBug">
+    <value>Report a bug.</value>
+  </data>
+  <data name="ReportPlayer">
+    <value>Report a player.</value>
+  </data>
+  <data name="RequestNoLongerExistsMsg">
+    <value>This request no longer exists.\nIt may have expired or been withdrawn.</value>
+  </data>
+  <data name="RequestsCaps">
+    <value>REQUESTS</value>
+  </data>
+  <data name="ResetDefaults">
+    <value>Reset Defaults</value>
+  </data>
+  <data name="ResetFiltersCaps">
+    <value>RESET FILTERS</value>
+  </data>
+  <data name="Retry">
+    <value>Retry</value>
+  </data>
+  <data name="RetypeYourPassword">
+    <value>Retype Your Password</value>
+  </data>
+  <data name="Round">
+    <value>Round</value>
+  </data>
+  <data name="RoundEndCaps">
+    <value>ROUND END!</value>
+  </data>
+  <data name="RoundStartsInN">
+    <value>Round Starts in {0}!</value>
+  </data>
+  <data name="RoundTime">
+    <value>Round Time</value>
+  </data>
+  <data name="Search">
+    <value>Search</value>
+  </data>
+  <data name="SearchMessages">
+    <value>Search Messages</value>
+  </data>
+  <data name="SecondaryWeapon">
+    <value>Secondary</value>
+  </data>
+  <data name="SelectWeapon">
+    <value>Select weapon:</value>
+  </data>
+  <data name="SelectYourLoadoutCaps">
+    <value>SELECT YOUR LOADOUT</value>
+  </data>
+  <data name="SendCaps">
+    <value>SEND</value>
+  </data>
+  <data name="SendingMessageToN">
+    <value>Sending message to {0}...</value>
+  </data>
+  <data name="SendMessage">
+    <value>Send Message</value>
+  </data>
+  <data name="SendMessageCaps">
+    <value>SEND MESSAGE</value>
+  </data>
+  <data name="SentInvites">
+    <value>Sent Invites</value>
+  </data>
+  <data name="ServerError">
+    <value>Server Error</value>
+  </data>
+  <data name="ServerFull">
+    <value>Server full</value>
+  </data>
+  <data name="ServerFullMsg">
+    <value>This server is full. Please select a different server.</value>
+  </data>
+  <data name="ServerIsNotReachable">
+    <value>Server is not reachable</value>
+  </data>
+  <data name="ServerName">
+    <value>Server Name</value>
+  </data>
+  <data name="ServerNameDesc">
+    <value>The server is named after the region that the server is located. Choose the server that is located closest to you for the best network performance.</value>
+  </data>
+  <data name="SettingUp">
+    <value>Setting Up...</value>
+  </data>
+  <data name="SevenDays">
+    <value>7 Days</value>
+  </data>
+  <data name="Share">
+    <value>Share!</value>
+  </data>
+  <data name="ShareTheFunWithYourFaceBookFriends">
+    <value>Share the fun with your Facebook friends!</value>
+  </data>
+  <data name="ShopBtnTooltip">
+    <value>Equip your character with kick ass weapons and gear!</value>
+  </data>
+  <data name="ShopCaps">
+    <value>SHOP</value>
+  </data>
+  <data name="Shotguns">
+    <value>Shotguns</value>
+  </data>
+  <data name="SingleWeaponLimit">
+    <value>Single Weapon Limit</value>
+  </data>
+  <data name="SkinTone">
+    <value>Skin Tone</value>
+  </data>
+  <data name="SlowCaps">
+    <value>SLOW</value>
+  </data>
+  <data name="SmackdownXP">
+    <value>SMACKDOWN XP</value>
+  </data>
+  <data name="SniperRifles">
+    <value>Sniper Rifles</value>
+  </data>
+  <data name="SocNetInvalidMsg">
+    <value>The social network you have arrived from is incorrect.</value>
+  </data>
+  <data name="Spectate">
+    <value>Spectate</value>
+  </data>
+  <data name="Speed">
+    <value>Speed</value>
+  </data>
+  <data name="SpeedDesc">
+    <value>This refers to the network performance between you and the game server. The number value (known as 'ping'), in milliseconds, refers to the amount of time it takes for information to travel from your computer to the game server and back. Lower ping equates to better network performance, so always look to join the fastest available server.</value>
+  </data>
+  <data name="KillLimit">
+    <value>Kill Limit</value>
+  </data>
+  <data name="Splatterguns">
+    <value>Splatterguns</value>
+  </data>
+  <data name="StartTypingTheNameOfAFriend">
+    <value>Start typing the name of a friend</value>
+  </data>
+  <data name="StatsBtnTooltip">
+    <value>Check your characters statistics.</value>
+  </data>
+  <data name="ProfileCaps">
+    <value>PROFILE</value>
+  </data>
+  <data name="Status">
+    <value>Status</value>
+  </data>
+  <data name="Subject">
+    <value>Subject:</value>
+  </data>
+  <data name="SuicideXP">
+    <value>SUICIDE XP</value>
+  </data>
+  <data name="Tag">
+    <value>Tag</value>
+  </data>
+  <data name="TermsOfService">
+    <value>Terms of Service</value>
+  </data>
+  <data name="TertiaryWeapon">
+    <value>Tertiary</value>
+  </data>
+  <data name="TheAmountYouTriedToPurchaseIsInvalid">
+    <value>Sorry, the maximum amount for this consumable is {0}!</value>
+  </data>
+  <data name="TheNTeamHadTheMostKillsAtMatchEnd">
+    <value>The {0} team had the most kills at match end.</value>
+  </data>
+  <data name="ThereAreNoPendingRequestsForN">
+    <value>There are no pending requests for {0}.</value>
+  </data>
+  <data name="ThirtyDays">
+    <value>30 Days</value>
+  </data>
+  <data name="ThisActionCannotBeUndoneCaps">
+    <value>THIS ACTION CANNOT BE UNDONE.</value>
+  </data>
+  <data name="ThisGameIsFull">
+    <value>This game is full.</value>
+  </data>
+  <data name="ThisGameNoLongerExists">
+    <value>This game no longer exists.</value>
+  </data>
+  <data name="ThisIsAListOfPeopleYouHaveAskedToJoinClanNotAccepted">
+    <value>This is a list of people you have asked to join the clan who have not yet accepted.</value>
+  </data>
+  <data name="ThisIsTheOfficialNameOfYourClan">
+    <value>This is the official name of your clan.</value>
+  </data>
+  <data name="ThisIsYourOfficialClanMotto">
+    <value>This is your official clan motto.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedForDuration">
+    <value>This item cannot be purchased for that particular duration.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedFromTheShop">
+    <value>This item cannot be purchased from the Shop.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedFromTheUnderground">
+    <value>This item cannot be purchased from the Underground.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedPermanently">
+    <value>This item cannot be purchased permanently.</value>
+  </data>
+  <data name="ThisItemCannotBeRented">
+    <value>This item cannot be rented.</value>
+  </data>
+  <data name="ThisItemIsNotForSale">
+    <value>This item is not for sale!</value>
+  </data>
+  <data name="ThisItemIsOutOfStock">
+    <value>This item is now out of stock.</value>
+  </data>
+  <data name="ThisPackIsDisabled">
+    <value>This pack is disabled.</value>
+  </data>
+  <data name="ThisTagGetsDisplayedNextToYourName">
+    <value>This tag gets displayed next to clan member names.</value>
+  </data>
+  <data name="ThisWillChangeNPositionToN">
+    <value>This will change {0} position to {1}.</value>
+  </data>
+  <data name="TiedForWinner">
+    <value>Tied for winner!</value>
+  </data>
+  <data name="TimeLimit">
+    <value>Time Limit</value>
+  </data>
+  <data name="To">
+    <value>To:</value>
+  </data>
+  <data name="ToCreateAClanYouStillNeedTo">
+    <value>To create a clan, you still need to:</value>
+  </data>
+  <data name="Today">
+    <value>Today</value>
+  </data>
+  <data name="TopBlues">
+    <value>Top Blue</value>
+  </data>
+  <data name="TopReds">
+    <value>Top Reds</value>
+  </data>
+  <data name="TrainingCaps">
+    <value>TRAINING</value>
+  </data>
+  <data name="TrainingModeCaps">
+    <value>TRAINING MODE</value>
+  </data>
+  <data name="TrainingModeDesc">
+    <value>Training mode is for you to practice without the stress of having other players around shooting you in the face.</value>
+  </data>
+  <data name="TranserClanSuccessMsg">
+    <value>Leadership of clan {0} has successfully\nbe transferred to {1}</value>
+  </data>
+  <data name="TransferClanErrorMsg">
+    <value>Error transferring leadership of clan {0} to {1}.\nPlease try again in a moment..</value>
+  </data>
+  <data name="TransferClanLeaderhsipToN">
+    <value>Transfer clan leadership to {0}?</value>
+  </data>
+  <data name="TransferClanWarningMsg">
+    <value>You will not be the leader of this clan anymore.</value>
+  </data>
+  <data name="TransferLeadership">
+    <value>Transfer Leadership</value>
+  </data>
+  <data name="TransferLeadershipCaps">
+    <value>TRANSFER LEADERSHIP</value>
+  </data>
+  <data name="TransferringLeadershipOfClanNtoN">
+    <value>Transferring leadership of clan {0} to {1}...</value>
+  </data>
+  <data name="Try">
+    <value>Try</value>
+  </data>
+  <data name="TryThe">
+    <value>Try the</value>
+  </data>
+  <data name="TryYourWeapons">
+    <value>Try your Weapons</value>
+  </data>
+  <data name="TypePasswordHere">
+    <value>Type Password Here</value>
+  </data>
+  <data name="UndergroundCaps">
+    <value>UNDERGROUND</value>
+  </data>
+  <data name="UnequippingDuplicateFunctionalItemClass">
+    <value>Unequipping duplicate\nfunctional item class.</value>
+  </data>
+  <data name="UnequippingDuplicateQuickItemClass">
+    <value>Unequipping duplicate\nquick item class.</value>
+  </data>
+  <data name="UnequippingDuplicateWeaponClass">
+    <value>Unequipping duplicate\nweapon class.</value>
+  </data>
+  <data name="UnexpectedReturn">
+    <value>Unexpected Return</value>
+  </data>
+  <data name="Unknown">
+    <value>Unknown</value>
+  </data>
+  <data name="Unmute">
+    <value>Unmute audio.</value>
+  </data>
+  <data name="UnreadyCaps">
+    <value>UNREADY</value>
+  </data>
+  <data name="UnspecifiedErrorMsg">
+    <value>An error of unspecified nature has\nsurreptitiously caused this popup to appear.\nIt would be great if you could report this.</value>
+  </data>
+  <data name="UpdateMemberErrorMsg">
+    <value>Error updating member status of {0}.\nPlease try again in a moment.</value>
+  </data>
+  <data name="UpdateMemberStatus">
+    <value>Update Member Status</value>
+  </data>
+  <data name="UpdateMemberSuccessMsg">
+    <value>Member status of {0} has been successfully updated.</value>
+  </data>
+  <data name="UpdateMemberWarningMsg">
+    <value>This will change {0} position\n to {1}.</value>
+  </data>
+  <data name="UpdateNPosition">
+    <value>Update {0} position?</value>
+  </data>
+  <data name="UpdatingInventory">
+    <value>Updating Inventory</value>
+  </data>
+  <data name="UpdatingItemMall">
+    <value>Updating Item Mall</value>
+  </data>
+  <data name="UpdatingMemberStatusOfN">
+    <value>Updating member status of {0}...</value>
+  </data>
+  <data name="UpperBody">
+    <value>Upper Body</value>
+  </data>
+  <data name="UpperBodyArmor">
+    <value>Upper Body Armor</value>
+  </data>
+  <data name="UseThisFormToSendClanInvitations">
+    <value>Use this form to send clan invitations to your friends.</value>
+  </data>
+  <data name="Velocity">
+    <value>Velocity</value>
+  </data>
+  <data name="VerifyPassword">
+    <value>Verify Password</value>
+  </data>
+  <data name="ViewOutstandingInvitesAndRequests">
+    <value>View outstanding invites and requests</value>
+  </data>
+  <data name="Volume">
+    <value>Volume</value>
+  </data>
+  <data name="Warning">
+    <value>Warning</value>
+  </data>
+  <data name="WaterQuality">
+    <value>Water Quality</value>
+  </data>
+  <data name="WeaponClassRecords">
+    <value>Weapon Class Records</value>
+  </data>
+  <data name="WeaponLoadout">
+    <value>Weapon Loadout</value>
+  </data>
+  <data name="WeaponPerformaceTotal">
+    <value>Weapon Performance (in Total)</value>
+  </data>
+  <data name="Weapons">
+    <value>Weapons</value>
+  </data>
+  <data name="WeaponsCaps">
+    <value>WEAPONS</value>
+  </data>
+  <data name="Welcome">
+    <value>Welcome</value>
+  </data>
+  <data name="WelcomeToUS">
+    <value>Welcome To UberStrike</value>
+  </data>
+  <data name="WereUpdatingTheItemMallPleaseWait">
+    <value>We're updating the item mall, please wait...</value>
+  </data>
+  <data name="WereUpdatingYourInventoryPleaseWait">
+    <value>We're updating your inventory, please wait...</value>
+  </data>
+  <data name="WonWithAScoreOf">
+    <value>won with a score of</value>
+  </data>
+  <data name="XPEarnedN">
+    <value>XP Earned {0}</value>
+  </data>
+  <data name="Yesterday">
+    <value>Yesterday</value>
+  </data>
+  <data name="YouAlreadyMasteredThisLevel">
+    <value>You already mastered this Level!</value>
+  </data>
+  <data name="YouAlreadyOwnThisItem">
+    <value>You already own this item.</value>
+  </data>
+  <data name="YouCannotPurchaseThisItemForMoreThanNDays">
+    <value>You cannot purchase this item for more than {0} days.</value>
+  </data>
+  <data name="YouCantChangeYourClanInfoOnceCreated">
+    <value>You can’t change any of your clan info once your clan is created, so make it count!</value>
+  </data>
+  <data name="YouDontHaveEnoughPointsOrCreditsToPurchaseThisItem">
+    <value>You don't have enough points or credits to buy this item.</value>
+  </data>
+  <data name="YouDontNeedToEquipLicenses">
+    <value>You don't need to\nequip licenses.</value>
+  </data>
+  <data name="YouDontPermissionToPerformThisAction">
+    <value>You don't have the right permissions to perform this action.</value>
+  </data>
+  <data name="YouHaveNFriends">
+    <value>You have {0} friends</value>
+  </data>
+  <data name="YouHaveNNewMessages">
+    <value>You have {0} new message(s)</value>
+  </data>
+  <data name="YouHaveNoFriends">
+    <value>You have no friends.</value>
+  </data>
+  <data name="YouHaveOnlyOneFriend">
+    <value>You have only one friend</value>
+  </data>
+  <data name="YouHaveToReachLevelNToJoinThisGame">
+    <value>You have to reach Level {0} to join this game!</value>
+  </data>
+  <data name="YouNeedAClanLicenseToCreateClanMsg">
+    <value>You need a Clan License to create a clan.\nThe Clan License is a special item that you can buy in the Shop.</value>
+  </data>
+  <data name="YouNeedAtLeastOneFriendToCreateAClan">
+    <value>You need to have at least 1 friend to create a clan.</value>
+  </data>
+  <data name="YouNeedMoreCreditsToBuyThisItem">
+    <value>You need more credits to buy this item.</value>
+  </data>
+  <data name="YouNeedToBeAtLeastLevelFourToCreateAClan">
+    <value>You need to be at least level 4 to create a clan.</value>
+  </data>
+  <data name="YouNeedToBeLevelNToBuyThisItem">
+    <value>You need to be Level {0} to buy this item.</value>
+  </data>
+  <data name="YouNeedToEarnMorePointsToBuyThisItem">
+    <value>You need to earn more points to buy this item.</value>
+  </data>
+  <data name="YourAccountHasBeenBanned">
+    <value>Your account\nhas been banned.</value>
+  </data>
+  <data name="YourAreNoLongerAMemberOfClanN">
+    <value>You are no longer a member of clan {0}.</value>
+  </data>
+  <data name="YourClanIsBeingCreated">
+    <value>Your clan is being created...</value>
+  </data>
+  <data name="YourFriendRequestIsAlreadySent">
+    <value>Your friend request is sent already!</value>
+  </data>
+  <data name="YourGameNameIsInvalid">
+    <value>Your Game Name is not valid.</value>
+  </data>
+  <data name="YourLevelIsTooLowToBuyThisItem">
+    <value>Your level is too low to purchase this item.</value>
+  </data>
+  <data name="YourMessageHasBeenSent">
+    <value>Your message has been sent!</value>
+  </data>
+  <data name="YourMessageHasNotBeenSent">
+    <value>Your message has not been sent!</value>
+  </data>
+  <data name="YourRequestHasBeenSent">
+    <value>Your request has been sent!</value>
+  </data>
+  <data name="YourProfileCaps">
+    <value>YOUR PROFILE</value>
+  </data>
+  <data name="YouveAlreadyInvitedThatPlayer">
+    <value>You've already invited the player!</value>
+  </data>
+  <data name="AddAsFriend">
+    <value>Add as Friend</value>
+  </data>
+  <data name="Admin">
+    <value>Admin</value>
+  </data>
+  <data name="Always">
+    <value>Always</value>
+  </data>
+  <data name="AreYouSureYouWantToLeaveTheGame">
+    <value>Are you sure you want to leave the game</value>
+  </data>
+  <data name="AudioCaps">
+    <value>AUDIO</value>
+  </data>
+  <data name="AutoEquipWeapons">
+    <value>Auto Equip Weapons</value>
+  </data>
+  <data name="AutoPickupWeapons">
+    <value>Auto Pickup Weapons</value>
+  </data>
+  <data name="BugType">
+    <value>Bug Type</value>
+  </data>
+  <data name="ChangingToBlueTeam">
+    <value>Changing to the Blue Team.</value>
+  </data>
+  <data name="ChangingToRedTeam">
+    <value>Changing to the Red Team.</value>
+  </data>
+  <data name="Chat">
+    <value>Chat</value>
+  </data>
+  <data name="ChatInClan">
+    <value>CHAT IN CLAN</value>
+  </data>
+  <data name="ChatInLobby">
+    <value>CHAT IN LOBBY</value>
+  </data>
+  <data name="ChatWith">
+    <value>Chat with</value>
+  </data>
+  <data name="Cheaters">
+    <value>Cheaters</value>
+  </data>
+  <data name="Clan">
+    <value>Clan</value>
+  </data>
+  <data name="ClickToRespawn">
+    <value>Click to Respawn!</value>
+  </data>
+  <data name="CongratulationsYouKilledYourself">
+    <value>Congratulations. You killed yourself.</value>
+  </data>
+  <data name="Contacts">
+    <value>Contacts</value>
+  </data>
+  <data name="ControlsCaps">
+    <value>CONTROLS</value>
+  </data>
+  <data name="Crash">
+    <value>Crash</value>
+  </data>
+  <data name="Details">
+    <value>Details</value>
+  </data>
+  <data name="DisconnectionIn">
+    <value>Disconnection in</value>
+  </data>
+  <data name="DontSpamTheLobbyChat">
+    <value>Don't spam the Lobby chat!</value>
+  </data>
+  <data name="EnableRagdoll">
+    <value>Enable Ragdoll</value>
+  </data>
+  <data name="EnterAMessageHere">
+    <value>Enter a message here</value>
+  </data>
+  <data name="EnterAMessageInGameHere">
+    <value>Enter a message in game here</value>
+  </data>
+  <data name="EnterAMessageToClanHere">
+    <value>Enter a message to clan here</value>
+  </data>
+  <data name="EnterAMessageToLobbyHere">
+    <value>Enter a message to lobby here</value>
+  </data>
+  <data name="EnteredTrainingMode">
+    <value>entered Training Mode!</value>
+  </data>
+  <data name="FirstTime">
+    <value>First Time</value>
+  </data>
+  <data name="Frequency">
+    <value>Frequency</value>
+  </data>
+  <data name="Friends">
+    <value>Friends</value>
+  </data>
+  <data name="Gameplay">
+    <value>Gameplay</value>
+  </data>
+  <data name="Graphics">
+    <value>Graphics</value>
+  </data>
+  <data name="HeadshotFromN">
+    <value>Headshot from {0}.</value>
+  </data>
+  <data name="HowToReproduceIt">
+    <value>How to reproduce it?</value>
+  </data>
+  <data name="InviteToClan">
+    <value>Invite to Clan</value>
+  </data>
+  <data name="IsNotOnline">
+    <value>is not online</value>
+  </data>
+  <data name="JoinedTheGame">
+    <value>joined the game.</value>
+  </data>
+  <data name="JoinGame">
+    <value>Join Game</value>
+  </data>
+  <data name="KilledByN">
+    <value>killed by {0}.</value>
+  </data>
+  <data name="LeaveCaps">
+    <value>LEAVE</value>
+  </data>
+  <data name="LeaveGameWarningMsg">
+    <value>If you leave before the round ends you will lose all the XP and Points that you earned in this round!\nAre you sure you want to leave?</value>
+  </data>
+  <data name="LeavingGame">
+    <value>Leaving Game</value>
+  </data>
+  <data name="LeftTheGame">
+    <value>left the game.</value>
+  </data>
+  <data name="Lobby">
+    <value>Lobby</value>
+  </data>
+  <data name="MoreInfo">
+    <value>More info...</value>
+  </data>
+  <data name="NKilledThemself">
+    <value>killed himself.</value>
+  </data>
+  <data name="NKillsLeft">
+    <value>{0} Kills Left!</value>
+  </data>
+  <data name="NoMatchFound">
+    <value>No Match Found</value>
+  </data>
+  <data name="NoPlayerSelected">
+    <value>No Player Selected</value>
+  </data>
+  <data name="NoPlayersToReport">
+    <value>No Players to Report</value>
+  </data>
+  <data name="NutshotFromN">
+    <value>Nutshot from {0}.</value>
+  </data>
+  <data name="OneKillLeft">
+    <value>One Kill Left!</value>
+  </data>
+  <data name="OnlyOneTeamChangePerLife">
+    <value>Only one team change per life.</value>
+  </data>
+  <data name="OpenThisLinkInANewBrowserWindow">
+    <value>Open this link in a new browser window</value>
+  </data>
+  <data name="Others">
+    <value>Others</value>
+  </data>
+  <data name="PlayerNames">
+    <value>Player Names</value>
+  </data>
+  <data name="Private">
+    <value>Private</value>
+  </data>
+  <data name="Report">
+    <value>Report</value>
+  </data>
+  <data name="ReportBugCaps">
+    <value>REPORT BUG</value>
+  </data>
+  <data name="ReportBugSuccessMsg">
+    <value>Your  bug has been successfully reported!</value>
+  </data>
+  <data name="ReportPlayerCaps">
+    <value>REPORT PLAYER</value>
+  </data>
+  <data name="ReportPlayerErrorMsg">
+    <value>Your report was not submitted because you are not connected to our servers</value>
+  </data>
+  <data name="ReportPlayerInfoMsg">
+    <value>In this form you can report illegal activities detected while playing UberStrike.</value>
+  </data>
+  <data name="ReportPlayerSuccessMsg">
+    <value>Your report was sent and will be reviewed!\n\nThank you for keeping our community clean.</value>
+  </data>
+  <data name="ReportPlayerWarningMsg">
+    <value>Are you sure you want to report the player '{0}'?\n\nFalsifying reports is a punishable offense!</value>
+  </data>
+  <data name="ReportType">
+    <value>Report Type</value>
+  </data>
+  <data name="SelectAPlayer">
+    <value>Select a Player</value>
+  </data>
+  <data name="SelectType">
+    <value>Select Type</value>
+  </data>
+  <data name="Send">
+    <value>Send</value>
+  </data>
+  <data name="ServerDown">
+    <value>Server Down</value>
+  </data>
+  <data name="ShopTutorialMsg01">
+    <value>Welcome to the Testing Area!</value>
+  </data>
+  <data name="ShopTutorialMsg02">
+    <value>Press 'ESC' or 'Backspace' at any time to exit.</value>
+  </data>
+  <data name="SmackdownFromN">
+    <value>Smackdown from {0}.</value>
+  </data>
+  <data name="Sometimes">
+    <value>Sometimes</value>
+  </data>
+  <data name="SysInfoCaps">
+    <value>SYS INFO</value>
+  </data>
+  <data name="TheCommunicator">
+    <value>The Communicator</value>
+  </data>
+  <data name="TrainingBtnTooltip">
+    <value>Practice Uberstrike in single player mode.</value>
+  </data>
+  <data name="TrainingTutorialMsg01">
+    <value>Welcome to Basic Training!</value>
+  </data>
+  <data name="TrainingTutorialMsg02">
+    <value>Press {0} at any time to dismiss these messages.</value>
+  </data>
+  <data name="TrainingTutorialMsg03">
+    <value>Ok, let's get started...</value>
+  </data>
+  <data name="TrainingTutorialMsg04">
+    <value>You can use the mouse to look around.</value>
+  </data>
+  <data name="TrainingTutorialMsg05">
+    <value>Now, use the {0}{1}{2}{3} keys to move your character.</value>
+  </data>
+  <data name="TrainingTutorialMsg06">
+    <value>To shoot, use the {0}.</value>
+  </data>
+  <data name="TrainingTutorialMsg07">
+    <value>To select next weapon, use {0}.\nTo select previous weapon, use {1}.</value>
+  </data>
+  <data name="TrainingTutorialMsg08">
+    <value>You can also use\n the {0} {1} {2} {3} {4} keys \n to directly select a weapon.</value>
+  </data>
+  <data name="TrainingTutorialMsg09">
+    <value>To crouch, hold down the {0} key.</value>
+  </data>
+  <data name="TrainingTutorialMsg10">
+    <value>Use {0} to enter full screen mode.</value>
+  </data>
+  <data name="TrainingTutorialMsg11">
+    <value>That's all you need to get started. Good luck!</value>
+  </data>
+  <data name="UnassignedKeyMappingsWarningMsg">
+    <value>There are unassigned key mappings!\nPlease check your Control Settings.</value>
+  </data>
+  <data name="UserInterface">
+    <value>User Interface</value>
+  </data>
+  <data name="VideoCaps">
+    <value>VIDEO</value>
+  </data>
+  <data name="WaitingForOtherPlayers">
+    <value>Waiting for other players...</value>
+  </data>
+  <data name="WhatHappened">
+    <value>What happened?</value>
+  </data>
+  <data name="YouAreOnTheBlueTeam">
+    <value>You are on the Blue Team.</value>
+  </data>
+  <data name="YouAreOnTheRedTeam">
+    <value>You are on the Red Team.</value>
+  </data>
+  <data name="YouCannotChangeToATeamWithEqual">
+    <value>You cannot change to a team\nwith equal or more players.</value>
+  </data>
+  <data name="YouKilledN">
+    <value>you killed {0}.</value>
+  </data>
+  <data name="YouShotNInTheHead">
+    <value>You shot {0} in the head.</value>
+  </data>
+  <data name="YouShotNInTheNuts">
+    <value>You shot {0} in the nuts.</value>
+  </data>
+  <data name="YouSmackedDownN">
+    <value>You smacked down {0}.</value>
+  </data>
+  <data name="General">
+    <value>General</value>
+  </data>
+  <data name="Home">
+    <value>Home</value>
+  </data>
+  <data name="HomeHelpDesc">
+    <value>The Home Screen is where you are when you first launch UberStrike. From here you can join games, create games or chat with friends.</value>
+  </data>
+  <data name="Introduction">
+    <value>Introduction</value>
+  </data>
+  <data name="IntroHelpDesc">
+    <value>UberStrike is a 3D multiplayer first person shooter (FPS) game. This means that you are looking through the eyes of a character, and you are playing in a game world with other players.\n\nUberStrike is, first and foremost, an action game, where the objective is to eliminate as many players as possible using the weapons available to you.\n\nUberStrike is played in a fully 3D environment that you can enjoy with your friends. You can explore, fight, chat, and form clans with your friends in the game. As you play UberStrike, you earn points, which you can use to customize your character and buy new items.</value>
+  </data>
+  <data name="Items">
+    <value>Items</value>
+  </data>
+  <data name="Play">
+    <value>Play</value>
+  </data>
+  <data name="PlayHelpDesc">
+    <value>The Play Screen is where you can join active games. It is home to the Game List, which is a detailed view of all UberStrike games that are currently being played. Here you can view current players in the game and see your ping time to the game (measured in ms), which is a determinant of network performance. Lower ping is better.</value>
+  </data>
+  <data name="Shop">
+    <value>Shop</value>
+  </data>
+  <data name="ShopHelpDesc">
+    <value>The shop is where you can buy items, including weapons and gear. The shop is divided into four parts: your Loadout, your Inventory, the Shop, and the Underground.</value>
+  </data>
+  <data name="Profile">
+    <value>Profile</value>
+  </data>
+  <data name="ProfileHelpDesc">
+    <value>The Profile Screen is where you can view your personal performance in UberStrike and compare your performance to other players. Performance is divided into Personal Records, which has your best 'per-life' stats, and Weapon Stats, which shows information on how you’ve performed with each class of weapon.</value>
+  </data>
+  <data name="GunsNStuffCaps">
+    <value>GUNS N STUFF</value>
+  </data>
+  <data name="MainMenuPlayTooltip">
+    <value>Instantly connect to a game with other\nplayers of a similar level and kick ass!</value>
+  </data>
+  <data name="MainMenuQuitTooltip">
+    <value>Quit Uberstrike.</value>
+  </data>
+  <data name="MainMenuShopTooltip">
+    <value>Grab some weapons of mass destruction\nbefore facing off with your opponents.</value>
+  </data>
+  <data name="MainMenuTrainTooltip">
+    <value>Learn how to play Uberstrike and avoid pwnage.\nTraining is single player.</value>
+  </data>
+  <data name="FindingAServerToJoin">
+    <value>Finding a server to join...</value>
+  </data>
+  <data name="LostParadise2">
+    <value>Lost Paradise 2</value>
+  </data>
+  <data name="MonkeyIsland2">
+    <value>Monkey Island 2</value>
+  </data>
+  <data name="TemplOfTheRaven">
+    <value>Temple of the Raven</value>
+  </data>
+  <data name="TheWarehouse">
+    <value>The Warehouse</value>
+  </data>
+  <data name="Week">
+    <value>Week</value>
+  </data>
+  <data name="Month">
+    <value>Month</value>
+  </data>
+  <data name="ThreeMonths">
+    <value>3 Months</value>
+  </data>
+  <data name="Off">
+    <value>Off</value>
+  </data>
+  <data name="MIDescriptionMsg">
+    <value>The last resting place of the feared pirate Captain Bradford Pegleg. This forgotten island is rumoured to be home to Bradford's Treasure and was once a place of worship for the tribe of the Monkey King.</value>
+  </data>
+  <data name="LPDescriptionMsg">
+    <value>A group of islands located just off the coast of Costa Rica, the Paradise Islands are a great hunting ground for privateers with a keen eye for sniping. Two towering volcanic pillars provide the perfect lookout for those able to make it there in one piece.</value>
+  </data>
+  <data name="TWDescriptionMsg">
+    <value>Used by RAID Corporation for the storage of weapons and other experimental technology, the Warehouse is a fast paced arena for short range fire fights. Only for privateers who can handle the adrenaline hit.</value>
+  </data>
+  <data name="TORDescriptionMsg">
+    <value>The mighty ravens watch over the temple as privateers try their luck at unlocking the secrets to the inner sanctum. Great for mid range gameplay.</value>
+  </data>
+  <data name="GTDescriptionMsg">
+    <value>Brave the heights of Gideons Tower, situated in the heart of Ubercity One. Beware, for a fall from its narrow ledges means certain death for any privateer.</value>
+  </data>
+  <data name="FWDescriptionMsg">
+    <value>Created by: Team Cmune\nFort Winter is a small, intense map designed for furious team elimination gameplay. Best played with 6 players per team.</value>
+  </data>
+  <data name="SGDescriptionMsg">
+    <value>Created by: Team Cmune\nSky Garden is a wide open map that forces players to tread carefully and take cannon shots with care lest they fall off the edge of the map.</value>
+  </data>
+  <data name="DMModeDescriptionMsg">
+    <value>Shoot anything that moves. The player with the most kills at the end of the round wins.</value>
+  </data>
+  <data name="TDMModeDescriptionMsg">
+    <value>Shoot anyone not on your team. The team with the most kills at the end of the round wins.</value>
+  </data>
+  <data name="ELMModeDescriptionMsg">
+    <value>Eliminate all players on the enemy team. The team with players standing at the end of the round wins.</value>
+  </data>
+  <data name="Effects">
+    <value>Effects</value>
+  </data>
+  <data name="ScreenResolution">
+    <value>Screen Resolution</value>
+  </data>
+  <data name="MaxRounds">
+    <value>Max Rounds</value>
+  </data>
+  <data name="MaxKills">
+    <value>Max Kills</value>
+  </data>
+  <data name="NewItem">
+    <value>New Item</value>
+  </data>
+  <data name="NotNow">
+    <value>Not now</value>
+  </data>
+  <data name="Congratulations">
+    <value>Congratulations</value>
+  </data>
+  <data name="YouHaveBeenGrantedNItems">
+    <value>You have been granted {0} free items! Go to your inventory to equip them!</value>
+  </data>
+  <data name="NoItems">
+    <value>There are no items</value>
+  </data>
+  <data name="NoDescriptionAvailable">
+    <value>No description available.</value>
+  </data>
+  <data name="Default">
+    <value>Default</value>
+  </data>
+  <data name="EliminateAllYourEnemies">
+    <value>Eliminate all your enemies!</value>
+  </data>
+  <data name="FinalRoundCaps">
+    <value>FINAL ROUND</value>
+  </data>
+  <data name="FinalRoundX">
+    <value>Final Round {0}</value>
+  </data>
+  <data name="NRoundsLeft">
+    <value>{0} Rounds Left!</value>
+  </data>
+  <data name="RedCaps">
+    <value>RED</value>
+  </data>
+  <data name="BlueCaps">
+    <value>BLUE</value>
+  </data>
+  <data name="Following">
+    <value>Following</value>
+  </data>
+  <data name="Nobody">
+    <value>Nobody</value>
+  </data>
+  <data name="SpectatorMode">
+    <value>Spectator Mode</value>
+  </data>
+  <data name="YouAreNotLoggedIn">
+    <value>You are not logged in!</value>
+  </data>
+  <data name="UpdateAvailable">
+    <value>Update Available</value>
+  </data>
+  <data name="UberStrikeIsOutOfDatePleaseRefreshPage">
+    <value>UberStrike v{0} is out of date.\nRefresh your browser window to update to v{1}!</value>
+  </data>
+  <data name="UberStrikeIsOutOfDatePleaseDownloadClient">
+    <value>UberStrike v{0} out of date, latest is v{1}.\nDownload the new client from:\n{2}</value>
+  </data>
+  <data name="UberStrikeIsOutOfDateVisitWebsite">
+    <value>UberStrike v{0} out of date.\nVisit UberStrike.com to get v{1}!</value>
+  </data>
+  <data name="UberStrikeIsOutOfDateUpdateMacApp">
+    <value>UberStrike v{0} out of date, latest is v{1}.\nPlease update from the Mac App Store.</value>
+  </data>
+  <data name="ConnectionProblem">
+    <value>Connection Problem</value>
+  </data>
+  <data name="ErrorInternetConnection">
+    <value>No active internet connection detected.\nAn internet connection is required to play UberStrike.\nPlease check your connection and try again.</value>
+  </data>
+  <data name="ErrorWebservices">
+    <value>There seems to be a problem with our service. Please restart Uberstrike and try to sign in again. If this problem persists please contact support@cmune.com. Thank you!</value>
+  </data>
+  <data name="ErrorReadingConfiguration">
+    <value>Error Reading Configuration</value>
+  </data>
+  <data name="ThereWasProblemRetrievingWebplayerConfiguration">
+    <value>There was a problem retrieving the webplayer configuration. Please email support@cmune.com</value>
+  </data>
+  <data name="RefreshWallet">
+    <value>Refresh Wallet</value>
+  </data>
+  <data name="IfYouPurchasedCreditsClickOKToRefreshYourWallet">
+    <value>If you purchased credits, click OK to refresh your wallet and inventory.</value>
+  </data>
+  <data name="ClanInvite">
+    <value>Clan Invite</value>
+  </data>
+  <data name="YouAlreadyInClanMsg">
+    <value>You are already in a clan. You cannot join\nanother clan until you leave your current clan.</value>
+  </data>
+  <data name="Hits">
+    <value>Hits</value>
+  </data>
+  <data name="BlueLevelTooltip">
+    <value>This is an experimental Bluebox map</value>
+  </data>
+  <data name="GideonsTower">
+    <value>Gideons Tower</value>
+  </data>
+  <data name="SkyGarden">
+    <value>SkyGarden</value>
+  </data>
+  <data name="FortWinter">
+    <value>FortWinter</value>
+  </data>
+  <data name="AqualabResearchHub">
+    <value>Aqualab Research Hub</value>
+  </data>
+  <data name="CuberStrike">
+    <value>CuberStrike</value>
+  </data>
+  <data name="TuberStrike">
+    <value>TuberStrike</value>
+  </data>
+  <data name="AccountHistory">
+    <value>Account History</value>
+  </data>
+  <data name="LoadoutCaps">
+    <value>LOADOUT</value>
+  </data>
+  <data name="RecommendedLoadoutCaps">
+    <value>RECOMMENDED LOADOUT</value>
+  </data>
+  <data name="MostEfficientWeaponCaps">
+    <value>MOST EFFICIENT WEAPON</value>
+  </data>
+  <data name="RecommendedArmorCaps">
+    <value>RECOMMENDED ARMOR</value>
+  </data>
+  <data name="StaffPickCaps">
+    <value>STAFF PICK</value>
+  </data>
+  <data name="RecommendedWeaponCaps">
+    <value>RECOMMENDED WEAPON</value>
+  </data>
+  <data name ="PackOneAmount">
+    <value>10 Uses</value>
+  </data>
+  <data name ="PackTwoAmount">
+    <value>100 Uses</value>
+  </data>
+  <data name ="PackThreeAmount">
+    <value>1000 Uses</value>
+  </data>
+  <data name ="DiscountPercentOff">
+    <value>{0}% Off!</value>
+  </data>
+  <data name ="MessageQuickItemsTry">
+    <value>QuickItems will not be consumed in this training mode</value>
+  </data>
+</root>

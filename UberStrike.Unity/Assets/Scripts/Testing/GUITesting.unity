@@ -1,0 +1,2996 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+Scene:
+  m_ObjectHideFlags: 0
+  m_PVSData: 
+  m_QueryMode: 1
+  m_PVSObjectsArray: []
+  m_PVSPortalsArray: []
+  m_OcclusionBakeSettings:
+    viewCellSize: 1
+    bakeMode: 2
+    memoryUsage: 10485760
+--- !u!104 &2
+RenderSettings:
+  m_Fog: 0
+  m_FogColor: {r: .5, g: .5, b: .5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: .00999999978
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientLight: {r: .200000003, g: .200000003, b: .200000003, a: 1}
+  m_SkyboxMaterial: {fileID: 0}
+  m_HaloStrength: .5
+  m_FlareStrength: 1
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 0}
+  m_ObjectHideFlags: 0
+--- !u!127 &3
+GameManager:
+  m_ObjectHideFlags: 0
+--- !u!157 &4
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  m_LightProbes: {fileID: 0}
+  m_Lightmaps: []
+  m_LightmapsMode: 1
+  m_BakedColorSpace: 0
+  m_UseDualLightmapsInForward: 0
+  m_LightmapEditorSettings:
+    m_Resolution: 50
+    m_LastUsedResolution: 0
+    m_TextureWidth: 1024
+    m_TextureHeight: 1024
+    m_BounceBoost: 1
+    m_BounceIntensity: 1
+    m_SkyLightColor: {r: .860000014, g: .930000007, b: 1, a: 1}
+    m_SkyLightIntensity: 0
+    m_Quality: 0
+    m_Bounces: 1
+    m_FinalGatherRays: 1000
+    m_FinalGatherContrastThreshold: .0500000007
+    m_FinalGatherGradientThreshold: 0
+    m_FinalGatherInterpolationPoints: 15
+    m_AOAmount: 0
+    m_AOMaxDistance: .100000001
+    m_AOContrast: 1
+    m_LODSurfaceMappingDistance: 1
+    m_Padding: 0
+    m_TextureCompression: 0
+    m_LockAtlas: 0
+--- !u!196 &5
+NavMeshSettings:
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    agentRadius: .5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: .400000006
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    accuratePlacement: 0
+    minRegionArea: 2
+    widthInaccuracy: 16.666666
+    heightInaccuracy: 10
+  m_NavMesh: {fileID: 0}
+--- !u!1 &1322722296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 1322722297}
+  - 114: {fileID: 1322722302}
+  - 114: {fileID: 1322722301}
+  - 114: {fileID: 1322722300}
+  - 114: {fileID: 1322722299}
+  - 114: {fileID: 1322722303}
+  - 114: {fileID: 1322722298}
+  m_Layer: 0
+  m_Name: TestPregameLoadout
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1322722297
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322722296}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 66.5043945, y: -21.7681465, z: -5.52692938}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &1322722298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322722296}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad28b2c3e54cb1d4da6306e12dae4871, type: 1}
+  m_Name: 
+  _title: 
+--- !u!114 &1322722299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322722296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebb256292b6484f48a0479f325c33357, type: 1}
+  m_Name: 
+  _guiPages:
+  - {fileID: 1322722303}
+  - {fileID: 1322722303}
+  _rect:
+    serializedVersion: 2
+    x: 0
+    y: 89
+    width: 560
+    height: 0
+  _showReadyButton: 0
+--- !u!114 &1322722300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322722296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27647e7cae661ae438061d65d9cf5263, type: 1}
+  m_Name: 
+--- !u!114 &1322722301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322722296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8195c96dd8b04f048a7dcb5bd9c615ab, type: 1}
+  m_Name: 
+  debugRect:
+    serializedVersion: 2
+    x: 0
+    y: 25
+    width: 200
+    height: 255
+  debugColor: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &1322722302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322722296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40022f32b0727a54b8ca99e41a18fa26, type: 1}
+  m_Name: 
+  blueStonezGui: {fileID: 11400000, guid: 36b4e500a724c624a806f49349a2e2f3, type: 2}
+  stormFrontGui: {fileID: 11400000, guid: c982d514b5c8c624b8993477e348a1d3, type: 2}
+--- !u!114 &1322722303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322722296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa182ad6aa7366e47aaa2e4684984bd3, type: 1}
+  m_Name: 
+  _title: LOADOUT
+--- !u!1 &1369117395
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 1369117396}
+  - 20: {fileID: 1369117397}
+  - 92: {fileID: 1369117399}
+  - 124: {fileID: 1369117400}
+  - 81: {fileID: 1369117398}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1369117396
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1369117395}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!20 &1369117397
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1369117395}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: .0196078438}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: .300000012
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 100
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_HDR: 0
+--- !u!81 &1369117398
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1369117395}
+  m_Enabled: 1
+--- !u!92 &1369117399
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1369117395}
+  m_Enabled: 1
+--- !u!124 &1369117400
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1369117395}
+  m_Enabled: 1
+--- !u!1 &1462893908
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 1462893909}
+  - 114: {fileID: 1462893910}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1462893909
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1462893908}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &1462893910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1462893908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7a4b21b4909820458df8506c7ad16cc, type: 1}
+  m_Name: 
+  UnityItemsGear:
+  - _name: '*Default Head'
+    _itemId: 1084
+    _icon: {fileID: 2800000, guid: 3ebcffe3f1bef3242abbcf3207adf9f1, type: 1}
+    _prefab: {fileID: 100000, guid: 8a3a6945f4576de4a8eb1bab6c8cf4ad, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Default Gloves'
+    _itemId: 1086
+    _icon: {fileID: 2800000, guid: da25aacb12f639040919547467bdd535, type: 1}
+    _prefab: {fileID: 100000, guid: 30ac88984ef6c664dae529d33fdf61b9, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Default Upper Body'
+    _itemId: 1087
+    _icon: {fileID: 2800000, guid: 46dd019c54b899447a8b92869202b27b, type: 1}
+    _prefab: {fileID: 100000, guid: 549a646d64420424abd97ffbc1174f2b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Default Lower Body'
+    _itemId: 1088
+    _icon: {fileID: 2800000, guid: 09418397ff9dbfa4f9e0aa5bec9b40ab, type: 1}
+    _prefab: {fileID: 100000, guid: c7f10f83c163aa44b9ad91d33ce2004c, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Default Boots'
+    _itemId: 1089
+    _icon: {fileID: 2800000, guid: f01c86060cb2e2649b948702a9b730fc, type: 1}
+    _prefab: {fileID: 100000, guid: 34fffb6a398cc7542a7616d55f2316e0, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Green Beret'
+    _itemId: 1075
+    _icon: {fileID: 2800000, guid: 74c9a6fac8e44414ab7dc6d78071aa5c, type: 1}
+    _prefab: {fileID: 100000, guid: ce7cdbab95735b844997a12f022b940d, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Dundee Helmet'
+    _itemId: 1120
+    _icon: {fileID: 2800000, guid: 548aa05575209134c9e59cb0b745d0f1, type: 1}
+    _prefab: {fileID: 100000, guid: 57df25bb5cf0c16418ca4daa92f4d29d, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Helmet'
+    _itemId: 1103
+    _icon: {fileID: 2800000, guid: f568930e7255a8d46b2eea5d32b8eaaf, type: 1}
+    _prefab: {fileID: 100000, guid: 5253d88fb646cea4bb93d362821ca0cc, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Helmet Black DE'
+    _itemId: 1321
+    _icon: {fileID: 2800000, guid: 5a27f75cc31a45d47be0cb76cccc9363, type: 1}
+    _prefab: {fileID: 100000, guid: b6e663795ee693b4a8847986df6521be, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Helmet White DE'
+    _itemId: 1327
+    _icon: {fileID: 2800000, guid: 87bf4e722c1ba334e9ad0c04e8ae3dc8, type: 1}
+    _prefab: {fileID: 100000, guid: ba07890748dd662488fcc745592424c4, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Pirate Hat'
+    _itemId: 1108
+    _icon: {fileID: 2800000, guid: ca74b831e72779942be4f318fa47d288, type: 1}
+    _prefab: {fileID: 100000, guid: 9abc7600b0d4e694fa3317a76ea60dd0, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Pirate Bandana'
+    _itemId: 1114
+    _icon: {fileID: 2800000, guid: 4074194e0ff344a4aacb227561bea7f9, type: 1}
+    _prefab: {fileID: 100000, guid: 807354037b969e54cbc698a4761d3106, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Rambo Red Band'
+    _itemId: 1115
+    _icon: {fileID: 2800000, guid: 025b98313a332314f930ca8b7bcd3dfc, type: 1}
+    _prefab: {fileID: 100000, guid: 4c8a8825a4b7a2140a8fed1564267357, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*PumpkinHead'
+    _itemId: 1137
+    _icon: {fileID: 2800000, guid: 879a67011d645f245bd6192e0f238bf1, type: 1}
+    _prefab: {fileID: 100000, guid: 3cd44fffd7954884d96f97f3a27d822c, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*BoyHead'
+    _itemId: 1165
+    _icon: {fileID: 2800000, guid: dd68632ba32570d4f967f4c3c66a0ac3, type: 1}
+    _prefab: {fileID: 100000, guid: 6e4ac7c4c9116c44c84027a7f05162f6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*GirlHead'
+    _itemId: 1166
+    _icon: {fileID: 2800000, guid: bc8a4ceb006b4e047950432e18cbaa5d, type: 1}
+    _prefab: {fileID: 100000, guid: 9b339a692c61d754eb8ffa0346371dd6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Golden Knight Head 1'
+    _itemId: 1171
+    _icon: {fileID: 2800000, guid: 54b2eb8fbbbb985458cba4b4a821adba, type: 1}
+    _prefab: {fileID: 100000, guid: 359bcfa9bfb6c71409386aaf1d3c4b81, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Golden Knight Head 2'
+    _itemId: 1172
+    _icon: {fileID: 2800000, guid: 4adc2354a5d626f45a484538b91c4de9, type: 1}
+    _prefab: {fileID: 100000, guid: a099897ed2faf0d42bcc02c2b0264dde, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Golden Knight Head 3'
+    _itemId: 1173
+    _icon: {fileID: 2800000, guid: 13e4be927d71f9946856f911a0363781, type: 1}
+    _prefab: {fileID: 100000, guid: 5bb82a2052c0de94a9bac04a604d5e72, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Knight Head 1'
+    _itemId: 1178
+    _icon: {fileID: 2800000, guid: a0452731cda66dc46ad9adcddc836caa, type: 1}
+    _prefab: {fileID: 100000, guid: c56b76b1efc03b4418749779e27e9a02, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Knight Head 2'
+    _itemId: 1179
+    _icon: {fileID: 2800000, guid: 5c3800fd374a88f4d98a450534c82028, type: 1}
+    _prefab: {fileID: 100000, guid: 7133e96ce45026348ad5fee8e7b3771f, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Knight Head 3'
+    _itemId: 1180
+    _icon: {fileID: 2800000, guid: d9210b714c105f5489d6c231664b7665, type: 1}
+    _prefab: {fileID: 100000, guid: 784bf671b421a5542a3748b06c0bd921, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Santa Head '
+    _itemId: 1187
+    _icon: {fileID: 2800000, guid: 5647e660cc9f525489f953da2c0ac96a, type: 1}
+    _prefab: {fileID: 100000, guid: f0107e65e6da4f5489b2d56ae0481275, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Head Blue'
+    _itemId: 1224
+    _icon: {fileID: 2800000, guid: 83acee5679fd4a34597378988040ce7e, type: 1}
+    _prefab: {fileID: 100052, guid: f8436ab5255371f4990961de58cfca86, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Head Red'
+    _itemId: 1225
+    _icon: {fileID: 2800000, guid: 7ba7d7045992fe74eb8dfc07a4c03be3, type: 1}
+    _prefab: {fileID: 100052, guid: 43ec45521cf29ff4ca3fc17fb82e2a6e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Head Yellow'
+    _itemId: 1226
+    _icon: {fileID: 2800000, guid: 8db35e59fc37bb1468336b9bcde290be, type: 1}
+    _prefab: {fileID: 100052, guid: 09aaa9d402b9aa142aee32b541881aba, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*WhiteSkull'
+    _itemId: 1138
+    _icon: {fileID: 2800000, guid: 2570a9a7cccd58c4a8bcbfee60ef0027, type: 1}
+    _prefab: {fileID: 100000, guid: 834653e2372a913449650fbdf9238436, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Arctic Dreads Head'
+    _itemId: 1259
+    _icon: {fileID: 2800000, guid: b0aab2b10faf8924ab7d8173baab87a4, type: 1}
+    _prefab: {fileID: 100000, guid: 5b8fcdd3b952d444687061a8acadd43a, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Megatron Head'
+    _itemId: 1286
+    _icon: {fileID: 2800000, guid: 5f68cb3d3356f8140be713b8ce36d86d, type: 1}
+    _prefab: {fileID: 100050, guid: c868a34b64e9acd4d89a6ded87615c61, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Juggernaut Head'
+    _itemId: 1280
+    _icon: {fileID: 2800000, guid: 03a8b1aaff885d24c9c502a4dbd67d2c, type: 1}
+    _prefab: {fileID: 100000, guid: 8afbb057e7ca4fd49b494e321acbb054, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Corps Head'
+    _itemId: 1275
+    _icon: {fileID: 2800000, guid: d925e281c99ad11478722bc9a340f1e0, type: 1}
+    _prefab: {fileID: 100000, guid: ca5dad2d42e79964e9745261f2c227c2, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*NewYear Juggernaut Head'
+    _itemId: 1309
+    _icon: {fileID: 2800000, guid: 0146123bd63875d4db9d4a984360cee8, type: 1}
+    _prefab: {fileID: 100000, guid: d1d67b75471587e4789233290b561bf2, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Sunglasses'
+    _itemId: 1031
+    _icon: {fileID: 2800000, guid: 1b74f6f803b5e4a40a0675ad5fb558a1, type: 1}
+    _prefab: {fileID: 100000, guid: 5ebb43b0c118f3d47b44fa1942daaeac, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Beard and Mo'
+    _itemId: 1033
+    _icon: {fileID: 2800000, guid: 44fadadf479fddb40be8c84e28725537, type: 1}
+    _prefab: {fileID: 100000, guid: 7a823e288ed38b74991b2e0b79d5b303, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Mask Black'
+    _itemId: 1104
+    _icon: {fileID: 2800000, guid: 905a4eb0a857ac44c9ec9aa1bd9e997c, type: 1}
+    _prefab: {fileID: 100000, guid: 37ff00343c3aec9418dbf445dc8efbf5, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Mask Teeth'
+    _itemId: 1105
+    _icon: {fileID: 2800000, guid: a9d3b6c26b49bd040a2d953eb96b703a, type: 1}
+    _prefab: {fileID: 100000, guid: bfb0a057de55d9a449f356f45cdbc360, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Face Black DE'
+    _itemId: 1322
+    _icon: {fileID: 2800000, guid: 23d8c8662b6a18a4abb600c7c9367add, type: 1}
+    _prefab: {fileID: 100000, guid: d02ee115c3e4bc845894225077e9fdd7, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Face White DE'
+    _itemId: 1328
+    _icon: {fileID: 2800000, guid: 1ae3eeeaef0ace847a516253f34bdcf6, type: 1}
+    _prefab: {fileID: 100000, guid: cb94f94c7e79f8d4bb3ee3ba9e470f80, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Pirate Eyepatch'
+    _itemId: 1109
+    _icon: {fileID: 2800000, guid: defac728192bbb541a8894a57f6a4655, type: 1}
+    _prefab: {fileID: 100000, guid: c9497161d02d15349b3b790274814881, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*HockeyMask'
+    _itemId: 1139
+    _icon: {fileID: 2800000, guid: a5b6585052a82dd49b36aa268aeba7e5, type: 1}
+    _prefab: {fileID: 100000, guid: 4184df9bf912ecc4e91fc120ca809df6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Australia'
+    _itemId: 1191
+    _icon: {fileID: 2800000, guid: 6b5430ebdbd615847828714078d4651f, type: 1}
+    _prefab: {fileID: 100050, guid: 0651e40e72bdae246a23d28fbb3b6a15, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Brazil'
+    _itemId: 1192
+    _icon: {fileID: 2800000, guid: 4ef1c5c16e1f02941ab70a8d61d4340c, type: 1}
+    _prefab: {fileID: 100050, guid: feb967c385a97d841b469ca10bb6fc2b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Canada'
+    _itemId: 1193
+    _icon: {fileID: 2800000, guid: 89459ed9c1f17824789d1d88e93e02ac, type: 1}
+    _prefab: {fileID: 100050, guid: 91eb2bfabd62cd546933662260388863, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_China'
+    _itemId: 1194
+    _icon: {fileID: 2800000, guid: c4ee321babbe77541938d5a897a225ca, type: 1}
+    _prefab: {fileID: 100050, guid: f568da16842301d46986d7186e4bdc23, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Europe'
+    _itemId: 1195
+    _icon: {fileID: 2800000, guid: 201cf49606e8eca49acc604e46f97ca7, type: 1}
+    _prefab: {fileID: 100050, guid: 94c0e398d583d384683e575a899815e1, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_France'
+    _itemId: 1196
+    _icon: {fileID: 2800000, guid: 6d5ca2f98d2c50f499cd3299a9860a5d, type: 1}
+    _prefab: {fileID: 100050, guid: 881ef8cf176740a4290c5a75a69504b2, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Germany'
+    _itemId: 1197
+    _icon: {fileID: 2800000, guid: 51f9c42308f9a544a8194beac205a6f1, type: 1}
+    _prefab: {fileID: 100050, guid: a6f7efd1b07a7c64998882d8319642ae, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Holand'
+    _itemId: 1198
+    _icon: {fileID: 2800000, guid: 19ee53ba984cea744ac6fdbc5188a181, type: 1}
+    _prefab: {fileID: 100050, guid: 52bead42be8dbea45adde659e626e491, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_HongKong'
+    _itemId: 1199
+    _icon: {fileID: 2800000, guid: c0d4504b968bed948a53db9795d80700, type: 1}
+    _prefab: {fileID: 100050, guid: 3664501412e5e52469c05ffcb3651ca7, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_India'
+    _itemId: 1200
+    _icon: {fileID: 2800000, guid: 7553c0c64728c4a4f92bae36913f9ed0, type: 1}
+    _prefab: {fileID: 100050, guid: d62faad8db2f21e40a0eeac8f4a73e36, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Italy'
+    _itemId: 1201
+    _icon: {fileID: 2800000, guid: 3222ade6c7aa0b2458b55f96bb08d764, type: 1}
+    _prefab: {fileID: 100050, guid: 2be38374c03ee0847b59c9a24686573a, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Japan'
+    _itemId: 1202
+    _icon: {fileID: 2800000, guid: d355d114a5a099540acdd13c816369d2, type: 1}
+    _prefab: {fileID: 100050, guid: da7d9b8b8903def44bdaabbe3bd68362, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Latvia'
+    _itemId: 1203
+    _icon: {fileID: 2800000, guid: 6e102c5b8546d88428fa6ffb605d3c4f, type: 1}
+    _prefab: {fileID: 100050, guid: 273bdb45f2de90044bac78d4eeadd4b6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Malaysia'
+    _itemId: 1204
+    _icon: {fileID: 2800000, guid: 4eadbd5bed02a38498f3f32f7c1b2ee1, type: 1}
+    _prefab: {fileID: 100050, guid: 88fe66f2aad75d74886bc375a1248410, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Mexico'
+    _itemId: 1205
+    _icon: {fileID: 2800000, guid: 3184346bc6d176b4cb0219631825a3c8, type: 1}
+    _prefab: {fileID: 100050, guid: 8ab90738ef2dd6e49829dd1980f53705, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_NewZealand'
+    _itemId: 1206
+    _icon: {fileID: 2800000, guid: 7d8242a174a264c4e9305a0a9e50c314, type: 1}
+    _prefab: {fileID: 100050, guid: b27cdfbd3f61e1544b36c92d0d47a124, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Philipines'
+    _itemId: 1207
+    _icon: {fileID: 2800000, guid: eb42f9dfc19dc77438ed619bdc2e4c75, type: 1}
+    _prefab: {fileID: 100050, guid: f92962574c90f4e42aba9d581729df06, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Poland'
+    _itemId: 1208
+    _icon: {fileID: 2800000, guid: 4e2d2c655d90b5f4c91ace4611b37894, type: 1}
+    _prefab: {fileID: 100050, guid: 2b72572fa5279ae4cbf853a1bb6153cf, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Portugal'
+    _itemId: 1209
+    _icon: {fileID: 2800000, guid: bd4323932372f604296a7d3103ee93ee, type: 1}
+    _prefab: {fileID: 100050, guid: b129d87756ffd9349b537d3e3889e45f, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Romania'
+    _itemId: 1210
+    _icon: {fileID: 2800000, guid: acc021aa3b4325341ae394c3be599191, type: 1}
+    _prefab: {fileID: 100050, guid: f9a08ae7f7c211e489dcd8961c99e564, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Russia'
+    _itemId: 1211
+    _icon: {fileID: 2800000, guid: 60fd1e7c854447543b8b5407adf00def, type: 1}
+    _prefab: {fileID: 100050, guid: 10a1c916f43c3c6419ba794b56165c8e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Singapore'
+    _itemId: 1212
+    _icon: {fileID: 2800000, guid: 7293c238003740b4abcc31c040707ee5, type: 1}
+    _prefab: {fileID: 100050, guid: dffb6c3f7c62c6b46a43aee4a2250eae, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Korea'
+    _itemId: 1213
+    _icon: {fileID: 2800000, guid: 0f788572de2cb734c9d0595b26ab2436, type: 1}
+    _prefab: {fileID: 100050, guid: 66bde0fbafec7d3468a8d85b53070cf1, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Spain'
+    _itemId: 1214
+    _icon: {fileID: 2800000, guid: 834334d17e2d4cf44a92447a085aea54, type: 1}
+    _prefab: {fileID: 100050, guid: 4c752225d523fe14d86cc0241c294b86, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Turkey'
+    _itemId: 1215
+    _icon: {fileID: 2800000, guid: 24a223fa05c12574b8cddb85fa32d4fa, type: 1}
+    _prefab: {fileID: 100050, guid: 6fd36e3fca32e0d449a8ab4042f7661c, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_UK'
+    _itemId: 1216
+    _icon: {fileID: 2800000, guid: a111c9cf06beb2a409c201a638dad5ca, type: 1}
+    _prefab: {fileID: 100050, guid: 1b829a046e049c6479eda640c36a9897, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_USA'
+    _itemId: 1217
+    _icon: {fileID: 2800000, guid: cb9b2cd8d50c4ae47a1708437812e829, type: 1}
+    _prefab: {fileID: 100050, guid: 6ddbc3bf01ed6284ba4b03a93561be5e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*FlagMask_Taiwan'
+    _itemId: 1233
+    _icon: {fileID: 2800000, guid: aa524b394ed1e6e45b7e1d7bfa96162d, type: 1}
+    _prefab: {fileID: 100050, guid: b5b0d0f8f032e004a81cd025378c267e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Arctic Dreads Face'
+    _itemId: 1257
+    _icon: {fileID: 2800000, guid: 7040f5f71613fd44fad9fd087d9526c5, type: 1}
+    _prefab: {fileID: 100000, guid: b5bfb903516ccb84f9e0ba007361b867, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Corps Face'
+    _itemId: 1273
+    _icon: {fileID: 2800000, guid: 0bcbb81b32d10114a9518d82adee9b42, type: 1}
+    _prefab: {fileID: 100000, guid: 23e5b8e7b0eff964d80085d0394fc765, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Santa Beard'
+    _itemId: 1190
+    _icon: {fileID: 2800000, guid: c91b4a4f7947972449981ed623afeca2, type: 1}
+    _prefab: {fileID: 100000, guid: e1dcf21cd94b18545a6e68e67c9e6581, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Gloves'
+    _itemId: 1106
+    _icon: {fileID: 2800000, guid: a1ce9f31589cf4c40938bcd03078c2ec, type: 1}
+    _prefab: {fileID: 100000, guid: fb906dd1beeed614481c3f7f450a844e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Gloves Black DE'
+    _itemId: 1323
+    _icon: {fileID: 2800000, guid: c90f2eb772ceee744a5d0381dc1cc8ff, type: 1}
+    _prefab: {fileID: 100000, guid: 11970ccf84e75454e832e273e83f8c88, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Gloves White DE'
+    _itemId: 1329
+    _icon: {fileID: 2800000, guid: 6d6ead405ec5ec3489ee0ac1fbf56ad0, type: 1}
+    _prefab: {fileID: 100000, guid: 946e08de3e3657d4e898add9f24a61b2, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Pirate Gloves'
+    _itemId: 1110
+    _icon: {fileID: 2800000, guid: 249433b0b2abbc04a8be158293001515, type: 1}
+    _prefab: {fileID: 100000, guid: 3d252355d6d80a2478aa30641a88adb1, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Rambo Gloves'
+    _itemId: 1116
+    _icon: {fileID: 2800000, guid: 40e16426676876640879c226c9b485cb, type: 1}
+    _prefab: {fileID: 100000, guid: 62ae133912e9d7d4383154abe38d80eb, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Skeleton Gloves'
+    _itemId: 1143
+    _icon: {fileID: 2800000, guid: 5a76c2740f7a05b41a034542294fc55a, type: 1}
+    _prefab: {fileID: 100000, guid: ee550aa35a607534e974ac73119bea39, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Golden Knight Gloves'
+    _itemId: 1169
+    _icon: {fileID: 2800000, guid: 0c08f6abe2f1cf547991dd87d99d33a9, type: 1}
+    _prefab: {fileID: 100000, guid: 1e789f13f29a1af44a8d223b60900439, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Knight Gloves'
+    _itemId: 1176
+    _icon: {fileID: 2800000, guid: d6491ede1a3d8d44884fc600de10bd6d, type: 1}
+    _prefab: {fileID: 100000, guid: edc0b244ae9b9ba4f98cf5ec711b60a3, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Gloves Blue'
+    _itemId: 1221
+    _icon: {fileID: 2800000, guid: ef05de315c356134dac1d858423da099, type: 1}
+    _prefab: {fileID: 100052, guid: 3efe45ce227f6004e9deded8913e774d, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Gloves Red'
+    _itemId: 1222
+    _icon: {fileID: 2800000, guid: e2d6d67081c83a54bab211e7bf671e6e, type: 1}
+    _prefab: {fileID: 100052, guid: d9150e0098c373149a6e869787bfa655, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Gloves Yellow'
+    _itemId: 1223
+    _icon: {fileID: 2800000, guid: 2bcf8b696752f094fb7a111c27730536, type: 1}
+    _prefab: {fileID: 100052, guid: fea10504686659f4384aaed7c1dc72fc, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Arctic Dreads Gloves'
+    _itemId: 1258
+    _icon: {fileID: 2800000, guid: 56a6adc4fe41ee64294c34fab7390166, type: 1}
+    _prefab: {fileID: 100000, guid: 20a98e15e778be0459a33c20b79366ac, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Megatron Gloves'
+    _itemId: 1285
+    _icon: {fileID: 2800000, guid: 33715a359e8647f4f8773b9e23eafcba, type: 1}
+    _prefab: {fileID: 100050, guid: 135c68a899ae7254eaab79271c18f391, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Juggernaut Gloves'
+    _itemId: 1279
+    _icon: {fileID: 2800000, guid: 3f3ed77527cf7a246b696d36fbc5a912, type: 1}
+    _prefab: {fileID: 100000, guid: 7857ab839a17a2546b78336f4c05be22, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*BlackCorps Gloves'
+    _itemId: 1274
+    _icon: {fileID: 2800000, guid: 235392fa7e997f3469217598ed324f43, type: 1}
+    _prefab: {fileID: 100000, guid: f96769385062a4541ab89a5b715cd30b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Santa Gloves'
+    _itemId: 1188
+    _icon: {fileID: 2800000, guid: 794e6a4bb611d5f4680b2d51650edc0f, type: 1}
+    _prefab: {fileID: 100000, guid: c614ac36400155a4287483f84a41d865, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*NewYear Juggernaut Gloves'
+    _itemId: 1307
+    _icon: {fileID: 2800000, guid: b66ae51d6eb9f9749a10532c799b22be, type: 1}
+    _prefab: {fileID: 100000, guid: 9bda422144752394bb1a4a6310da7706, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Dundee Upperbody'
+    _itemId: 1121
+    _icon: {fileID: 2800000, guid: b7b4b03219a6efe4287b76c464210d37, type: 1}
+    _prefab: {fileID: 100000, guid: 9219683836c5c94449ae25d2ab4d5ea6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Upperbody Black DE'
+    _itemId: 1319
+    _icon: {fileID: 2800000, guid: a248ac5dbdd779242b8c4f98f9b0e554, type: 1}
+    _prefab: {fileID: 100000, guid: b77d219a534f89a4981000634fa9bcb4, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Upperbody White DE'
+    _itemId: 1325
+    _icon: {fileID: 2800000, guid: ca0fb7a723c6fd74392970a964e49f57, type: 1}
+    _prefab: {fileID: 100000, guid: f375651278c28b041a3e45c58c294951, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Upperbody'
+    _itemId: 1101
+    _icon: {fileID: 2800000, guid: 736535174149b8e42aa17f59d9bae495, type: 1}
+    _prefab: {fileID: 100000, guid: da97550e70c263249a024fd45d7511dc, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Pirate Upperbody'
+    _itemId: 1111
+    _icon: {fileID: 2800000, guid: 744ce6ef84cbe7c43bb5a0a32ca4033b, type: 1}
+    _prefab: {fileID: 100000, guid: 71667e82222ddb04f99f740b82c2b586, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Rambo Upperbody'
+    _itemId: 1117
+    _icon: {fileID: 2800000, guid: 29f23b2f4b22a22408d13b777c383cc6, type: 1}
+    _prefab: {fileID: 100000, guid: 3d2b9fc2e757b7147958f46c32a0b42b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Admin Shirt'
+    _itemId: 1098
+    _icon: {fileID: 2800000, guid: 996ea11523d1cdf4d9b7b38629fcac13, type: 1}
+    _prefab: {fileID: 100000, guid: 444d18be015117c4da4aae4012544e69, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Beta Hero'
+    _itemId: 1099
+    _icon: {fileID: 2800000, guid: 68fe9c3e91571704b951367324e19f6d, type: 1}
+    _prefab: {fileID: 100000, guid: 4a18852f774c5d1418726718368d1276, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Default Shirt'
+    _itemId: 1100
+    _icon: {fileID: 2800000, guid: 336be7392a283e34194588892bd77fdf, type: 1}
+    _prefab: {fileID: 100000, guid: cb3408f9e701eb241ba361ca8016fcdb, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Skeleton Upperbody'
+    _itemId: 1140
+    _icon: {fileID: 2800000, guid: ac28fcfc4c850c84f84bd6535b287282, type: 1}
+    _prefab: {fileID: 100000, guid: 9d71874e919ec934185034abd55c2291, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Mafia Coat'
+    _itemId: 1159
+    _icon: {fileID: 2800000, guid: a3ac19b3dd0a9d9439570ab43d939d32, type: 1}
+    _prefab: {fileID: 100050, guid: c10237ed4c56ca94293e58ad6ec2d99b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Lunatic Lab Jacket'
+    _itemId: 1158
+    _icon: {fileID: 2800000, guid: cc8d1c6a978006948bb32c8a47cc7909, type: 1}
+    _prefab: {fileID: 100050, guid: 94bded2e714c20341915823a2f8bf2c3, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Leather Coat'
+    _itemId: 1156
+    _icon: {fileID: 2800000, guid: 902b111910627a04c8d6b27859e0ce21, type: 1}
+    _prefab: {fileID: 100050, guid: 43c4906ed142a6d43806ca8c496773e9, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Godfather'
+    _itemId: 1155
+    _icon: {fileID: 2800000, guid: 880bee544f3e2644cbd484f26a520be7, type: 1}
+    _prefab: {fileID: 100050, guid: 212e2a68d5e847e4da8a096177e27a8e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Classy Coat'
+    _itemId: 1154
+    _icon: {fileID: 2800000, guid: 544463eafaf719e4a80f13ee1d99321c, type: 1}
+    _prefab: {fileID: 100050, guid: 2d7bf260ebabcc24d80507621642a859, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*007 Coat'
+    _itemId: 1153
+    _icon: {fileID: 2800000, guid: be0a84185926fcf4ba5503f49eeb3891, type: 1}
+    _prefab: {fileID: 100000, guid: 305230a0b1bca10479b0280258dd7611, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Uber Jacket'
+    _itemId: 1163
+    _icon: {fileID: 2800000, guid: 67f3931e5bbbdd14e8013fcc2d9368b0, type: 1}
+    _prefab: {fileID: 100052, guid: 29de7680955fda547ae9b1abad50dde5, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Golden Knight Upperbody'
+    _itemId: 1167
+    _icon: {fileID: 2800000, guid: af0ae57e03eae8e41b3ae84bfa4b69ac, type: 1}
+    _prefab: {fileID: 100000, guid: 9d634ba4b6f4a8e47bdef284b6c81e82, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Knight Upperbody'
+    _itemId: 1174
+    _icon: {fileID: 2800000, guid: e9941dbbc838c834d9d95ce676d4cc34, type: 1}
+    _prefab: {fileID: 100000, guid: 1ae384ccd7fb8d14187adc881cfe13b0, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Upperbody Blue'
+    _itemId: 1230
+    _icon: {fileID: 2800000, guid: 2c2dc55cd3aafa847af5f683896694e3, type: 1}
+    _prefab: {fileID: 100052, guid: 0509e29b6448978449708405b98bbb5f, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Upperbody Red'
+    _itemId: 1231
+    _icon: {fileID: 2800000, guid: f20298107a4c1f24480afb4f5f197968, type: 1}
+    _prefab: {fileID: 100052, guid: 63947ee2f31709e4eae83e6ffa9e11a3, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Upperbody Yellow'
+    _itemId: 1232
+    _icon: {fileID: 2800000, guid: fe875fa035bb74b448d31d7142a37907, type: 1}
+    _prefab: {fileID: 100052, guid: ae2060d154d6df9438a5d31287ac51f2, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Arctic Dreads Upperbody'
+    _itemId: 1261
+    _icon: {fileID: 2800000, guid: 2c09cade192b2834db446cb37b431eff, type: 1}
+    _prefab: {fileID: 100000, guid: 73269e52d726264469e309a0864e6334, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Green TShirt'
+    _itemId: 1263
+    _icon: {fileID: 2800000, guid: 6c05328b773c71541ba22cc6f82c0e0a, type: 1}
+    _prefab: {fileID: 100000, guid: 23bf343b240a69d4fb6a7989a8023089, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Global Moderator TShirt'
+    _itemId: 1255
+    _icon: {fileID: 2800000, guid: e9b772fbe7e94f94cb2aa27f805fc0ba, type: 1}
+    _prefab: {fileID: 100000, guid: c933168356d1e6b438e2722546017db4, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Moderator Shirt'
+    _itemId: 1254
+    _icon: {fileID: 2800000, guid: 8ed8b84b3df96ec48ba0ea6b3eb31a31, type: 1}
+    _prefab: {fileID: 100000, guid: 2f6ea9f20e244a84dbc15fe0347a9bed, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Megatron Upperbody'
+    _itemId: 1288
+    _icon: {fileID: 2800000, guid: b39b277d6a116b04f87e0b4adf24f223, type: 1}
+    _prefab: {fileID: 100050, guid: 134de9485dbca6b4a8f216793bfce60d, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Juggernaut Upperbody'
+    _itemId: 1282
+    _icon: {fileID: 2800000, guid: b1702dfcc459f98429039e53dcdaa9d4, type: 1}
+    _prefab: {fileID: 100000, guid: 0650823655c4f234586cfe0035d29d26, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Corps Upperbody'
+    _itemId: 1277
+    _icon: {fileID: 2800000, guid: cc97e18124255dc429292309925f01c3, type: 1}
+    _prefab: {fileID: 100000, guid: 0b43f7925be806845982d260e4e2a767, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Santa Upperbody'
+    _itemId: 1185
+    _icon: {fileID: 2800000, guid: 622d42671d173154cb22f489383632ab, type: 1}
+    _prefab: {fileID: 100000, guid: d32df41ea9defb34a9270092e7764e50, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*NewYear Juggernaut Upperbody'
+    _itemId: 1304
+    _icon: {fileID: 2800000, guid: 6161ccce7da1e2248876df571c3b7cf7, type: 1}
+    _prefab: {fileID: 100000, guid: 5da4770f7e6fb4d46867b52f1d2ff8c7, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Protective Pants'
+    _itemId: 1045
+    _icon: {fileID: 2800000, guid: 4fe2727f08c06564c88204e40ce13e04, type: 1}
+    _prefab: {fileID: 100050, guid: 377c069d24db44546895b3ff77ced31c, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Dundee Lowerbody'
+    _itemId: 1122
+    _icon: {fileID: 2800000, guid: b01ab182c439e5540a94e64f376b7c75, type: 1}
+    _prefab: {fileID: 100000, guid: 88b32fe5bdf43af43b528cf181736150, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Lowerbody'
+    _itemId: 1102
+    _icon: {fileID: 2800000, guid: 171d770cd83092d4c92dc10fad8179a6, type: 1}
+    _prefab: {fileID: 100000, guid: 42474487ff3231c45b0d0769050af0e9, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Lowerbody Black DE'
+    _itemId: 1320
+    _icon: {fileID: 2800000, guid: a10bb85648ae5424ea50e3a2e04bb030, type: 1}
+    _prefab: {fileID: 100000, guid: e9e0317b16d1e404e96491d1a54a8fa8, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Lowerbody White DE'
+    _itemId: 1326
+    _icon: {fileID: 2800000, guid: ab4848ccf87ce2d45847a9e8265015c1, type: 1}
+    _prefab: {fileID: 100000, guid: c99427e0947b2e84dbfefc2533b1d344, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Pirate Lowerbody'
+    _itemId: 1112
+    _icon: {fileID: 2800000, guid: 55fdcd88f85fe294694a1f725d2ef3b3, type: 1}
+    _prefab: {fileID: 100000, guid: 4c5104cc85ba3a347b76ad4619e679b6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Rambo Lowerbody'
+    _itemId: 1118
+    _icon: {fileID: 2800000, guid: 001d71dd283b161428ecbd7e8d0a7e97, type: 1}
+    _prefab: {fileID: 100000, guid: 4152b3f48a2c5664d8fb466b40dda1dc, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Skeleton Lowerbody'
+    _itemId: 1141
+    _icon: {fileID: 2800000, guid: bf4dfcca7eab98648bd42e3d278b9851, type: 1}
+    _prefab: {fileID: 100000, guid: 06e20ba393cbdfc41886fe29336c2651, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Mafia Pants'
+    _itemId: 1152
+    _icon: {fileID: 2800000, guid: becef5fe6bd45df45a4933cbd12cb3fa, type: 1}
+    _prefab: {fileID: 100050, guid: 379be0af4bbc8ae43be08b0e00e6cd3d, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Pants'
+    _itemId: 1151
+    _icon: {fileID: 2800000, guid: 073702eac798af649b5197cf6bb9b46b, type: 1}
+    _prefab: {fileID: 100050, guid: b76dcb47c67ad7f4ea4fab3cbe00fe86, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Golden Knight Lowerbody'
+    _itemId: 1168
+    _icon: {fileID: 2800000, guid: 289b0b324aa135f40ba8591545be14b5, type: 1}
+    _prefab: {fileID: 100000, guid: 5aa5d5b132ffb494e9b9852448ae6160, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Knight Lowerbody'
+    _itemId: 1175
+    _icon: {fileID: 2800000, guid: 16ef1a7578baf1b45af2a4b7e376d052, type: 1}
+    _prefab: {fileID: 100000, guid: ba71fab44a2c8514d862ecc0c005a185, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Lowerbody Blue'
+    _itemId: 1227
+    _icon: {fileID: 2800000, guid: 0894737940465fc4792230521b241b07, type: 1}
+    _prefab: {fileID: 100052, guid: 6e6777e0f07717841a62acc7d228daa2, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Lowerbody Red'
+    _itemId: 1228
+    _icon: {fileID: 2800000, guid: 5fae41e685bbd814a9801b20549e66ce, type: 1}
+    _prefab: {fileID: 100052, guid: 211fde6a3c2669d4497441f693b2c72f, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Lowerbody Yellow'
+    _itemId: 1229
+    _icon: {fileID: 2800000, guid: 6b325b6cc9d162342aa3a115ae012805, type: 1}
+    _prefab: {fileID: 100052, guid: cd6699ba34a97f44fbd292b4acdd0e15, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Arctic Dreads Lowerbody'
+    _itemId: 1260
+    _icon: {fileID: 2800000, guid: 960030bfad67af249939ce60595927d8, type: 1}
+    _prefab: {fileID: 100000, guid: b6a60f4ee8a29ec419e1382b33c6c769, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Megatron Lowerbody'
+    _itemId: 1287
+    _icon: {fileID: 2800000, guid: 02f5a4f0d62a7f740ae1f001f9f05bc2, type: 1}
+    _prefab: {fileID: 100050, guid: 22f8cda60075c394c8632f97dde9788f, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Juggernaut Lowerbody'
+    _itemId: 1281
+    _icon: {fileID: 2800000, guid: 5387d62e668d51244994e7e95fa139f9, type: 1}
+    _prefab: {fileID: 100000, guid: 3f8f36c26214e2a44b986f5646f64dc6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Corps Lowerbody'
+    _itemId: 1276
+    _icon: {fileID: 2800000, guid: 0a781b1be51c2654884a210af2fb8a81, type: 1}
+    _prefab: {fileID: 100000, guid: 260daf92ef05e3b48a1238b65baf11c6, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Santa Lowerbody'
+    _itemId: 1186
+    _icon: {fileID: 2800000, guid: 755d820a8a8e8ec418d69f9b65d9e0fd, type: 1}
+    _prefab: {fileID: 100000, guid: b0d95ec048cc65a4d8458e032003b798, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*NewYear Juggernaut Lowerbody'
+    _itemId: 1305
+    _icon: {fileID: 2800000, guid: a959b16487eabcb4fbf4c47aae56250b, type: 1}
+    _prefab: {fileID: 100000, guid: 69e7c0efbf4070e4a88f44432389805b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Tabi Boots'
+    _itemId: 1107
+    _icon: {fileID: 2800000, guid: bcef739fdccc2c442961016edb1e475b, type: 1}
+    _prefab: {fileID: 100000, guid: 1cb3e78df4560d541acf6f828ab826ce, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Boots Black DE'
+    _itemId: 1324
+    _icon: {fileID: 2800000, guid: 7a37c6c383b9e8c439d5035ebc0ddb5b, type: 1}
+    _prefab: {fileID: 100000, guid: b6a49a2296c91904485074988344a78d, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Ninja Boots White DE'
+    _itemId: 1330
+    _icon: {fileID: 2800000, guid: 7434754180d70594fa4898b70d76b4f3, type: 1}
+    _prefab: {fileID: 100000, guid: ab196cd736c91fd478343887ca41d72f, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Pirate Shoes'
+    _itemId: 1113
+    _icon: {fileID: 2800000, guid: 9efe95c5ed563d1459832247b3926f1a, type: 1}
+    _prefab: {fileID: 100000, guid: e497a4e9f7a6e8d4f8a3520ca8f9601b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Rambo Shoes'
+    _itemId: 1119
+    _icon: {fileID: 2800000, guid: 7b6f1a6e031c49f428fd065a45a9c2fa, type: 1}
+    _prefab: {fileID: 100000, guid: dc62a41b4c490a34d95c036da09ff7a0, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Dundee Shoes'
+    _itemId: 1123
+    _icon: {fileID: 2800000, guid: a09a6e63844923048b7433a407726585, type: 1}
+    _prefab: {fileID: 100000, guid: 344fb3b493d8e184aa7c73e72fc6bc3b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Skeleton Shoes'
+    _itemId: 1144
+    _icon: {fileID: 2800000, guid: 25402cba889baa7499ada544f289f964, type: 1}
+    _prefab: {fileID: 100000, guid: 7f18c5101b6863f4bb751d62322a589d, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Leather Shoes'
+    _itemId: 1157
+    _icon: {fileID: 2800000, guid: 35af083dd94caa54b990fefce3ba4bda, type: 1}
+    _prefab: {fileID: 100050, guid: eaceecbb82166a0448a7d3d0fd8c3e9e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Golden Knight Boots'
+    _itemId: 1170
+    _icon: {fileID: 2800000, guid: e1458a557886eb345ae6a3a167e97a61, type: 1}
+    _prefab: {fileID: 100050, guid: 50c7cf3bdf4c6674096570f15005ef93, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Knight Boots'
+    _itemId: 1177
+    _icon: {fileID: 2800000, guid: eacd6c7ba862da942a703d92ada5425d, type: 1}
+    _prefab: {fileID: 100050, guid: 17df45184a5931a48976cb729d94ea07, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Boots Blue'
+    _itemId: 1218
+    _icon: {fileID: 2800000, guid: 49c1c1f174feee946b4d187f7421ed40, type: 1}
+    _prefab: {fileID: 100052, guid: fc86a05a3b4805b4f9ea5562ae14151e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Boots Red'
+    _itemId: 1219
+    _icon: {fileID: 2800000, guid: 67dbc71b6e66aad49bc5b123a73bb729, type: 1}
+    _prefab: {fileID: 100052, guid: b2f7ecf89bfaf07449c105f30c2929d1, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Tron Boots Yellow'
+    _itemId: 1220
+    _icon: {fileID: 2800000, guid: 47ce09f3f022f5d418549e12b9bff0f0, type: 1}
+    _prefab: {fileID: 100052, guid: 226f73c6a4d60514bb724de3e26d6bac, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Arctic Dreads Boots'
+    _itemId: 1256
+    _icon: {fileID: 2800000, guid: b110ff06cd6d1ec47afca4bce54db7f4, type: 1}
+    _prefab: {fileID: 100000, guid: 72abad2984959174bb5e1997378bfc73, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Megatron Boots'
+    _itemId: 1283
+    _icon: {fileID: 2800000, guid: 60e208106387edb46a84aa1b5c7db7b6, type: 1}
+    _prefab: {fileID: 100050, guid: 4ecf7aa020247a24f881920b393b8a2e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Juggernaut Boots'
+    _itemId: 1278
+    _icon: {fileID: 2800000, guid: 40167b8578f557042912fb55be71938e, type: 1}
+    _prefab: {fileID: 100000, guid: e559cdd65a9ab9e48a0883945c4b2b1e, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Black Corps Boots'
+    _itemId: 1272
+    _icon: {fileID: 2800000, guid: 27941752559723841a66380bce24f413, type: 1}
+    _prefab: {fileID: 100000, guid: 185f0c519f1d8254198ecf987e1dc441, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Santa Boots'
+    _itemId: 1189
+    _icon: {fileID: 2800000, guid: 1f963a46e0a607c42a9653c6a069907a, type: 1}
+    _prefab: {fileID: 100000, guid: 4e258ae44b2fd174ca98edb2b2e9426b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*NewYear Juggernaut Boots'
+    _itemId: 1308
+    _icon: {fileID: 2800000, guid: ac8feabd2ad63d141b8091bda3ef7340, type: 1}
+    _prefab: {fileID: 100000, guid: 57588ea61d3a57f459e487cf763e4a0b, type: 2}
+    _baseHoloItem: {fileID: 0}
+  - _name: '*Female Avatar'
+    _itemId: 1240
+    _icon: {fileID: 2800000, guid: 8a5bafeb67cdc114c807dc4ba1b420fa, type: 1}
+    _prefab: {fileID: 0}
+    _baseHoloItem: {fileID: 11400000, guid: 441e4a2a31ae5e14f8bf5c73b9bb6f82, type: 2}
+  - _name: '*Credit Zombie'
+    _itemId: 1289
+    _icon: {fileID: 2800000, guid: ca5aa85642686f4408596d72ad9252a0, type: 1}
+    _prefab: {fileID: 0}
+    _baseHoloItem: {fileID: 11400000, guid: 52af0fb0976aa504ab69e09f6976d74a, type: 2}
+  - _name: '*Point Zombie'
+    _itemId: 1290
+    _icon: {fileID: 2800000, guid: bdfbd39759439c04b9d0fe679ce06b5e, type: 1}
+    _prefab: {fileID: 0}
+    _baseHoloItem: {fileID: 11400000, guid: 6eac22c052bf2e24bb2d3b96a89fdeb2, type: 2}
+  - _name: '*Julia Ninja Valentine'
+    _itemId: 1310
+    _icon: {fileID: 2800000, guid: 16ca3855603993f459a7d67ccd824458, type: 1}
+    _prefab: {fileID: 0}
+    _baseHoloItem: {fileID: 11400000, guid: 290d59cb22b902c4c8eb466f456aa82a, type: 2}
+  UnityItemsWeapons:
+  - _name: '*The Splatbat'
+    _itemId: 1000
+    _icon: {fileID: 2800000, guid: 3bd3aea21398b804f90287864b46e28e, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 578b2b3c009c9b24f8e52a77dd6f222f, type: 2}
+    _position: {x: .400000006, y: -.5, z: .5}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Paint Pistol'
+    _itemId: 1001
+    _icon: {fileID: 2800000, guid: 24800d1cf26ad6546aab388cd27a2dd5, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: 86fa6ae09067bd842b2cfe91536279ce, type: 2}
+    _position: {x: .264999986, y: -.289999992, z: .453999996}
+    _rotation: {x: 357, y: 0, z: 0}
+    _impactEffect: 2
+    _inputHandler: 0
+  - _name: '*Default Machinegun'
+    _itemId: 1002
+    _icon: {fileID: 2800000, guid: 4738abeee2c8d424c829dd4620367615, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1.5
+      MaxMultiplier: 1.5
+      DefaultMultiplier: 1.5
+      CurrentMultiplier: 1.5
+    _ironSightPosition: {x: 0, y: -.177000001, z: .261000007}
+    _secondaryAction: 2
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 0
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: d6ac366b747a33f47a8423cfd40d1732, type: 2}
+    _position: {x: .142000005, y: -.196999997, z: .172000006}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 3
+    _inputHandler: 2
+  - _name: '*Default Shotgun'
+    _itemId: 1003
+    _icon: {fileID: 2800000, guid: da638430dfa3cff4a9f5910e2a2d10c4, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 6a12eaa51e2e3f349a55d96548c20041, type: 2}
+    _position: {x: .149000004, y: -.165999994, z: -.0399999991}
+    _rotation: {x: 359.73999, y: 0, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Default Sniper Rifle'
+    _itemId: 1004
+    _icon: {fileID: 2800000, guid: a5ccfc7a569515440855404615ad5480, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 2
+      MaxMultiplier: 4
+      DefaultMultiplier: 2
+      CurrentMultiplier: 2
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: e72daf798d6cd3340a0afeb1237a9dc8, type: 2}
+    _position: {x: .159999996, y: -.172000006, z: .241999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Default Cannon'
+    _itemId: 1005
+    _icon: {fileID: 2800000, guid: e66b50a758b9b0d45a9ef1b25f075f36, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 7bb3e1a9de36a954db6ca9cee900e87f, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 5
+    _inputHandler: 0
+  - _name: '*Default Splattergun'
+    _itemId: 1006
+    _icon: {fileID: 2800000, guid: 0fdb59af98468234187e905bc347cd51, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 0021a86880bffd445818ef95f8d73686, type: 2}
+    _position: {x: .150000006, y: -.296999991, z: .261000007}
+    _rotation: {x: -.0469999984, y: 0, z: 0}
+    _impactEffect: 7
+    _inputHandler: 1
+  - _name: '*Default Launcher'
+    _itemId: 1007
+    _icon: {fileID: 2800000, guid: 12030b2e9a5b1884ba50353385ab697b, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 5c5bd80a22644a6408066a24fa4aa2c5, type: 2}
+    _position: {x: .203999996, y: -.257999986, z: .206}
+    _rotation: {x: .801999986, y: 0, z: 0}
+    _impactEffect: 6
+    _inputHandler: 1
+  - _name: '*Force Cannon'
+    _itemId: 1020
+    _icon: {fileID: 2800000, guid: e3624c6b2243b4340b942f76e9cba80a, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400006, guid: c677ff57c683cd5428e1e0c1e73d9378, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 5
+    _inputHandler: 0
+  - _name: '*Paintzerfaust'
+    _itemId: 1019
+    _icon: {fileID: 2800000, guid: 41c6aa95f21918c46938a18e6dc55757, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: d0ffdba8f6d648c4a8efce18267103cd, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 5
+    _inputHandler: 1
+  - _name: '*Enigma Cannon'
+    _itemId: 1145
+    _icon: {fileID: 2800000, guid: 91b0c95ee7ed76740b0ba9f2f55cf281, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400008, guid: 59af2122a85f87c4fb265fdb2e2bec58, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 10
+    _inputHandler: 0
+  - _name: '*Force Cannon Plus'
+    _itemId: 1243
+    _icon: {fileID: 2800000, guid: 6d09b56058c265e4f83c5a584e6cab8c, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 06775491fabf7774ca9ab68fc659c6c0, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 5
+    _inputHandler: 0
+  - _name: '*Ultima Cannon'
+    _itemId: 1299
+    _icon: {fileID: 2800000, guid: 9f801b93fb85b114097f08367cb37893, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400008, guid: 8b3aab610ad989d4ea6dd481e29cafd1, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 5
+    _inputHandler: 0
+  - _name: '*Enigma Cannon Valentine'
+    _itemId: 1311
+    _icon: {fileID: 2800000, guid: dc51ecfffda4681499939a3be4233774, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400012, guid: abe0a3b8ea5dc374fb54e92925cbe4bb, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 10
+    _inputHandler: 0
+  - _name: '*Executioner'
+    _itemId: 1010
+    _icon: {fileID: 2800000, guid: 974c999156ea78d46894685ec383c0a4, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400006, guid: 98ce735ed3bcbb94aba20d35e307a455, type: 2}
+    _position: {x: .134000003, y: -.160999998, z: .125}
+    _rotation: {x: 357.936005, y: 0, z: 0}
+    _impactEffect: 2
+    _inputHandler: 0
+  - _name: '*Judge'
+    _itemId: 1008
+    _icon: {fileID: 2800000, guid: aa2b4cac954261442bd146dc96a960ea, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: e0f3f7933fcf90a45b42802e2c3837c5, type: 2}
+    _position: {x: .134000003, y: -.160999998, z: .125}
+    _rotation: {x: 357.936005, y: 0, z: 0}
+    _impactEffect: 2
+    _inputHandler: 0
+  - _name: '*Jury'
+    _itemId: 1009
+    _icon: {fileID: 2800000, guid: f48e91007b44e5d46a0028ed72cbaa9b, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: e0317e04048d7c6478e3fe94b3ed8455, type: 2}
+    _position: {x: .134000003, y: -.160999998, z: .125}
+    _rotation: {x: 357.936005, y: 0, z: 0}
+    _impactEffect: 2
+    _inputHandler: 0
+  - _name: '*Gold Pistol'
+    _itemId: 1164
+    _icon: {fileID: 2800000, guid: 32ba95f8c1971fa4f87d39e880b915cd, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: beb47c3a5eee4f2499cac2a97bfa5a14, type: 2}
+    _position: {x: .134000003, y: -.160999998, z: .125}
+    _rotation: {x: 357.936005, y: 0, z: 0}
+    _impactEffect: 2
+    _inputHandler: 0
+  - _name: '*Spiteful Skewer'
+    _itemId: 1237
+    _icon: {fileID: 2800000, guid: c03b1032963cd1e48b2d62956a4657a3, type: 1}
+    _damageEffectFlag: 1
+    _damageEffectValue: .150000006
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 2
+      MaxMultiplier: 2
+      DefaultMultiplier: 2
+      CurrentMultiplier: 2
+    _ironSightPosition: {x: 0, y: -.135000005, z: .150000006}
+    _secondaryAction: 2
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 0
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 63e6102d667b5fb4da9fc058916f8cda, type: 2}
+    _position: {x: .159999996, y: -.25999999, z: .219999999}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 2
+    _inputHandler: 2
+  - _name: '*Enamelator'
+    _itemId: 1024
+    _icon: {fileID: 2800000, guid: d6a048d83582fb64fa69c54f6f429904, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 941579dc0220abb4b9ef20ec9312f9a0, type: 2}
+    _position: {x: .203999996, y: -.257999986, z: .206}
+    _rotation: {x: .801999986, y: 0, z: 0}
+    _impactEffect: 6
+    _inputHandler: 1
+  - _name: '*Mortar Exporter'
+    _itemId: 1025
+    _icon: {fileID: 2800000, guid: d64c1f2fb13d4e443bcbbbe6f206b2ad, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 3658deaa4c6de5e4eb830bb0438e30e5, type: 2}
+    _position: {x: .188999996, y: -.241999999, z: .149000004}
+    _rotation: {x: .801999986, y: 0, z: 0}
+    _impactEffect: 6
+    _inputHandler: 1
+  - _name: '*Final Word'
+    _itemId: 1026
+    _icon: {fileID: 2800000, guid: b3ac97eca9db60145bf69675f99231b2, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 3
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 0
+    _maxConcurrentProjectiles: 3
+    _prefab: {fileID: 11400000, guid: ce211d803a5c8124a9aac83a8bc02547, type: 2}
+    _position: {x: .144999996, y: -.197999999, z: .00100000005}
+    _rotation: {x: .801999986, y: 0, z: 0}
+    _impactEffect: 6
+    _inputHandler: 1
+  - _name: '*iLauncher'
+    _itemId: 1262
+    _icon: {fileID: 2800000, guid: da4516f48f0588c4e80079b106c9a938, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 28a1d22a3393e314cbced66bf30abb41, type: 2}
+    _position: {x: .165999994, y: -.331, z: .340999991}
+    _rotation: {x: .801999986, y: 0, z: 0}
+    _impactEffect: 6
+    _inputHandler: 1
+  - _name: '*Demolisher'
+    _itemId: 1297
+    _icon: {fileID: 2800000, guid: b2f082cfdf0a3cb4398d5c05f30d8022, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: bce09eeeacf02f54ebd2a4f8fa71af64, type: 2}
+    _position: {x: .177000001, y: -.239999995, z: .0900000036}
+    _rotation: {x: 357.911011, y: 0, z: 0}
+    _impactEffect: 6
+    _inputHandler: 1
+  - _name: '*Battle Snake'
+    _itemId: 1012
+    _icon: {fileID: 2800000, guid: cbfbdacf613fe7143b65f5324ecffcd3, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 50d99ae33ff1d0644886f76313bec102, type: 2}
+    _position: {x: .202999994, y: -.111000001, z: .391000003}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 3
+    _inputHandler: 4
+  - _name: '*Shadow Gun'
+    _itemId: 1011
+    _icon: {fileID: 2800000, guid: edd2acdb8262a4e4d8bf6e18eb41467d, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: f7099a9b7801c5d4b8b1a57fd24cfbdb, type: 2}
+    _position: {x: .130999997, y: -.268000007, z: .0599999987}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 3
+    _inputHandler: 1
+  - _name: '*UMG'
+    _itemId: 1146
+    _icon: {fileID: 2800000, guid: c4e44e89b318b004c9f84e8745336a8d, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400008, guid: 865fbb66235456640bfff6ddba7381b0, type: 2}
+    _position: {x: .130999997, y: -.171000004, z: .0149999997}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 9
+    _inputHandler: 1
+  - _name: '*Sabertooth'
+    _itemId: 1241
+    _icon: {fileID: 2800000, guid: b7993c03d3712364295f138ca3279fea, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400006, guid: f57d3c368559bc342ac32d194deebf1c, type: 2}
+    _position: {x: .202999994, y: -.111000001, z: .391000003}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 3
+    _inputHandler: 4
+  - _name: '*Pain Hammer'
+    _itemId: 1014
+    _icon: {fileID: 2800000, guid: c12903e39a17e1d4084b9c969ea993d7, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 12991cc4766bfcf4db7467a6adc79e4d, type: 2}
+    _position: {x: .155000001, y: -.175999999, z: .0439999998}
+    _rotation: {x: 0, y: 359.399994, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Death Hammer'
+    _itemId: 1291
+    _icon: {fileID: 2800000, guid: 40928ff524b637646bbdf648eec72b85, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400006, guid: 68f851eabdd178646aa9cf5738e0c72a, type: 2}
+    _position: {x: .178000003, y: -.280000001, z: .256000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Oblivion Hammer'
+    _itemId: 1292
+    _icon: {fileID: 2800000, guid: 848f6f3b3d0509048b3e97c23dc8263d, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 121448fc9e2e5284aa98cd35e297135e, type: 2}
+    _position: {x: .178000003, y: -.280000001, z: .256000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Snot Gun'
+    _itemId: 1013
+    _icon: {fileID: 2800000, guid: 00290e299bfdad94e8ee5782592b50e2, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 3953a99c87046f04a97bfff920166ca1, type: 2}
+    _position: {x: .156000003, y: -.197999999, z: .151999995}
+    _rotation: {x: 358.399994, y: 3.72300005, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Thunderbuss Blue'
+    _itemId: 1015
+    _icon: {fileID: 2800000, guid: 8f20da52601557040b1c0200e73b6466, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 5bea812d0f85e694ca58dc39a7cee726, type: 2}
+    _position: {x: .119999997, y: -.175999999, z: .256000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Firewave'
+    _itemId: 1242
+    _icon: {fileID: 2800000, guid: 7bb8fd7a6589f4a48b86113ec7275400, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: c6b8659d0e6a773479bc90b9d382f4ff, type: 2}
+    _position: {x: .119999997, y: -.175999999, z: .256000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Mad Splatter'
+    _itemId: 1022
+    _icon: {fileID: 2800000, guid: 0b90ca787f6d210428b7001588ee43bf, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 48b3b955a5f61a644abadc958031f907, type: 2}
+    _position: {x: .150000006, y: -.296999991, z: .0549999997}
+    _rotation: {x: -.0469999984, y: 0, z: 0}
+    _impactEffect: 7
+    _inputHandler: 1
+  - _name: '*Magma Rifle'
+    _itemId: 1023
+    _icon: {fileID: 2800000, guid: 8c220ddc53756af4bb09989850ecc214, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: feb99fa7015313a40bee2b4555d93aec, type: 2}
+    _position: {x: .180999994, y: -.333999991, z: .165999994}
+    _rotation: {x: .00899999961, y: 358.243988, z: 359.971008}
+    _impactEffect: 7
+    _inputHandler: 1
+  - _name: '*Vandalizer'
+    _itemId: 1021
+    _icon: {fileID: 2800000, guid: 8a0ead38a4600af4384f6f825340f995, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 26fbb360914c46d4c86a608a9b5bc8b5, type: 2}
+    _position: {x: .150000006, y: -.296999991, z: .261000007}
+    _rotation: {x: -.0469999984, y: 0, z: 0}
+    _impactEffect: 7
+    _inputHandler: 1
+  - _name: '*Arctic Rifle'
+    _itemId: 1245
+    _icon: {fileID: 2800000, guid: 1086b040507f7af4eb186554fa63ef56, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 86b06c53bc37b304a91bc19db32a5a1e, type: 2}
+    _position: {x: .150000006, y: -.379999995, z: .261000007}
+    _rotation: {x: -.0469999984, y: 0, z: 0}
+    _impactEffect: 7
+    _inputHandler: 1
+  - _name: '*Deliverator'
+    _itemId: 1017
+    _icon: {fileID: 2800000, guid: 99ecb9957632f4243980d237caa5bfc9, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 2
+      MaxMultiplier: 8
+      DefaultMultiplier: 2
+      CurrentMultiplier: 2
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 658d629a94ebb0c46824d98e9fcdede5, type: 2}
+    _position: {x: .159999996, y: -.223000005, z: .241999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Ordinator Rifle'
+    _itemId: 1016
+    _icon: {fileID: 2800000, guid: 25794ccfedb703a4c8cdf486e2754340, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 2
+      MaxMultiplier: 4
+      DefaultMultiplier: 2
+      CurrentMultiplier: 2
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 76950bff32162014cb68280b8f00d925, type: 2}
+    _position: {x: .159999996, y: -.223000005, z: .241999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Particle Lance'
+    _itemId: 1147
+    _icon: {fileID: 2800000, guid: 43ccd5c4c04d02f46b0373c023e8df95, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 4
+      MaxMultiplier: 4
+      DefaultMultiplier: 4
+      CurrentMultiplier: 4
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: 9b2fa0137cab79540a9bde1c0f99dc36, type: 2}
+    _position: {x: .162, y: -.186000004, z: .0659999996}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 11
+    _inputHandler: 3
+  - _name: '*Vanquisher'
+    _itemId: 1018
+    _icon: {fileID: 2800000, guid: fbda5d97ae636d643a3259ea9466195d, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 4
+      MaxMultiplier: 16
+      DefaultMultiplier: 4
+      CurrentMultiplier: 4
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 6b789d05ee316494e9553efff44a2e2c, type: 2}
+    _position: {x: .159999996, y: -.25999999, z: .219999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Nefarious Needler '
+    _itemId: 1239
+    _icon: {fileID: 2800000, guid: d91865c243b589a4f940abaede43811b, type: 1}
+    _damageEffectFlag: 1
+    _damageEffectValue: .200000003
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 4
+      MaxMultiplier: 16
+      DefaultMultiplier: 4
+      CurrentMultiplier: 4
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: bb58527601614ea46b27561c293a33b2, type: 2}
+    _position: {x: .159999996, y: -.25999999, z: .219999999}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Fusion Lance'
+    _itemId: 1246
+    _icon: {fileID: 2800000, guid: b23c4aa56f3bd7740a39dba843a5d90c, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 2
+      MaxMultiplier: 8
+      DefaultMultiplier: 2
+      CurrentMultiplier: 2
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: ef6a7915fcd35e84d9e502665938a5ca, type: 2}
+    _position: {x: .159999996, y: -.25999999, z: .219999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 12
+    _inputHandler: 3
+  - _name: '*Dark Vanquisher'
+    _itemId: 1244
+    _icon: {fileID: 2800000, guid: 9c160c030331efa4a98ceeb2e67f6f2e, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 6
+      MaxMultiplier: 20
+      DefaultMultiplier: 4
+      CurrentMultiplier: 4
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: f5ea2bbecb28c7847851e7b643af99aa, type: 2}
+    _position: {x: .159999996, y: -.25999999, z: .219999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Vlad'
+    _itemId: 1298
+    _icon: {fileID: 2800000, guid: ada912af2aec1b14a8d71f89729187ac, type: 1}
+    _damageEffectFlag: 1
+    _damageEffectValue: .200000003
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: .0162000004, y: -.27700001, z: .405000001}
+    _secondaryAction: 2
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 0
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: 7a548e28695bd97429c07ec69cd2285b, type: 2}
+    _position: {x: .105999999, y: -.273999989, z: .175999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 4
+    _inputHandler: 2
+  - _name: '*Snapshot'
+    _itemId: 1300
+    _icon: {fileID: 2800000, guid: 1a123de245e6a5b4ebe5c56eb6c11549, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 6
+      MaxMultiplier: 6
+      DefaultMultiplier: 4
+      CurrentMultiplier: 4
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: 89a4654fde77de74c810ba6cfd4d94c0, type: 2}
+    _position: {x: .159999996, y: -.25999999, z: .219999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Kantana'
+    _itemId: 1136
+    _icon: {fileID: 2800000, guid: 7e952d7d9cf4ecf418192ac866e72081, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: e13d0375590996444b970a650cef6e2a, type: 2}
+    _position: {x: .400000006, y: -.5, z: .5}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Sickle'
+    _itemId: 1142
+    _icon: {fileID: 2800000, guid: 51cdec24dd5723e43afbf57443e9273f, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: 698bfa544f5f70e42bc32382cc2c6143, type: 2}
+    _position: {x: .400000006, y: -.5, z: .5}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Dundee Knife'
+    _itemId: 1148
+    _icon: {fileID: 2800000, guid: a04ca26643954914d9d4d9bc4f9591a1, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: cbd125e1d7e87154d97499548e353379, type: 2}
+    _position: {x: .379999995, y: -.479999989, z: .699999988}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Rambo Knife'
+    _itemId: 1149
+    _icon: {fileID: 2800000, guid: acba79c26861d9b43be097062ecf9b62, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: 5d770223034c21a4988fe06aeee51a87, type: 2}
+    _position: {x: .330000013, y: -.469999999, z: .660000026}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Pirate Knife'
+    _itemId: 1150
+    _icon: {fileID: 2800000, guid: d200eaa72b8885d49aa53509d9cdc33d, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: 3ed71c7471b59344e9270d6520c76b16, type: 2}
+    _position: {x: .400000006, y: -.620000005, z: .560000002}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Hammer'
+    _itemId: 1162
+    _icon: {fileID: 2800000, guid: 5187d476df7c35042be090daec92fbf1, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 3fcc2fc581532c84891a4a590cd456a0, type: 2}
+    _position: {x: .400000006, y: -.5, z: .5}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Santa Scythe'
+    _itemId: 1184
+    _icon: {fileID: 2800000, guid: 1413fcdfb4afe6a4abd851163da89e50, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: 54940b5de314544419c64b7d455b5479, type: 2}
+    _position: {x: .400000006, y: -.5, z: .5}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Zombie Axe'
+    _itemId: 1293
+    _icon: {fileID: 2800000, guid: 5c9e6182417e0de438286b465778692b, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: 9aab9345eeab63b41a32d0ea27949d72, type: 2}
+    _position: {x: .400000006, y: -.5, z: .5}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*UMG DE'
+    _itemId: 1303
+    _icon: {fileID: 2800000, guid: 46b3a1e485ff6d74982d4076ec6de4fe, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400008, guid: 200997632e26bc74cac40e1df226a44b, type: 2}
+    _position: {x: .130999997, y: -.171000004, z: .0149999997}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 9
+    _inputHandler: 1
+  - _name: '*Magma Rifle DE'
+    _itemId: 1302
+    _icon: {fileID: 2800000, guid: c0cec8c4fd729fc4e891ce8fa8b9db40, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: 49e392fcff98c5c47a0dc661fd68fc1a, type: 2}
+    _position: {x: .180999994, y: -.333999991, z: .165999994}
+    _rotation: {x: .00899999961, y: 358.243988, z: 359.971008}
+    _impactEffect: 7
+    _inputHandler: 1
+  - _name: '*Vanquisher DE'
+    _itemId: 1301
+    _icon: {fileID: 2800000, guid: 925b43174398c6f409e6ab9b7514a423, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 4
+      MaxMultiplier: 16
+      DefaultMultiplier: 4
+      CurrentMultiplier: 4
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 0
+    _secondaryActionReticule: 2
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: e71fd2d09a9b95843b7c7e514cdf0fb2, type: 2}
+    _position: {x: .159999996, y: -.25999999, z: .219999999}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 8
+    _inputHandler: 3
+  - _name: '*Battle Snake DE'
+    _itemId: 1313
+    _icon: {fileID: 2800000, guid: 1c0b011bce0fd1341a249d2b36782a51, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: da1da93174cd2fa49883704ff2873ae4, type: 2}
+    _position: {x: .202999994, y: -.111000001, z: .391000003}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 3
+    _inputHandler: 4
+  - _name: '*MythicEdge DE'
+    _itemId: 1312
+    _icon: {fileID: 2800000, guid: 5ecb497b8b9a24545b53f7d7fc56ca5c, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400002, guid: ab501f405f5299c4797c70ec8ce9caa7, type: 2}
+    _position: {x: .400000006, y: -.5, z: .5}
+    _rotation: {x: 334, y: 151, z: 35}
+    _impactEffect: 1
+    _inputHandler: 1
+  - _name: '*Thunderbuss DE'
+    _itemId: 1314
+    _icon: {fileID: 2800000, guid: 4020c0c71b9144745abbafe8facbcfef, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 1
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400000, guid: a6ae6d70072f6f44c88cfa794784af41, type: 2}
+    _position: {x: .119999997, y: -.175999999, z: .256000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 4
+    _inputHandler: 1
+  - _name: '*Enigma Cannon DE'
+    _itemId: 1315
+    _icon: {fileID: 2800000, guid: 1e069c0e94387aa478026213f0c52066, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 1
+      MaxMultiplier: 1
+      DefaultMultiplier: 1
+      CurrentMultiplier: 1
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 0
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400008, guid: 7b4b89191c172a04d85fad4db4a48d1c, type: 2}
+    _position: {x: .200000003, y: -.340000004, z: .300000012}
+    _rotation: {x: 0, y: 0, z: 0}
+    _impactEffect: 10
+    _inputHandler: 0
+  - _name: '*Particle Lance DE'
+    _itemId: 1316
+    _icon: {fileID: 2800000, guid: 07b9654ef23998249baaafb870ad3e4e, type: 1}
+    _damageEffectFlag: 0
+    _damageEffectValue: 0
+    _hasAutomaticFire: 0
+    _zoomInformation:
+      MinMultiplier: 4
+      MaxMultiplier: 4
+      DefaultMultiplier: 4
+      CurrentMultiplier: 4
+    _ironSightPosition: {x: 0, y: 0, z: 0}
+    _secondaryAction: 1
+    _showReticleForPrimaryAction: 1
+    _secondaryActionReticule: 1
+    _combatRange: 2
+    _tier: 0
+    _minProjectileDistance: 2
+    _maxConcurrentProjectiles: 0
+    _prefab: {fileID: 11400004, guid: 9e4d2aa5001bf0742ba8d70d3a01f11c, type: 2}
+    _position: {x: .162, y: -.186000004, z: .0659999996}
+    _rotation: {x: .551999986, y: 0, z: 0}
+    _impactEffect: 11
+    _inputHandler: 3
+  UnityItemsQuickUse:
+  - _name: '*Spring Grenades - Pack of 5'
+    _itemId: 1029
+    _icon: {fileID: 2800000, guid: 6da00cdd8acf1b242bf7ed73ed763281, type: 1}
+    _rechargeCD: 30
+    _actionCD: 2
+    _amount: 5
+    _prefab: {fileID: 100006, guid: f77aaec2e79feae49850ef706d039201, type: 2}
+  - _name: '*Spring Grenades - Pack of 3'
+    _itemId: 1247
+    _icon: {fileID: 2800000, guid: 6da00cdd8acf1b242bf7ed73ed763281, type: 1}
+    _rechargeCD: 30
+    _actionCD: 2
+    _amount: 3
+    _prefab: {fileID: 100006, guid: f77aaec2e79feae49850ef706d039201, type: 2}
+  - _name: '*Spring Grenades - Pack of 1'
+    _itemId: 1248
+    _icon: {fileID: 2800000, guid: 6da00cdd8acf1b242bf7ed73ed763281, type: 1}
+    _rechargeCD: 30
+    _actionCD: 2
+    _amount: 1
+    _prefab: {fileID: 100006, guid: f77aaec2e79feae49850ef706d039201, type: 2}
+  - _name: '*Spring Grenades - Pack of 8'
+    _itemId: 1249
+    _icon: {fileID: 2800000, guid: 6da00cdd8acf1b242bf7ed73ed763281, type: 1}
+    _rechargeCD: 30
+    _actionCD: 2
+    _amount: 8
+    _prefab: {fileID: 100006, guid: f77aaec2e79feae49850ef706d039201, type: 2}
+  UnityItemsFunctional:
+  - _name: '*Clan License'
+    _itemId: 1234
+    _icon: {fileID: 2800000, guid: c5c7a9cdf2025604e92a32959ded1466, type: 1}
+    _prefab: {fileID: 0}
+    _canPreviewInWidget: 0
+  - _name: '*Privateer License '
+    _itemId: 1094
+    _icon: {fileID: 2800000, guid: e346aec43593dad419c062a5fe3ca177, type: 1}
+    _prefab: {fileID: 0}
+    _canPreviewInWidget: 0
+  - _name: '*Mac License '
+    _itemId: 1265
+    _icon: {fileID: 2800000, guid: 5690b14e0afcc0a4087867ebe0de6da6, type: 1}
+    _prefab: {fileID: 0}
+    _canPreviewInWidget: 0
+  - _name: '*Name Change: 1 use'
+    _itemId: 1294
+    _icon: {fileID: 2800000, guid: 85cf40d404957ce478dc366070d7df42, type: 1}
+    _prefab: {fileID: 0}
+    _canPreviewInWidget: 0
+  - _name: '*Name Change: 2 uses'
+    _itemId: 1295
+    _icon: {fileID: 2800000, guid: 85cf40d404957ce478dc366070d7df42, type: 1}
+    _prefab: {fileID: 0}
+    _canPreviewInWidget: 0
+  - _name: '*Name Change: 3 uses'
+    _itemId: 1296
+    _icon: {fileID: 2800000, guid: 85cf40d404957ce478dc366070d7df42, type: 1}
+    _prefab: {fileID: 0}
+    _canPreviewInWidget: 0
+--- !u!1 &1590451289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 1590451290}
+  - 114: {fileID: 1590451293}
+  - 114: {fileID: 1590451292}
+  - 114: {fileID: 1590451291}
+  m_Layer: 0
+  m_Name: GuiManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1590451290
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1590451289}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &1590451291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1590451289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81abad55dd3298e48bd5d4bd00779411, type: 1}
+  m_Name: 
+  _armorGauge:
+  - {fileID: 2800000, guid: 30ac3bf5417dbd84eb41864202e2c107, type: 1}
+  - {fileID: 2800000, guid: 2a733ece8f4c0884d94ead034c209dff, type: 1}
+  - {fileID: 2800000, guid: 9c3005540285ce84db9ed66eb08ffbf1, type: 1}
+  - {fileID: 2800000, guid: 522efca6d6f0e5c4d948c024bd433177, type: 1}
+  _armorShield:
+  - {fileID: 2800000, guid: f5dc91edf9f8c3c46a3568959be188b6, type: 1}
+  - {fileID: 2800000, guid: ec89dcbfb515c5740b3e2ce1c2a16979, type: 1}
+  - {fileID: 2800000, guid: 8587a136a90b2984c9b31747ca543dc2, type: 1}
+  - {fileID: 2800000, guid: 903cdacee044fe741b5d695b9c4b78f1, type: 1}
+--- !u!114 &1590451292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1590451289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6157db29ae4549844a0a2fef2b6d2d6a, type: 1}
+  m_Name: 
+  _closeRange:
+  - {fileID: 2800000, guid: 3a91ece837a1f3e468caecdfd992a12e, type: 1}
+  - {fileID: 2800000, guid: 00a84a45c1aae8e499a1c9be63b4cf17, type: 1}
+  - {fileID: 2800000, guid: 4da2b30919c79574789c739447231500, type: 1}
+  - {fileID: 2800000, guid: 7581609493bee9349bbcb72c7e013061, type: 1}
+  - {fileID: 2800000, guid: 09cc4aed91f40de40a77e120cc269046, type: 1}
+  _midRange:
+  - {fileID: 2800000, guid: 5378711e7e4546b4bba0260c5e42a67a, type: 1}
+  - {fileID: 2800000, guid: d1640524e7f92f842a7ca2058a6f0732, type: 1}
+  - {fileID: 2800000, guid: 6803a1ee2ce00ae4aa06949c11333655, type: 1}
+  - {fileID: 2800000, guid: a722bd0cbb8b9c14da691b73cbdb6008, type: 1}
+  - {fileID: 2800000, guid: f98595144c5a6fc42ae6a1adabd38b8a, type: 1}
+  _farRange:
+  - {fileID: 2800000, guid: 4a263d12ef38faa47aa1c10726d3b73f, type: 1}
+  - {fileID: 2800000, guid: ac9fd79b813731341bd924ab4befe5dc, type: 1}
+  - {fileID: 2800000, guid: 4a254e046cfd6eb4d866f30eda65350c, type: 1}
+  - {fileID: 2800000, guid: 4aca4cd82529a5c44aed84df727adec8, type: 1}
+  - {fileID: 2800000, guid: 034999537140c0247b40f4cff097cb73, type: 1}
+  _rangeIconClose: {fileID: 2800000, guid: a68e7afc93fe1844cb5b6272b3d0015d, type: 1}
+  _rangeIconCloseMid: {fileID: 2800000, guid: d8193a774397d444caa469ac06d86f17, type: 1}
+  _rangeIconFar: {fileID: 2800000, guid: e3bb335bc6a3efd43b991ed834f54d04, type: 1}
+  _rangeIconMid: {fileID: 2800000, guid: e4be512ad17500346869016c7bc4b5ac, type: 1}
+  _rangeIconMidFar: {fileID: 2800000, guid: 262d5265746b3a4478010430de78f368, type: 1}
+  _warningRange: 0
+--- !u!114 &1590451293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1590451289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89c1dc3c262ea584ab29a49cdc779bed, type: 1}
+  m_Name: 
+  _pointsIcon20x20: {fileID: 2800000, guid: 1867d8cf86f2d6e4a9fa63630b884c12, type: 1}
+  _creditsIcon20x20: {fileID: 2800000, guid: 26617e319acbc854887b3b58a68e0fdf, type: 1}
+  _xpIcon20x20: {fileID: 2800000, guid: 618aad85e783b8b4ebbd48f67053a0a0, type: 1}
+  _pointsIcon128x128: {fileID: 2800000, guid: ad1eca8c3124696459d8053230dc27bc, type: 1}
+  _white: {fileID: 2800000, guid: 31fa2f7b698be4db080d885656cf6f85, type: 1}
+  _mainMenuPlay64x64: {fileID: 2800000, guid: a2e97e70d9fceb8458972f226733636c, type: 1}
+  _mainMenuShop64x64: {fileID: 2800000, guid: 3ebb7a67cebeb4e44ac0ec256283fe1e, type: 1}
+  _mainMenuTrain64x64: {fileID: 2800000, guid: 31f73ee0b1fc42c4ba8efcf02f911bac, type: 1}
+  _mainMenuQuit64x64: {fileID: 2800000, guid: 3b9c5984cd6d5bb4c8effd841673d0f3, type: 1}
+  _weaponClasses:
+  - {fileID: 2800000, guid: 47e891f917d2c1f4ab6ebd7fe6f373a9, type: 1}
+  - {fileID: 2800000, guid: 8dfa62ff80185634ea665223e7dcda9d, type: 1}
+  - {fileID: 2800000, guid: 673102fe170275f4d8019d7bb9dfacaf, type: 1}
+  - {fileID: 2800000, guid: 750da6c04c831d14ca522fc26a2e4849, type: 1}
+  - {fileID: 2800000, guid: 2d3d3f7caa157a244a9565b600705e41, type: 1}
+  - {fileID: 2800000, guid: 8fcacc755f635fb4eb84e9f97a77d20c, type: 1}
+  - {fileID: 2800000, guid: fc8ada5411c03484ea851b234b5f0dce, type: 1}
+  - {fileID: 2800000, guid: dccd1d8672947c447a5995c3f664a1af, type: 1}
+  _gearClasses:
+  - {fileID: 2800000, guid: d7e241e594836ba469fa473e31562274, type: 1}
+  - {fileID: 2800000, guid: c28e72e8a02db6c4ba612073a2e4b691, type: 1}
+  - {fileID: 2800000, guid: 1f83628c3bdc9564f91ce8e87a563fb5, type: 1}
+  - {fileID: 2800000, guid: fe72c246b70233b4c9c7b947292fcd5d, type: 1}
+  - {fileID: 2800000, guid: 73f2e88365f97f249a7099d786bdef07, type: 1}
+  - {fileID: 2800000, guid: 5a3885e545d6fa247b15d5e974fc6b75, type: 1}
+  - {fileID: 2800000, guid: bfd3cea94f82740488784bb777f055ab, type: 1}
+  _itemCategories:
+  - {fileID: 2800000, guid: 605acc181667b4b40b49a57d9c83d39f, type: 1}
+  - {fileID: 2800000, guid: c3ec91bce9e510541919b515e502b5ad, type: 1}
+  - {fileID: 2800000, guid: dce1b3088010966418c7e0216ca107e5, type: 1}
+  - {fileID: 2800000, guid: 54d46da966ca09c4aa7e7e0037b043b3, type: 1}
+  - {fileID: 2800000, guid: 9c89d2d0f26bfdb428bb000b344290ac, type: 1}
+  - {fileID: 2800000, guid: c3ec91bce9e510541919b515e502b5ad, type: 1}
+  - {fileID: 2800000, guid: db33598880c07ae4787e0bec4fa47bcb, type: 1}
+  _channels:
+  - {fileID: 2800000, guid: 53d6a5ce3fe49e148b48d9c4e512f363, type: 1}
+  - {fileID: 2800000, guid: 504b039e8846d29428bbc0cdeb4e7396, type: 1}
+  - {fileID: 2800000, guid: 47c137939b00f6c449f9fea2936c7786, type: 1}
+  - {fileID: 2800000, guid: 0d074898ff11db242bbc902a038c2422, type: 1}
+  - {fileID: 2800000, guid: dde9eb8718c652f49a2633d5585c92a6, type: 1}
+  - {fileID: 2800000, guid: bcf441951061843498626ba4cff8b0e2, type: 1}
+  _presence:
+  - {fileID: 2800000, guid: 4d09aec07d66ac14698a332a27cdf210, type: 1}
+  - {fileID: 2800000, guid: ad0edbcd55db4b442a48772982f8bed6, type: 1}
+  - {fileID: 2800000, guid: 6bfc77b093b5cf847885d80ec223bcc7, type: 1}
+  _cheatIconBlue: {fileID: 2800000, guid: fe49b90f664601e4284261c0e8f76771, type: 1}
+  _loadoutCategories:
+  - {fileID: 2800000, guid: 6d36fbb590944bd4fa537172eefef567, type: 1}
+  - {fileID: 2800000, guid: ee353d38273c42040b2e743e79733221, type: 1}
+  - {fileID: 2800000, guid: 1bb35a9870d42dc46b76b5b4f119fa41, type: 1}
+  _labSections:
+  - {fileID: 2800000, guid: fce92b95ebfd3954a82f4367caedcd32, type: 1}
+  - {fileID: 2800000, guid: 55ca6163953e32c40bf98c28839d6dfe, type: 1}
+  - {fileID: 2800000, guid: a5451861c0e88f94fa4bd69bc68a50b5, type: 1}
+  - {fileID: 2800000, guid: 8c00f60df3733e84e893c34d9cf3ec20, type: 1}
+  - {fileID: 2800000, guid: 26617e319acbc854887b3b58a68e0fdf, type: 1}
+  _widgetScalerIcon: {fileID: 2800000, guid: ed51f0561dd07df47bc09f7ed7a9b816, type: 1}
+  _blueBox: {fileID: 2800000, guid: 6f2cad9714c556f47afddfe02fb7e958, type: 1}
+  _checkMark: {fileID: 2800000, guid: 64a5ee7c1b35ba040a4b50bc9d26152b, type: 1}
+  _newMessageIcon: {fileID: 2800000, guid: 9550a169b7e8ea64d8b7b74dd649fe35, type: 1}
+  _shopItemRentDurations:
+  - {fileID: 2800000, guid: bd339a7be5cca584892e1f163dd6f5f3, type: 1}
+  - {fileID: 2800000, guid: f14508808becb0d4c954815a150ccf17, type: 1}
+  - {fileID: 2800000, guid: 4adba1fc51cb6444b90228d33126deeb, type: 1}
+  - {fileID: 2800000, guid: e4b911fdc51500e40a75cddad2058788, type: 1}
+  - {fileID: 2800000, guid: c22e66ed578c2ce40a37a0d94f3469a1, type: 1}
+  _itemExpiration: {fileID: 2800000, guid: a4454399748c74b4f9bcfefbb92cee58, type: 1}
+  _itemArmorPoints: {fileID: 2800000, guid: 53546f69e89516c4da37a35b7533c57c, type: 1}
+  _sortUpArrow: {fileID: 2800000, guid: c54b2a9a4e049b947b068dfc263d4dd0, type: 1}
+  _sortDownArrow: {fileID: 2800000, guid: a6c7b9ce0b9b22b43a0fd19dee8f2995, type: 1}
+  _expandBigArrow: {fileID: 2800000, guid: e155f9978ba6f3e41ac5a9b8f1cd84a3, type: 1}
+  _promotionTags:
+  - {fileID: 2800000, guid: 2d8ab47214e8a0844a4cc12f240c6f71, type: 1}
+  - {fileID: 2800000, guid: e34e79041c7ca0743ae3d9699518eb2a, type: 1}
+  - {fileID: 2800000, guid: ec1b085ee60dfe24da2848727623026c, type: 1}
+  _levelLock: {fileID: 2800000, guid: 96aeb8b2a9a92854f8ef68da05756c33, type: 1}
+  _levelUp: {fileID: 2800000, guid: 085d3fb2d341e8d48af18aeb2eabfc8c, type: 1}
+  _facebook: {fileID: 2800000, guid: e75c36c4db9f8d643b8e3a37708413e2, type: 1}
+  _achievementBadges:
+  - {fileID: 15200000, guid: 84fe0e39af2dd8b428f7b85622279219, type: 1}
+  - {fileID: 15200000, guid: ce30b07df523b5f48b7ac52003a90f28, type: 1}
+  - {fileID: 15200000, guid: 45b5c67424c951c46a097c539173c5fe, type: 1}
+  - {fileID: 15200000, guid: b306b3862b1e38d4dbf37d5447ae3ea4, type: 1}
+  - {fileID: 15200000, guid: 7c01776fb7219554e99aac741cd53dc8, type: 1}
+  - {fileID: 15200000, guid: bc14781cf499ca941ac5fe211946237a, type: 1}
+  _recommendationBadges:
+  - {fileID: 15200000, guid: d6d141c7de85be84aad32867be4c6a36, type: 1}
+  - {fileID: 15200000, guid: 8cdd637685b07e54baca19a98c10b5ca, type: 1}
+  - {fileID: 15200000, guid: 325969fe50d1fd94bb8a1146aa3ab631, type: 1}
+  - {fileID: 15200000, guid: 5ac4dfa50c09340498aa28a23c87c07d, type: 1}
+--- !u!1 &1715847471
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 1715847472}
+  - 114: {fileID: 1715847474}
+  - 114: {fileID: 1715847475}
+  - 114: {fileID: 1715847476}
+  - 114: {fileID: 1715847477}
+  - 114: {fileID: 1715847473}
+  - 114: {fileID: 1715847479}
+  m_Layer: 0
+  m_Name: TestEndOfMatch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1715847472
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715847471}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 66.5043945, y: -21.7681465, z: -5.52692938}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &1715847473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715847471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57bbfcc7834189b40ba529c5d640d271, type: 1}
+  m_Name: 
+  _title: LOADOUT
+--- !u!114 &1715847474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715847471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40022f32b0727a54b8ca99e41a18fa26, type: 1}
+  m_Name: 
+  blueStonezGui: {fileID: 11400000, guid: 36b4e500a724c624a806f49349a2e2f3, type: 2}
+  stormFrontGui: {fileID: 11400000, guid: c982d514b5c8c624b8993477e348a1d3, type: 2}
+--- !u!114 &1715847475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715847471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8195c96dd8b04f048a7dcb5bd9c615ab, type: 1}
+  m_Name: 
+  debugRect:
+    serializedVersion: 2
+    x: 0
+    y: 25
+    width: 200
+    height: 255
+  debugColor: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &1715847476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715847471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27647e7cae661ae438061d65d9cf5263, type: 1}
+  m_Name: 
+--- !u!114 &1715847477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715847471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebb256292b6484f48a0479f325c33357, type: 1}
+  m_Name: 
+  _guiPages:
+  - {fileID: 1715847473}
+  - {fileID: 1715847479}
+  - {fileID: 1715847473}
+  _rect:
+    serializedVersion: 2
+    x: 0
+    y: 89
+    width: 560
+    height: 0
+  _showReadyButton: 0
+--- !u!114 &1715847479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715847471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b0c992868d08514282fbae9e74bd51c, type: 1}
+  m_Name: 
+  _title: PERSONAL
