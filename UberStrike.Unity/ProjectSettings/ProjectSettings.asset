@@ -58,6 +58,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 0
+  debugUnloadMode: 0
   iPhoneBundleIdentifier: com.Company.ProductName
   iPhoneBundleVersion: 1.0
   AndroidBundleVersionCode: 1
@@ -143,7 +144,10 @@ PlayerSettings:
   ps3TrophyCommId: 
   ps3TrophyPackagePath: 
   ps3ReservedMemorySizeMB: 2
-  ps3ReservedHDDSizeMB: 128
+  ps3BootCheckMaxSaveGameSizeKB: 128
+  ps3TrophyCommSig: 
+  ps3SaveGameSlots: 1
+  ps3TrialMode: 0
   flashStrippingLevel: 2
   firstStreamedLevelWithResources: 0
   unityRebuildLibraryVersion: 9

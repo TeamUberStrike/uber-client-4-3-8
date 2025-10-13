@@ -360,16 +360,23 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         if ((ev != null) && ev.IsEnabled)
         {
+            CmuneDebug.LogError("Enter OnAuthenticateApplication");
+            #if UNITY_EDITOR
+            CmuneDebug.LogError("Test UNITY_EDITOR Enter OnAuthenticateApplication");
+            #endif
             // Setup the data for Rinjdael encryption
             Configuration.EncryptionInitVector = ev.EncryptionInitVector;
             Configuration.EncryptionPassPhrase = ev.EncryptionPassPhrase;
-
+            CmuneDebug.LogError("Configuration.EncryptionPassPhrase");
             // We have authenticated the application and the player and are considered online (this is important for calling encrypted web services like RecordException)
             ApplicationDataManager.IsOnline = true;
 
 #if UNITY_EDITOR
+            CmuneDebug.LogError("Before CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled");
+            CmuneDebug.LogError(CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled);
             if (CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled)
             {
+                CmuneDebug.LogError("CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled");
                 // Setup Local Game Server only if we are in the editor
                 Singleton<GameServerManager>.Instance.AddGameServer(new PhotonView()
                 {
@@ -382,20 +389,21 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             }
 #endif
 
-            // Setup Game Servers
-            foreach (PhotonView v in ev.GameServers)
-            {
-#if !UNITY_ANDROID && !UNITY_IPHONE
-                // mobile servers should only be seen by mobile devices
-                if (v.UsageType == PhotonUsageType.Mobile) continue;
-#endif
-                GameServerManager.Instance.AddGameServer(v);
-            }
+//             // Setup Game Servers
+//             foreach (PhotonView v in ev.GameServers)
+//             {
+// #if !UNITY_ANDROID && !UNITY_IPHONE
+//                 // mobile servers should only be seen by mobile devices
+//                 if (v.UsageType == PhotonUsageType.Mobile) continue;
+// #endif
+//                 GameServerManager.Instance.AddGameServer(v);
+//             }
 
             // Setup Comm Server
 #if UNITY_EDITOR
             if (CmuneNetworkConfiguration.Instance.CustomCommServer.IsEnabled)
             {
+                CmuneDebug.LogError("CmuneNetworkConfiguration.Instance.CustomCommServer.IsEnabled");
                 CmuneNetworkManager.CurrentCommServer = new GameServerView(new PhotonView()
                 {
                     IP = CmuneNetworkConfiguration.Instance.CustomCommServer.Ip,
@@ -418,6 +426,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             }
             else
             {
+                CmuneDebug.LogError("AuthenticationManager.Instance.LoginByChannel()");
                 AuthenticationManager.Instance.LoginByChannel();
             }
         }
