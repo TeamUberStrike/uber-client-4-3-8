@@ -5176,6 +5176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c773504c3706641950f52fc5fa9e0f, type: 1}
   m_Name: 
   loadMapsUsingWebService: 1
+  _locale: 0
 --- !u!114 &266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8127,11 +8128,11 @@ MonoBehaviour:
   _localGameServer:
     Ip: 127.0.0.1
     Port: 5155
-    IsEnabled: 0
+    IsEnabled: 1
   _localCommServer:
     Ip: 127.0.0.1
     Port: 5055
-    IsEnabled: 0
+    IsEnabled: 1
   _enableDebugMessages: 0
   _roomCreation: 0
 --- !u!114 &320
