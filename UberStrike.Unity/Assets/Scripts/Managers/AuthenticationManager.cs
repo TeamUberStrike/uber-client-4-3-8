@@ -220,11 +220,11 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
 
         yield return MonoRoutine.Start(ItemManager.Instance.StartGetInventory(false));
 
-        // if (!InventoryManager.Instance.HasPrivateersLicense())
-        // {
-        //     ShowLoginErrorPopup(LocalizedStrings.Error, "It looks like you're trying to login with an old account.\nPlease contact support@cmune.com to upgrade.");
-        //     yield break;
-        // }
+        if (!InventoryManager.Instance.HasPrivateersLicense())
+        {
+            ShowLoginErrorPopup(LocalizedStrings.Error, "It looks like you're trying to login with an old account.\nPlease contact support@cmune.com to upgrade.");
+            yield break;
+        }
 
         // Get the players loadout
         _progress.ManualProgress = 0.7f;

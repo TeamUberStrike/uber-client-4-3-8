@@ -68,13 +68,11 @@ public class ItemManager : Singleton<ItemManager>
     private void UpdateShopItems(UberStrikeItemShopClientView shopView)
     {
         _shopItems.Clear();
-        CmuneDebug.LogError("GearItems");
+
         foreach (var itemView in shopView.GearItems) AddItemToShop(itemView);
-        CmuneDebug.LogError("WeaponItems");
         foreach (var itemView in shopView.WeaponItems) AddItemToShop(itemView);
-        // CmuneDebug.LogError("FunctionalItems");
-        // foreach (var itemView in shopView.FunctionalItems) AddItemToShop(itemView);
-        CmuneDebug.LogError("QuickItems");
+        foreach (var itemView in shopView.FunctionalItems) AddItemToShop(itemView);
+
         foreach (var itemView in shopView.QuickItems)
         {
             try
@@ -97,24 +95,12 @@ public class ItemManager : Singleton<ItemManager>
     {
         if (itemView == null)
         {
-            CmuneDebug.LogError("AddItemToShop ArgumentNullException");
             throw new ArgumentNullException("itemView");
         }
 
         IUnityItem baseItem;
         if (_unityItems.TryGetValue(itemView.ID, out baseItem))
         {
-            CmuneDebug.LogError("AddItemToShop found baseItem for ID: " + itemView.ID);
-            CmuneDebug.LogError("itemView: " + (itemView != null ? itemView.ToString() + " (ID=" + itemView.ID + ", Name=" + (itemView.Name ?? "NULL") + ")" : "NULL"));
-            CmuneDebug.LogError("baseItem: " + (baseItem != null ? baseItem.ToString() : "NULL"));
-            CmuneDebug.LogError("baseItem.ItemView: " + (baseItem.ItemView != null ? baseItem.ItemView.ToString() : "NULL"));
-            if (itemView.ID == 1234)
-            {
-                if (baseItem.ItemView == null)
-                {
-                    CmuneDebug.LogError("baseItem.ItemView is NULL for ID 1234 inside AddItemToShop:TryGetValue");
-                }
-            }
             ItemConfigurationUtil.CopyProperties(baseItem.ItemView, itemView);
 
             if (!_shopItems.ContainsKey(baseItem.ItemId))
@@ -126,10 +112,10 @@ public class ItemManager : Singleton<ItemManager>
             //    CmuneDebug.LogError("AddItemToShop failed because item {0} width id {1} is duplicate.", itemView.Name, itemView.ID);
             //}
         }
-        else
-        {
-           CmuneDebug.LogWarning("AddItemToShop failed for item '{0}' with id {1} because no corresponding unity item was found. Maybe deprecated?", itemView.Name, itemView.ID);
-        }
+        //else
+        //{
+        //    CmuneDebug.LogWarning("AddItemToShop failed for item '{0}' with id {1} because no corresponding unity item was found. Maybe deprecated?", itemView.Name, itemView.ID);
+        //}
     }
 
     #endregion
