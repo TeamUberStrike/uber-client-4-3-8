@@ -1,0 +1,1023 @@
+fileFormatVersion: 2
+guid: d4a99db7dcd5ccc4782f73c68c1b03de
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: polySurface118
+    4300002: polySurface109
+    4300004: polySurface171
+    4300006: pCube106
+    4300008: pCube2
+    4300010: pCube1
+    4300012: pCube3
+    4300014: pCube108
+    4300016: pCube107
+    4300018: pCube112
+    4300020: pCube111
+    4300022: pCube109
+    4300024: pCube110
+    4300026: polySurface201
+    4300028: polySurface118
+    4300030: polySurface109
+    4300032: polySurface173
+    4300034: polySurface171
+    4300036: pCube106
+    4300038: pCube2
+    4300040: pCube1
+    4300042: pCube3
+    4300044: pCube108
+    4300046: pCube107
+    4300048: pCube112
+    4300050: pCube111
+    4300052: pCube109
+    4300054: pCube110
+    4300056: polySurface180
+    4300058: pPipe6
+    4300060: polySurface181
+    4300062: pPipe8
+    4300064: pCube113
+    4300066: pCube114
+    4300068: pCylinder5
+    4300070: pSphere2
+    4300072: polySurface174
+    4300074: polySurface187
+    4300076: polySurface148
+    4300078: polySurface185
+    4300080: pCylinder4
+    4300082: polySurface147
+    4300084: polySurface145
+    4300086: polySurface174
+    4300088: polySurface175
+    4300090: polySurface192
+    4300092: polySurface170
+    4300094: polySurface179
+    4300096: polySurface193
+    4300098: polySurface194
+    4300100: polySurface195
+    4300102: polySurface196
+    4300104: polySurface197
+    4300106: polySurface198
+    4300108: polySurface174
+    4300110: polySurface187
+    4300112: polySurface148
+    4300114: polySurface185
+    4300116: pCylinder4
+    4300118: polySurface147
+    4300120: polySurface145
+    4300122: polySurface174
+    4300124: polySurface175
+    4300126: polySurface192
+    4300128: polySurface170
+    4300130: polySurface179
+    4300132: polySurface193
+    4300134: polySurface194
+    4300136: polySurface195
+    4300138: polySurface196
+    4300140: polySurface197
+    4300142: polySurface198
+    4300144: polySurface157
+    4300146: pCylinder1
+    4300148: polySurface158
+    4300150: polySurface157
+    4300152: pCylinder1
+    4300154: polySurface158
+    4300156: polySurface199
+    4300158: polySurface137
+    4300160: polySurface136
+    4300162: polySurface135
+    4300164: polySurface137
+    4300166: polySurface136
+    4300168: polySurface135
+    4300170: polySurface200
+    4300172: pCylinder6
+    4300174: polySurface206
+    4300176: polySurface207
+    4300178: polySurface204
+    4300180: polySurface205
+    4300182: polySurface209
+    4300184: pCylinder7
+    4300186: polySurface211
+    4300188: polySurface210
+    4300190: polySurface216
+    4300192: BaseGround
+    4300194: Inside
+    4300196: Rock
+    4300198: BorderGlow
+    4300200: Box1
+    4300202: Box2
+    4300204: Box3
+    4300206: Box4
+    4300208: Box5
+    4300210: Box6
+    4300212: Box7
+    4300214: Box8
+    4300216: Box9
+    4300218: Box10
+    4300220: BaseGround
+    4300222: Inside
+    4300224: Rock
+    4300226: Box11
+    4300228: Box12
+    4300230: Box13
+    4300232: Box14
+    4300234: Box15
+    4300236: Box16
+    4300238: Box17
+    4300240: Box18
+    4300242: Box19
+    4300244: Box20
+    4300246: Rock
+    4300248: Inside
+    4300250: RedSideGlass
+    4300252: BlueSideGlass
+    4300254: UnderPartRock
+    4300256: FloatingRockInside
+    4300258: FloatingRock
+    4300260: Glow1
+    4300262: Glow2
+    4300264: Glow3
+    4300266: UnderPart
+    4300268: Fence
+    4300270: Ground
+    4300272: GroundCenter
+    4300274: Edge
+    4300276: Glass
+    4300278: Rock
+    4300280: Edge
+    4300282: Fence
+    4300284: Glow
+    4300286: UnderPart
+    4300288: Fence
+    4300290: Ground
+    4300292: GroundCenter
+    4300294: Edge
+    4300296: Glass
+    4300298: Rock
+    4300300: Edge
+    4300302: Fence
+    4300304: Glow
+    4300306: Fence
+    4300308: Ground
+    4300310: Edge
+    4300312: Fence
+    4300314: Ground
+    4300316: Edge
+    4300318: WallEdge
+    4300320: WallBody
+    4300322: WallInside
+    4300324: WallFence
+    4300326: WallEdge
+    4300328: WallBody
+    4300330: WallInside
+    4300332: WallFence
+    4300334: WallFace
+    4300336: WallBody
+    4300338: WallInside
+    4300340: WallEdge
+    4300342: WallFace
+    4300344: WallBody
+    4300346: WallInside
+    4300348: WallEdge
+    4300350: InsideGlow
+    4300352: InsideGlow
+    4300354: InsideGlow
+    4300356: FloatingRockInsideGlow
+    4300358: WallInsideGlow
+    4300360: WallInsideGlow
+    4300362: WallInsideGlow
+    4300364: WallInsideGlow
+    4300366: Box1
+    4300368: Box2
+    4300370: BorderGlow
+  serializedVersion: 10
+  materials:
+    importMaterials: 0
+    materialName: 1
+    materialSearch: 1
+  animations:
+    generateAnimations: 0
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations: []
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 111
+        second: 605fa900
+    BaseGround:
+      data:
+        first: 1
+        second: 62870100
+      data:
+        first: 4
+        second: 421b0600
+      data:
+        first: 23
+        second: fc182300
+      data:
+        first: 33
+        second: 3c5b3200
+    BaseGround 1:
+      data:
+        first: 1
+        second: 44870100
+      data:
+        first: 4
+        second: 241b0600
+      data:
+        first: 23
+        second: e0182300
+      data:
+        first: 33
+        second: 205b3200
+    BigWall:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    BlueBase:
+      data:
+        first: 1
+        second: c4860100
+      data:
+        first: 4
+        second: a41a0600
+    BlueSideGlass:
+      data:
+        first: 1
+        second: 1c870100
+      data:
+        first: 4
+        second: fc1a0600
+      data:
+        first: 23
+        second: be182300
+      data:
+        first: 33
+        second: fe5a3200
+    BlueSideRoad:
+      data:
+        first: 1
+        second: dc860100
+      data:
+        first: 4
+        second: bc1a0600
+    BorderGlow:
+      data:
+        first: 1
+        second: 5c870100
+      data:
+        first: 4
+        second: 3c1b0600
+      data:
+        first: 23
+        second: f6182300
+      data:
+        first: 33
+        second: 365b3200
+    BorderGlow 1:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+      data:
+        first: 23
+        second: 66182300
+      data:
+        first: 33
+        second: a65a3200
+    Box1:
+      data:
+        first: 1
+        second: 58870100
+      data:
+        first: 4
+        second: 381b0600
+      data:
+        first: 23
+        second: f4182300
+      data:
+        first: 33
+        second: 345b3200
+    Box1 1:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+      data:
+        first: 23
+        second: 70182300
+      data:
+        first: 33
+        second: b05a3200
+    Box2:
+      data:
+        first: 1
+        second: 56870100
+      data:
+        first: 4
+        second: 361b0600
+      data:
+        first: 23
+        second: f2182300
+      data:
+        first: 33
+        second: 325b3200
+    Box2 1:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+      data:
+        first: 23
+        second: 6e182300
+      data:
+        first: 33
+        second: ae5a3200
+    Boxes:
+      data:
+        first: 1
+        second: 5a870100
+      data:
+        first: 4
+        second: 3a1b0600
+    Boxes 1:
+      data:
+        first: 1
+        second: 3c870100
+      data:
+        first: 4
+        second: 1c1b0600
+    CenterPart:
+      data:
+        first: 1
+        second: 04870100
+      data:
+        first: 4
+        second: e41a0600
+    Edge:
+      data:
+        first: 1
+        second: d6860100
+      data:
+        first: 4
+        second: b61a0600
+      data:
+        first: 23
+        second: 86182300
+      data:
+        first: 33
+        second: c65a3200
+    Edge 1:
+      data:
+        first: 1
+        second: ea860100
+      data:
+        first: 4
+        second: ca1a0600
+      data:
+        first: 23
+        second: 96182300
+      data:
+        first: 33
+        second: d65a3200
+    Edge 2:
+      data:
+        first: 1
+        second: e2860100
+      data:
+        first: 4
+        second: c21a0600
+      data:
+        first: 23
+        second: 90182300
+      data:
+        first: 33
+        second: d05a3200
+    Edge 3:
+      data:
+        first: 1
+        second: 06870100
+      data:
+        first: 4
+        second: e61a0600
+      data:
+        first: 23
+        second: aa182300
+      data:
+        first: 33
+        second: ea5a3200
+    Edge 4:
+      data:
+        first: 1
+        second: fc860100
+      data:
+        first: 4
+        second: dc1a0600
+      data:
+        first: 23
+        second: a4182300
+      data:
+        first: 33
+        second: e45a3200
+    Edge 5:
+      data:
+        first: 1
+        second: ce860100
+      data:
+        first: 4
+        second: ae1a0600
+      data:
+        first: 23
+        second: 80182300
+      data:
+        first: 33
+        second: c05a3200
+    Fence:
+      data:
+        first: 1
+        second: da860100
+      data:
+        first: 4
+        second: ba1a0600
+      data:
+        first: 23
+        second: 8a182300
+      data:
+        first: 33
+        second: ca5a3200
+    Fence 1:
+      data:
+        first: 1
+        second: f2860100
+      data:
+        first: 4
+        second: d21a0600
+      data:
+        first: 23
+        second: 9c182300
+      data:
+        first: 33
+        second: dc5a3200
+    Fence 2:
+      data:
+        first: 1
+        second: e0860100
+      data:
+        first: 4
+        second: c01a0600
+      data:
+        first: 23
+        second: 8e182300
+      data:
+        first: 33
+        second: ce5a3200
+    Fence 3:
+      data:
+        first: 1
+        second: 0c870100
+      data:
+        first: 4
+        second: ec1a0600
+      data:
+        first: 23
+        second: b0182300
+      data:
+        first: 33
+        second: f05a3200
+    FloatingRock:
+      data:
+        first: 1
+        second: 18870100
+      data:
+        first: 4
+        second: f81a0600
+      data:
+        first: 23
+        second: ba182300
+      data:
+        first: 33
+        second: fa5a3200
+    FloatingRockInside:
+      data:
+        first: 1
+        second: 64870100
+      data:
+        first: 4
+        second: 441b0600
+      data:
+        first: 23
+        second: fe182300
+      data:
+        first: 33
+        second: 3e5b3200
+    Glass:
+      data:
+        first: 1
+        second: e6860100
+      data:
+        first: 4
+        second: c61a0600
+      data:
+        first: 23
+        second: 94182300
+      data:
+        first: 33
+        second: d45a3200
+    Glass 1:
+      data:
+        first: 1
+        second: 00870100
+      data:
+        first: 4
+        second: e01a0600
+      data:
+        first: 23
+        second: a8182300
+      data:
+        first: 33
+        second: e85a3200
+    Ground:
+      data:
+        first: 1
+        second: d8860100
+      data:
+        first: 4
+        second: b81a0600
+      data:
+        first: 23
+        second: 88182300
+      data:
+        first: 33
+        second: c85a3200
+    Ground 1:
+      data:
+        first: 1
+        second: ee860100
+      data:
+        first: 4
+        second: ce1a0600
+      data:
+        first: 23
+        second: 9a182300
+      data:
+        first: 33
+        second: da5a3200
+    Ground 2:
+      data:
+        first: 1
+        second: 0a870100
+      data:
+        first: 4
+        second: ea1a0600
+      data:
+        first: 23
+        second: ae182300
+      data:
+        first: 33
+        second: ee5a3200
+    Ground 3:
+      data:
+        first: 1
+        second: d0860100
+      data:
+        first: 4
+        second: b01a0600
+      data:
+        first: 23
+        second: 82182300
+      data:
+        first: 33
+        second: c25a3200
+    Inside:
+      data:
+        first: 1
+        second: 60870100
+      data:
+        first: 4
+        second: 401b0600
+      data:
+        first: 23
+        second: fa182300
+      data:
+        first: 33
+        second: 3a5b3200
+    Inside 1:
+      data:
+        first: 1
+        second: 22870100
+      data:
+        first: 4
+        second: 021b0600
+      data:
+        first: 23
+        second: c2182300
+      data:
+        first: 33
+        second: 025b3200
+    Inside 2:
+      data:
+        first: 1
+        second: 42870100
+      data:
+        first: 4
+        second: 221b0600
+      data:
+        first: 23
+        second: de182300
+      data:
+        first: 33
+        second: 1e5b3200
+    PlatformBlue1:
+      data:
+        first: 1
+        second: f6860100
+      data:
+        first: 4
+        second: d61a0600
+    PlatformBlue2:
+      data:
+        first: 1
+        second: e8860100
+      data:
+        first: 4
+        second: c81a0600
+    PlatformRed1:
+      data:
+        first: 1
+        second: 10870100
+      data:
+        first: 4
+        second: f01a0600
+    PlatformRed2:
+      data:
+        first: 1
+        second: 02870100
+      data:
+        first: 4
+        second: e21a0600
+    RedBase:
+      data:
+        first: 1
+        second: 1e870100
+      data:
+        first: 4
+        second: fe1a0600
+    RedSideGlass:
+      data:
+        first: 1
+        second: 20870100
+      data:
+        first: 4
+        second: 001b0600
+      data:
+        first: 23
+        second: c0182300
+      data:
+        first: 33
+        second: 005b3200
+    RedSideRoad:
+      data:
+        first: 1
+        second: d4860100
+      data:
+        first: 4
+        second: b41a0600
+    RingRoad:
+      data:
+        first: 1
+        second: f0860100
+      data:
+        first: 4
+        second: d01a0600
+    Rock:
+      data:
+        first: 1
+        second: 5e870100
+      data:
+        first: 4
+        second: 3e1b0600
+      data:
+        first: 23
+        second: f8182300
+      data:
+        first: 33
+        second: 385b3200
+    Rock 1:
+      data:
+        first: 1
+        second: 24870100
+      data:
+        first: 4
+        second: 041b0600
+      data:
+        first: 23
+        second: c4182300
+      data:
+        first: 33
+        second: 045b3200
+    Rock 2:
+      data:
+        first: 1
+        second: 40870100
+      data:
+        first: 4
+        second: 201b0600
+      data:
+        first: 23
+        second: dc182300
+      data:
+        first: 33
+        second: 1c5b3200
+    Rock 3:
+      data:
+        first: 1
+        second: e4860100
+      data:
+        first: 4
+        second: c41a0600
+      data:
+        first: 23
+        second: 92182300
+      data:
+        first: 33
+        second: d25a3200
+    Rock 4:
+      data:
+        first: 1
+        second: fe860100
+      data:
+        first: 4
+        second: de1a0600
+      data:
+        first: 23
+        second: a6182300
+      data:
+        first: 33
+        second: e65a3200
+    SmallWall:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+    UnderPart:
+      data:
+        first: 1
+        second: f4860100
+      data:
+        first: 4
+        second: d41a0600
+      data:
+        first: 23
+        second: 9e182300
+      data:
+        first: 33
+        second: de5a3200
+    UnderPart 1:
+      data:
+        first: 1
+        second: 0e870100
+      data:
+        first: 4
+        second: ee1a0600
+      data:
+        first: 23
+        second: b2182300
+      data:
+        first: 33
+        second: f25a3200
+    UnderPartRock:
+      data:
+        first: 1
+        second: 1a870100
+      data:
+        first: 4
+        second: fa1a0600
+      data:
+        first: 23
+        second: bc182300
+      data:
+        first: 33
+        second: fc5a3200
+    Wall1:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+    Wall1 1:
+      data:
+        first: 1
+        second: cc860100
+      data:
+        first: 4
+        second: ac1a0600
+    Wall2:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    Wall2 1:
+      data:
+        first: 1
+        second: c2860100
+      data:
+        first: 4
+        second: a21a0600
+    WallBody:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+      data:
+        first: 23
+        second: 6c182300
+      data:
+        first: 33
+        second: ac5a3200
+    WallBody 1:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200
+    WallBody 2:
+      data:
+        first: 1
+        second: c8860100
+      data:
+        first: 4
+        second: a81a0600
+      data:
+        first: 23
+        second: 7c182300
+      data:
+        first: 33
+        second: bc5a3200
+    WallBody 3:
+      data:
+        first: 1
+        second: bc860100
+      data:
+        first: 4
+        second: 9c1a0600
+      data:
+        first: 23
+        second: 74182300
+      data:
+        first: 33
+        second: b45a3200
+    WallEdge:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+      data:
+        first: 23
+        second: 68182300
+      data:
+        first: 33
+        second: a85a3200
+    WallEdge 1:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+    WallEdge 2:
+      data:
+        first: 1
+        second: ca860100
+      data:
+        first: 4
+        second: aa1a0600
+      data:
+        first: 23
+        second: 7e182300
+      data:
+        first: 33
+        second: be5a3200
+    WallEdge 3:
+      data:
+        first: 1
+        second: c0860100
+      data:
+        first: 4
+        second: a01a0600
+      data:
+        first: 23
+        second: 76182300
+      data:
+        first: 33
+        second: b65a3200
+    WallInside:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+      data:
+        first: 23
+        second: 6a182300
+      data:
+        first: 33
+        second: aa5a3200
+    WallInside 1:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200
+    WallInside 2:
+      data:
+        first: 1
+        second: c6860100
+      data:
+        first: 4
+        second: a61a0600
+      data:
+        first: 23
+        second: 7a182300
+      data:
+        first: 33
+        second: ba5a3200
+    WallInside 3:
+      data:
+        first: 1
+        second: ba860100
+      data:
+        first: 4
+        second: 9a1a0600
+      data:
+        first: 23
+        second: 72182300
+      data:
+        first: 33
+        second: b25a3200
