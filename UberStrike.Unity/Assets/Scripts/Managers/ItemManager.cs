@@ -71,7 +71,7 @@ public class ItemManager : Singleton<ItemManager>
 
         foreach (var itemView in shopView.GearItems) AddItemToShop(itemView);
         foreach (var itemView in shopView.WeaponItems) AddItemToShop(itemView);
-        foreach (var itemView in shopView.FunctionalItems) AddItemToShop(itemView);
+        //foreach (var itemView in shopView.FunctionalItems) AddItemToShop(itemView);
 
         foreach (var itemView in shopView.QuickItems)
         {
@@ -107,15 +107,15 @@ public class ItemManager : Singleton<ItemManager>
             {
                 _shopItems.Add(baseItem.ItemId, baseItem);
             }
-            //else
-            //{
-            //    CmuneDebug.LogError("AddItemToShop failed because item {0} width id {1} is duplicate.", itemView.Name, itemView.ID);
-            //}
+            else
+            {
+               CmuneDebug.LogError("AddItemToShop failed because item {0} width id {1} is duplicate.", itemView.Name, itemView.ID);
+            }
         }
-        //else
-        //{
-        //    CmuneDebug.LogWarning("AddItemToShop failed for item '{0}' with id {1} because no corresponding unity item was found. Maybe deprecated?", itemView.Name, itemView.ID);
-        //}
+        else
+        {
+           CmuneDebug.LogWarning("AddItemToShop failed for item '{0}' with id {1} because no corresponding unity item was found. Maybe deprecated?", itemView.Name, itemView.ID);
+        }
     }
 
     #endregion

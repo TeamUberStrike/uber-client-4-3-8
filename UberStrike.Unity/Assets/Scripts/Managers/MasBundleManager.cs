@@ -60,7 +60,7 @@ public class MasBundleManager : Singleton<MasBundleManager>
     private MasBundleManager()
     {
 #if UNITY_EDITOR
-        CanMakeMasPayments = true;
+        CanMakeMasPayments = false;
 #elif UNITY_STANDALONE_OSX
         StoreKitMacManager.productListReceived += OnMasProductListReceived;
         StoreKitMacManager.productListRequestFailed += OnMasProductListRequestFailed;
