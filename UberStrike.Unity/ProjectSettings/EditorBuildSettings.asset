@@ -5,27 +5,25 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/Latest.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelSpaceship.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelTempleOfTheRaven.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelTheWarehouse.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelCuberStrike.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelFortWinter.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelGideonsTower.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelLostParadise2.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelMonkeyIsland.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelSkyGarden.unity
-  - enabled: 0
-    path: Assets/Scenes/LevelSpaceportAlpha.unity
   - enabled: 1
-    path: Assets/NewRealtime/Test.unity
+    path: Assets/Scenes/Latest.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelMonkeyIsland.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelLostParadise2.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelTheWarehouse.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelTempleOfTheRaven.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelFortWinter.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelGideonsTower.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelSkyGarden.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelCuberStrike.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelSpaceship.unity
+  - enabled: 1
+    path: Assets/Scenes/LevelSpaceportAlpha.unity
