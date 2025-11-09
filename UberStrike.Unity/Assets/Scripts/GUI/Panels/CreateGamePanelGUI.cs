@@ -408,7 +408,7 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
             }
 
             GUITools.PushGUIState();
-            GUI.enabled = true;
+            GUI.enabled = IsModeSupported && CmuneNetworkManager.CurrentGameServer.IsValid && LocalizationHelper.ValidateMemberName(_gameName, ApplicationDataManager.CurrentLocale) && (string.IsNullOrEmpty(_password) || ValidateGamePassword(_password));
             if (GUITools.Button(new Rect(rect.width - 138 - 125, rect.height - 40, 120, 32), new GUIContent(LocalizedStrings.CreateCaps), BlueStonez.button_green, SoundEffectType.UIJoinGame))
             {
                 PanelManager.Instance.ClosePanel(PanelType.CreateGame);
@@ -474,7 +474,7 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
             GUITools.PopGUIState();
 
             GUITools.PushGUIState();
-            GUI.enabled = true;
+            GUI.enabled = IsModeSupported && CmuneNetworkManager.CurrentGameServer.IsValid && LocalizationHelper.ValidateMemberName(_gameName, ApplicationDataManager.CurrentLocale) && (string.IsNullOrEmpty(_password) || ValidateGamePassword(_password));
             if (GUITools.Button(new Rect(rect.width - 138 - 250, rect.height - 40, 120, 32), new GUIContent(LocalizedStrings.CreateCaps), BlueStonez.button_green))
             {
                 PanelManager.Instance.ClosePanel(PanelType.CreateGame);
