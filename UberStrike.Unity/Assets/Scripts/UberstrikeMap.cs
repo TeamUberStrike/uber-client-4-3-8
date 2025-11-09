@@ -29,6 +29,26 @@ public class UberstrikeMap
 
     public bool IsGameModeSupported(GameModeType mode)
     {
-        return View.Settings != null && View.Settings.ContainsKey(mode);
+        bool hasSettings = View.Settings != null;
+        bool containsKey = hasSettings && View.Settings.ContainsKey(mode);
+        bool result = hasSettings && containsKey;
+        
+        Debug.Log("=== IsGameModeSupported DEBUG ===");
+        Debug.Log("Map: " + Name + " (ID: " + Id + ")");
+        Debug.Log("GameMode: " + mode);
+        Debug.Log("View.Settings != null: " + hasSettings);
+        if (hasSettings)
+        {
+            Debug.Log("View.Settings.ContainsKey(" + mode + "): " + containsKey);
+            string modes = "";
+            foreach (var key in View.Settings.Keys)
+            {
+                modes += key.ToString() + ", ";
+            }
+            Debug.Log("Available modes: " + modes.TrimEnd(',', ' '));
+        }
+        Debug.Log("Return value: " + result);
+        
+        return result;
     }
 }

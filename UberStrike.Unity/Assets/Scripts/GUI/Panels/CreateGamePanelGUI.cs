@@ -408,7 +408,21 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
             }
 
             GUITools.PushGUIState();
-            GUI.enabled = true;
+            
+            // Debug: Print all condition variables
+            bool isModeSupported = IsModeSupported;
+            bool isServerValid = CmuneNetworkManager.CurrentGameServer.IsValid;
+            bool isNameValid = LocalizationHelper.ValidateMemberName(_gameName, ApplicationDataManager.CurrentLocale);
+            bool isPasswordValid = string.IsNullOrEmpty(_password) || ValidateGamePassword(_password);
+            
+            Debug.Log("=== CREATE BUTTON DEBUG (DrawFullPanel) ===");
+            Debug.Log("IsModeSupported: " + isModeSupported);
+            Debug.Log("CurrentGameServer.IsValid: " + isServerValid);
+            Debug.Log("ValidateMemberName(_gameName='" + _gameName + "', Locale=" + ApplicationDataManager.CurrentLocale + "): " + isNameValid);
+            Debug.Log("Password (isEmpty=" + string.IsNullOrEmpty(_password) + ", ValidateGamePassword='" + _password + "'): " + isPasswordValid);
+            Debug.Log("Final GUI.enabled: " + (isModeSupported && isServerValid && isNameValid && isPasswordValid));
+            
+            GUI.enabled = isModeSupported && isServerValid && isNameValid && isPasswordValid;
             if (GUITools.Button(new Rect(rect.width - 138 - 125, rect.height - 40, 120, 32), new GUIContent(LocalizedStrings.CreateCaps), BlueStonez.button_green, SoundEffectType.UIJoinGame))
             {
                 PanelManager.Instance.ClosePanel(PanelType.CreateGame);
@@ -474,7 +488,21 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
             GUITools.PopGUIState();
 
             GUITools.PushGUIState();
-            GUI.enabled = true;
+            
+            // Debug: Print all condition variables
+            bool isModeSupported = IsModeSupported;
+            bool isServerValid = CmuneNetworkManager.CurrentGameServer.IsValid;
+            bool isNameValid = LocalizationHelper.ValidateMemberName(_gameName, ApplicationDataManager.CurrentLocale);
+            bool isPasswordValid = string.IsNullOrEmpty(_password) || ValidateGamePassword(_password);
+            
+            Debug.Log("=== CREATE BUTTON DEBUG (DrawRestrictedPanel) ===");
+            Debug.Log("IsModeSupported: " + isModeSupported);
+            Debug.Log("CurrentGameServer.IsValid: " + isServerValid);
+            Debug.Log("ValidateMemberName(_gameName='" + _gameName + "', Locale=" + ApplicationDataManager.CurrentLocale + "): " + isNameValid);
+            Debug.Log("Password (isEmpty=" + string.IsNullOrEmpty(_password) + ", ValidateGamePassword='" + _password + "'): " + isPasswordValid);
+            Debug.Log("Final GUI.enabled: " + (isModeSupported && isServerValid && isNameValid && isPasswordValid));
+            
+            GUI.enabled = isModeSupported && isServerValid && isNameValid && isPasswordValid;
             if (GUITools.Button(new Rect(rect.width - 138 - 250, rect.height - 40, 120, 32), new GUIContent(LocalizedStrings.CreateCaps), BlueStonez.button_green))
             {
                 PanelManager.Instance.ClosePanel(PanelType.CreateGame);
