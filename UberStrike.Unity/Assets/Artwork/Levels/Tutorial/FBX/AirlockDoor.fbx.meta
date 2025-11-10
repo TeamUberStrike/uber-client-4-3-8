@@ -1,0 +1,394 @@
+fileFormatVersion: 2
+guid: acee588881acabc4590a51b8d5f81469
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: DoorGear1
+    4300002: DoorGear2
+    4300004: DoorGear3
+    4300006: DoorGear4
+    4300008: DoorGear5
+    4300010: DoorGear6
+    4300012: DoorGear7
+    4300014: DoorGear8
+    4300016: DoorGear9
+    4300018: DoorGear10
+    4300020: Wheel
+    4300022: DoorLeft
+    4300024: DoorFrame
+    4300026: DoorRight
+    4300028: pSphere3
+    4300030: polySurface1738
+    4300032: pSphere4
+    4300034: polySurface1739
+    4300036: SignLight
+    4300038: Gear1
+    4300040: Gear2
+    4300042: Gear3
+    4300044: Gear4
+    4300046: Gear5
+    4300048: Gear6
+    4300050: Gear7
+    4300052: Gear8
+    4300054: Gear9
+    4300056: Gear10
+    4300058: Railing
+    4300060: LightBase
+    4300062: Lights
+    4300064: LED
+    4300066: LEDBase
+    4300068: Inside2
+    4300070: TunnelWall
+    4300072: TunnelCeiling
+    4300074: Inside3
+    4300076: Ground1
+    4300078: Ground2
+    4300080: GroundEnd
+    4300082: Outside1
+    4300084: Connecter
+    4300086: Outside2
+    4300088: TunnelShelf
+    4300090: LightsAnimated
+    4300092: Border
+    4300094: Pipes
+    4300096: Connecter1
+    4300098: DoorFrames2
+    4300100: DoorPlate2
+    4300102: DoorLocks2
+    4300104: DoorLeft2
+    4300106: DoorRight2
+    4300108: Pipes
+    4300110: ShopWall
+    4300112: Outside
+    4300114: Wall
+    4300116: Lights
+    4300118: Net
+    4300120: Ceiling
+    4300122: GroundLayer1
+    4300124: GroundLayer2
+    4300126: WallRidge1
+    4300128: WallRidge2
+    4300130: ShootingAreaWall
+    4300132: DoorFrames
+    4300134: Shelf
+    4300136: LightBase
+    4300138: DoorPlate
+    4300140: ShopTable
+    4300142: DoorLocks
+    4300144: DoorRight1
+    4300146: DoorLeft1
+    4300148: Cameras
+    4300150: Room
+    4300152: Frames
+    4300154: Glass
+    4300156: GunReal
+    4300158: Guns
+    4300160: Light
+    4300162: LightBase
+    4300164: Desk
+    4300166: Frame
+    4300168: DoorBirail
+    4300170: Door
+    4300172: Pillar
+    4300174: Net
+    4300176: Base
+    4300178: Ceiling
+    4300180: ShootingAreaBox
+    4300182: Ground
+    4300184: Platform
+    4300186: SprtLights
+    4300188: Wall
+    4300190: Fence
+    4300192: WindowsFrame
+    4300194: Room
+    4300196: Glass
+    4300198: Window
+    4300200: Pipes
+    4300202: TunnelGround
+    4300204: LightBase
+    4300206: TunnelOutside
+    4300208: TunnelConnecter
+    4300210: TunnelLightBase
+    4300212: TunnelCeilig
+    4300214: TunnelWall
+    4300216: Lights
+    4300218: Covers
+    4300220: Outside
+    4300222: Inside
+    4300224: Ceiling
+    4300226: WallEdge
+    4300228: MiddlePillar
+    4300230: MiddleGround
+    4300232: MiddlePlatform
+    4300234: TunnelLights
+    4300236: Ground
+    4300238: DoorWall
+    4300240: WindowFrame
+    4300242: DoorFrames
+    4300244: Ladders
+    4300246: SpotLights
+    4300248: SpotLightBase
+    4300250: BasePiller
+    4300252: Windows
+    4300254: DoorRight4
+    4300256: DoorLeft4
+    4300258: DoorRight5
+    4300260: DoorLeft5
+    4300262: DoorFrames1
+    4300264: DoorPlate1
+    4300266: DoorLocks1
+    4300268: Connecter
+    4300270: DoorLeft6
+    4300272: DoorRight6
+    7400000: Take 001 //// AirlockDoor
+    7400002: DoorOpen //// AirlockDoor
+  serializedVersion: 10
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: DoorOpen
+      firstFrame: 0
+      lastFrame: 260
+      wrapMode: 1
+      loop: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+      data:
+        first: 111
+        second: 605fa900
+    DoorFrame:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+      data:
+        first: 23
+        second: 66182300
+      data:
+        first: 33
+        second: a65a3200
+    DoorGears:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+    DoorLeft:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200
+    DoorRight:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+      data:
+        first: 23
+        second: 72182300
+      data:
+        first: 33
+        second: b25a3200
+    Gear1:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+    Gear10:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+      data:
+        first: 23
+        second: 68182300
+      data:
+        first: 33
+        second: a85a3200
+    Gear2:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+      data:
+        first: 23
+        second: 76182300
+      data:
+        first: 33
+        second: b65a3200
+    Gear3:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+      data:
+        first: 23
+        second: 74182300
+      data:
+        first: 33
+        second: b45a3200
+    Gear4:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+      data:
+        first: 23
+        second: 6c182300
+      data:
+        first: 33
+        second: ac5a3200
+    Gear5:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+      data:
+        first: 23
+        second: 6e182300
+      data:
+        first: 33
+        second: ae5a3200
+    Gear6:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+      data:
+        first: 23
+        second: 70182300
+      data:
+        first: 33
+        second: b05a3200
+    Gear7:
+      data:
+        first: 1
+        second: bc860100
+      data:
+        first: 4
+        second: 9c1a0600
+      data:
+        first: 23
+        second: 7a182300
+      data:
+        first: 33
+        second: ba5a3200
+    Gear8:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+      data:
+        first: 23
+        second: 6a182300
+      data:
+        first: 33
+        second: aa5a3200
+    Gear9:
+      data:
+        first: 1
+        second: ba860100
+      data:
+        first: 4
+        second: 9a1a0600
+      data:
+        first: 23
+        second: 78182300
+      data:
+        first: 33
+        second: b85a3200
+    SignLight:
+      data:
+        first: 1
+        second: c8860100
+      data:
+        first: 4
+        second: a81a0600
+      data:
+        first: 23
+        second: 7c182300
+      data:
+        first: 33
+        second: bc5a3200
+    Wheel:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200

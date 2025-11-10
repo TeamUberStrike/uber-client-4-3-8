@@ -1,0 +1,684 @@
+fileFormatVersion: 2
+guid: a8977a0b18959994eb57214fba57b773
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: LutzHeadAndFace
+    7400000: Take 001 //// LutzBaseAvatar
+    7400002: lightGunUpDown //// LutzBaseAvatar
+    7400004: heavyGunUpDown //// LutzBaseAvatar
+    7400006: run //// LutzBaseAvatar
+    7400008: walk //// LutzBaseAvatar
+    7400010: jumpUp //// LutzBaseAvatar
+    7400012: jumpFall //// LutzBaseAvatar
+    7400014: jumpLand //// LutzBaseAvatar
+    7400016: squat //// LutzBaseAvatar
+    7400018: crouch //// LutzBaseAvatar
+    7400020: swimStart //// LutzBaseAvatar
+    7400022: swimLoop //// LutzBaseAvatar
+    7400024: leanRight //// LutzBaseAvatar
+    7400026: leanLeft //// LutzBaseAvatar
+    7400028: shootLightGun //// LutzBaseAvatar
+    7400030: shootHeavyGun //// LutzBaseAvatar
+    7400032: gotHit //// LutzBaseAvatar
+    7400034: die1 //// LutzBaseAvatar
+    7400036: die2 //// LutzBaseAvatar
+    7400038: die3 //// LutzBaseAvatar
+    7400040: idle //// LutzBaseAvatar
+    7400042: lightGunBreathe //// LutzBaseAvatar
+    7400044: heavyGunBreathe //// LutzBaseAvatar
+    7400046: snipeUpDown //// LutzBaseAvatar
+    7400048: idleBigGunNoneAction //// LutzBaseAvatar
+    7400050: idleBigGunLookAround //// LutzBaseAvatar
+    7400052: idleBigGunRelaxNeck //// LutzBaseAvatar
+    7400054: idleBigGunCheckWeapon //// LutzBaseAvatar
+    7400056: idleBigGunShakeWeapon //// LutzBaseAvatar
+    7400058: meleeSwingRightToLeft //// LutzBaseAvatar
+    7400060: meleSwingLeftToRight //// LutzBaseAvatar
+    7400062: idleMeleeNoneAction //// LutzBaseAvatar
+    7400064: idleMeleeLookAround //// LutzBaseAvatar
+    7400066: idleMeleeRelaxNeck //// LutzBaseAvatar
+    7400068: idleMeleeCheckWeapon //// LutzBaseAvatar
+    7400070: idleHandGunNoneAction //// LutzBaseAvatar
+    7400072: idleHandGunLookAround //// LutzBaseAvatar
+    7400074: idleHandGunRelaxNeck //// LutzBaseAvatar
+    7400076: idleHandGunCheckWeapon //// LutzBaseAvatar
+    7400078: idleMiniGunNoAction //// LutzBaseAvatar
+    7400080: idleMiniGunLookAround //// LutzBaseAvatar
+    7400082: idleMiniGunRelaxNeck //// LutzBaseAvatar
+    7400084: idleMiniGunCheckWeapon //// LutzBaseAvatar
+    7400086: outToShootPosHandGun //// LutzBaseAvatar
+    7400088: shootPosHandGun //// LutzBaseAvatar
+    7400090: shootPosShootActionHandGun //// LutzBaseAvatar
+    7400092: outToShootBigGun //// LutzBaseAvatar
+    7400094: shootPosBigGun //// LutzBaseAvatar
+    7400096: shootPosShootActionBigGun //// LutzBaseAvatar
+    7400098: putGunAway //// LutzBaseAvatar
+    7400100: outToShootPosMelee //// LutzBaseAvatar
+    7400102: shootPosMelee //// LutzBaseAvatar
+    7400104: putMeleeAway //// LutzBaseAvatar
+    7400106: idleNoWeaponNoneAction //// LutzBaseAvatar
+    7400108: idleNoWeaponLookAround //// LutzBaseAvatar
+    7400110: idleNoWeaponRelaxNeck //// LutzBaseAvatar
+    7400112: checkNewGloves //// LutzBaseAvatar
+    7400114: checkNewChest //// LutzBaseAvatar
+    7400116: checkNewFeet //// LutzBaseAvatar
+    7400118: checkNewLegs //// LutzBaseAvatar
+    7400120: CheckNewHead //// LutzBaseAvatar
+    7400122: idleWalk //// LutzBaseAvatar
+    7400124: guiderWalk //// LutzBaseAvatar
+    7400126: guiderAirlock //// LutzBaseAvatar
+    7400128: guiderTalk //// LutzBaseAvatar
+    7400130: guiderIdle //// LutzBaseAvatar
+    7400132: guiderArmory //// LutzBaseAvatar
+    7400134: ShopLargeGunIdle //// LutzBaseAvatar
+    7400136: ShopLargeGunLookAround //// LutzBaseAvatar
+    7400138: ShopLargeGunRelaxNeck //// LutzBaseAvatar
+    7400140: ShopLargeGunCheckWeapon //// LutzBaseAvatar
+    7400142: ShopLargeGunShakeWeapon //// LutzBaseAvatar
+    7400144: ShopMeleeIdle //// LutzBaseAvatar
+    7400146: ShopMeleeLookAround //// LutzBaseAvatar
+    7400148: ShopMeleeRelaxNeck //// LutzBaseAvatar
+    7400150: ShopMeleeCheckWeapon //// LutzBaseAvatar
+    7400152: ShopSmallGunIdle //// LutzBaseAvatar
+    7400154: ShopSmallGunLookAround //// LutzBaseAvatar
+    7400156: ShopSmallGunRelaxNeck //// LutzBaseAvatar
+    7400158: ShopSmallGunCheckWeapon //// LutzBaseAvatar
+    7400160: ShopMediumGunIdle //// LutzBaseAvatar
+    7400162: ShopMediumGunLookAround //// LutzBaseAvatar
+    7400164: ShopMediumGunRelaxNeck //// LutzBaseAvatar
+    7400166: ShopMediumGunCheckWeapon //// LutzBaseAvatar
+    7400168: ShopSmallGunTakeOut //// LutzBaseAvatar
+    7400170: ShopSmallGunAimIdle //// LutzBaseAvatar
+    7400172: ShopSmallGunShoot //// LutzBaseAvatar
+    7400174: ShopLargeGunTakeOut //// LutzBaseAvatar
+    7400176: ShopLargeGunAimIdle //// LutzBaseAvatar
+    7400178: ShopLargeGunShoot //// LutzBaseAvatar
+    7400180: ShopHideGun //// LutzBaseAvatar
+    7400182: ShopMeleeTakeOut //// LutzBaseAvatar
+    7400184: ShopMeleeAimIdle //// LutzBaseAvatar
+    7400186: ShopHideMelee //// LutzBaseAvatar
+    7400188: ShopNoWeaponIdle //// LutzBaseAvatar
+    7400190: ShopNoWeaponnLookAround //// LutzBaseAvatar
+    7400192: ShopNoWeaponRelaxNeck //// LutzBaseAvatar
+    7400194: ShopNewGloves //// LutzBaseAvatar
+    7400196: ShopNewUpperBody //// LutzBaseAvatar
+    7400198: ShopNewBoots //// LutzBaseAvatar
+    7400200: ShopNewLowerBody //// LutzBaseAvatar
+    7400202: ShopNewHead //// LutzBaseAvatar
+    7400204: TutorialGuideWalk //// LutzBaseAvatar
+    7400206: TutorialGuideAirlock //// LutzBaseAvatar
+    7400208: TutorialGuideTalk //// LutzBaseAvatar
+    7400210: TutorialGuideIdle //// LutzBaseAvatar
+    7400212: TutorialGuideArmory //// LutzBaseAvatar
+    7400214: HomeLargeGunIdle //// LutzBaseAvatar
+    7400216: HomeLargeGunLookAround //// LutzBaseAvatar
+    7400218: HomeLargeGunRelaxNeck //// LutzBaseAvatar
+    7400220: HomeLargeGunCheckWeapon //// LutzBaseAvatar
+    7400222: HomeLargeGunShakeWeapon //// LutzBaseAvatar
+    7400224: HomeMeleeIdle //// LutzBaseAvatar
+    7400226: HomeMeleeLookAround //// LutzBaseAvatar
+    7400228: HomeMeleeRelaxNeck //// LutzBaseAvatar
+    7400230: HomeMeleeCheckWeapon //// LutzBaseAvatar
+    7400232: HomeSmallGunIdle //// LutzBaseAvatar
+    7400234: HomeSmallGunLookAround //// LutzBaseAvatar
+    7400236: HomeSmallGunRelaxNeck //// LutzBaseAvatar
+    7400238: HomeSmallGunCheckWeapon //// LutzBaseAvatar
+    7400240: HomeMediumGunIdle //// LutzBaseAvatar
+    7400242: HomeMediumGunLookAround //// LutzBaseAvatar
+    7400244: HomeMediumGunRelaxNeck //// LutzBaseAvatar
+    7400246: HomeMediumGunCheckWeapon //// LutzBaseAvatar
+    7400248: HomeNoWeaponIdle //// LutzBaseAvatar
+    7400250: HomeNoWeaponnLookAround //// LutzBaseAvatar
+    7400252: HomeNoWeaponRelaxNeck //// LutzBaseAvatar
+  serializedVersion: 10
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: lightGunUpDown
+      firstFrame: 1
+      lastFrame: 24
+      wrapMode: 1
+      loop: 0
+    - name: heavyGunUpDown
+      firstFrame: 26
+      lastFrame: 49
+      wrapMode: 1
+      loop: 0
+    - name: run
+      firstFrame: 51
+      lastFrame: 67
+      wrapMode: 2
+      loop: 1
+    - name: walk
+      firstFrame: 70
+      lastFrame: 85
+      wrapMode: 2
+      loop: 1
+    - name: jumpUp
+      firstFrame: 87
+      lastFrame: 98
+      wrapMode: 1
+      loop: 0
+    - name: jumpFall
+      firstFrame: 99
+      lastFrame: 106
+      wrapMode: 1
+      loop: 0
+    - name: jumpLand
+      firstFrame: 107
+      lastFrame: 112
+      wrapMode: 1
+      loop: 0
+    - name: squat
+      firstFrame: 112
+      lastFrame: 116
+      wrapMode: 1
+      loop: 0
+    - name: crouch
+      firstFrame: 117
+      lastFrame: 140
+      wrapMode: 2
+      loop: 1
+    - name: swimStart
+      firstFrame: 142
+      lastFrame: 152
+      wrapMode: 1
+      loop: 0
+    - name: swimLoop
+      firstFrame: 153
+      lastFrame: 180
+      wrapMode: 2
+      loop: 0
+    - name: leanRight
+      firstFrame: 182
+      lastFrame: 189
+      wrapMode: 1
+      loop: 0
+    - name: leanLeft
+      firstFrame: 189
+      lastFrame: 196
+      wrapMode: 1
+      loop: 0
+    - name: shootLightGun
+      firstFrame: 197
+      lastFrame: 201
+      wrapMode: 1
+      loop: 0
+    - name: shootHeavyGun
+      firstFrame: 202
+      lastFrame: 207
+      wrapMode: 1
+      loop: 0
+    - name: gotHit
+      firstFrame: 208
+      lastFrame: 209
+      wrapMode: 1
+      loop: 0
+    - name: die1
+      firstFrame: 209
+      lastFrame: 243
+      wrapMode: 1
+      loop: 0
+    - name: die2
+      firstFrame: 245
+      lastFrame: 264
+      wrapMode: 1
+      loop: 0
+    - name: die3
+      firstFrame: 266
+      lastFrame: 302
+      wrapMode: 1
+      loop: 0
+    - name: idle
+      firstFrame: 304
+      lastFrame: 337
+      wrapMode: 2
+      loop: 1
+    - name: lightGunBreathe
+      firstFrame: 339
+      lastFrame: 398
+      wrapMode: 2
+      loop: 1
+    - name: heavyGunBreathe
+      firstFrame: 400
+      lastFrame: 459
+      wrapMode: 2
+      loop: 1
+    - name: snipeUpDown
+      firstFrame: 460
+      lastFrame: 485
+      wrapMode: 1
+      loop: 0
+    - name: HomeLargeGunIdle
+      firstFrame: 486
+      lastFrame: 565
+      wrapMode: 2
+      loop: 1
+    - name: HomeLargeGunLookAround
+      firstFrame: 565
+      lastFrame: 660
+      wrapMode: 2
+      loop: 1
+    - name: HomeLargeGunRelaxNeck
+      firstFrame: 661
+      lastFrame: 749
+      wrapMode: 2
+      loop: 1
+    - name: HomeLargeGunCheckWeapon
+      firstFrame: 750
+      lastFrame: 858
+      wrapMode: 2
+      loop: 1
+    - name: HomeLargeGunShakeWeapon
+      firstFrame: 858
+      lastFrame: 938
+      wrapMode: 2
+      loop: 1
+    - name: meleeSwingRightToLeft
+      firstFrame: 940
+      lastFrame: 953
+      wrapMode: 2
+      loop: 1
+    - name: meleSwingLeftToRight
+      firstFrame: 953
+      lastFrame: 966
+      wrapMode: 2
+      loop: 1
+    - name: HomeMeleeIdle
+      firstFrame: 967
+      lastFrame: 1046
+      wrapMode: 2
+      loop: 1
+    - name: HomeMeleeLookAround
+      firstFrame: 1046
+      lastFrame: 1141
+      wrapMode: 2
+      loop: 1
+    - name: HomeMeleeRelaxNeck
+      firstFrame: 1141
+      lastFrame: 1230
+      wrapMode: 2
+      loop: 1
+    - name: HomeMeleeCheckWeapon
+      firstFrame: 1230
+      lastFrame: 1348
+      wrapMode: 2
+      loop: 1
+    - name: HomeSmallGunIdle
+      firstFrame: 1349
+      lastFrame: 1428
+      wrapMode: 2
+      loop: 1
+    - name: HomeSmallGunLookAround
+      firstFrame: 1428
+      lastFrame: 1523
+      wrapMode: 2
+      loop: 1
+    - name: HomeSmallGunRelaxNeck
+      firstFrame: 1523
+      lastFrame: 1612
+      wrapMode: 2
+      loop: 1
+    - name: HomeSmallGunCheckWeapon
+      firstFrame: 1612
+      lastFrame: 1745
+      wrapMode: 2
+      loop: 1
+    - name: HomeMediumGunIdle
+      firstFrame: 1746
+      lastFrame: 1825
+      wrapMode: 2
+      loop: 1
+    - name: HomeMediumGunLookAround
+      firstFrame: 1825
+      lastFrame: 1921
+      wrapMode: 2
+      loop: 1
+    - name: HomeMediumGunRelaxNeck
+      firstFrame: 1921
+      lastFrame: 1989
+      wrapMode: 2
+      loop: 1
+    - name: HomeMediumGunCheckWeapon
+      firstFrame: 1989
+      lastFrame: 2105
+      wrapMode: 2
+      loop: 1
+    - name: ShopSmallGunTakeOut
+      firstFrame: 2106
+      lastFrame: 2122
+      wrapMode: 8
+      loop: 0
+    - name: ShopSmallGunAimIdle
+      firstFrame: 2122
+      lastFrame: 2182
+      wrapMode: 2
+      loop: 1
+    - name: ShopSmallGunShoot
+      firstFrame: 2182
+      lastFrame: 2188
+      wrapMode: 2
+      loop: 1
+    - name: ShopLargeGunTakeOut
+      firstFrame: 2189
+      lastFrame: 2205
+      wrapMode: 8
+      loop: 0
+    - name: ShopLargeGunAimIdle
+      firstFrame: 2205
+      lastFrame: 2265
+      wrapMode: 2
+      loop: 1
+    - name: ShopLargeGunShoot
+      firstFrame: 2265
+      lastFrame: 2271
+      wrapMode: 2
+      loop: 1
+    - name: ShopHideGun
+      firstFrame: 2272
+      lastFrame: 2304
+      wrapMode: 8
+      loop: 0
+    - name: ShopMeleeTakeOut
+      firstFrame: 2305
+      lastFrame: 2315
+      wrapMode: 8
+      loop: 0
+    - name: ShopMeleeAimIdle
+      firstFrame: 2315
+      lastFrame: 2375
+      wrapMode: 2
+      loop: 1
+    - name: ShopHideMelee
+      firstFrame: 2375
+      lastFrame: 2400
+      wrapMode: 2
+      loop: 1
+    - name: HomeNoWeaponIdle
+      firstFrame: 2401
+      lastFrame: 2480
+      wrapMode: 2
+      loop: 1
+    - name: HomeNoWeaponnLookAround
+      firstFrame: 2480
+      lastFrame: 2575
+      wrapMode: 2
+      loop: 1
+    - name: HomeNoWeaponRelaxNeck
+      firstFrame: 2575
+      lastFrame: 2664
+      wrapMode: 2
+      loop: 1
+    - name: ShopNewGloves
+      firstFrame: 2664
+      lastFrame: 2769
+      wrapMode: 2
+      loop: 1
+    - name: ShopNewUpperBody
+      firstFrame: 2769
+      lastFrame: 2865
+      wrapMode: 2
+      loop: 1
+    - name: ShopNewBoots
+      firstFrame: 2865
+      lastFrame: 2954
+      wrapMode: 2
+      loop: 1
+    - name: ShopNewLowerBody
+      firstFrame: 2954
+      lastFrame: 3033
+      wrapMode: 2
+      loop: 1
+    - name: ShopNewHead
+      firstFrame: 3033
+      lastFrame: 3115
+      wrapMode: 2
+      loop: 1
+    - name: idleWalk
+      firstFrame: 3116
+      lastFrame: 3147
+      wrapMode: 2
+      loop: 1
+    - name: TutorialGuideWalk
+      firstFrame: 3148
+      lastFrame: 3180
+      wrapMode: 2
+      loop: 1
+    - name: TutorialGuideAirlock
+      firstFrame: 3181
+      lastFrame: 3311
+      wrapMode: 1
+      loop: 0
+    - name: TutorialGuideTalk
+      firstFrame: 3312
+      lastFrame: 3421
+      wrapMode: 2
+      loop: 1
+    - name: TutorialGuideIdle
+      firstFrame: 3422
+      lastFrame: 3501
+      wrapMode: 2
+      loop: 1
+    - name: TutorialGuideArmory
+      firstFrame: 3502
+      lastFrame: 3576
+      wrapMode: 1
+      loop: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+      data:
+        first: 111
+        second: 605fa900
+    Chest:
+      data:
+        first: 1
+        second: d2860100
+      data:
+        first: 4
+        second: b21a0600
+      data:
+        first: 137
+        second: a00bd100
+    Head:
+      data:
+        first: 1
+        second: c6860100
+      data:
+        first: 4
+        second: a61a0600
+    HeadTop:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    Hips:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+    LeftArm:
+      data:
+        first: 1
+        second: cc860100
+      data:
+        first: 4
+        second: ac1a0600
+    LeftFoot:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    LeftForeArm:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    LeftHand:
+      data:
+        first: 1
+        second: ba860100
+      data:
+        first: 4
+        second: 9a1a0600
+    LeftHandEnd:
+      data:
+        first: 1
+        second: c2860100
+      data:
+        first: 4
+        second: a21a0600
+    LeftLeg:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+    LeftShoulder:
+      data:
+        first: 1
+        second: bc860100
+      data:
+        first: 4
+        second: 9c1a0600
+    LeftToe:
+      data:
+        first: 1
+        second: d0860100
+      data:
+        first: 4
+        second: b01a0600
+    LeftUpLeg:
+      data:
+        first: 1
+        second: ce860100
+      data:
+        first: 4
+        second: ae1a0600
+    LutzHeadAndFace:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+    Neck:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    RightArm:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+    RightFoot:
+      data:
+        first: 1
+        second: ca860100
+      data:
+        first: 4
+        second: aa1a0600
+    RightForeArm:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+    RightHand:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    RightHandEnd:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+    RightLeg:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+    RightShoulder:
+      data:
+        first: 1
+        second: c4860100
+      data:
+        first: 4
+        second: a41a0600
+    RightToe:
+      data:
+        first: 1
+        second: c0860100
+      data:
+        first: 4
+        second: a01a0600
+    RightUpLeg:
+      data:
+        first: 1
+        second: c8860100
+      data:
+        first: 4
+        second: a81a0600
+    Spine:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600

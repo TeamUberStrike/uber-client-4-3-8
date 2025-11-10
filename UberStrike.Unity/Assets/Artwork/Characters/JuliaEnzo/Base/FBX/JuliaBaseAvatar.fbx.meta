@@ -1,0 +1,545 @@
+fileFormatVersion: 2
+guid: b6b5de8fef77ea34a9abb5e6153155fa
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: Julia_Face
+    4300002: Julia_Body
+  serializedVersion: 10
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: lightGunUpDown
+      firstFrame: 1
+      lastFrame: 24
+      wrapMode: 1
+      loop: 0
+    - name: heavyGunUpDown
+      firstFrame: 26
+      lastFrame: 49
+      wrapMode: 1
+      loop: 0
+    - name: run
+      firstFrame: 51
+      lastFrame: 67
+      wrapMode: 2
+      loop: 1
+    - name: walk
+      firstFrame: 70
+      lastFrame: 85
+      wrapMode: 2
+      loop: 1
+    - name: jumpUp
+      firstFrame: 87
+      lastFrame: 98
+      wrapMode: 1
+      loop: 0
+    - name: jumpFall
+      firstFrame: 99
+      lastFrame: 106
+      wrapMode: 1
+      loop: 0
+    - name: jumpLand
+      firstFrame: 107
+      lastFrame: 112
+      wrapMode: 1
+      loop: 0
+    - name: squat
+      firstFrame: 112
+      lastFrame: 116
+      wrapMode: 1
+      loop: 0
+    - name: crouch
+      firstFrame: 117
+      lastFrame: 140
+      wrapMode: 2
+      loop: 1
+    - name: swimStart
+      firstFrame: 142
+      lastFrame: 152
+      wrapMode: 1
+      loop: 0
+    - name: swimLoop
+      firstFrame: 153
+      lastFrame: 180
+      wrapMode: 2
+      loop: 0
+    - name: leanRight
+      firstFrame: 182
+      lastFrame: 189
+      wrapMode: 1
+      loop: 0
+    - name: leanLeft
+      firstFrame: 189
+      lastFrame: 196
+      wrapMode: 1
+      loop: 0
+    - name: shootLightGun
+      firstFrame: 197
+      lastFrame: 201
+      wrapMode: 1
+      loop: 0
+    - name: shootHeavyGun
+      firstFrame: 202
+      lastFrame: 207
+      wrapMode: 1
+      loop: 0
+    - name: gotHit
+      firstFrame: 208
+      lastFrame: 209
+      wrapMode: 1
+      loop: 0
+    - name: die1
+      firstFrame: 209
+      lastFrame: 243
+      wrapMode: 1
+      loop: 0
+    - name: die2
+      firstFrame: 245
+      lastFrame: 264
+      wrapMode: 1
+      loop: 0
+    - name: die3
+      firstFrame: 266
+      lastFrame: 302
+      wrapMode: 1
+      loop: 0
+    - name: idle
+      firstFrame: 304
+      lastFrame: 337
+      wrapMode: 2
+      loop: 1
+    - name: lightGunBreathe
+      firstFrame: 339
+      lastFrame: 398
+      wrapMode: 2
+      loop: 1
+    - name: heavyGunBreathe
+      firstFrame: 400
+      lastFrame: 459
+      wrapMode: 2
+      loop: 1
+    - name: snipeUpDown
+      firstFrame: 460
+      lastFrame: 485
+      wrapMode: 1
+      loop: 0
+    - name: idleBigGunNoneAction
+      firstFrame: 486
+      lastFrame: 565
+      wrapMode: 2
+      loop: 1
+    - name: idleBigGunLookAround
+      firstFrame: 565
+      lastFrame: 660
+      wrapMode: 2
+      loop: 1
+    - name: idleBigGunRelaxNeck
+      firstFrame: 661
+      lastFrame: 749
+      wrapMode: 2
+      loop: 1
+    - name: idleBigGunCheckWeapon
+      firstFrame: 750
+      lastFrame: 858
+      wrapMode: 2
+      loop: 1
+    - name: idleBigGunShakeWeapon
+      firstFrame: 858
+      lastFrame: 938
+      wrapMode: 2
+      loop: 1
+    - name: meleeSwingRightToLeft
+      firstFrame: 940
+      lastFrame: 953
+      wrapMode: 2
+      loop: 1
+    - name: meleSwingLeftToRight
+      firstFrame: 953
+      lastFrame: 966
+      wrapMode: 2
+      loop: 1
+    - name: idleMeleeNoneAction
+      firstFrame: 967
+      lastFrame: 1046
+      wrapMode: 2
+      loop: 1
+    - name: idleMeleeLookAround
+      firstFrame: 1046
+      lastFrame: 1141
+      wrapMode: 2
+      loop: 1
+    - name: idleMeleeRelaxNeck
+      firstFrame: 1141
+      lastFrame: 1230
+      wrapMode: 2
+      loop: 1
+    - name: idleMeleeCheckWeapon
+      firstFrame: 1230
+      lastFrame: 1348
+      wrapMode: 2
+      loop: 1
+    - name: idleHandGunNoneAction
+      firstFrame: 1349
+      lastFrame: 1428
+      wrapMode: 2
+      loop: 1
+    - name: idleHandGunLookAround
+      firstFrame: 1428
+      lastFrame: 1523
+      wrapMode: 2
+      loop: 1
+    - name: idleHandGunRelaxNeck
+      firstFrame: 1523
+      lastFrame: 1612
+      wrapMode: 2
+      loop: 1
+    - name: idleHandGunCheckWeapon
+      firstFrame: 1612
+      lastFrame: 1745
+      wrapMode: 2
+      loop: 1
+    - name: idleMiniGunNoAction
+      firstFrame: 1746
+      lastFrame: 1825
+      wrapMode: 2
+      loop: 1
+    - name: idleMiniGunLookAround
+      firstFrame: 1825
+      lastFrame: 1921
+      wrapMode: 2
+      loop: 1
+    - name: idleMiniGunRelaxNeck
+      firstFrame: 1921
+      lastFrame: 1989
+      wrapMode: 2
+      loop: 1
+    - name: idleMiniGunCheckWeapon
+      firstFrame: 1989
+      lastFrame: 2105
+      wrapMode: 2
+      loop: 1
+    - name: outToShootPosHandGun
+      firstFrame: 2106
+      lastFrame: 2122
+      wrapMode: 8
+      loop: 0
+    - name: shootPosHandGun
+      firstFrame: 2122
+      lastFrame: 2182
+      wrapMode: 2
+      loop: 1
+    - name: shootPosShootActionHandGun
+      firstFrame: 2182
+      lastFrame: 2188
+      wrapMode: 2
+      loop: 1
+    - name: outToShootBigGun
+      firstFrame: 2189
+      lastFrame: 2205
+      wrapMode: 8
+      loop: 0
+    - name: shootPosBigGun
+      firstFrame: 2205
+      lastFrame: 2265
+      wrapMode: 2
+      loop: 1
+    - name: shootPosShootActionBigGun
+      firstFrame: 2265
+      lastFrame: 2271
+      wrapMode: 2
+      loop: 1
+    - name: putGunAway
+      firstFrame: 2272
+      lastFrame: 2304
+      wrapMode: 8
+      loop: 0
+    - name: outToShootPosMelee
+      firstFrame: 2305
+      lastFrame: 2315
+      wrapMode: 8
+      loop: 0
+    - name: shootPosMelee
+      firstFrame: 2315
+      lastFrame: 2375
+      wrapMode: 2
+      loop: 1
+    - name: putMeleeAway
+      firstFrame: 2375
+      lastFrame: 2400
+      wrapMode: 2
+      loop: 1
+    - name: idleNoWeaponNoneAction
+      firstFrame: 2401
+      lastFrame: 2480
+      wrapMode: 2
+      loop: 1
+    - name: idleNoWeaponLookAround
+      firstFrame: 2480
+      lastFrame: 2575
+      wrapMode: 2
+      loop: 1
+    - name: idleNoWeaponRelaxNeck
+      firstFrame: 2575
+      lastFrame: 2664
+      wrapMode: 2
+      loop: 1
+    - name: checkNewGloves
+      firstFrame: 2664
+      lastFrame: 2769
+      wrapMode: 2
+      loop: 1
+    - name: checkNewChest
+      firstFrame: 2769
+      lastFrame: 2865
+      wrapMode: 2
+      loop: 1
+    - name: checkNewFeet
+      firstFrame: 2865
+      lastFrame: 2954
+      wrapMode: 2
+      loop: 1
+    - name: checkNewLegs
+      firstFrame: 2954
+      lastFrame: 3033
+      wrapMode: 2
+      loop: 1
+    - name: CheckNewHead
+      firstFrame: 3033
+      lastFrame: 3115
+      wrapMode: 2
+      loop: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 2
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: c2860100
+      data:
+        first: 4
+        second: a21a0600
+      data:
+        first: 111
+        second: 605fa900
+    Chest:
+      data:
+        first: 1
+        second: c8860100
+      data:
+        first: 4
+        second: a81a0600
+    Head:
+      data:
+        first: 1
+        second: cc860100
+      data:
+        first: 4
+        second: ac1a0600
+    HeadTop:
+      data:
+        first: 1
+        second: ce860100
+      data:
+        first: 4
+        second: ae1a0600
+    Hips:
+      data:
+        first: 1
+        second: c0860100
+      data:
+        first: 4
+        second: a01a0600
+    Julia:
+      data:
+        first: 1
+        second: d6860100
+      data:
+        first: 4
+        second: b61a0600
+    Julia_Body:
+      data:
+        first: 1
+        second: c4860100
+      data:
+        first: 4
+        second: a41a0600
+      data:
+        first: 137
+        second: a00bd100
+    Julia_Face:
+      data:
+        first: 1
+        second: d0860100
+      data:
+        first: 4
+        second: b01a0600
+      data:
+        first: 137
+        second: a20bd100
+    LeftArm:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+    LeftFoot:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    LeftForeArm:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+    LeftHand:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    LeftHandEnd:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+    LeftLeg:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+    LeftShoulder:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+    LeftToe:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    LeftUpLeg:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    Neck:
+      data:
+        first: 1
+        second: ca860100
+      data:
+        first: 4
+        second: aa1a0600
+    RightArm:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+    RightFoot:
+      data:
+        first: 1
+        second: d4860100
+      data:
+        first: 4
+        second: b41a0600
+    RightForeArm:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    RightHand:
+      data:
+        first: 1
+        second: bc860100
+      data:
+        first: 4
+        second: 9c1a0600
+    RightHandEnd:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+    RightLeg:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    RightShoulder:
+      data:
+        first: 1
+        second: ba860100
+      data:
+        first: 4
+        second: 9a1a0600
+    RightToe:
+      data:
+        first: 1
+        second: d2860100
+      data:
+        first: 4
+        second: b21a0600
+    RightUpLeg:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    Spine:
+      data:
+        first: 1
+        second: c6860100
+      data:
+        first: 4
+        second: a61a0600
