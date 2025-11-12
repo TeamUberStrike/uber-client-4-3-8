@@ -352,54 +352,47 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         CmuneDebug.LogError("An exception occurred while authenticating the application: " + exception.Message);
 
-        string message = (exception.Message.Contains("Could not resolve host:") || exception.Message.Contains("Failed downloading http://")) ? "There was an error connecting to the server.\nPlease check your Internet connection." : "There was an error authenticating UberStrike with the server.";
-        HandleGeneralError(message);
+        //string message = (exception.Message.Contains("Could not resolve host:") || exception.Message.Contains("Failed downloading http://")) ? "There was an error connecting to the server.\nPlease check your Internet connection." : "There was an error authenticating UberStrike with the server.";
+        HandleGeneralError("There was a problem loading UberStrike. Please check your internet connection and try again.");
     }
 
     private void OnAuthenticateApplication(AuthenticateApplicationView ev)
     {
         if ((ev != null) && ev.IsEnabled)
         {
-            CmuneDebug.LogError("OnAuthenticateApplication begin");
             // Setup the data for Rinjdael encryption
             Configuration.EncryptionInitVector = ev.EncryptionInitVector;
             Configuration.EncryptionPassPhrase = ev.EncryptionPassPhrase;
 
             // We have authenticated the application and the player and are considered online (this is important for calling encrypted web services like RecordException)
             ApplicationDataManager.IsOnline = true;
-            
+
             // Setup Game Servers
-            CmuneDebug.LogError("=== GAME SERVERS DEBUG ===");
-            CmuneDebug.LogError("ev.GameServers is null: " + (ev.GameServers == null));
-            if (ev.GameServers != null)
+#if UNITY_EDITOR
+            if (CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled)
             {
-                CmuneDebug.LogError("ev.GameServers.Count: " + ev.GameServers.Count);
-            }
-            
-            if (ev.GameServers != null && ev.GameServers.Count > 0)
-            {
-                int serverIndex = 0;
-                foreach (PhotonView v in ev.GameServers)
+                // Setup Local Game Server only if we are in the editor
+                Singleton<GameServerManager>.Instance.AddGameServer(new PhotonView()
                 {
-                    serverIndex++;
-#if !UNITY_ANDROID && !UNITY_IPHONE
-                    // mobile servers should only be seen by mobile devices
-                    if (v.UsageType == PhotonUsageType.Mobile)
-                    {
-                        CmuneDebug.LogError("Skipping mobile server #" + serverIndex);
-                        continue;
-                    }
-#endif
-                    CmuneDebug.LogError("Adding Game Server #" + serverIndex + ": " + v.Name + " [" + v.IP + ":" + v.Port + "] UsageType=" + v.UsageType + " Region=" + v.Region);
-                    GameServerManager.Instance.AddGameServer(v);
-                }
-                CmuneDebug.LogError("Total game servers processed: " + serverIndex);
+                    IP = CmuneNetworkConfiguration.Instance.CustomGameServer.Ip,
+                    Port = CmuneNetworkConfiguration.Instance.CustomGameServer.Port,
+                    UsageType = PhotonUsageType.All,
+                    Name = string.Format("Custom Game Server ({0})", CmuneNetworkConfiguration.Instance.CustomGameServer.Address),
+                    Region = RegionType.AsiaPacific
+                });
             }
             else
+#endif
             {
-                CmuneDebug.LogError("WARNING: No game servers available!");
+                foreach (PhotonView v in ev.GameServers)
+                {
+#if !UNITY_ANDROID && !UNITY_IPHONE
+                    // mobile servers should only be seen by mobile devices
+                    if (v.UsageType == PhotonUsageType.Mobile) continue;
+#endif
+                    GameServerManager.Instance.AddGameServer(v);
+                }
             }
-
 
             // Setup Comm Server
 #if UNITY_EDITOR
@@ -432,6 +425,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
         else
         {
+            CmuneDebug.LogError("Your version is out of date and cannot be used.");
             HandleVersionError();
         }
     }
