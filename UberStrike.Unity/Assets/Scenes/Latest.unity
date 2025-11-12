@@ -8128,11 +8128,11 @@ MonoBehaviour:
   _localGameServer:
     Ip: 127.0.0.1
     Port: 5155
-    IsEnabled: 1
+    IsEnabled: 0
   _localCommServer:
     Ip: 127.0.0.1
     Port: 5055
-    IsEnabled: 1
+    IsEnabled: 0
   _enableDebugMessages: 0
   _roomCreation: 0
 --- !u!114 &320
