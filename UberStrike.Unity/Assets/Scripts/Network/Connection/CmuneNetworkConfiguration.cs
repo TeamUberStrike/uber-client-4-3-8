@@ -14,7 +14,7 @@ public class CmuneNetworkConfiguration : MonoSingleton<CmuneNetworkConfiguration
     {
         Ip = "127.0.0.1",
         Port = 5155,
-        IsEnabled = false
+        IsEnabled = true
     };
 
     [SerializeField]
@@ -22,7 +22,7 @@ public class CmuneNetworkConfiguration : MonoSingleton<CmuneNetworkConfiguration
     {
         Ip = "127.0.0.1",
         Port = 5055,
-        IsEnabled = false
+        IsEnabled = true
     };
 
     [SerializeField]
