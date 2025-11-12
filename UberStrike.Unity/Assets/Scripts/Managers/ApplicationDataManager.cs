@@ -368,7 +368,6 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             ApplicationDataManager.IsOnline = true;
 
             // Setup Game Servers
-#if UNITY_EDITOR
             if (CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled)
             {
                 // Setup Local Game Server only if we are in the editor
@@ -382,7 +381,6 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 });
             }
             else
-#endif
             {
                 foreach (PhotonView v in ev.GameServers)
                 {
@@ -395,7 +393,6 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             }
 
             // Setup Comm Server
-#if UNITY_EDITOR
             if (CmuneNetworkConfiguration.Instance.CustomCommServer.IsEnabled)
             {
                 CmuneNetworkManager.CurrentCommServer = new GameServerView(new PhotonView()
@@ -408,7 +405,6 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 });
             }
             else
-#endif
             {
                 CmuneNetworkManager.CurrentCommServer = new GameServerView(ev.CommServer);
             }
