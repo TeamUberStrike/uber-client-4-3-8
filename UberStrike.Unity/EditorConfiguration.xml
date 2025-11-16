@@ -5,6 +5,6 @@
     DebugLevel="Debug"
     Version="4.3.8"
     WebServiceBaseUrl="http://localhost:9000/"
-    ContentBaseUrl="http://localhost:9000/"
+    ContentBaseUrl="http://uberforever.eu/"
     ChannelType="WindowsStandalone" />
 </UberStrike>
