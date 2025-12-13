@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 #include "UnityCG.cginc"
 #include "TerrainEngine.cginc"
 
@@ -21,7 +23,7 @@ v2f vert(appdata_tree v)
 	TerrainAnimateTree(v.vertex, v.color.w);
 	
 	float3 viewpos = mul(UNITY_MATRIX_MV, v.vertex);
-	o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+	o.pos = UnityObjectToClipPos(v.vertex);
 	o.fog = o.pos.z;
 	o.uv = v.texcoord;
 	
