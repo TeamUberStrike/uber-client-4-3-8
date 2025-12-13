@@ -499,7 +499,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             // We have authenticated the application and the player and are considered online (this is important for calling encrypted web services like RecordException)
             ApplicationDataManager.IsOnline = true;
 
-#if UNITY_EDITOR
+            // Setup Game Servers
             if (CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled)
             {
                 // Setup Local Game Server only if we are in the editor
@@ -512,20 +512,19 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                     Region = RegionType.AsiaPacific
                 });
             }
-#endif
-
-            // Setup Game Servers
-            foreach (PhotonView v in ev.GameServers)
+            else
             {
+                foreach (PhotonView v in ev.GameServers)
+                {
 #if !UNITY_ANDROID && !UNITY_IPHONE
-                // mobile servers should only be seen by mobile devices
-                if (v.UsageType == PhotonUsageType.Mobile) continue;
+                    // mobile servers should only be seen by mobile devices
+                    if (v.UsageType == PhotonUsageType.Mobile) continue;
 #endif
-                GameServerManager.Instance.AddGameServer(v);
+                    GameServerManager.Instance.AddGameServer(v);
+                }
             }
 
             // Setup Comm Server
-#if UNITY_EDITOR
             if (CmuneNetworkConfiguration.Instance.CustomCommServer.IsEnabled)
             {
                 CmuneNetworkManager.CurrentCommServer = new GameServerView(new PhotonView()
@@ -538,7 +537,6 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 });
             }
             else
-#endif
             {
                 CmuneNetworkManager.CurrentCommServer = new GameServerView(ev.CommServer);
             }

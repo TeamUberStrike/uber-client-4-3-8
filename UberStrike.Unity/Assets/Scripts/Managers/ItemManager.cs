@@ -71,7 +71,7 @@ public class ItemManager : Singleton<ItemManager>
 
         foreach (var itemView in shopView.GearItems) AddItemToShop(itemView);
         foreach (var itemView in shopView.WeaponItems) AddItemToShop(itemView);
-        foreach (var itemView in shopView.FunctionalItems) AddItemToShop(itemView);
+        //foreach (var itemView in shopView.FunctionalItems) AddItemToShop(itemView);
 
         foreach (var itemView in shopView.QuickItems)
         {
