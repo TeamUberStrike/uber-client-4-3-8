@@ -8,13 +8,13 @@ using UnityEngine;
 
 public class SceneExporter
 {
-    public const string BaseContentUrlProduction = "http://distro.client.cloud.cmune.com/UberStrike/";
-    public const string BaseContentUrlExternalQA = "http://distro.client.cloud.cmune.com/UberStrike/Qa/";
-    public const string BaseContentUrlInternalDev = "http://client.dev.uberstrike.com/";
+    public const string BaseContentUrlProduction = "http://client.uberforever.eu/";
+    public const string BaseContentUrlExternalQA = "http://client-qa.uberforever.eu/";
+    public const string BaseContentUrlInternalDev = "http://client-dev.uberforever.eu/";
 
-    public const string BaseWebServiceUrlProduction = "http://ws.uberstrike.cmune.com/";
-    public const string BaseWebServiceUrlExternalQA = "http://ws.qa.uberstrike.com/";
-    public const string BaseWebServiceUrlInternalDev = "http://ws.dev.uberstrike.com/";
+    public const string BaseWebServiceUrlProduction = "http://ws.uberforever.eu/";
+    public const string BaseWebServiceUrlExternalQA = "http://ws-qa.uberforever.eu/";
+    public const string BaseWebServiceUrlInternalDev = "http://ws-dev.uberforever.eu/";
 
     public static readonly string WebPlayerFolder = Application.dataPath + "/../Latest/WebPlayer";
     public static readonly string WindowsStandaloneFolder = Application.dataPath + "/../Latest/WindowsStandalone";
@@ -649,6 +649,21 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Local/Mac App Store")]
     private static void CreateConfigurationXmlLocalMAS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.MacAppStore); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Local/OSX Standalone")]
+    private static void CreateConfigurationXmlLocalOSX() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.OSXStandalone); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Local/Web Facebook")]
+    private static void CreateConfigurationXmlLocalFacebook() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WebFacebook); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Local/Web Kongregate")]
+    private static void CreateConfigurationXmlLocalKongregate() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.Kongregate); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Local/Web Portal")]
+    private static void CreateConfigurationXmlLocalPortal() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WebPortal); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Local/Windows Standalone")]
+    private static void CreateConfigurationXmlLocalWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WindowsStandalone); }
+
     #endregion
 
     #region Create Dev Configuration XML
@@ -798,6 +813,8 @@ public class SceneExporter
                 return BaseContentUrlExternalQA;
             case WebserviceLocation.InternalDev:
                 return BaseContentUrlInternalDev;
+            case WebserviceLocation.Localhost:
+                return BaseContentUrlInternalDev;
             default:
                 return BaseContentUrlProduction;
         }
@@ -808,11 +825,11 @@ public class SceneExporter
         switch (location)
         {
             case WebserviceLocation.Production:
-                return BaseWebServiceUrlProduction + UberStrike.UnitySdk.Api.Version + "/";
+                return BaseWebServiceUrlProduction;
             case WebserviceLocation.ExternalQA:
-                return BaseWebServiceUrlExternalQA + UberStrike.UnitySdk.Api.Version + "/";
+                return BaseWebServiceUrlExternalQA;
             case WebserviceLocation.InternalDev:
-                return BaseWebServiceUrlInternalDev + UberStrike.UnitySdk.Api.Version + "/";
+                return BaseWebServiceUrlInternalDev;
             case WebserviceLocation.Localhost:
                 return "http://localhost:9000/";
             default:

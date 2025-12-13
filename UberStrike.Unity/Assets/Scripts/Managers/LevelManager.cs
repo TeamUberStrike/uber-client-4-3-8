@@ -186,27 +186,11 @@ public class LevelManager : Singleton<LevelManager>
     {
         Clear();
 
-        // If we are in the editor and Load Maps Using WebService is disabled, manually add our maps here
-        if (Application.isEditor && !ApplicationDataManager.Instance.LoadMapsUsingWebService)
+        foreach (var m in maps)
         {
-            mapsById.Add(1, new UberstrikeMap(CreateMapView("MonkeyIsland", 1)));
-            mapsById.Add(2, new UberstrikeMap(CreateMapView("LostParadise2", 2)));
-            mapsById.Add(3, new UberstrikeMap(CreateMapView("TheWarehouse", 3)));
-            mapsById.Add(4, new UberstrikeMap(CreateMapView("TempleOfTheRaven", 4)));
-            mapsById.Add(5, new UberstrikeMap(CreateMapView("FortWinter", 5)));
-            mapsById.Add(6, new UberstrikeMap(CreateMapView("GideonsTower", 6)));
-            mapsById.Add(7, new UberstrikeMap(CreateMapView("SkyGarden", 7, false)));
-            mapsById.Add(8, new UberstrikeMap(CreateMapView("CuberStrike", 8, true)));
-            mapsById.Add(10, new UberstrikeMap(CreateMapView("SpaceportAlpha", 10, true)));
-        }
-        else
-        {
-            foreach (var m in maps)
+            if (!mapsById.ContainsKey(m.MapId))
             {
-                if (!mapsById.ContainsKey(m.MapId))
-                {
-                    mapsById.Add(m.MapId, new UberstrikeMap(m));
-                }
+                mapsById.Add(m.MapId, new UberstrikeMap(m));
             }
         }
 
