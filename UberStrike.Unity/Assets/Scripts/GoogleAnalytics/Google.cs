@@ -249,7 +249,7 @@ public sealed class Google : AutoMonoBehaviour<Google>
             _logger.logStartRequest(url);
 
             // The web player gets special treatment
-            if (!Application.platform == RuntimePlatform.WebGLPlayer)
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 var eval = string.Format("var i = new Image(); i.src = '{0}'; document.body.appendChild( i );", url);
                 Application.ExternalEval(eval);
