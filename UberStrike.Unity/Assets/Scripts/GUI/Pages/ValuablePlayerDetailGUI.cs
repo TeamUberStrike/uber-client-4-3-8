@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UberStrike.Realtime.Common;
 using UnityEngine;
+using UnityEngine.Video;
 
 class ValuablePlayerDetailGUI
 {
@@ -136,7 +137,7 @@ class ValuablePlayerDetailGUI
 
     private StatsSummary _curPlayerStats;
     private List<AchievementType> _types;
-    private MovieTexture _curBadge;
+    private VideoClip _curBadge;
     private string _curBadgeTitle;
     private string _curBadgeText;
     private int _curAchievementIndex = -1;

@@ -2,7 +2,7 @@
 using UberStrike.Core.Types;
 using UberStrike.Realtime.Common;
 using UnityEngine;
-
+using UnityEngine.Video;
 class WeaponDetailGUI
 {
     public void SetWeaponItem(IUnityItem item, RecommendType type)
@@ -148,11 +148,12 @@ class WeaponDetailGUI
             _curBadge.Stop();
         }
         _curBadge = UberstrikeIcons.GetAchievementBadge(AchievementType.CostEffective);
-        _curBadge.Play();
+        // TODO: Implement VideoPlayer management
+        // _curBadge.Play();
     }
 
     private IUnityItem _selectedItem;
-    private MovieTexture _curBadge;
+    private VideoClip _curBadge;
     private RecommendType _curRecomType;
     #endregion
 }

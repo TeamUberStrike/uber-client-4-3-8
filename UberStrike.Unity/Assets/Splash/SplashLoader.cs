@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Video;
 using System.Collections;
 
 public class SplashLoader : MonoBehaviour
@@ -7,7 +8,7 @@ public class SplashLoader : MonoBehaviour
     private TextAsset licenseFile;
 
     [SerializeField]
-    private MovieTexture uberStrikeLogoMovie;
+    private VideoClip uberStrikeLogoMovie;
 
     [SerializeField]
     private GUIStyle textStyle;
