@@ -127,7 +127,7 @@ internal static class AssetImporterUtils
                 if (i.normalmap)
                     format = TextureImporterFormat.AutomaticCompressed;
 
-                i.textureType = TextureImporterType.Advanced;
+                i.textureType = TextureImporterType.Default;
                 i.mipmapEnabled = useMipmaps;
                 i.mipmapFilter = TextureImporterMipFilter.BoxFilter;
                 i.textureFormat = format;
@@ -177,7 +177,7 @@ internal static class AssetImporterUtils
 
                 AudioImporter i = AudioImporter.GetAtPath(path) as AudioImporter;
                 i.format = AudioImporterFormat.Compressed;
-                i.loadType = AudioImporterLoadType.CompressedInMemory;
+                i.loadType = AudioClipLoadType.CompressedInMemory;
                 i.compressionBitrate = 56 * 1000;
                 i.threeD = false;
                 i.forceToMono = true;
@@ -202,7 +202,7 @@ internal static class AssetImporterUtils
 
                 AudioImporter i = AudioImporter.GetAtPath(path) as AudioImporter;
                 i.format = AudioImporterFormat.Compressed;
-                i.loadType = AudioImporterLoadType.DecompressOnLoad;
+                i.loadType = AudioClipLoadType.DecompressOnLoad;
                 i.compressionBitrate = 56 * 1000;
                 i.threeD = true;
                 i.forceToMono = true;
