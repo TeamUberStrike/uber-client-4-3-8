@@ -311,7 +311,7 @@ public class ChatManager : Singleton<ChatManager>
         _lastgameUsers.Clear();
         _lastgameUsers.AddRange(_allTimePlayers.Values);
 
-        foreach (CharacterInfo v in actors)
+        foreach (UberStrike.Realtime.Common.CharacterInfo v in actors)
         {
             CommUser user = new CommUser(v);
             user.CurrentGame = roomId;

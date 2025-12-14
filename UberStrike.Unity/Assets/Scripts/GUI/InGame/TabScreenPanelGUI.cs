@@ -12,9 +12,9 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         _panelSize.x = 700;
         _panelSize.y = 400;
 
-        _allPlayers = new List<CharacterInfo>(0);
-        _redTeam = new List<CharacterInfo>(0);
-        _blueTeam = new List<CharacterInfo>(0);
+        _allPlayers = new List<UberStrike.Realtime.Common.CharacterInfo>(0);
+        _redTeam = new List<UberStrike.Realtime.Common.CharacterInfo>(0);
+        _blueTeam = new List<UberStrike.Realtime.Common.CharacterInfo>(0);
     }
 
     private void Update()
@@ -262,7 +262,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             {
                 int i = 0;
 
-                foreach (CharacterInfo ui in players)
+                foreach (UberStrike.Realtime.Common.CharacterInfo ui in players)
                 {
                     x = offset;
                     GUI.BeginGroup(new Rect(0, i * 36, position.width, 36));

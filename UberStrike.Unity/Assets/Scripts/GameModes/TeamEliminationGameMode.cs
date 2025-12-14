@@ -10,7 +10,7 @@ public class TeamEliminationGameMode : TeamDeathMatchGameMode
     public TeamEliminationGameMode(GameMetaData gameData)
         : base(gameData)
     {
-        _pendingAvatarLoadingJobs = new Dictionary<int, CharacterInfo>();
+        _pendingAvatarLoadingJobs = new Dictionary<int, UberStrike.Realtime.Common.CharacterInfo>();
     }
 
     protected override void OnModeInitialized()
@@ -176,7 +176,7 @@ public class TeamEliminationGameMode : TeamDeathMatchGameMode
         //if I am getting respawned - instantiate all waiting players (including me)
         if (_pendingAvatarLoadingJobs.Count > 0)
         {
-            foreach (CharacterInfo c in _pendingAvatarLoadingJobs.Values)
+            foreach (UberStrike.Realtime.Common.CharacterInfo c in _pendingAvatarLoadingJobs.Values)
             {
                 InstantiateCharacter(c);
                 //Debug.LogError("_pendingAvatarLoadingJobs R " + c.ActorId);

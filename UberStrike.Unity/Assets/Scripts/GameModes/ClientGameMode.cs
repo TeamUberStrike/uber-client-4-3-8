@@ -60,7 +60,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
             else
             {
                 //add CharacterInfo to the List
-                Players[data.Id] = new CharacterInfo(data);
+                Players[data.Id] = new UberStrike.Realtime.Common.CharacterInfo(data);
                 Players[data.Id].Position = position;
             }
         }
@@ -105,7 +105,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
     {
         foreach (var d in data)
         {
-            CharacterInfo player;
+            UberStrike.Realtime.Common.CharacterInfo player;
             if (!d.IsEmpty && Players.TryGetValue(d.Id, out player))
             {
                 player.ReadSyncData(d);
@@ -116,7 +116,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
     [NetworkMethod(GameRPC.PlayerUpdate)]
     protected virtual void OnPlayerUpdate(SyncObject data)
     {
-        CharacterInfo player;
+        UberStrike.Realtime.Common.CharacterInfo player;
         if (!data.IsEmpty && Players.TryGetValue(data.Id, out player))
         {
             player.ReadSyncData(data);

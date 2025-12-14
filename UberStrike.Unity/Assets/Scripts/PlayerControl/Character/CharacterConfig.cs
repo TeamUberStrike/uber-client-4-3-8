@@ -76,17 +76,17 @@ public class CharacterConfig : MonoBehaviour, IShootable
     {
         try
         {
-            if (delta.Contains(CharacterInfo.FieldTag.Weapons))
+            if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.Weapons))
             {
                 WeaponSimulator.UpdateWeapons(_state.Info.CurrentWeaponSlot, _state.Info.Weapons.ItemIDs, _state.Info.QuickItems);
                 WeaponSimulator.UpdateWeaponSlot(_state.Info.CurrentWeaponSlot, _isLocalPlayer);
             }
-            else if (delta.Contains(CharacterInfo.FieldTag.CurrentWeaponSlot))
+            else if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.CurrentWeaponSlot))
             {
                 WeaponSimulator.UpdateWeaponSlot(_state.Info.CurrentWeaponSlot, _isLocalPlayer);
             }
 
-            if (delta.Contains(CharacterInfo.FieldTag.Gear) && !IsLocal)
+            if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.Gear) && !IsLocal)
             {
                 AvatarBuilder.Instance.UpdateRemoteAvatar(
                     Decorator,
@@ -95,7 +95,7 @@ public class CharacterConfig : MonoBehaviour, IShootable
             }
 
             //MOVEMENT
-            if (delta.Contains(CharacterInfo.FieldTag.MoveState))
+            if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.MoveState))
             {
                 if (_state.Info.Is(PlayerStates.GROUNDED) && TimeLastGrounded + 0.5f < Time.time)
                 {
@@ -110,9 +110,9 @@ public class CharacterConfig : MonoBehaviour, IShootable
             }
 
             //HEALTH
-            if (delta.Contains(CharacterInfo.FieldTag.Health))
+            if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.Health))
             {
-                int newHealth = (short)delta.Data[CharacterInfo.FieldTag.Health];
+                int newHealth = (short)delta.Data[UberStrike.Realtime.Common.CharacterInfo.FieldTag.Health];
 
                 // prepare for respawn
                 if (IsDead && newHealth > 0)
