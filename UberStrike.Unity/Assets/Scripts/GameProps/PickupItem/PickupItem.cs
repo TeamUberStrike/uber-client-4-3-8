@@ -47,7 +47,11 @@ public class PickupItem : MonoBehaviour
 
         _collider.isTrigger = true;
 
-        if (_emitter) _emitter.emit = false;
+        if (_emitter) 
+        {
+            var emission = _emitter.emission;
+            emission.enabled = false;
+        }
 
         gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
     }

@@ -9,7 +9,8 @@ public class TempleTeleporter : SecretDoor
     {
         _audios = GetComponents<AudioSource>();
 
-        _particles.emit = false;
+        var emission = _particles.emission;
+        emission.enabled = false;
         foreach(Renderer r in _visuals)
             r.enabled = false;
 
@@ -32,7 +33,8 @@ public class TempleTeleporter : SecretDoor
         {
             foreach (AudioSource s in _audios) s.Stop();
 
-            _particles.emit = false;
+            var emission = _particles.emission;
+            emission.enabled = false;
             foreach (Renderer r in _visuals)
                 r.enabled = false;
 
@@ -72,7 +74,8 @@ public class TempleTeleporter : SecretDoor
     {
         enabled = true;
 
-        _particles.emit = true;
+        var emission = _particles.emission;
+        emission.enabled = true;
         foreach (Renderer r in _visuals)
             r.enabled = true;
 

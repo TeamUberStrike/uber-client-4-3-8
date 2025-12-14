@@ -293,7 +293,8 @@ public class SpringGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
 
             if (behaviour.DeployedEffect)
             {
-                behaviour.DeployedEffect.emit = true;
+                var emission = behaviour.DeployedEffect.emission;
+                emission.enabled = true;
             }
         }
 
