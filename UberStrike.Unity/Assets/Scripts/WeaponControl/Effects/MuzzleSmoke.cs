@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(ParticleRenderer))]
 public class MuzzleSmoke : BaseWeaponEffect
 {
     private ParticleEmitter _particleEmitter;
