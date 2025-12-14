@@ -20,7 +20,7 @@ public static class AvatarAnimationSetup
                 if (!string.IsNullOrEmpty(path))
                 {
                     ModelImporter mi = AssetImporter.GetAtPath(path) as ModelImporter;
-                    mi.splitAnimations = true;
+                    // splitAnimations is deprecated, clipAnimations handles animation splitting automatically
 
                     List<ModelImporterClipAnimation> animations = new List<ModelImporterClipAnimation>();
                     animations.Add(CreateAnimation(AnimationIndex.lightGunUpDown, 1, 24, WrapMode.Once, false));
