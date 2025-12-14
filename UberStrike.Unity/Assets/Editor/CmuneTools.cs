@@ -20,9 +20,12 @@ public static class CmuneTools
                 i.textureType = TextureImporterType.Default;
                 i.lightmap = true;
                 i.mipmapEnabled = false;
-                i.textureFormat = TextureImporterFormat.AutomaticCompressed;
+                i.textureCompression = TextureImporterCompression.Compressed;
                 i.maxTextureSize = 1024;
-                i.SetPlatformTextureSettings("Web", 512, TextureImporterFormat.AutomaticCompressed);
+                var platformSettings = i.GetPlatformTextureSettings("WebGL");
+                platformSettings.maxTextureSize = 512;
+                platformSettings.compressionQuality = 50;
+                i.SetPlatformTextureSettings(platformSettings);
                 AssetDatabase.ImportAsset(path);
             }
         }
