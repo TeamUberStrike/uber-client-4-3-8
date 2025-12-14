@@ -42,7 +42,7 @@ public class SplashLoaderWeb : MonoBehaviour
     private IEnumerator Start()
     {
         // Record the tracking step
-		if (Application.isWebPlayer)
+		if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("wsTracking", "6");
         }

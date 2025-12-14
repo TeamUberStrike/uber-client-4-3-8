@@ -317,7 +317,7 @@ public class OptionsPanelGUI : PanelGuiBase
         int resHeight = _screenResText.Length * 16 + 16;
         float width = videoRect.width - GroupMarginX - GroupMarginX - 20;
 
-        if (!Application.isWebPlayer || showResolutions)
+        if (Application.platform != RuntimePlatform.WebGLPlayer || showResolutions)
         {
             contentRect.height += _screenResText.Length * 16;
         }
@@ -386,7 +386,7 @@ public class OptionsPanelGUI : PanelGuiBase
             int resolutionY = 240;
 
             //RESOLUTIONS (standalone)
-            if (!Application.isWebPlayer || showResolutions)
+            if (Application.platform != RuntimePlatform.WebGLPlayer || showResolutions)
             {
                 DrawGroupControl(new Rect(GroupMarginX, resolutionY, width, resHeight), LocalizedStrings.ScreenResolution, BlueStonez.label_group_interparkbold_18pt);
                 GUI.BeginGroup(new Rect(GroupMarginX, resolutionY, width, resHeight));

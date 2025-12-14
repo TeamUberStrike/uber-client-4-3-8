@@ -53,7 +53,7 @@ public static class CacheManager
     {
         WWW www;
 
-        if (Application.isWebPlayer && IsAuthorized)
+        if (Application.platform == RuntimePlatform.WebGLPlayer && IsAuthorized)
             www = WWW.LoadFromCacheOrDownload(url, 1);
         else
             www = new WWW(url);
