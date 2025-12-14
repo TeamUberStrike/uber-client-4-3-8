@@ -61,7 +61,7 @@ public class GuiText : MonoBehaviour
                 }
                 else
                 {
-                    _guiText.enabled = false;
+                    _guiText.GetComponent<Renderer>().enabled = false;
                 }
             }
             else
@@ -95,7 +95,7 @@ public class GuiText : MonoBehaviour
             if (_isVisible != value)
             {
                 _isVisible = value;
-                _guiText.enabled = value;
+                _guiText.GetComponent<Renderer>().enabled = value;
             }
         }
     }
