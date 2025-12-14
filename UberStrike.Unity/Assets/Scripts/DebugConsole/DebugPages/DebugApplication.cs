@@ -14,7 +14,7 @@ public class DebugApplication : IDebugPage
         GUILayout.Label("BuildType: " + ApplicationDataManager.BuildType);
         GUILayout.Label("VersionShort: " + ApplicationDataManager.VersionShort);
         GUILayout.Label("VersionLong: " + ApplicationDataManager.VersionLong);
-        GUILayout.Label("Url: " + Application.srcValue);
+        GUILayout.Label("Url: " + Application.absoluteURL);
         GUILayout.Label("Debug Level: " + CmuneDebug.DebugLevel);
 
         if (PlayerDataManager.AccessLevel > 0)

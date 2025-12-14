@@ -71,7 +71,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         localSystemInfo = new CmuneSystemInfo();
 
         // Get the web player url parameters
-        WebPlayerSrcValues = new WebPlayerSrcValues(WWW.UnEscapeURL(Application.srcValue, Encoding.UTF8));
+        WebPlayerSrcValues = new WebPlayerSrcValues(WWW.UnEscapeURL(Application.absoluteURL, Encoding.UTF8));
 
         //turn off the authentication procedure when in offline mode
         enabled = AutoLogin;

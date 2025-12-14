@@ -86,7 +86,7 @@ public class CmuneSystemInfo
         AbsoluteURL = Application.absoluteURL;
         DataPath = Application.dataPath;
         BackgroundLoadingPriority = Application.backgroundLoadingPriority.ToString();
-        SrcValue = Application.srcValue;
+        SrcValue = Application.absoluteURL;
         SystemLanguage = Application.systemLanguage.ToString();
         TargetFrameRate = Application.targetFrameRate.ToString("N0");
         UnityVersion = Application.unityVersion;
