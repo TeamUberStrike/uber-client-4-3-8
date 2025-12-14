@@ -3,20 +3,20 @@ using System.Collections;
 
 public class MuzzleSmoke : BaseWeaponEffect
 {
-    private ParticleEmitter _particleEmitter;
+    private ParticleSystem _particleEmitter;
 
     private void Awake()
     {
-        _particleEmitter = GetComponentInChildren<ParticleEmitter>();
+        _particleEmitter = GetComponentInChildren<ParticleSystem>();
     }
 
     public override void OnShoot()
     {
         if (_particleEmitter)
         {
-            gameObject.active = true;
+            gameObject.SetActive(true);
 
-            _particleEmitter.Emit();
+            _particleEmitter.Emit(1);
         }
     }
 

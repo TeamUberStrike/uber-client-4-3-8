@@ -12,7 +12,7 @@ public class PickupItem : MonoBehaviour
     protected int _respawnTime = 20;
 
     [SerializeField]
-    private ParticleEmitter _emitter;
+    private ParticleSystem _emitter;
 
     [SerializeField]
     protected Transform _pickupItem;

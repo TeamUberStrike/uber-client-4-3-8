@@ -94,7 +94,7 @@ public class TempleTeleporter : SecretDoor
     [SerializeField]
     private Transform _spawnpoint;
     [SerializeField]
-    private ParticleEmitter _particles;
+    private ParticleSystem _particles;
 
     private int _doorID;
     private float _timeOut = 0;

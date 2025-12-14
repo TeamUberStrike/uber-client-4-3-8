@@ -14,10 +14,10 @@ public class SpringGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
     private Renderer _renderer;
 
     [SerializeField]
-    private ParticleEmitter _smoke;
+    private ParticleSystem _smoke;
 
     [SerializeField]
-    private ParticleEmitter _deployedEffect;
+    private ParticleSystem _deployedEffect;
 
     [SerializeField]
     private SpringGrenadeConfiguration _config;
@@ -39,9 +39,9 @@ public class SpringGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
 
     #region Properties
 
-    public ParticleEmitter Smoke { get { return _smoke; } }
+    public ParticleSystem Smoke { get { return _smoke; } }
 
-    public ParticleEmitter DeployedEffect { get { return _deployedEffect; } }
+    public ParticleSystem DeployedEffect { get { return _deployedEffect; } }
 
     public Renderer Renderer { get { return _renderer; } }
 
