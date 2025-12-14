@@ -229,7 +229,7 @@ public abstract class FpsGameMode : ClientGameMode
         }
     }
 
-    private void ConfigureCharacter(CharacterInfo info, CharacterConfig character, bool isLocal)
+    private void ConfigureCharacter(UberStrike.Realtime.Common.CharacterInfo info, CharacterConfig character, bool isLocal)
     {
         if (character != null && info != null)
         {
@@ -289,7 +289,7 @@ public abstract class FpsGameMode : ClientGameMode
         }
     }
 
-    protected virtual void OnNormalJoin(CharacterInfo info)
+    protected virtual void OnNormalJoin(UberStrike.Realtime.Common.CharacterInfo info)
     {
         if (info.ActorId != MyActorId)
         {
@@ -1006,7 +1006,7 @@ public abstract class FpsGameMode : ClientGameMode
         }
     }
 
-    public bool TryGetPlayerWithCmid(int cmid, out CharacterInfo config)
+    public bool TryGetPlayerWithCmid(int cmid, out UberStrike.Realtime.Common.CharacterInfo config)
     {
         config = null;
         foreach (var i in Players.Values)
@@ -1019,7 +1019,7 @@ public abstract class FpsGameMode : ClientGameMode
         return config != null;
     }
 
-    protected void InstantiateCharacter(CharacterInfo info)
+    protected void InstantiateCharacter(UberStrike.Realtime.Common.CharacterInfo info)
     {
         //only load a character, if tyhere is no existing entry for this ActorId already
         if (!_characterByActorId.ContainsKey(info.ActorId))

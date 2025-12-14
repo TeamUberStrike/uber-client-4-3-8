@@ -303,7 +303,7 @@ public class ChatManager : Singleton<ChatManager>
         }
     }
 
-    public void SetGameSection(CmuneRoomID roomId, IEnumerable<CharacterInfo> actors)
+    public void SetGameSection(CmuneRoomID roomId, IEnumerable<UberStrike.Realtime.Common.CharacterInfo> actors)
     {
         _ingameUsers.Clear();
 

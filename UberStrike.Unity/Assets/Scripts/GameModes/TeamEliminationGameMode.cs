@@ -193,7 +193,7 @@ public class TeamEliminationGameMode : TeamDeathMatchGameMode
         EnableAllAvatarHudInfo(false);
     }
 
-    protected override void OnNormalJoin(CharacterInfo player)
+    protected override void OnNormalJoin(UberStrike.Realtime.Common.CharacterInfo player)
     {
         _pendingAvatarLoadingJobs[player.ActorId] = player;
 
@@ -258,6 +258,6 @@ public class TeamEliminationGameMode : TeamDeathMatchGameMode
     /// list of players who join the game when round runing
     ///  they are not spawned until the round ends
     /// </summary>
-    private Dictionary<int, CharacterInfo> _pendingAvatarLoadingJobs;
+    private Dictionary<int, UberStrike.Realtime.Common.CharacterInfo> _pendingAvatarLoadingJobs;
     #endregion
 }

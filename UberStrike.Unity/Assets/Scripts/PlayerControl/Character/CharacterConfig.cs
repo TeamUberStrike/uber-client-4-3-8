@@ -376,7 +376,7 @@ public class CharacterConfig : MonoBehaviour, IShootable
         get { return State != null ? State.TeamID : 0; }
     }
 
-    public CharacterInfo State
+    public UberStrike.Realtime.Common.CharacterInfo State
     {
         get { return _state != null ? _state.Info : null; }
     }

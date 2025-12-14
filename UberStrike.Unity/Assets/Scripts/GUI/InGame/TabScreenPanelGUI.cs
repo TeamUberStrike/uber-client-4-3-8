@@ -60,7 +60,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
     ////////////////////////////////////////////////////////
 
-    public Action<IEnumerable<CharacterInfo>> SortPlayersByRank { get; set; }
+    public Action<IEnumerable<UberStrike.Realtime.Common.CharacterInfo>> SortPlayersByRank { get; set; }
 
     public void SetGameName(string name)
     {
@@ -154,7 +154,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         _redScrollPos = DoTeam(rightPos, TeamID.RED, _redScrollPos, _redTeam);
     }
 
-    private Vector2 DoTeam(Rect position, TeamID teamID, Vector2 scroll, List<CharacterInfo> players)
+    private Vector2 DoTeam(Rect position, TeamID teamID, Vector2 scroll, List<UberStrike.Realtime.Common.CharacterInfo> players)
     {
         GUI.BeginGroup(position);
         {
@@ -196,12 +196,12 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         return scroll;
     }
 
-    public void SetPlayerListAll(List<CharacterInfo> players)
+    public void SetPlayerListAll(List<UberStrike.Realtime.Common.CharacterInfo> players)
     {
         _allPlayers = players;
     }
 
-    private Vector2 DoAllStats(Rect position, Vector2 scroll, List<CharacterInfo> players)
+    private Vector2 DoAllStats(Rect position, Vector2 scroll, List<UberStrike.Realtime.Common.CharacterInfo> players)
     {
         int offset = 8;
         int iconWidth = 25;
@@ -355,12 +355,12 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         return scroll;
     }
 
-    public void SetPlayerListRed(List<CharacterInfo> redPlayers)
+    public void SetPlayerListRed(List<UberStrike.Realtime.Common.CharacterInfo> redPlayers)
     {
         _redTeam = redPlayers;
     }
 
-    public void SetPlayerListBlue(List<CharacterInfo> bluePlayers)
+    public void SetPlayerListBlue(List<UberStrike.Realtime.Common.CharacterInfo> bluePlayers)
     {
         _blueTeam = bluePlayers;
     }
@@ -410,9 +410,9 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
     private int _redTeamScore;
     private int _blueTeamScore;
 
-    private List<CharacterInfo> _redTeam;
-    private List<CharacterInfo> _blueTeam;
-    private List<CharacterInfo> _allPlayers;
+    private List<UberStrike.Realtime.Common.CharacterInfo> _redTeam;
+    private List<UberStrike.Realtime.Common.CharacterInfo> _blueTeam;
+    private List<UberStrike.Realtime.Common.CharacterInfo> _allPlayers;
 
     private static bool _isEnabled = false;
     #endregion
