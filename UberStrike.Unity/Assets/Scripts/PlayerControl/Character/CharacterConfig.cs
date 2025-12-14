@@ -225,8 +225,8 @@ public class CharacterConfig : MonoBehaviour, IShootable
     {
         Decorator = decorator;
 
-        decorator.renderer.receiveShadows = false;
-        decorator.renderer.castShadows = true;
+        decorator.GetComponent<Renderer>().receiveShadows = false;
+        decorator.GetComponent<Renderer>().castShadows = true;
 
         decorator.transform.parent = transform;
         decorator.SetPosition(new Vector3(0, -0.98f, 0), Quaternion.identity);

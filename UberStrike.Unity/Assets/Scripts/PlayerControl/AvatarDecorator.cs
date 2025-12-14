@@ -49,7 +49,7 @@ public class AvatarDecorator : MonoBehaviour
     {
         get
         {
-            return this.renderer;
+            return this.GetComponent<Renderer>();
         }
     }
     public Animation Animation

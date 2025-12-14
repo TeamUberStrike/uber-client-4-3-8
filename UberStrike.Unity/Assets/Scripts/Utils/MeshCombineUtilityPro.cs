@@ -120,7 +120,7 @@ public class MeshCombineUtilityPro
             foreach (MeshInstance combine in combines)
             {
                 if (combine.mesh)
-                    Copy(combine.mesh.vertexCount, combine.mesh.uv1, uv1, ref offset);
+                    Copy(combine.mesh.vertexCount, combine.mesh.uv2, uv1, ref offset);
             }
             offset = 0;
         }
@@ -191,7 +191,7 @@ public class MeshCombineUtilityPro
             mesh.colors = colors;
         mesh.uv = uv;
         if (copyUV2)
-            mesh.uv1 = uv1;
+            mesh.uv2 = uv1;
         if (copyTangents)
             mesh.tangents = tangents;
         if (generateStrips)

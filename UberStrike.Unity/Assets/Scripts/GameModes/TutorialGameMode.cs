@@ -276,7 +276,7 @@ public class TutorialGameMode : FpsGameMode, ITutorialCinematicSequenceListener
 
     private void DrawBlackBars()
     {
-        if (Event.current.type == UnityEngine.EventType.repaint)
+        if (Event.current.type == UnityEngine.EventType.Repaint)
         {
             _blackBarHeight = Mathf.Lerp(_blackBarHeight, Screen.height * 1 / 8f, Time.deltaTime * 3);
         }
@@ -514,9 +514,9 @@ public class TutorialGameMode : FpsGameMode, ITutorialCinematicSequenceListener
                         Object.Destroy(_airlockNPC);
                     }
 
-                    npc.animation.enabled = true;
-                    npc.animation.Play(AnimationIndex.HomeSmallGunIdle.ToString());
-                    npc.animation.Stop();
+                    npc.GetComponent<Animation>().enabled = true;
+                    npc.GetComponent<Animation>().Play(AnimationIndex.HomeSmallGunIdle.ToString());
+                    npc.GetComponent<Animation>().Stop();
 
                     CapsuleCollider cc = npc.AddComponent<CapsuleCollider>();
                     if (cc)

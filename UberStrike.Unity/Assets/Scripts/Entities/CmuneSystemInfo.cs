@@ -99,7 +99,7 @@ public class CmuneSystemInfo
         PenetrationPenaltyForce = Physics.penetrationPenaltyForce.ToString("N2");
         SleepAngularVelocity = Physics.sleepAngularVelocity.ToString("N2");
         SleepVelocity = Physics.sleepVelocity.ToString("N2");
-        SolverIterationCount = Physics.solverIterationCount.ToString("N2");
+        SolverIterationCount = Physics.defaultSolverIterations.ToString("N2");
 
         // Unity Rendering Info
         CurrentResolution = "X " + Screen.width.ToString() + ", Y " + Screen.height.ToString() + ", Refresh " + Screen.currentResolution.refreshRate.ToString("N0") + "Hz";
@@ -113,7 +113,7 @@ public class CmuneSystemInfo
         // Unity Quality Settings Info
         CurrentQualityLevel = QualitySettings.GetQualityLevel().ToString();
         AnisotropicFiltering = QualitySettings.anisotropicFiltering.ToString();
-        MasterTextureLimit = QualitySettings.masterTextureLimit.ToString();
+        MasterTextureLimit = QualitySettings.globalTextureMipmapLimit.ToString();
         MaxQueuedFrames = QualitySettings.maxQueuedFrames.ToString();
         PixelLightCount = QualitySettings.pixelLightCount.ToString();
         ShadowCascades = QualitySettings.shadowCascades.ToString();

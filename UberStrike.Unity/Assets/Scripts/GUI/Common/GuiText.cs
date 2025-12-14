@@ -18,7 +18,7 @@ public class GuiText : MonoBehaviour
     [SerializeField]
     private float _distanceCap = -1;
 
-    private GUIText _guiText;
+    private TextMesh _guiText;
     private Transform _transform;
     private Material _material;
 
@@ -32,13 +32,15 @@ public class GuiText : MonoBehaviour
 
     void Start()
     {
-        _guiText = gameObject.AddComponent(typeof(GUIText)) as GUIText;
-        _guiText.alignment = TextAlignment.Center;
+        _guiText = gameObject.AddComponent<TextMesh>();
         _guiText.anchor = TextAnchor.MiddleCenter;
         _guiText.font = _font;
         _guiText.text = _text;
-        _guiText.material = _font.material;
-        _material = _guiText.material;
+        if (_font && _font.material)
+        {
+            _guiText.GetComponent<Renderer>().material = _font.material;
+            _material = _guiText.GetComponent<Renderer>().material;
+        }
     }
 
     void LateUpdate()

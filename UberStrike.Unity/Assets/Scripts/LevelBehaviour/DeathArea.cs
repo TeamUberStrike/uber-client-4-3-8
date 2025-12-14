@@ -5,7 +5,7 @@ public class DeathArea : MonoBehaviour
 {
     private void Awake()
     {
-        if (collider) collider.isTrigger = true;
+        if (GetComponent<Collider>()) GetComponent<Collider>().isTrigger = true;
     }
 
     private void OnTriggerEnter(Collider c)
