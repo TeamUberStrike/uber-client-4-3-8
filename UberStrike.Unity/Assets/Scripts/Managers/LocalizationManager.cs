@@ -36,8 +36,69 @@ public static class LocalizationHelper
     /// <returns></returns>
     public static GUIStyle GetLocalizedStyle(GUIStyle style)
     {
-        //instead of returning the font we could modify it here.
-        //for now just keep everything as it is
-        return style;
+        // If style is null or has a missing font, provide fallbacks
+        if (style == null)
+        {
+            UnityEngine.Debug.LogWarning("GetLocalizedStyle received null style, creating fallback");
+            return new GUIStyle();
+        }
+
+        // Clone the style to avoid modifying the original
+        GUIStyle localizedStyle = new GUIStyle(style);
+
+        // Check if the font exists and provide fallback if missing
+        if (localizedStyle.font != null)
+        {
+            // Check if the font name suggests a missing custom font
+            string fontName = localizedStyle.font.name;
+            bool isCustomFont = fontName.Contains("InterparkGothic") || 
+                               fontName.Contains("Interpark") || 
+                               fontName.Contains("interparkbold") ||
+                               fontName.Contains("interparkmed") ||
+                               string.IsNullOrEmpty(fontName) ||
+                               fontName.Equals("Missing");
+                               
+            if (isCustomFont)
+            {
+                UnityEngine.Debug.LogWarning($"Custom font '{fontName}' detected, replacing with system font for compatibility");
+                
+                // Use LegacyRuntime.ttf as primary fallback
+                Font fallbackFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                if (fallbackFont == null)
+                {
+                    UnityEngine.Debug.LogWarning("LegacyRuntime.ttf not available, falling back to Arial.ttf");
+                    fallbackFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+                }
+                
+                if (fallbackFont != null)
+                {
+                    localizedStyle.font = fallbackFont;
+                }
+                else
+                {
+                    // Use Unity's default font as last resort
+                    localizedStyle.font = null;
+                }
+            }
+        }
+
+        // Handle case where font is missing entirely
+        if (localizedStyle.font == null)
+        {
+            // Try to load Arial as fallback, or use Unity's default
+            Font fallbackFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if (fallbackFont == null)
+            {
+                UnityEngine.Debug.LogWarning("LegacyRuntime.ttf not available, falling back to Arial.ttf");
+                fallbackFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            }
+            
+            if (fallbackFont != null)
+            {
+                localizedStyle.font = fallbackFont;
+            }
+        }
+
+        return localizedStyle;
     }
 }

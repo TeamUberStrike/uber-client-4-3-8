@@ -10,138 +10,235 @@ public static class BlueStonez
 {
     static BlueStonez()
     {
-        Skin = Resources.Load("BlueStonez", typeof(GUISkin)) as GUISkin;
+        try
+        {
+            Skin = Resources.Load("BlueStonez", typeof(GUISkin)) as GUISkin;
+            
+            // If skin failed to load, use Unity's default
+            if (Skin == null)
+            {
+                UnityEngine.Debug.LogWarning("BlueStonez skin not found, using Unity default skin");
+                Skin = GUI.skin;
+            }
 
-        box = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box"));
-        label = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label"));
-        textField = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("textField"));
-        textArea = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("textArea"));
-        button = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button"));
-        toggle = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("toggle"));
-        window = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("window"));
-        horizontalSlider = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("horizontalSlider"));
-        horizontalSliderThumb = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("horizontalSliderThumb"));
-        verticalSlider = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("verticalSlider"));
-        verticalSliderThumb = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("verticalSliderThumb"));
-        horizontalScrollbar = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("horizontalScrollbar"));
-        horizontalScrollbarThumb = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("horizontalScrollbarThumb"));
-        horizontalScrollbarLeftButton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("horizontalScrollbarLeftButton"));
-        horizontalScrollbarRightButton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("horizontalScrollbarRightButton"));
-        verticalScrollbar = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("verticalScrollbar"));
-        verticalScrollbarThumb = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("verticalScrollbarThumb"));
-        verticalScrollbarUpButton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("verticalScrollbarUpButton"));
-        verticalScrollbarDownButton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("verticalScrollbarDownButton"));
-        scrollView = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("scrollView"));
+            // Initialize all styles with safe loading - using try-catch for each to prevent complete failure
+            InitializeAllStyles();
+        }
+        catch (System.Exception ex)
+        {
+            UnityEngine.Debug.LogError($"Critical error initializing BlueStonez: {ex.Message}");
+            // Fall back to Unity default skin
+            Skin = GUI.skin;
+            InitializeFallbackStyles();
+        }
+    }
+    
+    private static void InitializeAllStyles()
+    {
+        // Initialize basic Unity GUI styles
+        box = GetSafeStyle("box");
+        label = GetSafeStyle("label");
+        textField = GetSafeStyle("textField");
+        textArea = GetSafeStyle("textArea");
+        button = GetSafeStyle("button");
+        toggle = GetSafeStyle("toggle");
+        window = GetSafeStyle("window");
+        horizontalSlider = GetSafeStyle("horizontalSlider");
+        horizontalSliderThumb = GetSafeStyle("horizontalSliderThumb");
+        verticalSlider = GetSafeStyle("verticalSlider");
+        verticalSliderThumb = GetSafeStyle("verticalSliderThumb");
+        horizontalScrollbar = GetSafeStyle("horizontalScrollbar");
+        horizontalScrollbarThumb = GetSafeStyle("horizontalScrollbarThumb");
+        horizontalScrollbarLeftButton = GetSafeStyle("horizontalScrollbarLeftButton");
+        horizontalScrollbarRightButton = GetSafeStyle("horizontalScrollbarRightButton");
+        verticalScrollbar = GetSafeStyle("verticalScrollbar");
+        verticalScrollbarThumb = GetSafeStyle("verticalScrollbarThumb");
+        verticalScrollbarUpButton = GetSafeStyle("verticalScrollbarUpButton");
+        verticalScrollbarDownButton = GetSafeStyle("verticalScrollbarDownButton");
+        scrollView = GetSafeStyle("scrollView");
 
-        tab_large = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("tab_large"));
-        tab_largeicon = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("tab_largeicon"));
-        tab_medium = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("tab_medium"));
-        dropdown = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("dropdown"));
-        tab_strip = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("tab_strip"));
-        tab_strip_small = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("tab_strip_small"));
-        tab_strip_large = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("tab_strip_large"));
-        panelstrip_leftbutton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("panelstrip_leftbutton"));
-        panelstrip_middlebutton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("panelstrip_middlebutton"));
-        panelstrip_rightbutton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("panelstrip_rightbutton"));
-        panelquad_button = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("panelquad_button"));
-        panelquad_toggle = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("panelquad_toggle"));
-        label_interparkbold_32pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_32pt_left"));
-        label_interparkbold_32pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_32pt"));
-        label_interparkbold_32pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_32pt_right"));
-        label_interparkbold_48pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_48pt"));
-        label_interparkbold_48pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_48pt_left"));
-        label_interparkbold_48pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_48pt_right"));
-        label_groupbox = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_groupbox"));
-        label_group_interparkbold_11pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_group_interparkbold_11pt"));
-        label_interparkbold_11pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_11pt"));
-        label_interparkbold_11pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_11pt_left"));
-        label_interparkbold_11pt_left_wrap = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_11pt_left_wrap"));
-        label_interparkbold_11pt_left_wrap_greybg = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_11pt_left_wrap_greybg"));
-        label_interparkbold_11pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_11pt_right"));
-        label_interparkmed_10pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_10pt_right"));
-        label_interparkmed_10pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_10pt_left"));
-        label_itemdescription = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_itemdescription"));
-        label_interparkbold_16pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_16pt"));
-        label_interparkbold_16pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_16pt_left"));
-        label_interparkbold_16pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_16pt_right"));
-        label_interparkbold_18pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_18pt_left"));
-        label_interparkbold_18pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_18pt_right"));
-        label_interparkbold_18pt_right_white = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_18pt_right_white"));
-        label_interparkmed_18pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_18pt_right"));
-        label_interparkmed_18pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_18pt_left"));
-        label_interparkmed_18pt_left_wrap = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_18pt_left_wrap"));
-        label_ingamechat = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_ingamechat"));
-        box_grey31 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_grey31"));
-        box_grey38 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_grey38"));
-        box_white_2px = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_white_2px"));
-        box_grey_outlined = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_grey_outlined"));
-        box_grey_outlined_tip = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_grey_outlined_tip"));
-        box_white_rounded = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_white_rounded"));
-        window_standard_grey38 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("window_standard_grey38"));
-        group_grey81 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("group_grey81"));
-        label_group_interparkbold_18pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_group_interparkbold_18pt"));
-        label_interparkbold_18pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_18pt"));
-        radiobutton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("radiobutton"));
-        ingamechat = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("ingamechat"));
-        speechbubble_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("speechbubble_left"));
-        speechbubble_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("speechbubble_right"));
-        tooltip = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("tooltip"));
-        label_interparkmed_11pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_11pt"));
-        label_interparkmed_11pt_middleLeft = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_11pt_middleLeft"));
-        label_interparkmed_11pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_11pt_left"));
-        label_interparkmed_11pt_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_11pt_right"));
-        label_interparkmed_11pt_url = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkmed_11pt_url"));
-        label_interparkbold_11pt_url = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_11pt_url"));
-        label_interparkbold_13pt = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_13pt"));
-        label_interparkbold_13pt_black = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_13pt_black"));
-        label_interparkbold_13pt_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_interparkbold_13pt_left"));
-        dropdown_button = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("dropdown_button"));
-        button_context = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_context"));
-        label_dropdown = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("label_dropdown"));
-        box_grey50 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_grey50"));
-        packslot = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("packslot"));
-        box_overlay = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_overlay"));
-        box_overlay_black = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_overlay_black"));
-        dropdown_list = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("dropdown_list"));
-        dropdown_listItem = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("dropdown_listItem"));
-        buttondark_medium = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("buttondark_medium"));
-        button_fbconnect = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_fbconnect"));
-        buttongold_medium = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("buttongold_medium"));
-        buttongold_large_price = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("buttongold_large_price"));
-        buttongold_large = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("buttongold_large"));
-        button_white = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_white"));
-        button_green = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_green"));
-        button_red = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_red"));
-        buttondark_small = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("buttondark_small"));
-        toggle_item_slot = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("toggle_item_slot"));
-        item_slot_64 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("item_slot_64"));
-        item_slot_large = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("item_slot_large"));
-        item_slot_alpha = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("item_slot_alpha"));
-        item_slot_small = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("item_slot_small"));
-        horizontal_line_grey95 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("horizontal_line_grey95"));
-        vertical_line_grey95 = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("vertical_line_grey95"));
-        progressbar_background = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("progressbar_background"));
-        hud_progressbar_background = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("hud_progressbar_background"));
-        progressbar_large_background = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("progressbar_large_background"));
-        progressbar_large_thumb = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("progressbar_large_thumb"));
-        hud_progressbar_thumb = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("hud_progressbar_thumb"));
-        progressbar_thumb = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("progressbar_thumb"));
-        mainmenubutton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("mainmenubutton"));
-        mainmenuseparator = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("mainmenuseparator"));
-        whitebutton = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("whitebutton"));
-        loadoutdropslot = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("loadoutdropslot"));
-        loadoutdropslot_highlight = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("loadoutdropslot_highlight"));
-        arrow_small_down = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("arrow_small_down"));
-        box_black = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_black"));
-        box_white = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("box_white"));
-        friends_listitem = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("friends_listitem"));
-        friends_hidden_button = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("friends_hidden_button"));
-        friends_contextlink = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("friends_contextlink"));
-        button_mainmenu = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_mainmenu"));
-        button_icontext = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_icontext"));
-        button_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_right"));
-        button_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_left"));
-        gray_background = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("gray_background"));
+        tab_large = GetSafeStyle("tab_large");
+        tab_largeicon = GetSafeStyle("tab_largeicon");
+        tab_medium = GetSafeStyle("tab_medium");
+        dropdown = GetSafeStyle("dropdown");
+        tab_strip = GetSafeStyle("tab_strip");
+        tab_strip_small = GetSafeStyle("tab_strip_small");
+        tab_strip_large = GetSafeStyle("tab_strip_large");
+        panelstrip_leftbutton = GetSafeStyle("panelstrip_leftbutton");
+        panelstrip_middlebutton = GetSafeStyle("panelstrip_middlebutton");
+        panelstrip_rightbutton = GetSafeStyle("panelstrip_rightbutton");
+        panelquad_button = GetSafeStyle("panelquad_button");
+        panelquad_toggle = GetSafeStyle("panelquad_toggle");
+        label_interparkbold_32pt_left = GetSafeStyle("label_interparkbold_32pt_left");
+        label_interparkbold_32pt = GetSafeStyle("label_interparkbold_32pt");
+        label_interparkbold_32pt_right = GetSafeStyle("label_interparkbold_32pt_right");
+        label_interparkbold_48pt = GetSafeStyle("label_interparkbold_48pt");
+        label_interparkbold_48pt_left = GetSafeStyle("label_interparkbold_48pt_left");
+        label_interparkbold_48pt_right = GetSafeStyle("label_interparkbold_48pt_right");
+        label_groupbox = GetSafeStyle("label_groupbox");
+        label_group_interparkbold_11pt = GetSafeStyle("label_group_interparkbold_11pt");
+        label_interparkbold_11pt = GetSafeStyle("label_interparkbold_11pt");
+        label_interparkbold_11pt_left = GetSafeStyle("label_interparkbold_11pt_left");
+        label_interparkbold_11pt_left_wrap = GetSafeStyle("label_interparkbold_11pt_left_wrap");
+        label_interparkbold_11pt_left_wrap_greybg = GetSafeStyle("label_interparkbold_11pt_left_wrap_greybg");
+        label_interparkbold_11pt_right = GetSafeStyle("label_interparkbold_11pt_right");
+        label_interparkmed_10pt_right = GetSafeStyle("label_interparkmed_10pt_right");
+        label_interparkmed_10pt_left = GetSafeStyle("label_interparkmed_10pt_left");
+        label_itemdescription = GetSafeStyle("label_itemdescription");
+        label_interparkbold_16pt = GetSafeStyle("label_interparkbold_16pt");
+        label_interparkbold_16pt_left = GetSafeStyle("label_interparkbold_16pt_left");
+        label_interparkbold_16pt_right = GetSafeStyle("label_interparkbold_16pt_right");
+        label_interparkbold_18pt_left = GetSafeStyle("label_interparkbold_18pt_left");
+        label_interparkbold_18pt_right = GetSafeStyle("label_interparkbold_18pt_right");
+        label_interparkbold_18pt_right_white = GetSafeStyle("label_interparkbold_18pt_right_white");
+        label_interparkmed_18pt_right = GetSafeStyle("label_interparkmed_18pt_right");
+        label_interparkmed_18pt_left = GetSafeStyle("label_interparkmed_18pt_left");
+        label_interparkmed_18pt_left_wrap = GetSafeStyle("label_interparkmed_18pt_left_wrap");
+        label_ingamechat = GetSafeStyle("label_ingamechat");
+        box_grey31 = GetSafeStyle("box_grey31");
+        box_grey38 = GetSafeStyle("box_grey38");
+        box_white_2px = GetSafeStyle("box_white_2px");
+        box_grey_outlined = GetSafeStyle("box_grey_outlined");
+        box_grey_outlined_tip = GetSafeStyle("box_grey_outlined_tip");
+        box_white_rounded = GetSafeStyle("box_white_rounded");
+        window_standard_grey38 = GetSafeStyle("window_standard_grey38");
+        group_grey81 = GetSafeStyle("group_grey81");
+        label_group_interparkbold_18pt = GetSafeStyle("label_group_interparkbold_18pt");
+        label_interparkbold_18pt = GetSafeStyle("label_interparkbold_18pt");
+        radiobutton = GetSafeStyle("radiobutton");
+        ingamechat = GetSafeStyle("ingamechat");
+        speechbubble_left = GetSafeStyle("speechbubble_left");
+        speechbubble_right = GetSafeStyle("speechbubble_right");
+        tooltip = GetSafeStyle("tooltip");
+        label_interparkmed_11pt = GetSafeStyle("label_interparkmed_11pt");
+        // Continue with remaining styles - wrap in try-catch for safety
+        try 
+        {
+            label_interparkmed_11pt_left = GetSafeStyle("label_interparkmed_11pt_left");
+            label_interparkmed_11pt_right = GetSafeStyle("label_interparkmed_11pt_right");
+            label_interparkmed_11pt_url = GetSafeStyle("label_interparkmed_11pt_url");
+            label_interparkbold_11pt_url = GetSafeStyle("label_interparkbold_11pt_url");
+            label_interparkbold_13pt = GetSafeStyle("label_interparkbold_13pt");
+            label_interparkbold_13pt_black = GetSafeStyle("label_interparkbold_13pt_black");
+            label_interparkbold_13pt_left = GetSafeStyle("label_interparkbold_13pt_left");
+            dropdown_button = GetSafeStyle("dropdown_button");
+            button_context = GetSafeStyle("button_context");
+            label_dropdown = GetSafeStyle("label_dropdown");
+            box_grey50 = GetSafeStyle("box_grey50");
+            packslot = GetSafeStyle("packslot");
+            box_overlay = GetSafeStyle("box_overlay");
+            box_overlay_black = GetSafeStyle("box_overlay_black");
+            dropdown_list = GetSafeStyle("dropdown_list");
+            dropdown_listItem = GetSafeStyle("dropdown_listItem");
+            buttondark_medium = GetSafeStyle("buttondark_medium");
+            button_fbconnect = GetSafeStyle("button_fbconnect");
+            buttongold_medium = GetSafeStyle("buttongold_medium");
+            buttongold_large_price = GetSafeStyle("buttongold_large_price");
+            buttongold_large = GetSafeStyle("buttongold_large");
+        }
+        catch (System.Exception ex)
+        {
+            UnityEngine.Debug.LogError($"Error loading some BlueStonez styles: {ex.Message}");
+        }
+        
+        // Load remaining styles with the old method but with error handling
+        try
+        {
+            LoadRemainingStylesWithErrorHandling();
+        }
+        catch (System.Exception ex)
+        {
+            UnityEngine.Debug.LogError($"Error loading remaining BlueStonez styles: {ex.Message}");
+        }
+    }
+    
+    private static void LoadRemainingStylesWithErrorHandling()
+    {
+        // Load remaining styles individually with try-catch to prevent complete failure
+        // We'll just use GetSafeStyle for the most critical ones
+        try { buttongold_small = GetSafeStyle("buttongold_small"); } catch { buttongold_small = CreateFallbackStyle("buttongold_small"); }
+        try { buttondark_large = GetSafeStyle("buttondark_large"); } catch { buttondark_large = CreateFallbackStyle("buttondark_large"); }
+        try { buttondark_small = GetSafeStyle("buttondark_small"); } catch { buttondark_small = CreateFallbackStyle("buttondark_small"); }
+        try { buttonblue_medium = GetSafeStyle("buttonblue_medium"); } catch { buttonblue_medium = CreateFallbackStyle("buttonblue_medium"); }
+        try { buttonblue_small = GetSafeStyle("buttonblue_small"); } catch { buttonblue_small = CreateFallbackStyle("buttonblue_small"); }
+        try { playercard_member = GetSafeStyle("playercard_member"); } catch { playercard_member = CreateFallbackStyle("playercard_member"); }
+        try { playercard_slot = GetSafeStyle("playercard_slot"); } catch { playercard_slot = CreateFallbackStyle("playercard_slot"); }
+        try { playercard_slotweapon = GetSafeStyle("playercard_slotweapon"); } catch { playercard_slotweapon = CreateFallbackStyle("playercard_slotweapon"); }
+        try { playercard_slotgear = GetSafeStyle("playercard_slotgear"); } catch { playercard_slotgear = CreateFallbackStyle("playercard_slotgear"); }
+        try { playercard_slotquickuse = GetSafeStyle("playercard_slotquickuse"); } catch { playercard_slotquickuse = CreateFallbackStyle("playercard_slotquickuse"); }
+        // Add more as needed...
+    }
+    
+    private static void InitializeFallbackStyles()
+    {
+        UnityEngine.Debug.Log("Initializing fallback styles for BlueStonez");
+        // Create basic fallback styles for all properties
+        box = new GUIStyle(GUI.skin.box);
+        label = new GUIStyle(GUI.skin.label);
+        textField = new GUIStyle(GUI.skin.textField);
+        textArea = new GUIStyle(GUI.skin.textArea);
+        button = new GUIStyle(GUI.skin.button);
+        toggle = new GUIStyle(GUI.skin.toggle);
+        window = new GUIStyle(GUI.skin.window);
+        
+        // Set all the other styles to basic fallbacks
+        tab_strip = new GUIStyle(GUI.skin.label);
+        window_standard_grey38 = new GUIStyle(GUI.skin.window);
+        label_interparkbold_18pt = new GUIStyle(GUI.skin.label);
+        
+        // Initialize all remaining styles as basic label fallbacks
+        var labelStyle = new GUIStyle(GUI.skin.label);
+        label_interparkbold_32pt_left = labelStyle;
+        label_interparkbold_32pt = labelStyle;
+        label_interparkbold_32pt_right = labelStyle;
+        label_interparkbold_48pt = labelStyle;
+        label_interparkbold_48pt_left = labelStyle;
+        label_interparkbold_48pt_right = labelStyle;
+            // Additional styles using GetSafeStyle
+            label_interparkmed_11pt_middleLeft = GetSafeStyle("label_interparkmed_11pt_middleLeft");
+            button_white = GetSafeStyle("button_white");
+            button_green = GetSafeStyle("button_green");
+            button_red = GetSafeStyle("button_red");
+            toggle_item_slot = GetSafeStyle("toggle_item_slot");
+            item_slot_64 = GetSafeStyle("item_slot_64");
+            item_slot_large = GetSafeStyle("item_slot_large");
+            item_slot_alpha = GetSafeStyle("item_slot_alpha");
+            item_slot_small = GetSafeStyle("item_slot_small");
+            horizontal_line_grey95 = GetSafeStyle("horizontal_line_grey95");
+            vertical_line_grey95 = GetSafeStyle("vertical_line_grey95");
+            progressbar_background = GetSafeStyle("progressbar_background");
+            hud_progressbar_background = GetSafeStyle("hud_progressbar_background");
+            progressbar_large_background = GetSafeStyle("progressbar_large_background");
+            progressbar_large_thumb = GetSafeStyle("progressbar_large_thumb");
+            hud_progressbar_thumb = GetSafeStyle("hud_progressbar_thumb");
+            progressbar_thumb = GetSafeStyle("progressbar_thumb");
+            mainmenubutton = GetSafeStyle("mainmenubutton");
+            mainmenuseparator = GetSafeStyle("mainmenuseparator");
+            whitebutton = GetSafeStyle("whitebutton");
+            loadoutdropslot = GetSafeStyle("loadoutdropslot");
+            loadoutdropslot_highlight = GetSafeStyle("loadoutdropslot_highlight");
+            arrow_small_down = GetSafeStyle("arrow_small_down");
+            box_black = GetSafeStyle("box_black");
+            box_white = GetSafeStyle("box_white");
+            friends_listitem = GetSafeStyle("friends_listitem");
+            friends_hidden_button = GetSafeStyle("friends_hidden_button");
+            friends_contextlink = GetSafeStyle("friends_contextlink");
+            button_mainmenu = GetSafeStyle("button_mainmenu");
+            button_icontext = GetSafeStyle("button_icontext");
+            button_right = GetSafeStyle("button_right");
+            button_left = GetSafeStyle("button_left");
+            gray_background = GetSafeStyle("gray_background");
+            
+            // Initialize additional styles
+            buttongold_small = GetSafeStyle("buttongold_small");
+            buttondark_large = GetSafeStyle("buttondark_large");
+            buttonblue_medium = GetSafeStyle("buttonblue_medium");
+            buttonblue_small = GetSafeStyle("buttonblue_small");
+            playercard_member = GetSafeStyle("playercard_member");
+            playercard_slot = GetSafeStyle("playercard_slot");
+            playercard_slotweapon = GetSafeStyle("playercard_slotweapon");
+            playercard_slotgear = GetSafeStyle("playercard_slotgear");
+            playercard_slotquickuse = GetSafeStyle("playercard_slotquickuse");
     }
 
     public static GUISkin Skin { get; private set; }
@@ -276,4 +373,227 @@ public static class BlueStonez
     public static GUIStyle button_right { get; private set; }
     public static GUIStyle button_left { get; private set; }
     public static GUIStyle gray_background { get; private set; }
+    
+    // Additional properties for LoadRemainingStylesWithErrorHandling
+    public static GUIStyle buttongold_small { get; private set; }
+    public static GUIStyle buttondark_large { get; private set; }
+    public static GUIStyle buttonblue_medium { get; private set; }
+    public static GUIStyle buttonblue_small { get; private set; }
+    public static GUIStyle playercard_member { get; private set; }
+    public static GUIStyle playercard_slot { get; private set; }
+    public static GUIStyle playercard_slotweapon { get; private set; }
+    public static GUIStyle playercard_slotgear { get; private set; }
+    public static GUIStyle playercard_slotquickuse { get; private set; }
+
+    /// <summary>
+    /// Safely loads a style from the skin with fallback handling
+    /// </summary>
+    private static GUIStyle GetSafeStyle(string styleName)
+    {
+        try
+        {
+            GUIStyle style = Skin?.GetStyle(styleName);
+            if (style != null)
+            {
+                GUIStyle localizedStyle = LocalizationHelper.GetLocalizedStyle(style);
+                return localizedStyle ?? CreateFallbackStyle(styleName);
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"Style '{styleName}' not found in BlueStonez skin, using fallback");
+                return CreateFallbackStyle(styleName);
+            }
+        }
+        catch (System.Exception ex)
+        {
+            UnityEngine.Debug.LogError($"Error loading style '{styleName}': {ex.Message}");
+            return CreateFallbackStyle(styleName);
+        }
+    }
+
+    /// <summary>
+    /// Creates a basic fallback style when the original is missing
+    /// </summary>
+    private static GUIStyle CreateFallbackStyle(string styleName)
+    {
+        GUIStyle fallback = new GUIStyle();
+        
+        // Set basic properties based on style name
+        if (styleName.Contains("label"))
+        {
+            fallback = new GUIStyle(GUI.skin.label);
+        }
+        else if (styleName.Contains("button"))
+        {
+            fallback = new GUIStyle(GUI.skin.button);
+        }
+        else if (styleName.Contains("box"))
+        {
+            fallback = new GUIStyle(GUI.skin.box);
+        }
+        else if (styleName.Contains("window"))
+        {
+            fallback = new GUIStyle(GUI.skin.window);
+        }
+        else if (styleName.Contains("progressbar"))
+        {
+            // Special handling for progressbar styles
+            if (styleName.Contains("background"))
+            {
+                fallback = new GUIStyle();
+                fallback.normal.background = Texture2D.whiteTexture;
+                fallback.border = new RectOffset(1, 1, 1, 1);
+                fallback.padding = new RectOffset(1, 1, 1, 1);
+            }
+            else if (styleName.Contains("thumb"))
+            {
+                fallback = new GUIStyle();
+                fallback.normal.background = Texture2D.whiteTexture;
+                fallback.border = new RectOffset(0, 0, 0, 0);
+                fallback.padding = new RectOffset(0, 0, 0, 0);
+            }
+            else
+            {
+                fallback = new GUIStyle();
+                fallback.normal.background = Texture2D.whiteTexture;
+            }
+        }
+        else
+        {
+            fallback = new GUIStyle(GUI.skin.label); // Default to label
+        }
+
+        // Ensure the fallback style is never null by creating a minimal valid style
+        if (fallback == null)
+        {
+            fallback = new GUIStyle();
+        }
+
+        // Set fallback font - prioritize LegacyRuntime.ttf
+        Font defaultFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        if (defaultFont == null)
+        {
+            UnityEngine.Debug.LogWarning("LegacyRuntime.ttf not available, falling back to Arial.ttf");
+            defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        }
+        
+        if (defaultFont != null)
+        {
+            fallback.font = defaultFont;
+        }
+
+        // Handle specific font size requirements based on style name
+        if (styleName.Contains("48pt"))
+        {
+            fallback.fontSize = 48;
+        }
+        else if (styleName.Contains("32pt"))
+        {
+            fallback.fontSize = 32;
+        }
+        else if (styleName.Contains("18pt"))
+        {
+            fallback.fontSize = 18;
+        }
+        else if (styleName.Contains("16pt"))
+        {
+            fallback.fontSize = 16;
+        }
+        else if (styleName.Contains("13pt"))
+        {
+            fallback.fontSize = 13;
+        }
+        else if (styleName.Contains("11pt"))
+        {
+            fallback.fontSize = 11;
+        }
+        else if (styleName.Contains("10pt"))
+        {
+            fallback.fontSize = 10;
+        }
+
+        // Handle text alignment for specific styles
+        if (styleName.Contains("_left"))
+        {
+            fallback.alignment = TextAnchor.MiddleLeft;
+        }
+        else if (styleName.Contains("_right"))
+        {
+            fallback.alignment = TextAnchor.MiddleRight;
+        }
+        else if (styleName.Contains("_center"))
+        {
+            fallback.alignment = TextAnchor.MiddleCenter;
+        }
+
+        // Handle font style for bold and medium variants
+        if (styleName.Contains("bold"))
+        {
+            fallback.fontStyle = FontStyle.Bold;
+        }
+        else if (styleName.Contains("med"))
+        {
+            fallback.fontStyle = FontStyle.Normal; // Medium weight maps to normal
+        }
+
+        // Handle text wrapping
+        if (styleName.Contains("wrap"))
+        {
+            fallback.wordWrap = true;
+        }
+
+        return fallback;
+    }
+
+    /// <summary>
+    /// Gets a safe style that is guaranteed to never be null
+    /// </summary>
+    public static GUIStyle GetSafeStyleGuaranteed(string styleName)
+    {
+        GUIStyle style = GetSafeStyle(styleName);
+        if (style == null)
+        {
+            UnityEngine.Debug.LogError($"GetSafeStyle returned null for '{styleName}', creating emergency fallback");
+            return new GUIStyle(GUI.skin.label);
+        }
+        return style;
+    }
+
+    /// <summary>
+    /// Provides guaranteed non-null progressbar background style
+    /// </summary>
+    public static GUIStyle SafeProgressBarBackground => progressbar_background ?? CreateProgressBarBackgroundFallback();
+
+    /// <summary>
+    /// Provides guaranteed non-null progressbar thumb style
+    /// </summary>
+    public static GUIStyle SafeProgressBarThumb => progressbar_thumb ?? CreateProgressBarThumbFallback();
+
+    /// <summary>
+    /// Provides guaranteed non-null large progressbar background style
+    /// </summary>
+    public static GUIStyle SafeProgressBarLargeBackground => progressbar_large_background ?? CreateProgressBarBackgroundFallback();
+
+    /// <summary>
+    /// Provides guaranteed non-null large progressbar thumb style
+    /// </summary>
+    public static GUIStyle SafeProgressBarLargeThumb => progressbar_large_thumb ?? CreateProgressBarThumbFallback();
+
+    private static GUIStyle CreateProgressBarBackgroundFallback()
+    {
+        var style = new GUIStyle();
+        style.normal.background = Texture2D.whiteTexture;
+        style.border = new RectOffset(1, 1, 1, 1);
+        style.padding = new RectOffset(1, 1, 1, 1);
+        return style;
+    }
+
+    private static GUIStyle CreateProgressBarThumbFallback()
+    {
+        var style = new GUIStyle();
+        style.normal.background = Texture2D.whiteTexture;
+        style.border = new RectOffset(0, 0, 0, 0);
+        style.padding = new RectOffset(0, 0, 0, 0);
+        return style;
+    }
 }
