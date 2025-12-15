@@ -75,7 +75,7 @@ public abstract class Projectile : MonoBehaviour, IProjectile
     public void MoveInDirection(Vector3 direction)
     {
         Rigidbody.isKinematic = false;
-        Rigidbody.linearVelocity = direction;
+        Rigidbody.velocity = direction;
     }
 
     protected virtual IEnumerator StartTimeout()
