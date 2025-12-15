@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Cmune/Outline/GenGlowTexture" 
 {
 	CGINCLUDE
@@ -22,7 +24,7 @@ Shader "Cmune/Outline/GenGlowTexture"
 	v2f vert_enlarge(appdata v) 
 	{
 		v2f o;
-		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+		o.pos = UnityObjectToClipPos(v.vertex);
 
 		float3 norm   = mul ((float3x3)UNITY_MATRIX_IT_MV, v.normal);
 		float2 offset = TransformViewToProjection(norm.xy);
