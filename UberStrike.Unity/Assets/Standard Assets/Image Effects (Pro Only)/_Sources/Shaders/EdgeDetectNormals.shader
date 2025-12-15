@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 
 Shader "Hidden/EdgeDetectGeometry" { 
 	Properties {
@@ -44,7 +46,7 @@ Shader "Hidden/EdgeDetectGeometry" {
 	v2f vertRobert( appdata_img v ) 
 	{
 		v2f o;
-		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+		o.pos = UnityObjectToClipPos(v.vertex);
 		
 		float2 uv = v.texcoord.xy;
 		o.uv[0] = uv;
@@ -74,7 +76,7 @@ Shader "Hidden/EdgeDetectGeometry" {
 	v2f vertThin( appdata_img v )
 	{
 		v2f o;
-		o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+		o.pos = UnityObjectToClipPos (v.vertex);
 		
 		float2 uv = v.texcoord.xy;
 		o.uv[0] = uv;
