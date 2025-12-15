@@ -208,8 +208,8 @@ public static class AvatarAnimationSetup
                         dst = dstTransform.gameObject.AddComponent<Rigidbody>();
 
                     dst.mass = src.mass;
-                    dst.linearDamping = src.linearDamping;
-                    dst.angularDamping = src.angularDamping;
+                    dst.drag = src.drag;
+                    dst.angularDrag = src.angularDrag;
                     dst.useGravity = src.useGravity;
                     dst.isKinematic = src.isKinematic;
                     dst.interpolation = src.interpolation;
@@ -252,8 +252,8 @@ public static class AvatarAnimationSetup
             {
                 Rigidbody body = bodies[i];
 
-                body.linearDamping = 0.5f;
-                body.angularDamping = 0.1f;
+                body.drag = 0.5f;
+                body.angularDrag = 0.1f;
                 body.interpolation = RigidbodyInterpolation.None;
 
                 //body.drag = 0;
