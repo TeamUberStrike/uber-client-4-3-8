@@ -40,7 +40,7 @@ public sealed class Google : AutoMonoBehaviour<Google>
         }
 
         // prep our logger.  Don't allow the web player to attempt to write to disk!
-        if (!Application.isWebPlayer && debug)
+        if (Application.platform != RuntimePlatform.WebGLPlayer && debug)
             _logger = new GADebugLogger();
         else
             _logger = new GAEmptyLogger();
@@ -249,7 +249,7 @@ public sealed class Google : AutoMonoBehaviour<Google>
             _logger.logStartRequest(url);
 
             // The web player gets special treatment
-            if (Application.isWebPlayer)
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 var eval = string.Format("var i = new Image(); i.src = '{0}'; document.body.appendChild( i );", url);
                 Application.ExternalEval(eval);

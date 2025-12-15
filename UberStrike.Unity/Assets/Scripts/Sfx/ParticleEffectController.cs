@@ -8,11 +8,11 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
     [SerializeField]
     private ParticleConfiguration[] _allWeaponData;
     [SerializeField]
-    private ParticleEmitter _pickupParticleEmitter;
+    private ParticleSystem _pickupParticleEmitter;
     [SerializeField]
     private HeatWave _heatWavePrefab;
     [SerializeField]
-    private ParticleEmitter _heatWave;
+    private ParticleSystem _heatWave;
 
     private Dictionary<ParticleConfigurationType, ParticleCobfigurationPerWeapon> _allConfigurations;
 
@@ -388,7 +388,7 @@ public class ParticleConfiguration
     public float ParticleMinZVelocity;
     public float ParticleMaxZVelocity;
     public Color ParticleColor;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -400,7 +400,7 @@ public class FireParticleConfiguration
     public float ParticleMinLiveTime;
     public float ParticleMaxLiveTime;
     public Color ParticleColor;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -411,7 +411,7 @@ public class TrailParticleConfiguration
     public float ParticleMinLiveTime;
     public float ParticleMaxLiveTime;
     public Color ParticleColor;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -422,7 +422,7 @@ public class ExplosionBaseParameters
     public float MaxLifeTime;
     public float MinSize;
     public float MaxSize;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -435,7 +435,7 @@ public class ExplosionDustParameters
     public float MaxLifeTime;
     public float MinSize;
     public float MaxSize;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -444,7 +444,7 @@ public class ExplosionRingParameters
     public float StartSize;
     public float MinLifeTime;
     public float MaxLifeTime;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -456,7 +456,7 @@ public class ExplosionSphericParameters
     public float MinSize;
     public float MaxSize;
     public float Speed;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]

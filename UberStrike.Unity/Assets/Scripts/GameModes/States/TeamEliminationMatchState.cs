@@ -218,7 +218,7 @@ class TeamEliminationMatchState : IState
         {
             if (PlayerSpectatorControl.Instance.IsFollowingPlayer)
             {
-                CharacterInfo i = _teamEliminationMatchGameMode.GetPlayerWithID(PlayerSpectatorControl.Instance.CurrentActorId);
+                UberStrike.Realtime.Common.CharacterInfo i = _teamEliminationMatchGameMode.GetPlayerWithID(PlayerSpectatorControl.Instance.CurrentActorId);
                 PlayerStateMsgHud.Instance.DisplaySpectatorFollowingMsg(i);
             }
             else

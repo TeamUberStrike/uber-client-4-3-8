@@ -52,7 +52,7 @@ public class HomePageGUI : MonoBehaviour
 
             DrawWeeklySpecial();
 
-            int buttonCount = (!Application.isWebPlayer) ? 4 : 3;
+            int buttonCount = (Application.platform != RuntimePlatform.WebGLPlayer) ? 4 : 3;
             int buttonSpacing = 59 + 8;
             int topOffset = 14;
             int height = topOffset + (buttonSpacing * buttonCount);

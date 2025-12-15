@@ -43,7 +43,7 @@ public static class ScreenResolutionManager
         set
         {
             // If we go into windowed mode, make sure we are one minus native resolution (bottom of the game off the screen)
-            if (!Application.isWebPlayer && value == false && IsHighestResolution)
+            if (Application.platform != RuntimePlatform.WebGLPlayer && value == false && IsHighestResolution)
             {
                 SetTwoMinusMaxResolution();
             }
@@ -98,7 +98,7 @@ public static class ScreenResolutionManager
 
         int newResIndex = Mathf.Clamp(index, 0, max);
 
-        if (!Application.isWebPlayer && newResIndex == max && !fullscreen)
+        if (Application.platform != RuntimePlatform.WebGLPlayer && newResIndex == max && !fullscreen)
             fullscreen = true;
 
         if (newResIndex >= 0 && newResIndex < resolutions.Count)
@@ -115,7 +115,7 @@ public static class ScreenResolutionManager
     /// </summary>
     public static void SetTwoMinusMaxResolution()
     {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Debug.LogError("SetOneMinusMaxResolution() should only be called from the desktop client");
             return;

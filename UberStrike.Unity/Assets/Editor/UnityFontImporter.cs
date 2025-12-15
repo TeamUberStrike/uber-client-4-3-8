@@ -60,7 +60,7 @@ public class UnityFontImporter
 
             //Set correct texture format
             TextureImporter texImp = (TextureImporter)TextureImporter.GetAtPath(outputPath);
-            texImp.textureType = TextureImporterType.Advanced;
+            texImp.textureType = TextureImporterType.Default;
             texImp.isReadable = true;
             texImp.textureFormat = TextureImporterFormat.Alpha8;
             AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceSynchronousImport);

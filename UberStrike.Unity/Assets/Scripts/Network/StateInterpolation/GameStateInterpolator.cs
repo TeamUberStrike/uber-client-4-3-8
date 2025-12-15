@@ -84,7 +84,7 @@ public class GameStateInterpolator
             Debug.LogWarning("UpdatePositionSmooth failed for " + playerNumber + " " + pos);
     }
 
-    public void AddCharacterInfo(CharacterInfo user)
+    public void AddCharacterInfo(UberStrike.Realtime.Common.CharacterInfo user)
     {
         _remoteStateByID[user.ActorId] = new RemoteCharacterState(user);
         _remoteStateByNumber[user.PlayerNumber] = _remoteStateByID[user.ActorId];

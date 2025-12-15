@@ -48,12 +48,12 @@ public class SkyManager : MonoBehaviour
 
     void OnEnable()
     {
-        _skyMaterial = new Material(renderer.material);
+        _skyMaterial = new Material(GetComponent<Renderer>().material);
     }
 
     void OnDisable()
     {
-        renderer.material = _skyMaterial;
+        GetComponent<Renderer>().material = _skyMaterial;
     }
 
     void Update()
@@ -89,21 +89,21 @@ public class SkyManager : MonoBehaviour
             _cloudYAxisRot += _cloudYAxisRotIndex;
         }
 
-        renderer.material.SetTextureOffset("_DayCloudTex", _dayCloudMoveVector);
-        renderer.material.SetTextureOffset("_NightCloudTex", _dayCloudHorizonMoveVector);
+        GetComponent<Renderer>().material.SetTextureOffset("_DayCloudTex", _dayCloudMoveVector);
+        GetComponent<Renderer>().material.SetTextureOffset("_NightCloudTex", _dayCloudHorizonMoveVector);
 
         _dayNightCycle = Mathf.Clamp01(_dayNightCycle);
-        renderer.material.SetFloat("_DayNightCycle", Mathf.Clamp01(_dayNightCycle));
+        GetComponent<Renderer>().material.SetFloat("_DayNightCycle", Mathf.Clamp01(_dayNightCycle));
 
         _sunsetOffset = Mathf.Clamp01(_sunsetOffset);
-        renderer.material.SetFloat("_SunsetOffset", Mathf.Clamp01(_sunsetOffset));
+        GetComponent<Renderer>().material.SetFloat("_SunsetOffset", Mathf.Clamp01(_sunsetOffset));
 
         _sunsetVisibility = Mathf.Clamp01(_sunsetVisibility);
-        renderer.material.SetFloat("_SunsetVisibility", _sunsetVisibility);
+        GetComponent<Renderer>().material.SetFloat("_SunsetVisibility", _sunsetVisibility);
 
-        renderer.material.SetColor("_HorizonColor", _horizonColor);
-        renderer.material.SetColor("_DaySkyColor", _daySkyColor);
-        renderer.material.SetColor("_SunSetColor", _sunsetColor);
+        GetComponent<Renderer>().material.SetColor("_HorizonColor", _horizonColor);
+        GetComponent<Renderer>().material.SetColor("_DaySkyColor", _daySkyColor);
+        GetComponent<Renderer>().material.SetColor("_SunSetColor", _sunsetColor);
     }
 }
 

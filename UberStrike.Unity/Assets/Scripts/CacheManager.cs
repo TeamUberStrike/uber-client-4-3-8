@@ -36,14 +36,9 @@ public static class CacheManager
             if (licenseData.Length == 5)
                 expiration = int.Parse(licenseData[4]);
 
-            if ((expiration < 0 && !Caching.Authorize(product, domain, size, sig)) || !Caching.Authorize(product, domain, size, expiration, sig))
-            {
-                IsAuthorized = false;
-            }
-            else
-            {
-                IsAuthorized = true;
-            }
+            // Caching.Authorize was removed in newer Unity versions
+            // Modern Unity handles caching authorization internally
+            IsAuthorized = true;
         }
 
         return IsAuthorized;
@@ -53,7 +48,7 @@ public static class CacheManager
     {
         WWW www;
 
-        if (Application.isWebPlayer && IsAuthorized)
+        if (Application.platform == RuntimePlatform.WebGLPlayer && IsAuthorized)
             www = WWW.LoadFromCacheOrDownload(url, 1);
         else
             www = new WWW(url);

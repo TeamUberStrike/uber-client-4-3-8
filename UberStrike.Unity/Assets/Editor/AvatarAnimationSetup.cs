@@ -20,7 +20,7 @@ public static class AvatarAnimationSetup
                 if (!string.IsNullOrEmpty(path))
                 {
                     ModelImporter mi = AssetImporter.GetAtPath(path) as ModelImporter;
-                    mi.splitAnimations = true;
+                    // splitAnimations is deprecated, clipAnimations handles animation splitting automatically
 
                     List<ModelImporterClipAnimation> animations = new List<ModelImporterClipAnimation>();
                     animations.Add(CreateAnimation(AnimationIndex.lightGunUpDown, 1, 24, WrapMode.Once, false));
@@ -164,30 +164,30 @@ public static class AvatarAnimationSetup
 
                 if (!dstTransform) continue;
 
-                if (joints[i].collider)
+                if (joints[i].GetComponent<Collider>())
                 {
-                    if (dstTransform.collider)
-                        GameObject.DestroyImmediate(dstTransform.collider);
+                    if (dstTransform.GetComponent<Collider>())
+                        GameObject.DestroyImmediate(dstTransform.GetComponent<Collider>());
 
-                    if (joints[i].collider is BoxCollider)
+                    if (joints[i].GetComponent<Collider>() is BoxCollider)
                     {
-                        BoxCollider src = joints[i].collider as BoxCollider;
+                        BoxCollider src = joints[i].GetComponent<Collider>() as BoxCollider;
                         BoxCollider bc = dstTransform.gameObject.AddComponent<BoxCollider>();
 
                         bc.size = src.size;
                         bc.center = src.center;
                     }
-                    else if (joints[i].collider is SphereCollider)
+                    else if (joints[i].GetComponent<Collider>() is SphereCollider)
                     {
-                        SphereCollider src = joints[i].collider as SphereCollider;
+                        SphereCollider src = joints[i].GetComponent<Collider>() as SphereCollider;
                         SphereCollider sc = dstTransform.gameObject.AddComponent<SphereCollider>();
 
                         sc.radius = src.radius;
                         sc.center = src.center;
                     }
-                    else if (joints[i].collider is CapsuleCollider)
+                    else if (joints[i].GetComponent<Collider>() is CapsuleCollider)
                     {
-                        CapsuleCollider src = joints[i].collider as CapsuleCollider;
+                        CapsuleCollider src = joints[i].GetComponent<Collider>() as CapsuleCollider;
                         CapsuleCollider cc = dstTransform.gameObject.AddComponent<CapsuleCollider>();
 
                         cc.radius = src.radius;
@@ -197,19 +197,19 @@ public static class AvatarAnimationSetup
                     }
                 }
 
-                if (joints[i].rigidbody)
+                if (joints[i].GetComponent<Rigidbody>())
                 {
                     Rigidbody dst = null;
-                    Rigidbody src = joints[i].rigidbody;
+                    Rigidbody src = joints[i].GetComponent<Rigidbody>();
 
-                    if (dstTransform.rigidbody)
-                        dst = dstTransform.rigidbody;
+                    if (dstTransform.GetComponent<Rigidbody>())
+                        dst = dstTransform.GetComponent<Rigidbody>();
                     else
                         dst = dstTransform.gameObject.AddComponent<Rigidbody>();
 
                     dst.mass = src.mass;
-                    dst.drag = src.drag;
-                    dst.angularDrag = src.angularDrag;
+                    dst.linearDamping = src.linearDamping;
+                    dst.angularDamping = src.angularDamping;
                     dst.useGravity = src.useGravity;
                     dst.isKinematic = src.isKinematic;
                     dst.interpolation = src.interpolation;
@@ -224,7 +224,7 @@ public static class AvatarAnimationSetup
 
                     if (!dst) dst = dstTransform.gameObject.AddComponent<CharacterJoint>();
 
-                    dst.connectedBody = targets.Find(delegate(Transform t) { return t.name == j.connectedBody.name; }).rigidbody;
+                    dst.connectedBody = targets.Find(delegate(Transform t) { return t.name == j.connectedBody.name; }).GetComponent<Rigidbody>();
                     dst.anchor = j.anchor;
                     dst.axis = j.axis;
                     dst.swingAxis = j.swingAxis;
@@ -252,8 +252,8 @@ public static class AvatarAnimationSetup
             {
                 Rigidbody body = bodies[i];
 
-                body.drag = 0.5f;
-                body.angularDrag = 0.1f;
+                body.linearDamping = 0.5f;
+                body.angularDamping = 0.1f;
                 body.interpolation = RigidbodyInterpolation.None;
 
                 //body.drag = 0;
@@ -280,7 +280,7 @@ public static class AvatarAnimationSetup
 
     private static void RagdollHelper(AvatarBone bone, Transform t)
     {
-        Rigidbody rb = t.rigidbody;
+        Rigidbody rb = t.GetComponent<Rigidbody>();
 
         if (!rb) rb = t.gameObject.AddComponent<Rigidbody>();
 

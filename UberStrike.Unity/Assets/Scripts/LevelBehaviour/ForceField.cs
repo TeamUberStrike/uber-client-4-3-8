@@ -17,7 +17,7 @@ public class ForceField : MonoBehaviour
 
     private void Awake()
     {
-        collider.isTrigger = true;
+        GetComponent<Collider>().isTrigger = true;
         gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
     }
 

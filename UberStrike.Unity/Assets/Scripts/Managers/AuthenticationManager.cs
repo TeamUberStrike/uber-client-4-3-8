@@ -120,7 +120,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             PopupSystem.HideMessage(_progress);
             LoginPanelGUI.ErrorMessage = LocalizedStrings.LoginFailed + ": " + loginResult.MemberAuthenticationResult.ToString();
             LoginPanelGUI.IsBanned = loginResult.MemberAuthenticationResult == MemberAuthenticationResult.IsBanned;
-            if (Application.isEditor || Application.isWebPlayer)
+            if (Application.isEditor || Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 ApplicationDataManager.Instance.LockApplication(LocalizedStrings.YourAccountHasBeenBanned);
             }

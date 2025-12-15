@@ -673,7 +673,7 @@ public class ChatPageGUI : PageGUI
                     GUI.TextField(new Rect(10, 37, rect.width, 20), "Cmid: " + user.Cmid, BlueStonez.label_interparkmed_11pt_left);
                     if (PlayerDataManager.AccessLevel == MemberAccessLevel.Admin)
                     {
-                        if (Application.isWebPlayer)
+                        if (Application.platform == RuntimePlatform.WebGLPlayer)
                         {
                             GUI.TextField(new Rect(10, 52, rect.width, 20), "http://instrumentation.cmune.com/Members/SeeMember.aspx?cmid=" + user.Cmid, BlueStonez.label_interparkbold_11pt_left);
                         }

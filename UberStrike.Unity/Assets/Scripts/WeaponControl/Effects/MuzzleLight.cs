@@ -9,7 +9,7 @@ public class MuzzleLight : BaseWeaponEffect
     {
         _shootAnimation = GetComponent<Animation>();
 
-        if (light) light.intensity = 0;
+        if (GetComponent<Light>()) GetComponent<Light>().intensity = 0;
     }
 
     public override void OnShoot()

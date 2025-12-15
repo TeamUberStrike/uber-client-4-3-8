@@ -30,7 +30,7 @@ static class GraphicSettings
                 ApplicationDataManager.ApplicationOptions.VideoMotionBlur = true;
                 ApplicationDataManager.ApplicationOptions.VideoVignetting = true;
                 // Currently High Water4 does not work on Mac
-                ApplicationDataManager.ApplicationOptions.VideoWaterMode = (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXWebPlayer) ? 1 : 2;
+                ApplicationDataManager.ApplicationOptions.VideoWaterMode = (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WebGLPlayer) ? 1 : 2;
                 break;
             default:
                 break;

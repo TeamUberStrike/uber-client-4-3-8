@@ -41,7 +41,7 @@ public class DebugGameState : IDebugPage
                 GUILayout.Label("Players");
                 GUILayout.BeginHorizontal();
                 {
-                    foreach (CharacterInfo p in GameState.CurrentGame.Players.Values)
+                    foreach (UberStrike.Realtime.Common.CharacterInfo p in GameState.CurrentGame.Players.Values)
                         GUILayout.Label(p.ToString());
                 }
                 GUILayout.EndHorizontal();

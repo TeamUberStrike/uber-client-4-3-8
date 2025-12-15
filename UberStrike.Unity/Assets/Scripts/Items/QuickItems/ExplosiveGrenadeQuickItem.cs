@@ -10,10 +10,10 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
     private Renderer _renderer;
 
     [SerializeField]
-    private ParticleEmitter _smoke;
+    private ParticleSystem _smoke;
 
     [SerializeField]
-    private ParticleEmitter _deployedEffect;
+    private ParticleSystem _deployedEffect;
 
     [SerializeField]
     private AudioClip _explosionSound;
@@ -32,9 +32,9 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
 
     #region Properties
 
-    public ParticleEmitter Smoke { get { return _smoke; } }
+    public ParticleSystem Smoke { get { return _smoke; } }
 
-    public ParticleEmitter DeployedEffect { get { return _deployedEffect; } }
+    public ParticleSystem DeployedEffect { get { return _deployedEffect; } }
 
     public Renderer Renderer { get { return _renderer; } }
 
@@ -84,7 +84,7 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
         var instance = GameObject.Instantiate(this) as ExplosiveGrenadeQuickItem;
         instance.Position = position;
         instance.Velocity = velocity;
-        instance.collider.material.bounciness = _config.Bounciness;
+        instance.GetComponent<Collider>().material.bounciness = _config.Bounciness;
 
         instance.machine.RegisterState(1, new FlyingState(instance));
         instance.machine.RegisterState(2, new DeployedState(instance));
@@ -183,14 +183,14 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
             if (gameObject)
             {
                 //ignore self collision for local & remote player
-                if (GameState.LocalDecorator && gameObject.collider)
+                if (GameState.LocalDecorator && gameObject.GetComponent<Collider>())
                 {
-                    Collider c = gameObject.collider;
+                    Collider c = gameObject.GetComponent<Collider>();
 
                     foreach (CharacterHitArea a in GameState.LocalDecorator.HitAreas)
                     {
                         if (gameObject.active && a.gameObject.active)
-                            Physics.IgnoreCollision(c, a.collider);
+                            Physics.IgnoreCollision(c, a.GetComponent<Collider>());
                     }
                 }
             }
@@ -227,7 +227,7 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
             {
                 if (c.contacts.Length > 0)
                 {
-                    behaviour.transform.position = c.contacts[0].point + c.contacts[0].normal * behaviour.collider.bounds.extents.sqrMagnitude;
+                    behaviour.transform.position = c.contacts[0].point + c.contacts[0].normal * behaviour.GetComponent<Collider>().bounds.extents.sqrMagnitude;
                 }
 
                 behaviour.machine.PopState();
@@ -277,13 +277,14 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
 
             behaviour.OnTriggerEnterEvent += OnTriggerEnterEvent;
 
-            if (behaviour.rigidbody) behaviour.rigidbody.isKinematic = true;
-            if (behaviour.collider) GameObject.Destroy(behaviour.collider);
+            if (behaviour.GetComponent<Rigidbody>()) behaviour.GetComponent<Rigidbody>().isKinematic = true;
+            if (behaviour.GetComponent<Collider>()) GameObject.Destroy(behaviour.GetComponent<Collider>());
             behaviour.gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
 
             if (behaviour.DeployedEffect)
             {
-                behaviour.DeployedEffect.emit = true;
+                var emission = behaviour.DeployedEffect.emission;
+                emission.enabled = true;
             }
         }
 
@@ -323,7 +324,7 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
 
     public Vector3 Velocity
     {
-        get { return rigidbody ? rigidbody.velocity : Vector3.zero; }
-        private set { if (rigidbody) rigidbody.velocity = value; }
+        get { return GetComponent<Rigidbody>() ? GetComponent<Rigidbody>().linearVelocity : Vector3.zero; }
+        private set { if (GetComponent<Rigidbody>()) GetComponent<Rigidbody>().linearVelocity = value; }
     }
 }

@@ -208,16 +208,16 @@ public class SfxManager : MonoSingleton<SfxManager>
         try
         {
             audioGo.transform.position = position;
-            audioGo.audio.clip = Instance._sounds[soundEffect];
-            clipLength = audioGo.audio.clip.length;
+            audioGo.GetComponent<AudioSource>().clip = Instance._sounds[soundEffect];
+            clipLength = audioGo.GetComponent<AudioSource>().clip.length;
 
             // Custom AudioSource Parameters here
-            audioGo.audio.volume = volume;
-            audioGo.audio.rolloffMode = rolloffMode;
-            audioGo.audio.minDistance = minDistance;
-            audioGo.audio.maxDistance = maxDistance;
+            audioGo.GetComponent<AudioSource>().volume = volume;
+            audioGo.GetComponent<AudioSource>().rolloffMode = rolloffMode;
+            audioGo.GetComponent<AudioSource>().minDistance = minDistance;
+            audioGo.GetComponent<AudioSource>().maxDistance = maxDistance;
 
-            audioGo.audio.Play();
+            audioGo.GetComponent<AudioSource>().Play();
         }
         catch
         {

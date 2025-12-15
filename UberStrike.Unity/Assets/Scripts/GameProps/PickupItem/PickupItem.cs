@@ -12,7 +12,7 @@ public class PickupItem : MonoBehaviour
     protected int _respawnTime = 20;
 
     [SerializeField]
-    private ParticleEmitter _emitter;
+    private ParticleSystem _emitter;
 
     [SerializeField]
     protected Transform _pickupItem;
@@ -47,7 +47,11 @@ public class PickupItem : MonoBehaviour
 
         _collider.isTrigger = true;
 
-        if (_emitter) _emitter.emit = false;
+        if (_emitter) 
+        {
+            var emission = _emitter.emission;
+            emission.enabled = false;
+        }
 
         gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
     }

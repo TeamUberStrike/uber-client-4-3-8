@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Video;
 using System.Collections;
 
 public class SplashLoader : MonoBehaviour
@@ -7,7 +8,7 @@ public class SplashLoader : MonoBehaviour
     private TextAsset licenseFile;
 
     [SerializeField]
-    private MovieTexture uberStrikeLogoMovie;
+    private VideoClip uberStrikeLogoMovie;
 
     [SerializeField]
     private GUIStyle textStyle;
@@ -15,6 +16,8 @@ public class SplashLoader : MonoBehaviour
     private bool isError;
     private AsyncOperation asyncOperation;
     private Texture2D white;
+    private VideoPlayer videoPlayer;
+    private RenderTexture renderTexture;
 
     public float Progress { get; private set; }
     public string Url { get; private set; }
@@ -44,9 +47,24 @@ public class SplashLoader : MonoBehaviour
             Debug.LogError("Unity Caching Authorization Failed!");
         }
 
-        // Start playing back the UberStrike splash movie
-        uberStrikeLogoMovie.Play();
-
+        // Setup VideoPlayer for splash movie
+        if (uberStrikeLogoMovie != null)
+        {
+            // Create VideoPlayer component
+            videoPlayer = gameObject.AddComponent<VideoPlayer>();
+            
+            // Create render texture
+            renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
+            videoPlayer.targetTexture = renderTexture;
+            videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+            
+            // Configure video playback
+            videoPlayer.clip = uberStrikeLogoMovie;
+            videoPlayer.playOnAwake = false;
+            videoPlayer.isLooping = false;
+            videoPlayer.Play();
+        }
+        
         // Download the bundle from web or cache
         if (!Application.isEditor)
         {
@@ -54,8 +72,9 @@ public class SplashLoader : MonoBehaviour
             yield return StartCoroutine(CacheManager.LoadAssetBundle(Url, (p) => Progress = p));
         }
 
-        // Wait for the splash movie to finish
-        while (uberStrikeLogoMovie.isPlaying)
+        // Wait for video to finish or fallback duration
+        float splashStartTime = Time.time;
+        while (Time.time - splashStartTime < 3.0f && (videoPlayer == null || videoPlayer.isPlaying))
         {
             yield return new WaitForEndOfFrame();
         }
@@ -85,11 +104,12 @@ public class SplashLoader : MonoBehaviour
 
     private void OnGUI()
     {
-        if (uberStrikeLogoMovie.isPlaying)
+        // Draw video using RenderTexture
+        if (renderTexture != null)
         {
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), uberStrikeLogoMovie);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), renderTexture);
         }
-        else
+        else if (uberStrikeLogoMovie != null)
         {
             float alpha = (Mathf.Sin(Time.time * 2) + 1.3f) * 0.5f;
             textStyle.normal.textColor = textStyle.normal.textColor.SetAlpha(alpha);

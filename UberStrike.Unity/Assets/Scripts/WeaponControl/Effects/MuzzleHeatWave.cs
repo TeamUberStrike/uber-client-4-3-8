@@ -23,7 +23,7 @@ public class MuzzleHeatWave : BaseWeaponEffect
     private void Awake()
     {
         _transform = transform;
-        _renderer = renderer;
+        _renderer = GetComponent<Renderer>();
 
         CmuneDebug.Assert(_renderer, "No Renderer attached to HeatWave script on GameObject " + gameObject.name);
     }
@@ -80,7 +80,7 @@ public class MuzzleHeatWave : BaseWeaponEffect
     public override void Hide()
     {
         if (!_renderer)
-            _renderer = renderer;
+            _renderer = GetComponent<Renderer>();
 
         if (_renderer)
             _renderer.enabled = false;

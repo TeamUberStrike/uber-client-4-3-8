@@ -93,7 +93,7 @@ public class MapInspector : Editor
                 EditorApplication.SaveScene(path + "/" + gameObject.name + ".unity");
 
                 //export bundle
-                UberstrikeMapExporter.ExportMapAssetBundle(AssetBundleNameSD, BuildTarget.WebPlayer);
+                UberstrikeMapExporter.ExportMapAssetBundle(AssetBundleNameSD, BuildTarget.WebGL);
             }
 
             return;

@@ -35,7 +35,7 @@ public class TutorialAirlockDoorAnimEvent : MonoBehaviour
             {
                 ev.time = time;
 
-                animation.clip.AddEvent(ev);
+                GetComponent<Animation>().clip.AddEvent(ev);
 
                 _doorAudioSources.Add(ev.stringParameter, s);
             }

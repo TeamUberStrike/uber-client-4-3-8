@@ -22,7 +22,7 @@ public class WeaponSimulator : IWeaponController
         CurrentSlotIndex = -1;
     }
 
-    public void Update(CharacterInfo state, bool isLocal)
+    public void Update(UberStrike.Realtime.Common.CharacterInfo state, bool isLocal)
     {
         if (_avatar != null && state != null && state.IsAlive)
         {
@@ -34,7 +34,7 @@ public class WeaponSimulator : IWeaponController
     /// <summary>
     /// Called when the remote Avatar is firing
     /// </summary>
-    public void Shoot(CharacterInfo state)
+    public void Shoot(UberStrike.Realtime.Common.CharacterInfo state)
     {
         if (state != null && _nextShootTime < Time.time)
         {

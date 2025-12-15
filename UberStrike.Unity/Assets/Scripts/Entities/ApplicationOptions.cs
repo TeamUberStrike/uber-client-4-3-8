@@ -64,7 +64,7 @@ public class ApplicationOptions
         VideoWaterMode = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoWaterMode, VideoWaterMode);
 
         // Water4 High currently not supported on OSX, force to medium
-        if ((Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXWebPlayer) && VideoWaterMode == 2) VideoWaterMode = 1;
+        if ((Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WebGLPlayer) && VideoWaterMode == 2) VideoWaterMode = 1;
 
         VideoMaxQueuedFrames = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoMaxQueuedFrames, VideoMaxQueuedFrames);
         VideoTextureQuality = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoTextureQuality, VideoTextureQuality);

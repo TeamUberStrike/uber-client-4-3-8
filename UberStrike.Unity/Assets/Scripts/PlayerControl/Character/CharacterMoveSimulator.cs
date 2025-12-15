@@ -8,7 +8,7 @@ public class CharacterMoveSimulator
         _transform = transform;
     }
 
-    public void Update(CharacterInfo state)
+    public void Update(UberStrike.Realtime.Common.CharacterInfo state)
     {
         if (state != null)
         {

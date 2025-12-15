@@ -113,7 +113,14 @@ public static class ParticleEmissionSystem
                 velocity.y = unitCircleTrajectory.y;
                 velocity.z = Random.Range(particleConfiguration.ParticleMinZVelocity, particleConfiguration.ParticleMaxZVelocity) * (-1);
                 velocity = rotation * velocity;
-                particleConfiguration.ParticleEmitter.Emit(hitPoint, velocity, Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize), Random.Range(particleConfiguration.ParticleMinLiveTime, particleConfiguration.ParticleMaxLiveTime), particleConfiguration.ParticleColor, Random.Range(0f, 360f), 0f);
+                var emitParams = new ParticleSystem.EmitParams();
+                emitParams.position = hitPoint;
+                emitParams.velocity = velocity;
+                emitParams.startSize = Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize);
+                emitParams.startLifetime = Random.Range(particleConfiguration.ParticleMinLiveTime, particleConfiguration.ParticleMaxLiveTime);
+                emitParams.startColor = particleConfiguration.ParticleColor;
+                emitParams.rotation = Random.Range(0f, 360f);
+                particleConfiguration.ParticleEmitter.Emit(emitParams, 1);
             }
         }
     }

@@ -15,7 +15,7 @@ public class FloatingBoat : MonoBehaviour
 
     void Start()
     {
-        rb = rigidbody;
+        rb = GetComponent<Rigidbody>();
         tf = transform;
     }
 

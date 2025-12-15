@@ -49,7 +49,7 @@ public class PanelManager : MonoSingleton<PanelManager>
             }
         }
 
-        if (Event.current.type == EventType.layout)
+        if (Event.current.type == EventType.Layout)
         {
             if (IsAnyPanelOpen)
             {

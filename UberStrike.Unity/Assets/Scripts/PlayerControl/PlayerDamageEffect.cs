@@ -121,7 +121,7 @@ public class PlayerDamageEffect : MonoBehaviour
         {
             Transform t = Camera.current.transform;
             float distance = Vector3.Distance(_transform.position, t.position);
-            float scale = 0.003f + 0.0005f * distance * Camera.current.fov / 60;
+            float scale = 0.003f + 0.0005f * distance * Camera.current.fieldOfView / 60;
 
             _transform.localScale = new Vector3(scale, scale, scale);
             _transform.rotation = Quaternion.LookRotation(new Vector3(t.forward.x, 0, t.forward.z));
