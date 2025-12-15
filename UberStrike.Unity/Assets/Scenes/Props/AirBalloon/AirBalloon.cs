@@ -8,7 +8,7 @@ public class AirBalloon : MonoBehaviour
 
     private void Start()
     {
-        animationState = animation[animation.clip.name];
+        animationState = GetComponent<Animation>()[GetComponent<Animation>().clip.name];
     }
 
     private void Update()

@@ -73,7 +73,7 @@ public class TeamDeathMatchGameMode : FpsGameMode
         _redTeamPlayerCount = 0;
         _blueTeamPlayerCount = 0;
 
-        foreach (CharacterInfo v in Players.Values)
+        foreach (UberStrike.Realtime.Common.CharacterInfo v in Players.Values)
         {
             if (v.TeamID == TeamID.RED)
             {
@@ -93,7 +93,7 @@ public class TeamDeathMatchGameMode : FpsGameMode
     {
         if (GameState.HasCurrentGame)
         {
-            CharacterInfo i = GameState.CurrentGame.GetPlayerWithID(playerID);
+            UberStrike.Realtime.Common.CharacterInfo i = GameState.CurrentGame.GetPlayerWithID(playerID);
             if (i != null)
             {
                 i.TeamID = (TeamID)teamId;

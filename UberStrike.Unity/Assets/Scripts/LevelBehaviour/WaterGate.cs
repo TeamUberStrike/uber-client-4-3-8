@@ -37,7 +37,7 @@ public class WaterGate : SecretDoor
             case DoorState.Opening: break;
         }
 
-        if (audio) audio.Play();
+        if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Play();
     }
 
     void OnEnable()
@@ -130,7 +130,7 @@ public class WaterGate : SecretDoor
             {
                 _state = DoorState.Open;
                 _timeToClose = Time.time + 2;
-                if (audio) audio.Stop();
+                if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Stop();
             }
         }
         else if (_state == DoorState.Open)
@@ -141,7 +141,7 @@ public class WaterGate : SecretDoor
                 _state = DoorState.Closing;
                 _currentTime = 0;
 
-                if (audio) audio.Play();
+                if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Play();
             }
         }
         else if (_state == DoorState.Closing)
@@ -156,7 +156,7 @@ public class WaterGate : SecretDoor
             if (_currentTime >= _maxTime)
             {
                 _state = DoorState.Closed;
-                if (audio) audio.Stop();
+                if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Stop();
             }
         }
 

@@ -49,7 +49,7 @@ class TestGamePad : MonoBehaviour
 
         if (_targetMap != null)
         {
-            if (Event.current.type == EventType.layout && InputManager.Instance.ListenForNewKeyAssignment(_targetMap))
+            if (Event.current.type == EventType.Layout && InputManager.Instance.ListenForNewKeyAssignment(_targetMap))
             {
                 _targetMap = null;
                 Screen.lockCursor = false;
@@ -61,7 +61,7 @@ class TestGamePad : MonoBehaviour
 
         if (_targetMap != null)
         {
-            if (Event.current.type == EventType.layout && InputManager.Instance.ListenForNewKeyAssignment(_targetMap))
+            if (Event.current.type == EventType.Layout && InputManager.Instance.ListenForNewKeyAssignment(_targetMap))
             {
                 _targetMap = null;
                 Screen.lockCursor = false;

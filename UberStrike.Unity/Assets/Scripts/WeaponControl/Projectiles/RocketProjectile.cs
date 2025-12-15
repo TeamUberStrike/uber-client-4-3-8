@@ -7,10 +7,10 @@ public class RocketProjectile : Projectile
     #region Fields
 
     [SerializeField]
-    private ParticleRenderer _smokeRenderer;
+    private ParticleSystem _smokeRenderer;
 
     [SerializeField]
-    private ParticleEmitter _smokeEmitter;
+    private ParticleSystem _smokeEmitter;
 
     [SerializeField]
     private Color _smokeColor = Color.white;
@@ -34,7 +34,8 @@ public class RocketProjectile : Projectile
 
             if (_smokeRenderer)
             {
-                _smokeRenderer.material.SetColor("_TintColor", _smokeColor);
+                var main = _smokeRenderer.main;
+                main.startColor = _smokeColor;
             }
         }
     }
@@ -48,8 +49,8 @@ public class RocketProjectile : Projectile
 
             if (_smokeEmitter)
             {
-                _smokeEmitter.minEmission = _smokeAmount * 10;
-                _smokeEmitter.maxEmission = _smokeAmount * 20;
+                var emission = _smokeEmitter.emission;
+                emission.rateOverTime = _smokeAmount * 15;
             }
         }
     }

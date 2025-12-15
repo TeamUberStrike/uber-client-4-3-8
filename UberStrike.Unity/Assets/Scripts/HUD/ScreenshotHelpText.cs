@@ -18,7 +18,7 @@ class ScreenshotHud : Singleton<ScreenshotHud>
 
     public void Draw()
     {
-        if (Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.P 
+        if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.P 
             && GameState.CurrentGame.IsMatchRunning && GameState.LocalCharacter.IsAlive)
         {
             HudDrawFlagGroup.Instance.IsScreenshotMode = !HudDrawFlagGroup.Instance.IsScreenshotMode;

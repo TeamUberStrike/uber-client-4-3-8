@@ -269,7 +269,7 @@ public class AvatarHudInformation : MonoBehaviour
         _feedbackTimer = 3;
     }
 
-    public void SetCharacterInfo(CharacterInfo info)
+    public void SetCharacterInfo(UberStrike.Realtime.Common.CharacterInfo info)
     {
         if (info != null)
         {
@@ -356,9 +356,9 @@ public class AvatarHudInformation : MonoBehaviour
 
     public float _feedbackTimer;
 
-    private CharacterInfo _info;
+    private UberStrike.Realtime.Common.CharacterInfo _info;
 
-    public CharacterInfo Info
+    public UberStrike.Realtime.Common.CharacterInfo Info
     {
         get { return _info; }
         set { _info = value; }

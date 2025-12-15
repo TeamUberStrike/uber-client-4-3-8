@@ -147,7 +147,7 @@ public class FontImporter
 
             //Make sure font texture is readable
             TextureImporter inputTextureImp = (TextureImporter)TextureImporter.GetAtPath(imagePath);
-            inputTextureImp.textureType = TextureImporterType.Advanced;
+            inputTextureImp.textureType = TextureImporterType.Default;
             inputTextureImp.isReadable = true;
             inputTextureImp.maxTextureSize = 4096;
             AssetDatabase.ImportAsset(imagePath, ImportAssetOptions.ForceSynchronousImport);
@@ -171,7 +171,7 @@ public class FontImporter
 
         //Set correct texture format
         TextureImporter texImp = (TextureImporter)TextureImporter.GetAtPath(outputPath);
-        texImp.textureType = TextureImporterType.Advanced;
+        texImp.textureType = TextureImporterType.Default;
         texImp.isReadable = true;
         texImp.textureFormat = TextureImporterFormat.Alpha8;
         AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceSynchronousImport);

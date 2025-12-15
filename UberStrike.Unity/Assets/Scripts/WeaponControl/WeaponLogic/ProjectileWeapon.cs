@@ -148,7 +148,7 @@ public class ProjectileWeapon : BaseWeaponLogic
                         {
                             if (a.gameObject.active)
                             {
-                                Physics.IgnoreCollision(projectile.gameObject.collider, a.collider);
+                                Physics.IgnoreCollision(projectile.gameObject.GetComponent<Collider>(), a.GetComponent<Collider>());
                             }
                         }
                     }

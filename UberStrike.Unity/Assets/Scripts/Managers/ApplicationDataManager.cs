@@ -71,7 +71,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         localSystemInfo = new CmuneSystemInfo();
 
         // Get the web player url parameters
-        WebPlayerSrcValues = new WebPlayerSrcValues(WWW.UnEscapeURL(Application.srcValue, Encoding.UTF8));
+        WebPlayerSrcValues = new WebPlayerSrcValues(WWW.UnEscapeURL(Application.absoluteURL, Encoding.UTF8));
 
         //turn off the authentication procedure when in offline mode
         enabled = AutoLogin;
@@ -88,7 +88,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         initApplicationProgressPopup.ManualProgress = 0.1f;
 
         // Write the step tracking info (Game Loaded)
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("wsTracking", ((int)UserInstallStepType.FullGameLoaded).ToString());
             Application.ExternalEval(_evalBrwJS);
@@ -142,7 +142,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 // Set the initial Video options based on Cmune Prefs
                 if (applicationOptions.IsUsingCustom)
                 {
-                    QualitySettings.masterTextureLimit = applicationOptions.VideoTextureQuality;
+                    QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
                     QualitySettings.vSyncCount = applicationOptions.VideoVSyncCount;
                     QualitySettings.antiAliasing = applicationOptions.VideoAntiAliasing;
                 }
@@ -232,8 +232,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
         switch (Application.platform)
         {
-            case RuntimePlatform.OSXWebPlayer:
-            case RuntimePlatform.WindowsWebPlayer:
+            case RuntimePlatform.WebGLPlayer:
                 return Application.absoluteURL.Replace(".unity3d", ".xml");
             case RuntimePlatform.WindowsPlayer:
                 return ("file://" + Application.dataPath + "/" + ApplicationDataManager.StandaloneFilename + ".xml");
@@ -311,10 +310,10 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
 
         // Debug out the ClientConfiguration ChannelType only if we are not in the WebPlayer (as ChannelType comes from Application.srcValue on the web)
-        if (Application.isWebPlayer)
-            CmuneDebug.Log(string.Format("Parsed Client Configuration Xml:\nBuild='{0}'\nVersion='{1}'\nWebSerivcesBaseUrl='{2}'\nContentBaseUrl='{3}'", clientConfiguration.BuildType, clientConfiguration.Version, clientConfiguration.WebServiceBaseUrl, clientConfiguration.ContentBaseUrl));
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+            CmuneDebug.Log(string.Format("Parsed Client Configuration Xml:\\nBuild='{0}'\\nVersion='{1}'\\nWebSerivcesBaseUrl='{2}'\\nContentBaseUrl='{3}'", clientConfiguration.BuildType, clientConfiguration.Version, clientConfiguration.WebServiceBaseUrl, clientConfiguration.ContentBaseUrl));
         else
-            CmuneDebug.Log(string.Format("Parsed Client Configuration Xml:\nBuild='{0}'\nVersion='{1}'\nWebSerivcesBaseUrl='{2}'\nContentBaseUrl='{3}'\nChannelType={4}", clientConfiguration.BuildType, clientConfiguration.Version, clientConfiguration.WebServiceBaseUrl, clientConfiguration.ContentBaseUrl, clientConfiguration.ChannelType));
+            CmuneDebug.Log(string.Format("Parsed Client Configuration Xml:\\nBuild='{0}'\\nVersion='{1}'\\nWebSerivcesBaseUrl='{2}'\\nContentBaseUrl='{3}'\\nChannelType={4}", clientConfiguration.BuildType, clientConfiguration.Version, clientConfiguration.WebServiceBaseUrl, clientConfiguration.ContentBaseUrl, clientConfiguration.ChannelType));
 
         return clientConfiguration;
     }
@@ -631,7 +630,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     public static void OpenUrl(string title, string url)
     {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("displayMessage", title, url);
         }
@@ -742,7 +741,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     public void ShowFBInviteFriendsLightbox()
     {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("showFBInviteFriendsLightbox");
         }
@@ -750,7 +749,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     public void PublishFBLevelUpStreamPost(string level)
     {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("publishFBStreamPost", "levelup", level);
             PopupSystem.ShowMessage("Publish to Facebook", "Your Level Up was successfully published!", PopupSystem.AlertType.OK);
@@ -759,7 +758,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     public void ShowMenuTabsInBrowser()
     {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("displayHeader", PlayerDataManager.CmidSecure.ToString());
         }
@@ -768,7 +767,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public void SetAccountCreatedStep()
     {
         // Write the step tracking info (Account Created)
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("wsTracking", ((int)UserInstallStepType.AccountCreated).ToString());
         }
@@ -813,7 +812,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     private void SetChannel(ClientConfiguration clientConfiguration)
     {
-        if (Application.isWebPlayer && WebPlayerSrcValues.IsValid)
+        if (Application.platform == RuntimePlatform.WebGLPlayer && WebPlayerSrcValues.IsValid)
         {
             // If we are running the web player, get the channel from the Application.srcValue URL
             Channel = WebPlayerSrcValues.ChannelType;

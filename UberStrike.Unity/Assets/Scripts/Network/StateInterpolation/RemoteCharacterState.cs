@@ -12,10 +12,10 @@ public class RemoteCharacterState : ICharacterState
     private int _counter = 0;
     private int _lastInterpolation = 0;
     private BezierSplines _interpolator;
-    private CharacterInfo _currentState;
+    private UberStrike.Realtime.Common.CharacterInfo _currentState;
     private event Action<SyncObject> _updateRecievedEvent;
 
-    public CharacterInfo Info
+    public UberStrike.Realtime.Common.CharacterInfo Info
     {
         get { return _currentState; }
     }
@@ -32,7 +32,7 @@ public class RemoteCharacterState : ICharacterState
     }
 
 
-    public RemoteCharacterState(CharacterInfo info)
+    public RemoteCharacterState(UberStrike.Realtime.Common.CharacterInfo info)
     {
         _currentState = info;
 

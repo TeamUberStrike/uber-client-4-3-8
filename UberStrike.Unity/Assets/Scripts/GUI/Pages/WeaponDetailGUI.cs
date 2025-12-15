@@ -2,19 +2,41 @@
 using UberStrike.Core.Types;
 using UberStrike.Realtime.Common;
 using UnityEngine;
-
+using UnityEngine.Video;
 class WeaponDetailGUI
 {
+    private static VideoPlayer videoPlayer;
+    private static RenderTexture renderTexture;
+    
+    static WeaponDetailGUI()
+    {
+        // Initialize static VideoPlayer for badge videos
+        GameObject videoObject = new GameObject("WeaponBadgeVideoPlayer");
+        UnityEngine.Object.DontDestroyOnLoad(videoObject);
+        videoPlayer = videoObject.AddComponent<VideoPlayer>();
+        
+        // Create render texture for video output
+        renderTexture = new RenderTexture(180, 125, 0);
+        videoPlayer.targetTexture = renderTexture;
+        videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+        videoPlayer.playOnAwake = false;
+        videoPlayer.isLooping = true;
+    }
+
     public void SetWeaponItem(IUnityItem item, RecommendType type)
     {
         _selectedItem = item;
         _curRecomType = type;
-        if (_curBadge != null)
+        if (_curBadge != null && videoPlayer != null)
         {
-            _curBadge.Stop();
+            videoPlayer.Stop();
         }
         _curBadge = UberstrikeIcons.GetRecommendBadge(type);
-        _curBadge.Play();
+        if (_curBadge != null && videoPlayer != null)
+        {
+            videoPlayer.clip = _curBadge;
+            videoPlayer.Play();
+        }
     }
 
     public void Draw(Rect rect)
@@ -42,9 +64,9 @@ class WeaponDetailGUI
 
     private void DrawWeaponBadge(Rect rect)
     {
-        if (_curBadge != null)
+        if (_curBadge != null && renderTexture != null)
         {
-            GUI.DrawTexture(rect, _curBadge);
+            GUI.DrawTexture(rect, renderTexture);
         }
     }
 
@@ -143,16 +165,20 @@ class WeaponDetailGUI
 
     private void OnSelectionChange(IUnityItem item)
     {
-        if (_curBadge != null)
+        if (_curBadge != null && videoPlayer != null)
         {
-            _curBadge.Stop();
+            videoPlayer.Stop();
         }
         _curBadge = UberstrikeIcons.GetAchievementBadge(AchievementType.CostEffective);
-        _curBadge.Play();
+        if (_curBadge != null && videoPlayer != null)
+        {
+            videoPlayer.clip = _curBadge;
+            videoPlayer.Play();
+        }
     }
 
     private IUnityItem _selectedItem;
-    private MovieTexture _curBadge;
+    private VideoClip _curBadge;
     private RecommendType _curRecomType;
     #endregion
 }
