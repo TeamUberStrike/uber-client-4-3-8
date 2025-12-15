@@ -43,11 +43,11 @@ public class GrenadeProjectile : Projectile
             else if (_sticky)
             {
                 Rigidbody.isKinematic = true;
-                collider.isTrigger = true;
+                GetComponent<Collider>().isTrigger = true;
 
                 if (c.contacts.Length > 0)
                 {
-                    transform.position = c.contacts[0].point + c.contacts[0].normal * collider.bounds.extents.sqrMagnitude;
+                    transform.position = c.contacts[0].point + c.contacts[0].normal * GetComponent<Collider>().bounds.extents.sqrMagnitude;
                 }
             }
 

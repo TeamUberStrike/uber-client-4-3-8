@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Video;
 using System.Collections;
 
 public class SplashLoaderWeb : MonoBehaviour
@@ -7,7 +8,7 @@ public class SplashLoaderWeb : MonoBehaviour
     private TextAsset licenseFile;
 
     [SerializeField]
-    private MovieTexture uberStrikeLogoMovie;
+    private VideoClip uberStrikeLogoMovie;
 
     [SerializeField]
     private GUIStyle textStyle;
@@ -16,6 +17,8 @@ public class SplashLoaderWeb : MonoBehaviour
     private bool isError;
     private AsyncOperation asyncOperation;
     private Texture2D white;
+    private VideoPlayer videoPlayer;
+    private RenderTexture renderTexture;
 
 
     public static float MOVIE_RESOLUTION = 9.0f / 16.0f;
@@ -39,7 +42,7 @@ public class SplashLoaderWeb : MonoBehaviour
     private IEnumerator Start()
     {
         // Record the tracking step
-		if (Application.isWebPlayer)
+		if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Application.ExternalCall("wsTracking", "6");
         }
@@ -50,8 +53,23 @@ public class SplashLoaderWeb : MonoBehaviour
             Debug.LogError("Unity Caching Authorization Failed!");
         }
 
-        // Start playing back the UberStrike splash movie
-        uberStrikeLogoMovie.Play();
+        // Setup VideoPlayer for splash movie
+        if (uberStrikeLogoMovie != null)
+        {
+            // Create VideoPlayer component
+            videoPlayer = gameObject.AddComponent<VideoPlayer>();
+            
+            // Create render texture
+            renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
+            videoPlayer.targetTexture = renderTexture;
+            videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+            
+            // Configure video playback
+            videoPlayer.clip = uberStrikeLogoMovie;
+            videoPlayer.playOnAwake = false;
+            videoPlayer.isLooping = false;
+            videoPlayer.Play();
+        }
 
         // Download the bundle from web or cache (There's no assetbundle of the Latest scene in the editor, so skip this step)
         if (!Application.isEditor)
@@ -61,8 +79,9 @@ public class SplashLoaderWeb : MonoBehaviour
             isAssetBundleLoaded = true;
         }
 
-        // Wait for the splash movie to finish
-        while (uberStrikeLogoMovie.isPlaying)
+        // Wait for video to finish or fallback duration
+        float splashStartTime = Time.time;
+        while (Time.time - splashStartTime < 3.0f && (videoPlayer == null || videoPlayer.isPlaying))
         {
             yield return new WaitForEndOfFrame();
         }
@@ -92,10 +111,10 @@ public class SplashLoaderWeb : MonoBehaviour
 
     private void OnGUI()
     {
-        if (uberStrikeLogoMovie.isPlaying)
+        if (videoPlayer != null && videoPlayer.isPlaying && renderTexture != null)
         {
             float movieWidth = Screen.height / MOVIE_RESOLUTION;
-            GUI.DrawTexture(new Rect((Screen.width - movieWidth) / 2, 0, movieWidth, Screen.height), uberStrikeLogoMovie);
+            GUI.DrawTexture(new Rect((Screen.width - movieWidth) / 2, 0, movieWidth, Screen.height), renderTexture);
         }
         else
         {

@@ -14,7 +14,7 @@ public class AudioFadeArea : MonoBehaviour
 	
     void Awake()
     {
-        collider.isTrigger = true;
+        GetComponent<Collider>().isTrigger = true;
     }
 
     void Update()

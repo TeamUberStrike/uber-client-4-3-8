@@ -56,7 +56,7 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
         if (!PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen)
         {
             // Scroll wheel zoom
-            if (camera.pixelRect.Contains(Input.mousePosition) && Input.GetAxis("Mouse ScrollWheel") != 0)
+            if (GetComponent<Camera>().pixelRect.Contains(Input.mousePosition) && Input.GetAxis("Mouse ScrollWheel") != 0)
             {
                 zoomTarget = Mathf.Clamp(zoomDistance - Input.GetAxis("Mouse ScrollWheel") * zoomSpeedFactor, zoomMin, zoomMax);
             }

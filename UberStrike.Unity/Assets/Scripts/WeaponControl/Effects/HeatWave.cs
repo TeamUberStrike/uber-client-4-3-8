@@ -21,7 +21,7 @@ public class HeatWave : MonoBehaviour
     private void Awake()
     {
         _transform = transform;
-        _renderer = renderer;
+        _renderer = GetComponent<Renderer>();
 
         CmuneDebug.Assert(_renderer, "No Renderer attached to HeatWave script on GameObject " + gameObject.name);
     }
