@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Particle emission system for Unity 6 compatibility
+/// </summary>
 public static class ParticleEmissionSystem
 {
     public static void TrailParticles(Vector3 emitPoint, Vector3 direction, TrailParticleConfiguration particleConfiguration, Vector3 muzzlePosition, float distance)

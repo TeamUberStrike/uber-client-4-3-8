@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Explosion controller for Unity 6 compatibility
+/// </summary>
 public class ExplosionController
 {
     public void EmitBlast(Vector3 hitPoint, Vector3 hitNormal, ExplosionBaseParameters parameters)
