@@ -125,7 +125,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _permanentMsgText.Position = PermanentMsgPosition;
     }
 
-    public void DisplaySpectatorFollowingMsg(CharacterInfo info)
+    public void DisplaySpectatorFollowingMsg(UberStrike.Realtime.Common.CharacterInfo info)
     {
         string playerName = info == null ? LocalizedStrings.Nobody : info.PlayerName;
         _permanentMsgText.Text = string.Format("{0} {1}", LocalizedStrings.Following, playerName);

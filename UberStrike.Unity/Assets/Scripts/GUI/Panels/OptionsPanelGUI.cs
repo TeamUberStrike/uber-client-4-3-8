@@ -284,7 +284,7 @@ public class OptionsPanelGUI : PanelGuiBase
         _currentQuality = QualitySettings.GetQualityLevel();
 
         _targetFrameRate = Application.targetFrameRate;
-        _textureQuality = MasterTextureLimit - QualitySettings.masterTextureLimit;
+        _textureQuality = MasterTextureLimit - QualitySettings.globalTextureMipmapLimit;
         _queuedFrames = QualitySettings.maxQueuedFrames;
 
         switch (_currentQuality)
@@ -344,7 +344,7 @@ public class OptionsPanelGUI : PanelGuiBase
 
         float width = videoRect.width - GroupMarginX - GroupMarginX - 20;
 
-        if (!Application.isWebPlayer || showResolutions)
+        if (Application.platform != RuntimePlatform.WebGLPlayer || showResolutions)
         {
             contentRect.height += _screenResText.Length * 16;
         }
@@ -412,7 +412,7 @@ public class OptionsPanelGUI : PanelGuiBase
             //GUI.EndGroup();
             int resolutionY = 240;
             //RESOLUTIONS (standalone)
-            if (!Application.isWebPlayer || showResolutions)
+            if (Application.platform != RuntimePlatform.WebGLPlayer || showResolutions)
             {
                 DrawGroupControl(new Rect(GroupMarginX, resolutionY, width, resHeight), LocalizedStrings.ScreenResolution, BlueStonez.label_group_interparkbold_18pt);
                 GUI.BeginGroup(new Rect(GroupMarginX, resolutionY, width, resHeight));
@@ -779,7 +779,7 @@ public class OptionsPanelGUI : PanelGuiBase
 
         if (_targetMap != null)
         {
-            if (Event.current.type == EventType.layout && InputManager.Instance.ListenForNewKeyAssignment(_targetMap))
+            if (Event.current.type == EventType.Layout && InputManager.Instance.ListenForNewKeyAssignment(_targetMap))
             {
                 _targetMap = null;
                 Screen.lockCursor = false;
@@ -870,8 +870,8 @@ public class OptionsPanelGUI : PanelGuiBase
     private void UpdateTextureQuality()
     {
         _textureQuality = Mathf.RoundToInt(_textureQuality);
-        QualitySettings.masterTextureLimit = MasterTextureLimit - (int)_textureQuality;
-        ApplicationDataManager.ApplicationOptions.VideoTextureQuality = QualitySettings.masterTextureLimit;
+        QualitySettings.globalTextureMipmapLimit = MasterTextureLimit - (int)_textureQuality;
+        ApplicationDataManager.ApplicationOptions.VideoTextureQuality = QualitySettings.globalTextureMipmapLimit;
     }
 
     private void UpdateVSyncCount()

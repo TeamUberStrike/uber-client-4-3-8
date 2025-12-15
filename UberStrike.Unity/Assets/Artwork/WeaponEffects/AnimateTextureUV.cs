@@ -26,7 +26,7 @@ public class AnimateTextureUV : MonoBehaviour
     // v coordinate is the bottom of the image in opengl so we need to invert.
     Vector2 offset = new Vector2 (uIndex * size.x, 1.0f - size.y - vIndex * size.y);
     
-    renderer.material.SetTextureOffset ("_MainTex", offset);
-    renderer.material.SetTextureScale ("_MainTex", size);
+    GetComponent<Renderer>().material.SetTextureOffset ("_MainTex", offset);
+    GetComponent<Renderer>().material.SetTextureScale ("_MainTex", size);
     }
 }

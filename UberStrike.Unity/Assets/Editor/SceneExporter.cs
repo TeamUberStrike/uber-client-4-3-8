@@ -439,70 +439,70 @@ public class SceneExporter
     public static void BuildMapMI()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[1]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[1]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/Lost Paradise 2")]
     public static void BuildMapLP2()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[2]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[2]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/The Warehouse")]
     public static void BuildMapTW()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[3]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[3]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/Temple of the Raven")]
     public static void BuildMapTOR()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[4]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[4]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/Fort Winter")]
     public static void BuildMapFW()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[5]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[5]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/Gideons Tower")]
     public static void BuildMapGT()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[6]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[6]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/Sky Garden")]
     public static void BuildMapSG()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[7]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[7]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/CuberStrike")]
     public static void BuildMapCS()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[8]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[8]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/Lost Paradise Classic")]
     public static void BuildMapLPC()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[9]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[9]);
     }
 
     [MenuItem("File/Build UberStrike/Maps/Spaceport Alpha")]
     public static void BuildMapSPA()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, MapsToExport[10]);
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, MapsToExport[10]);
     }
 
 
@@ -510,14 +510,14 @@ public class SceneExporter
     public static void BuildMapSS()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, "LevelSpaceship");
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, "LevelSpaceship");
     }
 
     [MenuItem("File/Build UberStrike/Maps/Latest")]
     public static void BuildMapLatest()
     {
         PrepareBuildFolder(Application.dataPath + "/../Latest/Maps");
-        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebPlayer, "Latest");
+        BuildMapScene(Application.dataPath + "/../Latest/Maps", BuildTarget.WebGL, "Latest");
     }
 
     #endregion
@@ -528,9 +528,9 @@ public class SceneExporter
     {
         PrepareBuildFolder(WebPlayerFolder);
 
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebPlayer);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebPlayer);
-        if (buildMaps) BuildMapScenes(WebPlayerFolder, BuildTarget.WebPlayer, enableLevelHashing);
+        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
+        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
+        if (buildMaps) BuildMapScenes(WebPlayerFolder, BuildTarget.WebGL, enableLevelHashing);
 
         // Move the Header up a folder, next to the MainScene
         if (Directory.Exists(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename)))
@@ -549,8 +549,8 @@ public class SceneExporter
     public static void BuildWebPlayerMain(BuildType buildType, WebserviceLocation wsLocation)
     {
         PrepareBuildFolder(WebPlayerFolder);
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebPlayer);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebPlayer);
+        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
+        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
 
         // Move the Header up a folder, next to the MainScene
         if (Directory.Exists(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename)))
@@ -587,17 +587,43 @@ public class SceneExporter
                 filename = ApplicationDataManager.StandaloneFilename + ".app";
                 scenename = SplashScene;
                 break;
-            case BuildTarget.WebPlayer:
-            case BuildTarget.WebPlayerStreamed:
+            case BuildTarget.WebGL:
                 filename = ApplicationDataManager.HeaderFilename;
                 scenename = SplashSceneWeb;
                 break;
         }
 
-        string buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.AllowDebugging);
-        if (!string.IsNullOrEmpty(buildResult))
+        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.AllowDebugging);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
-            Debug.LogError("BuildPlayer: " + buildResult);
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
+    }
+
+    private static void BuildMainPlayer(string buildFolder, BuildTarget buildTarget, BuildOptions buildOptions = BuildOptions.None)
+    {
+        string filename = string.Empty;
+
+        // Setup the correct output filename
+        switch (buildTarget)
+        {
+            case BuildTarget.StandaloneWindows:
+            case BuildTarget.StandaloneWindows64:
+                filename = ApplicationDataManager.StandaloneFilename + ".exe";
+                break;
+            case BuildTarget.StandaloneOSXIntel:
+                filename = ApplicationDataManager.StandaloneFilename + ".app";
+                break;
+            case BuildTarget.WebGL:
+                filename = ApplicationDataManager.HeaderFilename;
+                break;
+        }
+
+        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
             return;
         }
     }
@@ -616,8 +642,7 @@ public class SceneExporter
             case BuildTarget.StandaloneOSXIntel:
                 path = ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.MainFilename;
                 break;
-            case BuildTarget.WebPlayer:
-            case BuildTarget.WebPlayerStreamed:
+            case BuildTarget.WebGL:
                 path = ApplicationDataManager.MainFilename;
                 break;
             case BuildTarget.Android:
@@ -625,10 +650,10 @@ public class SceneExporter
                 break;
         }
 
-        string buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
-        if (!string.IsNullOrEmpty(buildResult))
+        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
-            Debug.LogError("BuildPlayer: " + buildResult);
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
             return;
         }
     }
@@ -661,11 +686,11 @@ public class SceneExporter
             if (obj != null)
             {
                 Debug.Log("Build Map: " + map.Value);
-                string buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+                var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
-                if (!string.IsNullOrEmpty(buildResult))
+                if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 {
-                    Debug.LogError("BuildPlayer: " + buildResult);
+                    Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
                 }
                 else
                 {
@@ -698,11 +723,11 @@ public class SceneExporter
         if (obj != null)
         {
             Debug.Log("Build Map: " + sceneName);
-            string buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+            var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
-            if (!string.IsNullOrEmpty(buildResult))
+            if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
             {
-                Debug.LogError("BuildPlayer: " + buildResult);
+                Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
             }
             else
             {

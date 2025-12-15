@@ -17,12 +17,15 @@ public static class CmuneTools
                 Debug.LogWarning(string.Format("Import Texture {0}\n{1}", o.name, path));
 
                 TextureImporter i = TextureImporter.GetAtPath(path) as TextureImporter;
-                i.textureType = TextureImporterType.Advanced;
+                i.textureType = TextureImporterType.Default;
                 i.lightmap = true;
                 i.mipmapEnabled = false;
-                i.textureFormat = TextureImporterFormat.AutomaticCompressed;
+                i.textureCompression = TextureImporterCompression.Compressed;
                 i.maxTextureSize = 1024;
-                i.SetPlatformTextureSettings("Web", 512, TextureImporterFormat.AutomaticCompressed);
+                var platformSettings = i.GetPlatformTextureSettings("WebGL");
+                platformSettings.maxTextureSize = 512;
+                platformSettings.compressionQuality = 50;
+                i.SetPlatformTextureSettings(platformSettings);
                 AssetDatabase.ImportAsset(path);
             }
         }
@@ -143,7 +146,7 @@ public static class CmuneTools
     {
         foreach (GameObject go in Selection.gameObjects)
             foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
-                r.renderer.castShadows = false;
+                r.GetComponent<Renderer>().castShadows = false;
     }
 
     [MenuItem("Cmune Tools/Batch Routines/Lighting: Enable Cast Shadows")]
@@ -151,7 +154,7 @@ public static class CmuneTools
     {
         foreach (GameObject go in Selection.gameObjects)
             foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
-                r.renderer.castShadows = true;
+                r.GetComponent<Renderer>().castShadows = true;
     }
 
     [MenuItem("Cmune Tools/Batch Routines/Lighting: Disable Receive Shadows")]
@@ -159,7 +162,7 @@ public static class CmuneTools
     {
         foreach (GameObject go in Selection.gameObjects)
             foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
-                r.renderer.receiveShadows = false;
+                r.GetComponent<Renderer>().receiveShadows = false;
     }
 
     [MenuItem("Cmune Tools/Batch Routines/Lighting: Enable Receive Shadows")]
@@ -167,7 +170,7 @@ public static class CmuneTools
     {
         foreach (GameObject go in Selection.gameObjects)
             foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
-                r.renderer.receiveShadows = true;
+                r.GetComponent<Renderer>().receiveShadows = true;
     }
 
     #endregion
@@ -435,9 +438,9 @@ public static class CmuneTools
     {
         foreach (GameObject go in Selection.GetFiltered(typeof(GameObject), SelectionMode.Deep))
         {
-            if (go.light)
+            if (go.GetComponent<Light>())
             {
-                go.light.enabled = true;
+                go.GetComponent<Light>().enabled = true;
             }
         }
     }
@@ -447,9 +450,9 @@ public static class CmuneTools
     {
         foreach (GameObject go in Selection.GetFiltered(typeof(GameObject), SelectionMode.Deep))
         {
-            if (go.light)
+            if (go.GetComponent<Light>())
             {
-                go.light.enabled = false;
+                go.GetComponent<Light>().enabled = false;
             }
         }
     }

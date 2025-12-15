@@ -1,17 +1,27 @@
 ﻿#if !UNITY_ANDROID && !UNITY_IPHONE
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class StreamedMoviePlayer : MonoBehaviour
 {
     public static StreamedMoviePlayer Instance { get; private set; }
+    
+    private VideoPlayer videoPlayer;
 
     void Awake()
     {
         Instance = this;
+        
+        // Get or create VideoPlayer component
+        videoPlayer = GetComponent<VideoPlayer>();
+        if (videoPlayer == null)
+        {
+            videoPlayer = gameObject.AddComponent<VideoPlayer>();
+        }
     }
 
-    public void PlayMovie(MovieTexture movie, bool loop = false)
+    public void PlayMovie(VideoClip movie, bool loop = false)
     {
         if (movie)
         {
@@ -19,30 +29,29 @@ public class StreamedMoviePlayer : MonoBehaviour
         }
     }
 
-    public void StopMovie(MovieTexture movie)
+    public void StopMovie(VideoClip movie)
     {
-        if (movie)
+        if (videoPlayer && videoPlayer.clip == movie)
         {
-            movie.Stop();
+            videoPlayer.Stop();
         }
     }
 
-    private IEnumerator PlayMovieCoroutine(MovieTexture movie, bool loop)
+    private IEnumerator PlayMovieCoroutine(VideoClip movie, bool loop)
     {
-        bool isStreamed = !(movie && movie.isReadyToPlay);
-
-        while (movie && !movie.isReadyToPlay)
+        videoPlayer.clip = movie;
+        videoPlayer.isLooping = loop;
+        
+        // Wait for the video to be prepared
+        videoPlayer.Prepare();
+        while (!videoPlayer.isPrepared)
         {
             yield return new WaitForEndOfFrame();
         }
 
-        if (isStreamed)
-            yield return new WaitForSeconds(1);
-
-        if (movie != null)
+        if (videoPlayer.clip != null)
         {
-            movie.loop = loop;
-            movie.Play();
+            videoPlayer.Play();
         }
     }
 }

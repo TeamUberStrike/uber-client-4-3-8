@@ -64,7 +64,7 @@ public class ShopWeaponMode : FpsGameMode
     {
         base.ApplyCurrentGameFrameUpdates(delta);
 
-        if (delta.Contains(CharacterInfo.FieldTag.Health) && !GameState.LocalCharacter.IsAlive)
+        if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.Health) && !GameState.LocalCharacter.IsAlive)
         {
             OnSetNextSpawnPoint(Random.Range(0, SpawnPointManager.Instance.GetSpawnPointCount(GameMode.TryWeapon, TeamID.NONE)), 3);
         }
@@ -77,7 +77,7 @@ public class ShopWeaponMode : FpsGameMode
 
     public override void IncreaseHealthAndArmor(int health, int armor)
     {
-        CharacterInfo info = GameState.LocalCharacter;
+        UberStrike.Realtime.Common.CharacterInfo info = GameState.LocalCharacter;
         if (health > 0 && info.Health < 200)
         {
             info.Health = (short)Mathf.Clamp(info.Health + health, 0, 200);

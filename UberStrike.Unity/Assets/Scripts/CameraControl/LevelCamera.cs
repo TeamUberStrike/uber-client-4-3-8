@@ -163,13 +163,13 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
             }
 
             _cameraConfiguration.Parent = camera.transform.parent;
-            _cameraConfiguration.Fov = camera.fov;
+            _cameraConfiguration.Fov = camera.fieldOfView;
             _cameraConfiguration.CullingMask = camera.cullingMask;
 
             MainCamera = camera;
             ReparentCamera(camera, transform);
 
-            _zoomData.TargetFOV = camera.fov;
+            _zoomData.TargetFOV = camera.fieldOfView;
             _transform.position = position;
             _transform.rotation = rotation;
         }
@@ -186,7 +186,7 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
 
     private void ResetCamera(Camera camera, CameraConfiguration config)
     {
-        camera.fov = config.Fov;
+        camera.fieldOfView = config.Fov;
         camera.cullingMask = config.CullingMask;
         ReparentCamera(camera, config.Parent);
     }
@@ -436,7 +436,7 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
 
     public float FOV
     {
-        get { return MainCamera != null ? MainCamera.fov : 65; }
+        get { return MainCamera != null ? MainCamera.fieldOfView : 65; }
     }
 
     public Vector3 EyePosition
@@ -739,7 +739,7 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
 
             if (Instance.MainCamera)
             {
-                Instance.MainCamera.fov = Mathf.Lerp(Instance.MainCamera.fov, TargetFOV, Time.deltaTime * Speed);
+                Instance.MainCamera.fieldOfView = Mathf.Lerp(Instance.MainCamera.fieldOfView, TargetFOV, Time.deltaTime * Speed);
             }
         }
 
@@ -748,7 +748,7 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
             if (Instance.MainCamera)
             {
                 TargetFOV = 60;
-                Instance.MainCamera.fov = TargetFOV;
+                Instance.MainCamera.fieldOfView = TargetFOV;
             }
         }
     }

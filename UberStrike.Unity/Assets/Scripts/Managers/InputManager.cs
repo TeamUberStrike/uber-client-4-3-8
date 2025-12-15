@@ -69,7 +69,7 @@ public class InputManager : AutoMonoBehaviour<InputManager>
     /// <returns></returns>
     public static bool GetMouseButtonDown(int button)
     {
-        return (Event.current == null || Event.current.type == EventType.layout)
+        return (Event.current == null || Event.current.type == EventType.Layout)
             && Input.GetMouseButtonDown(button);
     }
 

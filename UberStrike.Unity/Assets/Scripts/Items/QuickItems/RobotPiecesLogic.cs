@@ -20,23 +20,23 @@ class RobotPiecesLogic : MonoBehaviour
             }
         }
 
-        audio.clip = _robotExplosionAudios[Random.Range(0, _robotExplosionAudios.Length)];
-        audio.Play();
+        GetComponent<AudioSource>().clip = _robotExplosionAudios[Random.Range(0, _robotExplosionAudios.Length)];
+        GetComponent<AudioSource>().Play();
 
         MonoRoutine.Start(DestroyRobotPieces(robotObject, lifeTimeMilliSeconds));
     }
 
     public void PlayRobotScrapsDestructionAudio()
     {
-        audio.clip = _robotScrapsDestructionAudios[Random.Range(0, _robotScrapsDestructionAudios.Length)];
-        audio.Play();
+        GetComponent<AudioSource>().clip = _robotScrapsDestructionAudios[Random.Range(0, _robotScrapsDestructionAudios.Length)];
+        GetComponent<AudioSource>().Play();
     }
 
     private IEnumerator DestroyRobotPieces(GameObject robotObject, int lifeTimeMilliSeconds)
     {
         yield return new WaitForSeconds(lifeTimeMilliSeconds / 1000);
         PlayRobotScrapsDestructionAudio();
-        yield return new WaitForSeconds(audio.clip.length);
+        yield return new WaitForSeconds(GetComponent<AudioSource>().clip.length);
         GameObject.Destroy(robotObject);
     }
 }

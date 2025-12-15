@@ -2,6 +2,7 @@
 using UberStrike.DataCenter.Common.Entities;
 using UberStrike.Realtime.Common;
 using UnityEngine;
+using UnityEngine.Video;
 using UberStrike.Core.Types;
 
 public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
@@ -272,8 +273,8 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
     }
 #if !UNITY_ANDROID && !UNITY_IPHONE
     [SerializeField]
-    private MovieTexture[] _achievementBadges;
-    public static MovieTexture GetAchievementBadge(AchievementType achievementType)
+    private VideoClip[] _achievementBadges;
+    public static VideoClip GetAchievementBadge(AchievementType achievementType)
     {
         if (!Exists)
         {
@@ -326,8 +327,8 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
     [SerializeField]
-    private MovieTexture[] _recommendationBadges;
-    public static MovieTexture GetRecommendBadge(RecommendType recomType)
+    private VideoClip[] _recommendationBadges;
+    public static VideoClip GetRecommendBadge(RecommendType recomType)
     {
         if (!Exists)
         {
