@@ -18,7 +18,7 @@ public class BaseGameProp : MonoBehaviour, IShootable
         {
             Rigidbody r = (Rigidbody)_rbs[i];
 
-            r.linearVelocity = Vector3.zero;
+            r.velocity = Vector3.zero;
             r.angularVelocity = Vector3.zero;
 
             r.useGravity = !b;
@@ -27,18 +27,18 @@ public class BaseGameProp : MonoBehaviour, IShootable
             if (b)
             {
                 _oriMass[i] = r.mass;
-                _adrag[i] = r.angularDamping;
-                _drag[i] = r.linearDamping;
+                _adrag[i] = r.angularDrag;
+                _drag[i] = r.drag;
 
-                r.angularDamping = 10000;
-                r.linearDamping = 10000;
+                r.angularDrag = 10000;
+                r.drag = 10000;
                 r.mass = 0.1f;
             }
             else// if (!b)
             {
                 r.mass = _oriMass[i];        //1
-                r.angularDamping = _adrag[i];   //0.5f;
-                r.linearDamping = _drag[i];           //0f;
+                r.angularDrag = _adrag[i];   //0.5f;
+                r.drag = _drag[i];           //0f;
             }
         }
 
@@ -90,7 +90,7 @@ public class BaseGameProp : MonoBehaviour, IShootable
     {
         get
         {
-            if (HasRigidbody) return _rigidbody.linearVelocity;
+            if (HasRigidbody) return _rigidbody.velocity;
             else return Vector3.zero;
         }
     }

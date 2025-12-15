@@ -324,7 +324,7 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
 
     public Vector3 Velocity
     {
-        get { return GetComponent<Rigidbody>() ? GetComponent<Rigidbody>().linearVelocity : Vector3.zero; }
-        private set { if (GetComponent<Rigidbody>()) GetComponent<Rigidbody>().linearVelocity = value; }
+        get { return GetComponent<Rigidbody>() ? GetComponent<Rigidbody>().velocity : Vector3.zero; }
+        private set { if (GetComponent<Rigidbody>()) GetComponent<Rigidbody>().velocity = value; }
     }
 }

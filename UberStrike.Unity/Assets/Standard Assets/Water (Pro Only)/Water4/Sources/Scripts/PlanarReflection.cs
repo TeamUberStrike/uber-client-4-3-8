@@ -146,7 +146,7 @@ public class PlanarReflection : MonoBehaviour
             }
         }
 
-        GL.SetRevertBackfacing(true);
+        GL.invertCulling = true;
         Transform reflectiveSurface = transform; //waterHeight;
 
         Vector3 eulerA = cam.transform.eulerAngles;
@@ -191,7 +191,7 @@ public class PlanarReflection : MonoBehaviour
             RenderSettings.fog = true;
         }
 
-        GL.SetRevertBackfacing(false);
+        GL.invertCulling = false;
     }
 
     private void SaneCameraSettings(Camera helperCam)
