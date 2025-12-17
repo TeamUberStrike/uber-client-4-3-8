@@ -101,7 +101,25 @@ public class ItemManager : Singleton<ItemManager>
         IUnityItem baseItem;
         if (_unityItems.TryGetValue(itemView.ID, out baseItem))
         {
-            ItemConfigurationUtil.CopyProperties(baseItem.ItemView, itemView);
+            // Only copy properties if the types are compatible
+            if (baseItem.ItemView.GetType() == itemView.GetType() || 
+                baseItem.ItemView.GetType().IsAssignableFrom(itemView.GetType()) ||
+                itemView.GetType().IsAssignableFrom(baseItem.ItemView.GetType()))
+            {
+                try
+                {
+                    ItemConfigurationUtil.CopyProperties(baseItem.ItemView, itemView);
+                }
+                catch (System.Exception ex)
+                {
+                    CmuneDebug.LogError("Failed to copy properties for item {0} (ID: {1}): {2}", itemView.Name, itemView.ID, ex.Message);
+                }
+            }
+            else
+            {
+                CmuneDebug.LogWarning("Skipping property copy for item {0} (ID: {1}) due to type mismatch: {2} vs {3}", 
+                    itemView.Name, itemView.ID, baseItem.ItemView.GetType().Name, itemView.GetType().Name);
+            }
 
             if (!_shopItems.ContainsKey(baseItem.ItemId))
             {

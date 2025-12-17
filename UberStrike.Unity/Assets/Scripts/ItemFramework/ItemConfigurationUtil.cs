@@ -10,7 +10,15 @@ public static class ItemConfigurationUtil
 {
     public static void CopyProperties<T>(T config, BaseUberStrikeItemView item) where T : BaseUberStrikeItemView
     {
-        CloneUtil.CopyAllFields(config, item);
+        try
+        {
+            CloneUtil.CopyAllFields(config, item);
+        }
+        catch (System.Exception ex)
+        {
+            CmuneDebug.LogError("Failed to copy fields between {0} and {1}: {2}", config.GetType().Name, item.GetType().Name, ex.Message);
+            throw;
+        }
 
         //customize fields
         foreach (var p in ReflectionHelper.GetAllFields(config.GetType(), true))
@@ -19,8 +27,15 @@ public static class ItemConfigurationUtil
 
             if (!string.IsNullOrEmpty(name) && item.CustomProperties != null && item.CustomProperties.ContainsKey(name))
             {
-                //configure using custom property
-                p.SetValue(config, Convert(item.CustomProperties[name], p.FieldType));
+                try
+                {
+                    //configure using custom property
+                    p.SetValue(config, Convert(item.CustomProperties[name], p.FieldType));
+                }
+                catch (System.Exception ex)
+                {
+                    CmuneDebug.LogError("Failed to set custom property {0} on {1}: {2}", name, config.GetType().Name, ex.Message);
+                }
             }
         }
     }
