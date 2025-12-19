@@ -12,9 +12,9 @@ public class SceneExporter
     public const string BaseContentUrlExternalQA = "http://client-qa.uberforever.eu/";
     public const string BaseContentUrlInternalDev = "http://client-dev.uberforever.eu/";
 
-    public const string BaseWebServiceUrlProduction = "http://ws.uberforever.eu/";
-    public const string BaseWebServiceUrlExternalQA = "http://ws-qa.uberforever.eu/";
-    public const string BaseWebServiceUrlInternalDev = "http://ws-dev.uberforever.eu/";
+    public const string BaseWebServiceUrlProduction = "http://ws.uberforever.eu:5000/";
+    public const string BaseWebServiceUrlExternalQA = "http://ws-qa.uberforever.eu:5000/";
+    public const string BaseWebServiceUrlInternalDev = "http://ws-dev.uberforever.eu:5000/";
 
     public static readonly string WebPlayerFolder = Application.dataPath + "/../Latest/WebPlayer";
     public static readonly string WindowsStandaloneFolder = Application.dataPath + "/../Latest/WindowsStandalone";
