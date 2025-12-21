@@ -15,12 +15,12 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
         : base(rmi)
     {
         _gameData = gameData;
-        _players = new Dictionary<int, CharacterInfo>();
+        _players = new Dictionary<int, UberStrike.Realtime.Common.CharacterInfo>();
     }
 
-    public CharacterInfo GetPlayerWithID(int actorId)
+    public UberStrike.Realtime.Common.CharacterInfo GetPlayerWithID(int actorId)
     {
-        CharacterInfo info;
+        UberStrike.Realtime.Common.CharacterInfo info;
 
         if (actorId == GameState.LocalCharacter.ActorId)
             return GameState.LocalCharacter;
@@ -60,7 +60,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
             else
             {
                 //add CharacterInfo to the List
-                Players[data.Id] = new CharacterInfo(data);
+                Players[data.Id] = new UberStrike.Realtime.Common.CharacterInfo(data);
                 Players[data.Id].Position = position;
             }
         }
@@ -105,7 +105,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
     {
         foreach (var d in data)
         {
-            CharacterInfo player;
+            UberStrike.Realtime.Common.CharacterInfo player;
             if (!d.IsEmpty && Players.TryGetValue(d.Id, out player))
             {
                 player.ReadSyncData(d);
@@ -116,7 +116,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
     [NetworkMethod(GameRPC.PlayerUpdate)]
     protected virtual void OnPlayerUpdate(SyncObject data)
     {
-        CharacterInfo player;
+        UberStrike.Realtime.Common.CharacterInfo player;
         if (!data.IsEmpty && Players.TryGetValue(data.Id, out player))
         {
             player.ReadSyncData(data);
@@ -140,7 +140,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
         get { return _gameData; }
     }
 
-    public Dictionary<int, CharacterInfo> Players
+    public Dictionary<int, UberStrike.Realtime.Common.CharacterInfo> Players
     {
         get { return _players; }
     }
@@ -154,7 +154,7 @@ public abstract class ClientGameMode : ClientNetworkClass, IGameMode
 
     #region FIELDS
 
-    private Dictionary<int, CharacterInfo> _players;
+    private Dictionary<int, UberStrike.Realtime.Common.CharacterInfo> _players;
 
     private GameMetaData _gameData;
 

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced 'PositionFog()' with multiply of UNITY_MATRIX_MVP by position
 // Upgrade NOTE: replaced 'V2F_POS_FOG' with 'float4 pos : SV_POSITION'
 
@@ -72,6 +74,8 @@ Category {
 			Fog { Color [_AddFog] }
 
 CGPROGRAM
+// Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members uv,normal,lightDir)
+#pragma exclude_renderers d3d11
 // Upgrade NOTE: excluded shader from Xbox360; has structs without semantics (struct v2f members uv,normal,lightDir)
 #pragma exclude_renderers xbox360
 #pragma fragment frag
@@ -96,7 +100,7 @@ uniform float4 _DetailMap_ST;
 v2f vert (appdata_base v)
 {
 	v2f o;
-	o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+	o.pos = UnityObjectToClipPos (v.vertex);
 	o.normal = v.normal;
 	o.uv[0] = TRANSFORM_TEX(v.texcoord,_MainTex);
 	o.uv[1] = TRANSFORM_TEX(v.texcoord,_DetailMap);
@@ -178,7 +182,7 @@ uniform float4 _MainTex_ST;
 v2f vert(appdata_base v)
 {
 	v2f o;
-	o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+	o.pos = UnityObjectToClipPos (v.vertex);
 	o.normal = v.normal;
 	o.uv = TRANSFORM_TEX(v.texcoord,_MainTex);
 	o.lightDir = ObjSpaceLightDir( v.vertex );
@@ -243,7 +247,7 @@ struct v2f {
 v2f vert(appdata_tan v)
 {
 	v2f o;
-	o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+	o.pos = UnityObjectToClipPos (v.vertex);
 	o.normal = v.normal;
 	o.uv = TRANSFORM_TEX(v.texcoord,_MainTex);
 	o.lightDir = ObjSpaceLightDir( v.vertex );
@@ -315,7 +319,7 @@ struct v2f {
 v2f vert(appdata_tan v)
 {
 	v2f o;
-	o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+	o.pos = UnityObjectToClipPos (v.vertex);
 	o.normal = v.normal;
 	o.uv = TRANSFORM_TEX(v.texcoord,_MainTex);
 	o.lightDir = ObjSpaceLightDir( v.vertex );

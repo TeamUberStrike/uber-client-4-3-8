@@ -92,12 +92,12 @@ public class DragAndDrop : Singleton<DragAndDrop>
 
     public void DrawSlot<T>(Rect rect, T item, Action<int, T> onDropAction = null, Color? color = null) where T : IDragSlot
     {
-        int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Native);
+        int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Passive);
 
         switch (Event.current.GetTypeForControl(id))
         {
             case EventType.MouseDown:
-                if (Event.current.type != EventType.used && rect.Contains(Event.current.mousePosition))
+                if (Event.current.type != EventType.Used && rect.Contains(Event.current.mousePosition))
                 {
                     GUIUtility.hotControl = id;
                     Event.current.Use();
@@ -137,7 +137,7 @@ public class DragAndDrop : Singleton<DragAndDrop>
 
     public void DrawSlot<T>(Rect rect, Action<int, T> onDropAction) where T : IDragSlot
     {
-        int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Native);
+        int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Passive);
         if (Event.current.GetTypeForControl(id) == EventType.MouseUp)
         {
             OnMouseUp(rect, id, 0, onDropAction);

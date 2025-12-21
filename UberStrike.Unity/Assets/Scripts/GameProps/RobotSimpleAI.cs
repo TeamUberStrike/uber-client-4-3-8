@@ -118,8 +118,8 @@ public class RobotSimpleAI : BaseGameProp
         _myRobotStates = RobotStates.Explode;
         _animationController.AnimationStop();
         _animationController.enabled = false;
-        animation.enabled = false;
-        if (collider) collider.isTrigger = true;
+        GetComponent<Animation>().enabled = false;
+        if (GetComponent<Collider>()) GetComponent<Collider>().isTrigger = true;
         gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
 
         float f = force.magnitude;
@@ -133,7 +133,7 @@ public class RobotSimpleAI : BaseGameProp
 
     private void GetChildrenData(Transform root, ref List<Transform> go, ref List<Transform> parents, ref List<Vector3> pos, ref List<Quaternion> rot, ref List<Rigidbody> rb)
     {
-        for (int i = 0; i < root.GetChildCount(); i++)
+        for (int i = 0; i < root.childCount; i++)
         {
             if (root.GetChild(i).GetComponent<Rigidbody>() != null)
             {
@@ -143,7 +143,7 @@ public class RobotSimpleAI : BaseGameProp
                 rb.Add(root.GetChild(i).GetComponent<Rigidbody>());
                 parents.Add(root);
             }
-            if (root.GetChild(i).GetChildCount() > 0)
+            if (root.GetChild(i).childCount > 0)
                 GetChildrenData(root.GetChild(i), ref go, ref parents, ref pos, ref rot, ref rb);
         }
     }
@@ -154,7 +154,7 @@ public class RobotSimpleAI : BaseGameProp
         bool timeToEnd = false;
         for (int i = 0; i < _rBody.Count; i++)
         {
-            color = _children[i].renderer.material.color;
+            color = _children[i].GetComponent<Renderer>().material.color;
             if (color.w < alpha)
             {
                 color.w = 0f;
@@ -164,7 +164,7 @@ public class RobotSimpleAI : BaseGameProp
             {
                 color.w = color.w - alpha;
             }
-            _children[i].renderer.material.color = color;
+            _children[i].GetComponent<Renderer>().material.color = color;
         }
         return timeToEnd;
     }
@@ -181,18 +181,18 @@ public class RobotSimpleAI : BaseGameProp
             _children[i].localPosition = _position[i];
             _children[i].localRotation = _rotation[i];
             _children[i].GetComponent<MeshRenderer>().enabled = true;
-            _children[i].collider.isTrigger = false;
+            _children[i].GetComponent<Collider>().isTrigger = false;
             _children[i].parent = _parents[i];
-            color = _children[i].renderer.material.color;
+            color = _children[i].GetComponent<Renderer>().material.color;
             color.w = 1f;
-            _children[i].renderer.material.color = color;
+            _children[i].GetComponent<Renderer>().material.color = color;
             //_children[i].renderer.material.shader = Shader.Find("Diffuse");
         }
 
         _animationController.enabled = true;
         _myRobotStates = RobotStates.Show;
-        animation.enabled = true;
-        if (collider) collider.isTrigger = false;
+        GetComponent<Animation>().enabled = true;
+        if (GetComponent<Collider>()) GetComponent<Collider>().isTrigger = false;
         _animationController.PlayAnimationHard("BallToBot");
         gameObject.layer = (int)UberstrikeLayer.Props;
         _health = 100;
@@ -208,7 +208,7 @@ public class RobotSimpleAI : BaseGameProp
         for (int i = 0; i < _children.Count; i++)
         {
             _children[i].GetComponent<MeshRenderer>().enabled = false;
-            _children[i].collider.isTrigger = true;
+            _children[i].GetComponent<Collider>().isTrigger = true;
         }
     }
 

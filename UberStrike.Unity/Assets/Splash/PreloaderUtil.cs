@@ -24,8 +24,7 @@ public class PreloaderUtil
                     url = "file://" + Application.dataPath + "/" + ApplicationDataManager.MainFilename + ".unity3d";
                     break;
                 }
-            case RuntimePlatform.OSXWebPlayer:
-            case RuntimePlatform.WindowsWebPlayer:
+            case RuntimePlatform.WebGLPlayer:
                 {
                     url = Application.absoluteURL.Replace(ApplicationDataManager.HeaderFilename, ApplicationDataManager.MainFilename);
                     break;

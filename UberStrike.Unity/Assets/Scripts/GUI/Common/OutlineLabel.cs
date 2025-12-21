@@ -6,18 +6,18 @@ public static partial class GUITools
 
     public static EventType HoverButton(Rect position, GUIContent content, GUIStyle style)
     {
-        int controlID = GUIUtility.GetControlID(HoverButtonHash, FocusType.Native);
+        int controlID = GUIUtility.GetControlID(HoverButtonHash, FocusType.Passive);
         switch (Event.current.GetTypeForControl(controlID))
         {
-            case EventType.mouseDown:
+            case EventType.MouseDown:
                 if (position.Contains(Event.current.mousePosition))
                 {
                     GUIUtility.hotControl = controlID;
                     Event.current.Use();
-                    return EventType.mouseDown;
+                    return EventType.MouseDown;
                 }
                 break;
-            case EventType.mouseUp:
+            case EventType.MouseUp:
                 //if we are the hot control, then we grab the mouse up too
                 if (GUIUtility.hotControl == controlID)
                 {
@@ -25,7 +25,7 @@ public static partial class GUITools
                     if (position.Contains(Event.current.mousePosition))
                     {
                         Event.current.Use();
-                        return EventType.mouseUp;
+                        return EventType.MouseUp;
                     }
                 } //If we are not the hot control, check if somethings in the drag cache and see if we can accept it
                 else if (position.Contains(Event.current.mousePosition))
@@ -33,32 +33,32 @@ public static partial class GUITools
                     //The mouse was released over another hoverbutton, lets trigger the Drop action (the hotcontrol is cleared by the owner)
                     return EventType.DragExited;
                 }
-                return EventType.ignore;
-            case EventType.mouseDrag:
+                return EventType.Ignore;
+            case EventType.MouseDrag:
                 if (GUIUtility.hotControl == controlID)
                 {
                     Event.current.Use();
-                    return EventType.mouseDrag;
+                    return EventType.MouseDrag;
                 }
                 else
-                    return EventType.ignore;
-            case EventType.repaint:
+                    return EventType.Ignore;
+            case EventType.Repaint:
                 style.Draw(position, content, controlID);
                 if (position.Contains(Event.current.mousePosition))
-                    return EventType.mouseMove;
+                    return EventType.MouseMove;
                 else
-                    return EventType.repaint;
+                    return EventType.Repaint;
         }
         if (position.Contains(Event.current.mousePosition))
-            return EventType.mouseMove;
+            return EventType.MouseMove;
         else
-            return EventType.ignore;
+            return EventType.Ignore;
     }
 
     public static string PasswordField(Rect mPosition, string mPassword)
     {
         string strPasswordMask;
-        if (Event.current.type == EventType.repaint || Event.current.type == EventType.mouseDown)
+        if (Event.current.type == EventType.Repaint || Event.current.type == EventType.MouseDown)
         {
             strPasswordMask = "";
             for (int i = 0; i < mPassword.Length; i++)
@@ -82,7 +82,7 @@ public static partial class GUITools
     public static string PasswordField(string mPassword)
     {
         string strPasswordMask;
-        if (Event.current.type == EventType.repaint || Event.current.type == EventType.mouseDown)
+        if (Event.current.type == EventType.Repaint || Event.current.type == EventType.MouseDown)
         {
             strPasswordMask = "";
             for (int i = 0; i < mPassword.Length; i++)
