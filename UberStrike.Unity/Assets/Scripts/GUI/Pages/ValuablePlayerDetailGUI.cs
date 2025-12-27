@@ -3,9 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UberStrike.Realtime.Common;
 using UnityEngine;
+using UnityEngine.Video;
 
 class ValuablePlayerDetailGUI
 {
+    private static VideoPlayer videoPlayer;
+    private static RenderTexture renderTexture;
+    
+    static ValuablePlayerDetailGUI()
+    {
+        // Initialize static VideoPlayer for badge videos
+        GameObject videoObject = new GameObject("BadgeVideoPlayer");
+        UnityEngine.Object.DontDestroyOnLoad(videoObject);
+        videoPlayer = videoObject.AddComponent<VideoPlayer>();
+        
+        // Create render texture for video output
+        renderTexture = new RenderTexture(180, 125, 0);
+        videoPlayer.targetTexture = renderTexture;
+        videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+        videoPlayer.playOnAwake = false;
+        videoPlayer.isLooping = true;
+    }
+
     public ValuablePlayerDetailGUI()
     {
         _types = new List<AchievementType>();
@@ -48,9 +67,9 @@ class ValuablePlayerDetailGUI
     #region Private
     private void DrawPlayerBadge(Rect rect)
     {
-        if (_curBadge != null)
+        if (_curBadge != null && renderTexture != null)
         {
-            GUI.DrawTexture(rect, _curBadge);
+            GUI.DrawTexture(rect, renderTexture);
         }
     }
 
@@ -98,13 +117,17 @@ class ValuablePlayerDetailGUI
 
     private void SetCurrentAchievementBadge(AchievementType type, int value)
     {
-        if (_curBadge != null)
+        if (_curBadge != null && videoPlayer != null)
         {
-            _curBadge.Stop();
+            videoPlayer.Stop();
         }
 
         _curBadge = UberstrikeIcons.GetAchievementBadge(type);
-        _curBadge.Play();
+        if (_curBadge != null && videoPlayer != null)
+        {
+            videoPlayer.clip = _curBadge;
+            videoPlayer.Play();
+        }
 
         _curBadgeTitle = UberstrikeIcons.GetAchievementTitle(type);
 
@@ -136,7 +159,7 @@ class ValuablePlayerDetailGUI
 
     private StatsSummary _curPlayerStats;
     private List<AchievementType> _types;
-    private MovieTexture _curBadge;
+    private VideoClip _curBadge;
     private string _curBadgeTitle;
     private string _curBadgeText;
     private int _curAchievementIndex = -1;

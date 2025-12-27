@@ -18,7 +18,10 @@ public class ProgressPopupDialog : GeneralPopupDialog
 
     protected override void DrawPopupWindow()
     {
-        GUI.Label(new Rect(17, 95, _size.x - 34, 32), Text, BlueStonez.label_interparkbold_11pt);
+        // Use safe style access with fallback
+        GUIStyle textStyle = BlueStonez.label_interparkbold_11pt ?? GUI.skin.label;
+        
+        GUI.Label(new Rect(17, 95, _size.x - 34, 32), Text, textStyle);
 
         if (_progress != null)
         {
@@ -34,10 +37,19 @@ public class ProgressPopupDialog : GeneralPopupDialog
     {
         GUI.BeginGroup(position);
         {
-            GUI.Label(new Rect(0, 0, position.width, 12), GUIContent.none, BlueStonez.progressbar_background);
+            // Store original color
+            Color originalColor = GUI.color;
+            
+            // Draw background with dark gray color
+            GUI.color = new Color(0.3f, 0.3f, 0.3f, 1f); // Dark background
+            GUI.Label(new Rect(0, 0, position.width, 12), GUIContent.none, BlueStonez.SafeProgressBarBackground);
+            
+            // Draw progress thumb with specified color
             GUI.color = barColor;
-            GUI.Label(new Rect(2, 2, (float)(position.width - 4) * Mathf.Clamp01(amount), 8), string.Empty, BlueStonez.progressbar_thumb);
-            GUI.color = Color.white;
+            GUI.Label(new Rect(2, 2, (float)(position.width - 4) * Mathf.Clamp01(amount), 8), string.Empty, BlueStonez.SafeProgressBarThumb);
+            
+            // Restore original color
+            GUI.color = originalColor;
         }
         GUI.EndGroup();
     }

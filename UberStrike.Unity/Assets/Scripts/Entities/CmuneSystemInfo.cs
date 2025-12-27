@@ -86,7 +86,7 @@ public class CmuneSystemInfo
         AbsoluteURL = Application.absoluteURL;
         DataPath = Application.dataPath;
         BackgroundLoadingPriority = Application.backgroundLoadingPriority.ToString();
-        SrcValue = Application.srcValue;
+        SrcValue = Application.absoluteURL;
         SystemLanguage = Application.systemLanguage.ToString();
         TargetFrameRate = Application.targetFrameRate.ToString("N0");
         UnityVersion = Application.unityVersion;
@@ -94,12 +94,12 @@ public class CmuneSystemInfo
         // Unity Physics Info
         Gravity = Physics.gravity.ToString();
         BounceThreshold = Physics.bounceThreshold.ToString("N2");
-        MaxAngularVelocity = Physics.maxAngularVelocity.ToString("N2");
-        MinPenetrationForPenalty = Physics.minPenetrationForPenalty.ToString("N2");
-        PenetrationPenaltyForce = Physics.penetrationPenaltyForce.ToString("N2");
-        SleepAngularVelocity = Physics.sleepAngularVelocity.ToString("N2");
-        SleepVelocity = Physics.sleepVelocity.ToString("N2");
-        SolverIterationCount = Physics.solverIterationCount.ToString("N2");
+        MaxAngularVelocity = "Per-Rigidbody Setting"; // Physics.maxAngularVelocity is obsolete
+        MinPenetrationForPenalty = Physics.defaultContactOffset.ToString("N2");
+        PenetrationPenaltyForce = "N/A (Obsolete)"; // penetrationPenaltyForce has no effect
+        SleepAngularVelocity = "Use sleepThreshold (energy-based)"; // sleepAngularVelocity is obsolete
+        SleepVelocity = "Use sleepThreshold (energy-based)"; // sleepVelocity is obsolete
+        SolverIterationCount = Physics.defaultSolverIterations.ToString("N2");
 
         // Unity Rendering Info
         CurrentResolution = "X " + Screen.width.ToString() + ", Y " + Screen.height.ToString() + ", Refresh " + Screen.currentResolution.refreshRate.ToString("N0") + "Hz";
@@ -113,7 +113,7 @@ public class CmuneSystemInfo
         // Unity Quality Settings Info
         CurrentQualityLevel = QualitySettings.GetQualityLevel().ToString();
         AnisotropicFiltering = QualitySettings.anisotropicFiltering.ToString();
-        MasterTextureLimit = QualitySettings.masterTextureLimit.ToString();
+        MasterTextureLimit = QualitySettings.globalTextureMipmapLimit.ToString();
         MaxQueuedFrames = QualitySettings.maxQueuedFrames.ToString();
         PixelLightCount = QualitySettings.pixelLightCount.ToString();
         ShadowCascades = QualitySettings.shadowCascades.ToString();

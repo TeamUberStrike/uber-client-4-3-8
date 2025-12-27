@@ -12,7 +12,7 @@ public class LocalCharacterState : ICharacterState
     Vector3 lastPosition;
     int sendCounter = 0;
 
-    public LocalCharacterState(CharacterInfo info, FpsGameMode game)
+    public LocalCharacterState(UberStrike.Realtime.Common.CharacterInfo info, FpsGameMode game)
     {
         _myInfo = info;
 
@@ -25,7 +25,7 @@ public class LocalCharacterState : ICharacterState
     /// <summary>
     /// only these values will synced from server to client
     /// </summary>
-    private const int PlayerSyncMask = CharacterInfo.FieldTag.Armor | CharacterInfo.FieldTag.Health | CharacterInfo.FieldTag.Stats | CharacterInfo.FieldTag.TeamID | CharacterInfo.FieldTag.ReadyForGame;
+    private const int PlayerSyncMask = UberStrike.Realtime.Common.CharacterInfo.FieldTag.Armor | UberStrike.Realtime.Common.CharacterInfo.FieldTag.Health | UberStrike.Realtime.Common.CharacterInfo.FieldTag.Stats | UberStrike.Realtime.Common.CharacterInfo.FieldTag.TeamID | UberStrike.Realtime.Common.CharacterInfo.FieldTag.ReadyForGame;
 
     public void RecieveDeltaUpdate(SyncObject data)
     {
@@ -88,7 +88,7 @@ public class LocalCharacterState : ICharacterState
 
     #region Properties
 
-    public CharacterInfo Info { get { return _myInfo; } }
+    public UberStrike.Realtime.Common.CharacterInfo Info { get { return _myInfo; } }
 
     public Vector3 LastPosition { get { return _myInfo.Position; } }
 
@@ -96,7 +96,7 @@ public class LocalCharacterState : ICharacterState
 
     #region Fields
 
-    private CharacterInfo _myInfo;
+    private UberStrike.Realtime.Common.CharacterInfo _myInfo;
     private FpsGameMode _game;
 
     private event System.Action<SyncObject> _updateRecievedEvent;

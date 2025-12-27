@@ -22,7 +22,7 @@ public class WeaponCamera : MonoBehaviour
 
     public void SetCameraEnabled(bool enabled)
     {
-        camera.enabled = enabled;
+        GetComponent<Camera>().enabled = enabled;
     }
 
     void LateUpdate()
