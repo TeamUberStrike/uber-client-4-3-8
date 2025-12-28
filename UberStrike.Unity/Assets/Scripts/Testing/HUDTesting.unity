@@ -1,0 +1,1152 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+Scene:
+  m_ObjectHideFlags: 0
+  m_PVSData: 
+  m_QueryMode: 1
+  m_PVSObjectsArray: []
+  m_PVSPortalsArray: []
+  m_OcclusionBakeSettings:
+    viewCellSize: 1
+    bakeMode: 2
+    memoryUsage: 10485760
+--- !u!104 &2
+RenderSettings:
+  m_Fog: 0
+  m_FogColor: {r: .5, g: .5, b: .5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: .00999999978
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientLight: {r: .200000003, g: .200000003, b: .200000003, a: 1}
+  m_SkyboxMaterial: {fileID: 0}
+  m_HaloStrength: .5
+  m_FlareStrength: 1
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 0}
+  m_ObjectHideFlags: 0
+--- !u!127 &3
+GameManager:
+  m_ObjectHideFlags: 0
+--- !u!157 &4
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  m_LightProbes: {fileID: 0}
+  m_Lightmaps: []
+  m_LightmapsMode: 1
+  m_BakedColorSpace: 0
+  m_UseDualLightmapsInForward: 0
+  m_LightmapEditorSettings:
+    m_Resolution: 50
+    m_LastUsedResolution: 0
+    m_TextureWidth: 1024
+    m_TextureHeight: 1024
+    m_BounceBoost: 1
+    m_BounceIntensity: 1
+    m_SkyLightColor: {r: .860000014, g: .930000007, b: 1, a: 1}
+    m_SkyLightIntensity: 0
+    m_Quality: 0
+    m_Bounces: 1
+    m_FinalGatherRays: 1000
+    m_FinalGatherContrastThreshold: .0500000007
+    m_FinalGatherGradientThreshold: 0
+    m_FinalGatherInterpolationPoints: 15
+    m_AOAmount: 0
+    m_AOMaxDistance: .100000001
+    m_AOContrast: 1
+    m_LODSurfaceMappingDistance: 1
+    m_Padding: 0
+    m_TextureCompression: 0
+    m_LockAtlas: 0
+--- !u!1 &6
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 12}
+  - 20: {fileID: 17}
+  - 124: {fileID: 24}
+  - 92: {fileID: 22}
+  m_Layer: 0
+  m_Name: GUICamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &7
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 13}
+  - 114: {fileID: 27}
+  - 114: {fileID: 28}
+  - 114: {fileID: 29}
+  m_Layer: 0
+  m_Name: HudManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &8
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 14}
+  - 114: {fileID: 30}
+  m_Layer: 0
+  m_Name: MonoRoutine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &9
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 15}
+  - 114: {fileID: 31}
+  m_Layer: 0
+  m_Name: HudUnitTest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &10
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 16}
+  - 20: {fileID: 18}
+  - 92: {fileID: 23}
+  - 124: {fileID: 25}
+  - 81: {fileID: 19}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &12
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 6}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 13}
+--- !u!4 &13
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 7}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 12}
+  m_Father: {fileID: 0}
+--- !u!4 &14
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 8}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.826087, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!4 &15
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 9}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!4 &16
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 10}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!20 &17
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 6}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 4
+  m_BackGroundColor: {r: .192156866, g: .301960796, b: .474509805, a: .0196078438}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0
+  far clip plane: 100
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: 100
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 134217728
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_HDR: 0
+--- !u!20 &18
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 10}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: .0196078438}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0
+  far clip plane: 1
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_HDR: 0
+--- !u!81 &19
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 10}
+  m_Enabled: 1
+--- !u!92 &22
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 6}
+  m_Enabled: 1
+--- !u!92 &23
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 10}
+  m_Enabled: 1
+--- !u!124 &24
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 6}
+  m_Enabled: 1
+--- !u!124 &25
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 10}
+  m_Enabled: 1
+--- !u!114 &27
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 7}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e59e56a3392174d42b40dc1de8344369, type: 1}
+  m_Name: 
+  _ammoBlue: {fileID: 2800000, guid: 7336803f8f79c8240b8d23f209e1909b, type: 1}
+  _ammoRed: {fileID: 2800000, guid: 4a797a8d927eeff4587449bdfe9a9545, type: 1}
+  _whiteBlurTexture: {fileID: 2800000, guid: 51c1a9d2db3b4d440b8138ff1f5ea5d9, type: 1}
+  _xpBarEmptyTex: {fileID: 2800000, guid: 9d77884d3fa22cf4fb587c68caa3b5d8, type: 1}
+  _xpBarEmptyTexRed: {fileID: 2800000, guid: 9792bd915ca9da840a0387473323560f, type: 1}
+  _xpBarFullTex: {fileID: 2800000, guid: 0635730a5bd481a4eb90872d090ab315, type: 1}
+  _interparkBitmapFont: {fileID: 11400000, guid: fbccff25afebe4e428710f493bae9813,
+    type: 2}
+  _helveticaBitmapFont: {fileID: 11400000, guid: d0f46b9157d998f41b3bcf52c717c1c2,
+    type: 2}
+  _tabIconTexture: {fileID: 2800000, guid: 995ff283749e0444cad91b5a1a012e1c, type: 1}
+  _loadoutIconTexture: {fileID: 0}
+  _quickItemRechargingBlue: {fileID: 2800000, guid: 736051ec0224f224c90a96955c93d158,
+    type: 1}
+  _quickItemRechargingRed: {fileID: 2800000, guid: b6e34fcd948017a49bc8d95e9897b9aa,
+    type: 1}
+  _quickItemCoolDownBlue: {fileID: 2800000, guid: bb45996717dde2e4e93662bf7bcc1db5,
+    type: 1}
+  _quickItemCoolDownRed: {fileID: 2800000, guid: a43e63987fd2ea44bb80b1adb471a77f,
+    type: 1}
+  _quickItemBackgroundBlue: {fileID: 2800000, guid: 6fcba3732a1fcaf4eb8d1c1e95e76a53,
+    type: 1}
+  _quickItemBackgroundRed: {fileID: 2800000, guid: f7bc6a2bc959af741b2050d649d82497,
+    type: 1}
+  _armorQuickItemIcon: {fileID: 2800000, guid: a68821622005be643bdff8277ec7863a, type: 1}
+  _springQuickItemIcon: {fileID: 2800000, guid: 1b7e1cfafe62a834f87ca341ea8586bc,
+    type: 1}
+  _healthQuickItemIcon: {fileID: 2800000, guid: c0c9549be6c7f9d438799d11c93edb17,
+    type: 1}
+  _armorQuickItemIconRed: {fileID: 2800000, guid: 9f7b90a99f8258740a419bed946de72f,
+    type: 1}
+  _springQuickItemIconRed: {fileID: 2800000, guid: f1161addde5a36442b992bdef87b5195,
+    type: 1}
+  _healthQuickItemIconRed: {fileID: 2800000, guid: d6157070cb4a3f1439059798fa498e36,
+    type: 1}
+  _boxOverlayBlue: {fileID: 2800000, guid: e427c87aa835a7a43a793871f075195f, type: 1}
+  _boxOverlayRed: {fileID: 2800000, guid: da41eae299b74ba41a1efb84d701a4f1, type: 1}
+  _damageFeedbackTexture: {fileID: 2800000, guid: ac50c5cc1f33ce84f9f4a16f09a6824a,
+    type: 1}
+  _levelUp: {fileID: 0}
+  _machineGunReticleCircle: {fileID: 2800000, guid: 7208802ef9207504581c915a410510ef,
+    type: 1}
+  _machineGunReticleCross: {fileID: 2800000, guid: c0658957c68c299419e7b398ad0630c1,
+    type: 1}
+  _sniperRifleReticleTranslate: {fileID: 2800000, guid: 973520b414519f74aa2e7bbef4ea1e21,
+    type: 1}
+  _sniperRifleReticleScale: {fileID: 2800000, guid: 68557436cab2613448ec6a40102eb334,
+    type: 1}
+  _shotGunReticleInside: {fileID: 2800000, guid: 8945ea0c34f2cf846a24a3232d63d15e,
+    type: 1}
+  _shotGunReticleOutside: {fileID: 2800000, guid: 1b2c3f45ffa2b9d4e89c82299e40ea63,
+    type: 1}
+  _cannonReticleRotate: {fileID: 2800000, guid: 3f0a867244582ec4f8ff6abd4897e775,
+    type: 1}
+  _cannonReticleScale: {fileID: 2800000, guid: e2ae9fdf685dad44bb2109df09ecaf9d, type: 1}
+  _handGunReticleTranslate: {fileID: 2800000, guid: 36a8f1f5e5277a2429bfd05ddf87ace8,
+    type: 1}
+  _splatterReticleScale: {fileID: 2800000, guid: f3db8bb36dded1141ae6457041ee93a1,
+    type: 1}
+  _splatterReticleTranslate: {fileID: 2800000, guid: 133f8b7df43ac334ba446d55325015e2,
+    type: 1}
+  _launcherReticleScale: {fileID: 2800000, guid: b6ab72e7b163a224aa23d15fcc143987,
+    type: 1}
+  _launcherReticleTranslate: {fileID: 2800000, guid: a69c61be3fe094b499c9adc91ca59e86,
+    type: 1}
+  _meleeReticleTranslate: {fileID: 2800000, guid: 5dfc9e3d686617c40b39ce9e2504a751,
+    type: 1}
+  _reticleTextureSRZoom: {fileID: 2800000, guid: adb0fbffbf73f4f4eb4e055e65919f27,
+    type: 1}
+--- !u!114 &28
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 7}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf359edfb34442d45b4238d6fbe7b6e9, type: 1}
+  m_Name: 
+--- !u!114 &29
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 7}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 100e29f3697095a4fac744a413da8dde, type: 1}
+  m_Name: 
+  _meshTextObject: {fileID: 100000, guid: a966bdee9cbaf9d45ad19246a9264647, type: 2}
+  _quadMeshObject: {fileID: 100000, guid: 22a4d2c998d3a204284eb96b2fd234c4, type: 2}
+  _circleMeshObject: {fileID: 100000, guid: d7e7c8452a422124aa0f43b95fb71fd6, type: 2}
+  _guiCamera: {fileID: 17}
+--- !u!114 &30
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 8}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4303d34d4e1ce454fb39d05dc7096035, type: 1}
+  m_Name: 
+--- !u!114 &31
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 9}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d78bb5be1fda67e42b19133541b1b700, type: 1}
+  m_Name: 
+  skin: {fileID: 11400000, guid: c982d514b5c8c624b8993477e348a1d3, type: 2}
+  teamID: 0
+  enableMultiKill: 1
+  enableHpAp: 1
+  enableAmmo: 1
+  enableXpPtsBar: 1
+  enableEventStream: 1
+  enableTeamScoreAndClock: 1
+  enableHelpInfo: 1
+  enablePermanentStateMsg: 1
+  enableTemporaryWeapon: 1
+--- !u!196 &33
+NavMeshSettings:
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    agentRadius: .5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: .400000006
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    accuratePlacement: 0
+    minRegionArea: 2
+    widthInaccuracy: 16.666666
+    heightInaccuracy: 10
+  m_NavMesh: {fileID: 0}
+--- !u!1 &1082567902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 1082567903}
+  - 114: {fileID: 1082567906}
+  - 82: {fileID: 1082567905}
+  - 82: {fileID: 1082567904}
+  - 114: {fileID: 1082567907}
+  m_Layer: 0
+  m_Name: SfxManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1082567903
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1082567902}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!82 &1082567904
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1082567902}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!82 &1082567905
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1082567902}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!114 &1082567906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1082567902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44cbe0373bf81174fbb514d8e781fb92, type: 1}
+  m_Name: 
+  AllSounds:
+  - _name: EnvMediumSplash
+    ID: 200
+    Audio: {fileID: 8300000, guid: 1cc751dd0e24b064faa775a97230e81d, type: 1}
+  - _name: EnvBigSplash
+    ID: 201
+    Audio: {fileID: 8300000, guid: 5a69bd93077b1aa418e506740da58196, type: 1}
+  - _name: EnvImpactCement1
+    ID: 210
+    Audio: {fileID: 8300000, guid: f0e6955f43c82d140a1c2cc34352e553, type: 1}
+  - _name: EnvImpactCement2
+    ID: 211
+    Audio: {fileID: 8300000, guid: 9f9df48e93c48b84dbee5ca408aad488, type: 1}
+  - _name: EnvImpactCement3
+    ID: 212
+    Audio: {fileID: 8300000, guid: aee6cf67394621f4f882ce716ff4fa46, type: 1}
+  - _name: EnvImpactCement4
+    ID: 213
+    Audio: {fileID: 8300000, guid: a63da63e7c23a5c42a2dc0338219a55d, type: 1}
+  - _name: EnvImpactGlass1
+    ID: 220
+    Audio: {fileID: 8300000, guid: 8a8301f15286b4245a1e46217b82f2d1, type: 1}
+  - _name: EnvImpactGlass2
+    ID: 221
+    Audio: {fileID: 8300000, guid: 9fa9ce7056f2a444b9ec2da030069c73, type: 1}
+  - _name: EnvImpactGlass3
+    ID: 222
+    Audio: {fileID: 8300000, guid: 664b2b86a9ca9804096f7411c2566003, type: 1}
+  - _name: EnvImpactGlass4
+    ID: 223
+    Audio: {fileID: 8300000, guid: bb6f59dfda133bd4a906933d6761d58d, type: 1}
+  - _name: EnvImpactGlass5
+    ID: 224
+    Audio: {fileID: 8300000, guid: e43df3a971c41de4d87eac381a24f411, type: 1}
+  - _name: EnvImpactGrass1
+    ID: 230
+    Audio: {fileID: 8300000, guid: 2bbd7652a9c606b49883973f60b35b9c, type: 1}
+  - _name: EnvImpactGrass2
+    ID: 231
+    Audio: {fileID: 8300000, guid: 2de6355109a907c47bb13298aee50617, type: 1}
+  - _name: EnvImpactGrass3
+    ID: 232
+    Audio: {fileID: 8300000, guid: 312cef3da847ced48bb5b05d2e3f294a, type: 1}
+  - _name: EnvImpactGrass4
+    ID: 233
+    Audio: {fileID: 8300000, guid: 9eaa6dd19ab2a534ab16cd38f5edf4e0, type: 1}
+  - _name: EnvImpactMetal1
+    ID: 240
+    Audio: {fileID: 8300000, guid: b871a53b052fc424980f6ce2c7c8fd6a, type: 1}
+  - _name: EnvImpactMetal2
+    ID: 241
+    Audio: {fileID: 8300000, guid: 1253d75fe4f3a0348ae39bed97d54eed, type: 1}
+  - _name: EnvImpactMetal3
+    ID: 242
+    Audio: {fileID: 8300000, guid: 9e02a18d34456634abf9110db05cfb29, type: 1}
+  - _name: EnvImpactMetal4
+    ID: 243
+    Audio: {fileID: 8300000, guid: d11b74816fe577c47a2880f3eb77734f, type: 1}
+  - _name: EnvImpactMetal5
+    ID: 244
+    Audio: {fileID: 8300000, guid: 5f6b0349cad19f04bbd550f92725c28d, type: 1}
+  - _name: EnvSwordImpactMetal1
+    ID: 245
+    Audio: {fileID: 8300000, guid: 86f59c84ed3c68c46a4b71d51cf7d10d, type: 1}
+  - _name: EnvSwordImpactMetal2
+    ID: 246
+    Audio: {fileID: 8300000, guid: 72178c5c30e3aa549acfea2516b06f41, type: 1}
+  - _name: EnvSwordImpactMetal3
+    ID: 247
+    Audio: {fileID: 8300000, guid: 7e7661cbb4be93249bc4cf0e2e91b234, type: 1}
+  - _name: EnvImpactSand1
+    ID: 250
+    Audio: {fileID: 8300000, guid: e7696e0bed879a543a531787184b55b6, type: 1}
+  - _name: EnvImpactSand2
+    ID: 251
+    Audio: {fileID: 8300000, guid: 197a22a7fdc753141aade6096d3cd22f, type: 1}
+  - _name: EnvImpactSand3
+    ID: 252
+    Audio: {fileID: 8300000, guid: 866a945b9864bdc4c81f2f54904e190a, type: 1}
+  - _name: EnvImpactSand4
+    ID: 253
+    Audio: {fileID: 8300000, guid: c640cb66817f7b540b767a1fbe7028c4, type: 1}
+  - _name: EnvImpactSand5
+    ID: 254
+    Audio: {fileID: 8300000, guid: ef088815e4ac9264a9acc669a607945f, type: 1}
+  - _name: EnvImpactStone1
+    ID: 260
+    Audio: {fileID: 8300000, guid: 0f5efe4e9ba94474eb81e0b0ade6a04b, type: 1}
+  - _name: EnvImpactStone2
+    ID: 261
+    Audio: {fileID: 8300000, guid: f9f9eb73e87962c498c9cb70a133724f, type: 1}
+  - _name: EnvImpactStone3
+    ID: 262
+    Audio: {fileID: 8300000, guid: 32bf22e3258e0ab40b6b555eb0aa9e96, type: 1}
+  - _name: EnvImpactStone4
+    ID: 263
+    Audio: {fileID: 8300000, guid: 0785484604abd6e41ab4f0a5c035ce2d, type: 1}
+  - _name: EnvImpactStone5
+    ID: 264
+    Audio: {fileID: 8300000, guid: a1c9d3b8efa8bba429ed0eafeb15669d, type: 1}
+  - _name: EnvImpactWater1
+    ID: 270
+    Audio: {fileID: 8300000, guid: 38a200e33415eba4dbc23dc5d994b64d, type: 1}
+  - _name: EnvImpactWater2
+    ID: 271
+    Audio: {fileID: 8300000, guid: 7ad7d5ab88311a549add2f6b00a8f5d0, type: 1}
+  - _name: EnvImpactWater3
+    ID: 272
+    Audio: {fileID: 8300000, guid: 7cced69614439fc4e8835b5e88c31689, type: 1}
+  - _name: EnvImpactWater4
+    ID: 273
+    Audio: {fileID: 8300000, guid: 6b9f12b4ce7cc44488f8c1f358c696eb, type: 1}
+  - _name: EnvImpactWater5
+    ID: 274
+    Audio: {fileID: 8300000, guid: 4ae412d858399bf439052520d396b32c, type: 1}
+  - _name: EnvImpactWood1
+    ID: 280
+    Audio: {fileID: 8300000, guid: 093b163ac64c92342bfa1dc51f27e844, type: 1}
+  - _name: EnvImpactWood2
+    ID: 281
+    Audio: {fileID: 8300000, guid: 58c3be2713753874ebadedb923eba978, type: 1}
+  - _name: EnvImpactWood3
+    ID: 282
+    Audio: {fileID: 8300000, guid: 104031bf5e47cc845aaed3920b61a2ce, type: 1}
+  - _name: EnvImpactWood4
+    ID: 283
+    Audio: {fileID: 8300000, guid: b2885d4328be1da46bd462e55d00c38a, type: 1}
+  - _name: EnvImpactWood5
+    ID: 284
+    Audio: {fileID: 8300000, guid: f5ec214c34c459741ab90317f1e28636, type: 1}
+  - _name: GameGetCredits
+    ID: 300
+    Audio: {fileID: 8300000, guid: 98dcec3627b3c2249957502c8d9d0e6b, type: 1}
+  - _name: GameGetPoints
+    ID: 301
+    Audio: {fileID: 8300000, guid: f987281b4a5e5814ba599c7113808fa6, type: 1}
+  - _name: GameGetXP
+    ID: 302
+    Audio: {fileID: 8300000, guid: 758e0c71b7650724897c88e5a50748a9, type: 1}
+  - _name: GameLevelUp
+    ID: 303
+    Audio: {fileID: 8300000, guid: 6a186eb9d491dbe489bc2dda51ba7d59, type: 1}
+  - _name: GameMatchEndingCountdown1
+    ID: 304
+    Audio: {fileID: 8300000, guid: fc5011deb089309429e9355bab54bd44, type: 1}
+  - _name: GameMatchEndingCountdown2
+    ID: 305
+    Audio: {fileID: 8300000, guid: 4e8e1556ab3e4d54894355f3184ce4a5, type: 1}
+  - _name: GameMatchEndingCountdown3
+    ID: 306
+    Audio: {fileID: 8300000, guid: c0919a44e7d8704448be8028f130d408, type: 1}
+  - _name: GameMatchEndingCountdown4
+    ID: 307
+    Audio: {fileID: 8300000, guid: 9f1e3721ceba33e4199f7e97283bf6b9, type: 1}
+  - _name: GameMatchEndingCountdown5
+    ID: 308
+    Audio: {fileID: 8300000, guid: f4dca9a5522d27248841d97154e15ac9, type: 1}
+  - _name: GameTakenLead
+    ID: 309
+    Audio: {fileID: 8300000, guid: 179bf2f5fe0010a49843a886003c1003, type: 1}
+  - _name: GameTiedLead
+    ID: 310
+    Audio: {fileID: 8300000, guid: 135bacf43c28f104891406a9297cb75a, type: 1}
+  - _name: GameLostLead
+    ID: 311
+    Audio: {fileID: 8300000, guid: 1cc897c29f9f1be48a060fb6f2f90c2b, type: 1}
+  - _name: GameBlueWins
+    ID: 312
+    Audio: {fileID: 8300000, guid: 240835fb84026ca4296e91ad1feaf4a7, type: 1}
+  - _name: GameRedWins
+    ID: 313
+    Audio: {fileID: 8300000, guid: de07c10c079ecb24b8cc8e78c08de2c6, type: 1}
+  - _name: GameDraw
+    ID: 314
+    Audio: {fileID: 8300000, guid: 8c6a3ea3c49d3d2468ba969556d46cc2, type: 1}
+  - _name: GameGameOver
+    ID: 315
+    Audio: {fileID: 8300000, guid: 0a3997f84e0b60e46882fd30b181b4e4, type: 1}
+  - _name: GameYouWin
+    ID: 316
+    Audio: {fileID: 8300000, guid: 0a15e560a9b92384da6a0d415da5e382, type: 1}
+  - _name: GameCountdownTonal1
+    ID: 317
+    Audio: {fileID: 8300000, guid: 8431fc14811f9504abe9693752e838de, type: 1}
+  - _name: GameCountdownTonal2
+    ID: 318
+    Audio: {fileID: 8300000, guid: 8c502eb2c4c1a8742b19e9818599265d, type: 1}
+  - _name: GameFight
+    ID: 319
+    Audio: {fileID: 8300000, guid: 7d386e623ed0a264887f81406c1d5fd5, type: 1}
+  - _name: GameFocusEnemy
+    ID: 320
+    Audio: {fileID: 8300000, guid: e67a853bffb22ca43b32e207f3fb863e, type: 1}
+  - _name: PcFootStepGrass1
+    ID: 400
+    Audio: {fileID: 8300000, guid: ab6f89d47966c8144aea8f94ecce9681, type: 1}
+  - _name: PcFootStepGrass2
+    ID: 401
+    Audio: {fileID: 8300000, guid: ee47eaef6229ce746b27c76b77fa248b, type: 1}
+  - _name: PcFootStepGrass3
+    ID: 402
+    Audio: {fileID: 8300000, guid: 666511eb1b3c80745931e74cb74710fc, type: 1}
+  - _name: PcFootStepGrass4
+    ID: 403
+    Audio: {fileID: 8300000, guid: 525ded91850ae48478155f298e8bce4b, type: 1}
+  - _name: PcFootStepDirt1
+    ID: 404
+    Audio: {fileID: 8300000, guid: f09c631020a49dc44b6b00dfccf026b6, type: 1}
+  - _name: PcFootStepDirt2
+    ID: 405
+    Audio: {fileID: 8300000, guid: e741ee1bd3ba34044aaf81104b49ff5c, type: 1}
+  - _name: PcFootStepDirt3
+    ID: 406
+    Audio: {fileID: 8300000, guid: a4c3904335ca59042aefbd0c4361a72a, type: 1}
+  - _name: PcFootStepDirt4
+    ID: 407
+    Audio: {fileID: 8300000, guid: 07e6e7edf5c425e439d330a06a9927a2, type: 1}
+  - _name: PcFootStepRock1
+    ID: 408
+    Audio: {fileID: 8300000, guid: b6608734f62fb7a49b57e92bc623705b, type: 1}
+  - _name: PcFootStepRock2
+    ID: 409
+    Audio: {fileID: 8300000, guid: d7413074518290749b3a1384ac4d27d4, type: 1}
+  - _name: PcFootStepRock3
+    ID: 410
+    Audio: {fileID: 8300000, guid: b6cec1fd48b816c44b646ba7a7a2c5f8, type: 1}
+  - _name: PcFootStepRock4
+    ID: 411
+    Audio: {fileID: 8300000, guid: d0279f34a426cee4ea0eaff01ff07ae4, type: 1}
+  - _name: PcFootStepSand1
+    ID: 412
+    Audio: {fileID: 8300000, guid: 22e584b5a16575c45b7ba0432d7f1267, type: 1}
+  - _name: PcFootStepSand2
+    ID: 413
+    Audio: {fileID: 8300000, guid: 9cbc897619e163244aa4da268a8d3bf7, type: 1}
+  - _name: PcFootStepSand3
+    ID: 414
+    Audio: {fileID: 8300000, guid: 8eb093711dfdb0d4d9604481279b27e1, type: 1}
+  - _name: PcFootStepSand4
+    ID: 415
+    Audio: {fileID: 8300000, guid: 29b958688ac5f28429dc633fc730364a, type: 1}
+  - _name: PcFootStepWood1
+    ID: 416
+    Audio: {fileID: 8300000, guid: af004171404d1504991dcd7498ed195b, type: 1}
+  - _name: PcFootStepWood2
+    ID: 417
+    Audio: {fileID: 8300000, guid: 2fb4d763438d3bd4bb99e7023f0a1358, type: 1}
+  - _name: PcFootStepWood3
+    ID: 418
+    Audio: {fileID: 8300000, guid: 3a9b8e40cc3af824db88d314a4b454c7, type: 1}
+  - _name: PcFootStepWood4
+    ID: 419
+    Audio: {fileID: 8300000, guid: 4eeb0c7161ca9c446b141f7b02f3f0c3, type: 1}
+  - _name: PcFootStepMetal1
+    ID: 420
+    Audio: {fileID: 8300000, guid: 7091ba06dcaefcf44a865938095a1570, type: 1}
+  - _name: PcFootStepMetal2
+    ID: 421
+    Audio: {fileID: 8300000, guid: 0cc7b2728ca84e94f96cb3cc593a6d2b, type: 1}
+  - _name: PcFootStepMetal3
+    ID: 422
+    Audio: {fileID: 8300000, guid: bb4bc12bd7d06534b9d0ab7e769dea9f, type: 1}
+  - _name: PcFootStepMetal4
+    ID: 423
+    Audio: {fileID: 8300000, guid: 65f4f0fd4ab1fd244a0e6f489da1b86a, type: 1}
+  - _name: PcFootStepWater1
+    ID: 424
+    Audio: {fileID: 8300000, guid: 345df6381e25f9a42800cf7528f5f6f6, type: 1}
+  - _name: PcFootStepWater2
+    ID: 425
+    Audio: {fileID: 8300000, guid: a9fcf67d9f9e4864fa18c6945b81ee2a, type: 1}
+  - _name: PcFootStepWater3
+    ID: 426
+    Audio: {fileID: 8300000, guid: 61b148e0b11a82d499c79f4f1126f3b9, type: 1}
+  - _name: PcGotHeadshotKill
+    ID: 427
+    Audio: {fileID: 8300000, guid: cdb0f60aa66de5d44b8a186bab52fb80, type: 1}
+  - _name: PcGotNutshotKill
+    ID: 428
+    Audio: {fileID: 8300000, guid: b0e6f15ec16dfc5499c7b532488e1f7b, type: 1}
+  - _name: PcKilledBySplatbat
+    ID: 429
+    Audio: {fileID: 8300000, guid: b481053709c5a484799b75e5ca28c56b, type: 1}
+  - _name: PcLocalPlayerHitArmorRemaining
+    ID: 430
+    Audio: {fileID: 8300000, guid: 92b0a20c82206604991a176c4be12878, type: 1}
+  - _name: PcLocalPlayerHitNoArmor
+    ID: 431
+    Audio: {fileID: 8300000, guid: d0adfb4bda98fc44b938a82210b3d774, type: 1}
+  - _name: PcLocalPlayerHitNoArmorLowHealth
+    ID: 432
+    Audio: {fileID: 8300000, guid: 459d4ffeebba1534da80c1f298304734, type: 1}
+  - _name: PcNormalKill1
+    ID: 433
+    Audio: {fileID: 8300000, guid: a01ccb2993e339d43a7704e040d59945, type: 1}
+  - _name: PcNormalKill2
+    ID: 434
+    Audio: {fileID: 8300000, guid: 3319f273e68b4494d92d9c91d1e28008, type: 1}
+  - _name: PcNormalKill3
+    ID: 435
+    Audio: {fileID: 8300000, guid: fab8d3d4d4dd73c45af3ac954315dd26, type: 1}
+  - _name: PcSwimAboveWater1
+    ID: 440
+    Audio: {fileID: 8300000, guid: 4feb53aa77b8bde4e8f96f4cea58c181, type: 1}
+  - _name: PcSwimAboveWater2
+    ID: 441
+    Audio: {fileID: 8300000, guid: d57437aaa7b65b54d84578caff7d933e, type: 1}
+  - _name: PcSwimAboveWater3
+    ID: 442
+    Audio: {fileID: 8300000, guid: 63ac98430271f4747812f97c91ce0ee4, type: 1}
+  - _name: PcSwimAboveWater4
+    ID: 443
+    Audio: {fileID: 8300000, guid: 5f902b9f60875ff4699d92dceb7bb106, type: 1}
+  - _name: PcSwimUnderWater
+    ID: 444
+    Audio: {fileID: 8300000, guid: 6e2391e641430b0429b7ba9591479c37, type: 1}
+  - _name: PcQuickItemRecharge
+    ID: 445
+    Audio: {fileID: 8300000, guid: b638e3e43244abb48a5285473ef6cb5e, type: 1}
+  - _name: PcLandingGrunt
+    ID: 446
+    Audio: {fileID: 8300000, guid: 0091bdbc8f901bd42b08b53853fccfb4, type: 1}
+  - _name: PcFootStepSnow1
+    ID: 450
+    Audio: {fileID: 8300000, guid: f78f0963c66e1f840bc8c48f1b340eb4, type: 1}
+  - _name: PcFootStepSnow2
+    ID: 451
+    Audio: {fileID: 8300000, guid: b3ff4cc61af643843b1a737dccd05364, type: 1}
+  - _name: PcFootStepSnow3
+    ID: 452
+    Audio: {fileID: 8300000, guid: 1a6bd17737f8d7841b1b88c931860545, type: 1}
+  - _name: PcFootStepSnow4
+    ID: 453
+    Audio: {fileID: 8300000, guid: d61727edbf1f21b4490f95bd5946d93a, type: 1}
+  - _name: PropsSmallHealth
+    ID: 454
+    Audio: {fileID: 8300000, guid: 3c592eb0b7474e04ebb3875487e09aeb, type: 1}
+  - _name: PropsMediumHealth
+    ID: 455
+    Audio: {fileID: 8300000, guid: c22d82533dae05d499383c17350e0dd3, type: 1}
+  - _name: PropsBigHealth
+    ID: 456
+    Audio: {fileID: 8300000, guid: 55baa41dbe211ab4aa02dc4049ac38b9, type: 1}
+  - _name: PropsMegaHealth
+    ID: 457
+    Audio: {fileID: 8300000, guid: b2c3018355ccb5046a8bdefb730391dd, type: 1}
+  - _name: PropsAmmoPickup
+    ID: 458
+    Audio: {fileID: 8300000, guid: 85502fc7f9b81bf44a9eb1d175e66a56, type: 1}
+  - _name: PropsArmorShard
+    ID: 459
+    Audio: {fileID: 8300000, guid: c358b8bc7eab29949907d7c533542f5c, type: 1}
+  - _name: PropsGoldArmor
+    ID: 460
+    Audio: {fileID: 8300000, guid: 8a083a15571c36448b9bf851eda3d11b, type: 1}
+  - _name: PropsJumpPad
+    ID: 461
+    Audio: {fileID: 8300000, guid: 2c78566319fd6204b9780e23401b18b7, type: 1}
+  - _name: PropsSilverArmor
+    ID: 462
+    Audio: {fileID: 8300000, guid: e9f6273b1f7869644bea59687320dc46, type: 1}
+  - _name: PropsWeaponPickup
+    ID: 463
+    Audio: {fileID: 8300000, guid: fee4f33e74cee3c448aedd255e0823e4, type: 1}
+  - _name: PropsJumpPad2D
+    ID: 464
+    Audio: {fileID: 8300000, guid: 53fce119d97cd8044bcbe6b8915a7962, type: 1}
+  - _name: WeaponOutOfAmmoClick
+    ID: 465
+    Audio: {fileID: 8300000, guid: a8efc82ddc56e744cb829472b9900791, type: 1}
+  - _name: WeaponSniperZoomIn
+    ID: 466
+    Audio: {fileID: 8300000, guid: 2d67fb59f30019a4283aca85d6279ac0, type: 1}
+  - _name: WeaponSniperZoomOut
+    ID: 467
+    Audio: {fileID: 8300000, guid: d268215816a2f0843bc2ad9ea7eece37, type: 1}
+  - _name: WeaponUnderwaterExplosion1
+    ID: 630
+    Audio: {fileID: 8300000, guid: bc8cc83cf8ee0fc4e99b9906d72b164a, type: 1}
+  - _name: WeaponUnderwaterExplosion2
+    ID: 631
+    Audio: {fileID: 8300000, guid: dfa73521be2c0db439d560f6db1b2546, type: 1}
+  - _name: WeaponWeaponSwitch
+    ID: 632
+    Audio: {fileID: 8300000, guid: 7bac30913158ae244af4c314e5ef7554, type: 1}
+  - _name: WeaponSniperScopeIn
+    ID: 633
+    Audio: {fileID: 8300000, guid: 92b7c7cd2d3f2ba42bf14ad58faa9126, type: 1}
+  - _name: WeaponSniperScopeOut
+    ID: 634
+    Audio: {fileID: 8300000, guid: d737530bc3a7cb24598673e738049738, type: 1}
+  - _name: WeaponLauncherBounce1
+    ID: 635
+    Audio: {fileID: 8300000, guid: ef44b395eb12a5b4f8e50b44cf6f70be, type: 1}
+  - _name: WeaponLauncherBounce2
+    ID: 636
+    Audio: {fileID: 8300000, guid: b0af436bac4a52243a6c759111c76b18, type: 1}
+  - _name: HUDAmmoPickup
+    ID: 700
+    Audio: {fileID: 8300000, guid: 4bf1c4fa15aa0cb4faf43720450599c6, type: 1}
+  - _name: HUDArmorShard
+    ID: 701
+    Audio: {fileID: 8300000, guid: 3f4aef3be619cce40abc63fee3d71f69, type: 1}
+  - _name: HUDBigHealth
+    ID: 702
+    Audio: {fileID: 8300000, guid: d08947dc1a4fbfb4699f30209edcfa16, type: 1}
+  - _name: HUDGoldArmor
+    ID: 703
+    Audio: {fileID: 8300000, guid: 08175af7616ff754aae698f02c561410, type: 1}
+  - _name: HUDMediumHealth
+    ID: 704
+    Audio: {fileID: 8300000, guid: 19af27c0d958a314fa7ff0943c7a1fea, type: 1}
+  - _name: HUDMegaHealth
+    ID: 705
+    Audio: {fileID: 8300000, guid: c5931310f124d684aaed25c23ef5969a, type: 1}
+  - _name: HUDSilverArmor
+    ID: 706
+    Audio: {fileID: 8300000, guid: 8eddc252ccfb7b447b224086cd3fb808, type: 1}
+  - _name: HUDSmallHealth
+    ID: 707
+    Audio: {fileID: 8300000, guid: 53df7fb456be4d143988f7e36d60759a, type: 1}
+  - _name: HUDWeaponPickup
+    ID: 708
+    Audio: {fileID: 8300000, guid: 35ca2eb079a47c942aaa65e33837c5f1, type: 1}
+  - _name: UIClickReady
+    ID: 1000
+    Audio: {fileID: 8300000, guid: 56c1ce8a6c84e0d41ae240332b9e3156, type: 1}
+  - _name: UIClickUnready
+    ID: 1001
+    Audio: {fileID: 8300000, guid: 8696b50bbd3efa34eb48446a122101ef, type: 1}
+  - _name: UIClosePanel
+    ID: 1002
+    Audio: {fileID: 8300000, guid: 6d3df23b607040e4ea3339b37a3b1f41, type: 1}
+  - _name: UICloseLoadout
+    ID: 1003
+    Audio: {fileID: 8300000, guid: 7b96d999eb9bbba4991df08b25a54f56, type: 1}
+  - _name: UIEndOfRound
+    ID: 1004
+    Audio: {fileID: 8300000, guid: 79149b8ec90a7f04394de01c4b2dcfe8, type: 1}
+  - _name: UIEquipGear
+    ID: 1005
+    Audio: {fileID: 8300000, guid: b21c4c823bd96214f94bebf07db21f0c, type: 1}
+  - _name: UIEquipItem
+    ID: 1006
+    Audio: {fileID: 8300000, guid: d5807dc9b9769934488e96de64d56415, type: 1}
+  - _name: UIEquipWeapon
+    ID: 1007
+    Audio: {fileID: 8300000, guid: 9b8eb945a27bfa049a90009c5f58c068, type: 1}
+  - _name: UIButtonClick
+    ID: 1008
+    Audio: {fileID: 8300000, guid: 01b57e065c499e34a8052319ef9d1c2f, type: 1}
+  - _name: UIRibbonClick
+    ID: 1010
+    Audio: {fileID: 8300000, guid: a9424f28f5138d24f8b11781a0dc0bab, type: 1}
+  - _name: UIJoinGame
+    ID: 1011
+    Audio: {fileID: 8300000, guid: 91d37f505492bd24bbaafde3f0018d7e, type: 1}
+  - _name: UIJoinServer
+    ID: 1012
+    Audio: {fileID: 8300000, guid: 7a56c2cfdc0633c49b9932ef836745dc, type: 1}
+  - _name: UIOpenLoadout
+    ID: 1013
+    Audio: {fileID: 8300000, guid: ba6152ec7a046854bbf6041975e36a69, type: 1}
+  - _name: UIOpenPanel
+    ID: 1014
+    Audio: {fileID: 8300000, guid: 89b52d64f9c2eb74491be5b67e0f2ec7, type: 1}
+  - _name: UIGetCredits
+    ID: 1015
+    Audio: {fileID: 8300000, guid: f2160c578c2e00d41a5df849a5e7fbaf, type: 1}
+  - _name: UINewMessage
+    ID: 1016
+    Audio: {fileID: 8300000, guid: 68e9f646327b4ca4a960faebcced20e2, type: 1}
+  - _name: UINewRequest
+    ID: 1017
+    Audio: {fileID: 8300000, guid: 9cf7b96445486044788a1b9b4aca9b26, type: 1}
+  - _name: UILeaveServer
+    ID: 1018
+    Audio: {fileID: 8300000, guid: f9f14458125560b45bc143fbe6ccae2c, type: 1}
+  - _name: UICreateGame
+    ID: 1019
+    Audio: {fileID: 8300000, guid: 1d5ee41dd0f73f741a3f618f0b223339, type: 1}
+  - _name: UIObjective
+    ID: 1020
+    Audio: {fileID: 8300000, guid: 377064e4de3a3b94aa90e9f8364334b7, type: 1}
+  - _name: UISubObjective
+    ID: 1021
+    Audio: {fileID: 8300000, guid: a7b93a85a3b56d64aa10f11d933d72da, type: 1}
+  - _name: UIObjectiveTick
+    ID: 1022
+    Audio: {fileID: 8300000, guid: ab0b080fd6b10ab4198691968b12f75c, type: 1}
+  - _name: UIWasdPressed
+    ID: 1023
+    Audio: {fileID: 8300000, guid: 49f36d9d54d0d6440a41a9abe6b0dcef, type: 1}
+  - _name: PropsTargetPopup
+    ID: 1030
+    Audio: {fileID: 8300000, guid: cdda8850e9325bf47aa1aad862129282, type: 1}
+  - _name: PropsTargetDamage
+    ID: 1031
+    Audio: {fileID: 8300000, guid: 1d92d88bed49c904d9625832fe7f3d53, type: 1}
+  - _name: UIKillLeft1
+    ID: 1100
+    Audio: {fileID: 8300000, guid: fbba48cbe901fff498fb91e94b2f74f9, type: 1}
+  - _name: UIKillLeft2
+    ID: 1101
+    Audio: {fileID: 8300000, guid: 6171ae6f3d06c1e45b5bdade003c17a1, type: 1}
+  - _name: UIKillLeft3
+    ID: 1102
+    Audio: {fileID: 8300000, guid: 25694d607ad12684e836e614c9351a18, type: 1}
+  - _name: UIKillLeft4
+    ID: 1103
+    Audio: {fileID: 8300000, guid: 9383927d46830774c9981e9563fbe156, type: 1}
+  - _name: UIKillLeft5
+    ID: 1104
+    Audio: {fileID: 8300000, guid: 42831a0e69f68334f81c58761d2d39b3, type: 1}
+  - _name: UIDoubleKill
+    ID: 1105
+    Audio: {fileID: 8300000, guid: 4fcb9cc6ebfee9646ac2c319ed3f4207, type: 1}
+  - _name: UITripleKill
+    ID: 1106
+    Audio: {fileID: 8300000, guid: 955d3d44b8c3ad44eb18c5984ed51060, type: 1}
+  - _name: UIQuadKill
+    ID: 1107
+    Audio: {fileID: 8300000, guid: a479e208c0786334d9daba72e2fa9405, type: 1}
+  - _name: UIMegaKill
+    ID: 1108
+    Audio: {fileID: 8300000, guid: 7247ca47b8dff724ba7bc5253166a74f, type: 1}
+  - _name: UIUberKill
+    ID: 1109
+    Audio: {fileID: 8300000, guid: 5203dd30137f91b43b2b4c2f226bad80, type: 1}
+  - _name: UIHeadShot
+    ID: 1110
+    Audio: {fileID: 8300000, guid: c1b2330acb2125443a4d626da6d7e9c7, type: 1}
+  - _name: UINutShot
+    ID: 1111
+    Audio: {fileID: 8300000, guid: 17afaecac8eab4a4aa753bac5390146d, type: 1}
+  - _name: UISmackdown
+    ID: 1112
+    Audio: {fileID: 8300000, guid: bf1b8e5bbc436b04ba8933a5c78ba16b, type: 1}
+  uiAudioSource: {fileID: 1082567905}
+  musicAudioSource: {fileID: 1082567904}
+--- !u!114 &1082567907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1082567902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c959032395ed6314e9d99d7731b2cef0, type: 1}
+  m_Name: 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>UberStrike</string>
+	<key>CFBundleGetInfoString</key>
+	<string>UberStrike Copyright © 2012 by Cmune Ltd. All rights reserved.</string>
+	<key>CFBundleIconFile</key>
+	<string>UberStrike.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.cmune.uberstrike</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>UberStrike HD</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>UsShortVersion</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>UsShortVersion</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>PlayerApplication</string>
+	<key>UnityBuildNumber</key>
+	<string>f32ac5d0ce76</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.action-games</string>
+</dict>
+</plist>

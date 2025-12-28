@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400000}
+  - 114: {fileID: 11400000}
+  m_Layer: 0
+  m_Name: UberstrikeTextures
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8103bc92f71154ab940a63b1e0e50f, type: 1}
+  m_Name: 
+  Textures:
+  - {fileID: 2800000, guid: 0f3ac770b5e84344ba12b9d338fb49c7, type: 1}
+  - {fileID: 2800000, guid: 26617e319acbc854887b3b58a68e0fdf, type: 1}
+  - {fileID: 2800000, guid: 26e9dcbc2751fd54ca6bae0fbf53a7d0, type: 1}
+  - {fileID: 2800000, guid: acc55d4d333a5b74ebc0e4bd862275c1, type: 1}
+  - {fileID: 2800000, guid: c50b34cb353c7944cbbee083d82a990a, type: 1}
+  - {fileID: 2800000, guid: 9c1d72e8c20118549877ede9880d456a, type: 1}
+  - {fileID: 2800000, guid: 1867d8cf86f2d6e4a9fa63630b884c12, type: 1}
+  - {fileID: 2800000, guid: 2699a963fe6206c4cbb8d6b28f678f28, type: 1}
+  - {fileID: 2800000, guid: dbfb9dea21daca94980f1c8e86f8d02a, type: 1}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 100000}
+  m_IsPrefabParent: 1
+  m_IsExploded: 1

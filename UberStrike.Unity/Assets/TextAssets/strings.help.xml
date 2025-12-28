@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <data name="ChatRules">
+    <value>
+1: No swearing or inappropriate content. Every time an inappropriate word is typed, three puppies and a kitten get caught in a revolving door.
+2: No "Caps lock" (using it for emphasis is okay). Please only emphazise with discretion and tact.
+3: No spamming. This includes baloney, rubbish, prattle, balderdash, hogwash, fatuity, drivel, mumbo jumbo, and canned precooked meat products.
+4: Do not personally attack any person(s). If you happen to be a hata, don't be hatin, because the mods gonna be moderatin.
+5: No backseat moderating. Believe it or not, we didn't add the convenient little 'Report Button' just because it looks pretty up there in the corner of the screen, although it does go nicely with that cute little gear symbol.
+6: Do not discuss topics that involve race, color, creed, religion, sex, or politics. It's not like we play games to get extra exposure to the many issues we face constantly in our daily lives.
+    </value>
+  </data>
+</root>

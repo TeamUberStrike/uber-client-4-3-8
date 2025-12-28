@@ -1,0 +1,124 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ Assembly name="System.Xml" #>
+<#@ Assembly name="$(SolutionDir)References/T4Helper/T4Helper.dll" #>
+<#@ import namespace="System.Xml"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#
+	T4Utils.WriteLine = this.WriteLine;
+	T4Utils.FileHeader();
+
+	XmlReaderSettings settings = new XmlReaderSettings();
+    settings.IgnoreComments = true;
+    settings.IgnoreWhitespace = true;
+    XmlReader reader = XmlReader.Create(this.Host.ResolvePath("../../Resources/strings.en_US.xml"), settings);
+    var fields = GetAllStrings(reader);
+#>
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Xml;
+using UberStrike.Core.Types;
+using UnityEngine;
+
+public static class LocalizedStrings
+{
+    public static void UpdateLocalization(LocaleType type)
+    {
+        var strings = Resources.Load("strings." + type, typeof(TextAsset)) as TextAsset;
+        if (strings != null)
+        {
+            var settings = new XmlReaderSettings()
+            {
+                IgnoreComments = true,
+                IgnoreWhitespace = true,
+            };
+
+            var fields = GetAllStrings(XmlReader.Create(new StringReader(strings.text), settings));
+
+            foreach (var field in typeof(LocalizedStrings).GetFields(BindingFlags.Static | BindingFlags.Public))
+            {
+                string value;
+                if (fields.TryGetValue(field.Name, out value))
+                {
+                    field.SetValue(null, value);
+                }
+            }
+        }
+    }
+
+    private static Dictionary<string, string> GetAllStrings(XmlReader reader)
+    {
+        var fields = new Dictionary<string, string>();
+
+        if (reader != null)
+        {
+            try
+            {
+                // Read all localized strings from the Resx XML
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name.Equals("data"))
+                    {
+                        string name = reader.GetAttribute("name");
+                        string value = string.Empty;
+                        if (reader.Read() && reader.Read())
+                            value = reader.ReadString();
+
+                        fields[name] = value;
+                    }
+                }
+            }
+            finally
+            {
+                reader.Close();
+            }
+        }
+
+        return fields;
+    }
+
+<#
+	foreach (var s in fields)
+    {
+        if (!string.IsNullOrEmpty(s.Key))
+		{
+#>
+	public static string <#=s.Key#> = "<#=s.Value#>";
+<#
+		}
+    }
+#>
+}
+<#+
+	Dictionary<string, string> GetAllStrings(XmlReader reader)
+    {
+        Dictionary<string, string> fields = new Dictionary<string, string>();
+
+        if (reader != null)
+        {
+            try
+            {
+                // Read all localized strings from the Resx XML
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name.Equals("data"))
+                    {
+                        string name = reader.GetAttribute("name");
+                        string value = string.Empty;
+                        if (reader.Read() && reader.Read())
+                            value = reader.ReadString();
+
+                        fields[name] = value;
+                    }
+                }
+            }
+            finally
+            {
+                reader.Close();
+            }
+        }
+
+        return fields;
+    }
+#>

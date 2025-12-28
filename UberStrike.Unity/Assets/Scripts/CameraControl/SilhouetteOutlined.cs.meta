@@ -1,0 +1,11 @@
+fileFormatVersion: 1
+guid: 25fc29520d1f587499da2226823f3976
+MonoImporter:
+  importerVersion: 1
+  defaultReferences:
+    shader: {fileID: 4800000, guid: df49bcc8e01dda247bc7b19422ced26a, type: 1}
+    generateGlowTextureShader: {fileID: 4800000, guid: 7349e1ff6237f454590d3aeaa3c16d53,
+      type: 1}
+    gaussianBlurShader: {fileID: 4800000, guid: 237b9f29fc5f1a5409341a22c01db7ed,
+      type: 1}
+    objectMaskShader: {fileID: 4800000, guid: 35b6a2a172e62c24da97b875f7c06409, type: 1}

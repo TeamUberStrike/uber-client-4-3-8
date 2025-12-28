@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<UberStrike>
+  <Application
+    BuildType="Prod"
+    DebugLevel="Debug"
+    Version="4.3.8"
+    WebServiceBaseUrl="http://ws.uberstrike.cmune.com/1.0.0/"
+    ContentBaseUrl="http://distro.client.cloud.cmune.com/UberStrike/"
+    ChannelType="MacAppStore" />
+</UberStrike>

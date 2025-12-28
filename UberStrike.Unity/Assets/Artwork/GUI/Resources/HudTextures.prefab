@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400000}
+  - 114: {fileID: 11400000}
+  m_Layer: 0
+  m_Name: HudTextures
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8103bc92f71154ab940a63b1e0e50f, type: 1}
+  m_Name: 
+  Textures:
+  - {fileID: 2800000, guid: 7336803f8f79c8240b8d23f209e1909b, type: 1}
+  - {fileID: 2800000, guid: 4a797a8d927eeff4587449bdfe9a9545, type: 1}
+  - {fileID: 2800000, guid: 51c1a9d2db3b4d440b8138ff1f5ea5d9, type: 1}
+  - {fileID: 2800000, guid: 9d77884d3fa22cf4fb587c68caa3b5d8, type: 1}
+  - {fileID: 2800000, guid: 9792bd915ca9da840a0387473323560f, type: 1}
+  - {fileID: 2800000, guid: 0635730a5bd481a4eb90872d090ab315, type: 1}
+  - {fileID: 2800000, guid: 995ff283749e0444cad91b5a1a012e1c, type: 1}
+  - {fileID: 2800000, guid: ac50c5cc1f33ce84f9f4a16f09a6824a, type: 1}
+  - {fileID: 2800000, guid: 085d3fb2d341e8d48af18aeb2eabfc8c, type: 1}
+  - {fileID: 2800000, guid: 7208802ef9207504581c915a410510ef, type: 1}
+  - {fileID: 2800000, guid: c0658957c68c299419e7b398ad0630c1, type: 1}
+  - {fileID: 2800000, guid: 3f0a867244582ec4f8ff6abd4897e775, type: 1}
+  - {fileID: 2800000, guid: e2ae9fdf685dad44bb2109df09ecaf9d, type: 1}
+  - {fileID: 2800000, guid: 36a8f1f5e5277a2429bfd05ddf87ace8, type: 1}
+  - {fileID: 2800000, guid: b6ab72e7b163a224aa23d15fcc143987, type: 1}
+  - {fileID: 2800000, guid: a69c61be3fe094b499c9adc91ca59e86, type: 1}
+  - {fileID: 2800000, guid: 5dfc9e3d686617c40b39ce9e2504a751, type: 1}
+  - {fileID: 2800000, guid: 8945ea0c34f2cf846a24a3232d63d15e, type: 1}
+  - {fileID: 2800000, guid: 1b2c3f45ffa2b9d4e89c82299e40ea63, type: 1}
+  - {fileID: 2800000, guid: f3db8bb36dded1141ae6457041ee93a1, type: 1}
+  - {fileID: 2800000, guid: 133f8b7df43ac334ba446d55325015e2, type: 1}
+  - {fileID: 2800000, guid: 68557436cab2613448ec6a40102eb334, type: 1}
+  - {fileID: 2800000, guid: 973520b414519f74aa2e7bbef4ea1e21, type: 1}
+  - {fileID: 2800000, guid: ab9cf26083b47354f99932864fbeb7e0, type: 1}
+  - {fileID: 2800000, guid: adb0fbffbf73f4f4eb4e055e65919f27, type: 1}
+  - {fileID: 2800000, guid: bb45996717dde2e4e93662bf7bcc1db5, type: 1}
+  - {fileID: 2800000, guid: 6fcba3732a1fcaf4eb8d1c1e95e76a53, type: 1}
+  - {fileID: 2800000, guid: a43e63987fd2ea44bb80b1adb471a77f, type: 1}
+  - {fileID: 2800000, guid: f7bc6a2bc959af741b2050d649d82497, type: 1}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 100000}
+  m_IsPrefabParent: 1
+  m_IsExploded: 1

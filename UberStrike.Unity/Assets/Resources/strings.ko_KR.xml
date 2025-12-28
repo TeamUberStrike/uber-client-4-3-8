@@ -1,0 +1,2355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <data name="Login" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>이메일 주소</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>비밀번호</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>아이디 저장</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>끝내기</value>
+  </data>
+  <data name="OkCaps" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="ChangeTeam" xml:space="preserve">
+    <value>팀 변경</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>계속하기</value>
+  </data>
+  <data name="DeathMatch" xml:space="preserve">
+    <value>데스 매치</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>전체 화면</value>
+  </data>
+  <data name="Headshot" xml:space="preserve">
+    <value>헤드샷!</value>
+  </data>
+  <data name="KillsRemain" xml:space="preserve">
+    <value>남은 킬수</value>
+  </data>
+  <data name="Nutshot" xml:space="preserve">
+    <value>너츠샷!</value>
+  </data>
+  <data name="Respawn" xml:space="preserve">
+    <value>리스폰</value>
+  </data>
+  <data name="ShowMenu" xml:space="preserve">
+    <value>메뉴 보기</value>
+  </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>가입하기</value>
+  </data>
+  <data name="TeamDeathMatch" xml:space="preserve">
+    <value>팀 데스 매치</value>
+  </data>
+  <data name="TeamElimination" xml:space="preserve">
+    <value>팀 서바이벌</value>
+  </data>
+  <data name="YouDied" xml:space="preserve">
+    <value>사살되었습니다!</value>
+  </data>
+  <data name="Absorption" xml:space="preserve">
+    <value>통합</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>수락하기</value>
+  </data>
+  <data name="AcceptingClanInvitation" xml:space="preserve">
+    <value>클랜 가입 처리중...</value>
+  </data>
+  <data name="AccountExistsMsg" xml:space="preserve">
+    <value>이미 등록된 계정입니다.
+</value>
+  </data>
+  <data name="AccountIsInvalid" xml:space="preserve">
+    <value>유효하지 않은 계정입니다.</value>
+  </data>
+  <data name="Accuracy" xml:space="preserve">
+    <value>정확도</value>
+  </data>
+  <data name="AddFriends" xml:space="preserve">
+    <value>친구 추가</value>
+  </data>
+  <data name="AdvancedCaps" xml:space="preserve">
+    <value>고급</value>
+  </data>
+  <data name="AdvancedWater" xml:space="preserve">
+    <value>Advanced Water</value>
+  </data>
+  <data name="ALeaderCannotLeaveHisOwnClanMsg" xml:space="preserve">
+    <value>클랜 마스터는 클랜에서 탈퇴할 수 없습니다. 클랜 해체만 가능합니다.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>모두</value>
+  </data>
+  <data name="AreYouSureQuitMsg" xml:space="preserve">
+    <value>게임방에서 나가시겠습니까?</value>
+  </data>
+  <data name="AuthenticatingAccount" xml:space="preserve">
+    <value>계정 확인중</value>
+  </data>
+  <data name="BackCaps" xml:space="preserve">
+    <value>뒤로</value>
+  </data>
+  <data name="BangYouJustReachedLevelN" xml:space="preserve">
+    <value>축하합니다! 레벨이 올랐습니다!</value>
+  </data>
+  <data name="BestWeaponByAccuracy" xml:space="preserve">
+    <value>정확도별 베스트무기</value>
+  </data>
+  <data name="BestWeaponByDamageDealt" xml:space="preserve">
+    <value>데미지별 베스트무기</value>
+  </data>
+  <data name="BestWeaponByHits" xml:space="preserve">
+    <value>타격별 베스트무기</value>
+  </data>
+  <data name="BestWeaponByKills" xml:space="preserve">
+    <value>킬수별 베스트무기</value>
+  </data>
+  <data name="BetweenYouAndN" xml:space="preserve">
+    <value>{0}님과의 사이</value>
+  </data>
+  <data name="BloomEffect" xml:space="preserve">
+    <value>Bloom Effect</value>
+  </data>
+  <data name="Blue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="Boots" xml:space="preserve">
+    <value>부츠</value>
+  </data>
+  <data name="BothTeamsHadAndEqualNumberOfKills" xml:space="preserve">
+    <value>양팀 모두 같은 킬수를 기록하였습니다.</value>
+  </data>
+  <data name="BothTeamsHadAndEqualNumberOfWins" xml:space="preserve">
+    <value>양팀 모두 승리수가 동일합니다.</value>
+  </data>
+  <data name="Bounty" xml:space="preserve">
+    <value>보상</value>
+  </data>
+  <data name="Busy" xml:space="preserve">
+    <value>혼잡</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>구매</value>
+  </data>
+  <data name="BuyAClanLicense" xml:space="preserve">
+    <value>- 클랜 라이센스 구매하기</value>
+  </data>
+  <data name="BuyCaps" xml:space="preserve">
+    <value>구매</value>
+  </data>
+  <data name="BuyItem" xml:space="preserve">
+    <value>아이템 구매</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="CancelCaps" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="CancelingInvitation" xml:space="preserve">
+    <value>초대하기 취소중...</value>
+  </data>
+  <data name="CancelingInvitationErrorMsg" xml:space="preserve">
+    <value>{0}님에게 보낸 초대를 취소하는 중에 에러가 발생하였습니다.</value>
+  </data>
+  <data name="CancelInvite" xml:space="preserve">
+    <value>초대 취소하기</value>
+  </data>
+  <data name="CancelInviteConfirmation" xml:space="preserve">
+    <value>초대 확인 취소하기</value>
+  </data>
+  <data name="CancelInviteToN" xml:space="preserve">
+    <value>{0}님 초대를 취소할까요?</value>
+  </data>
+  <data name="CancelInviteWarningMsg" xml:space="preserve">
+    <value>{0}님에게 보낸 클랜 초대를 취소합니다.</value>
+  </data>
+  <data name="Cannons" xml:space="preserve">
+    <value>캐논</value>
+  </data>
+  <data name="CannotFindPlayerData" xml:space="preserve">
+    <value>플레이어의 데이터를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>입장 인원</value>
+  </data>
+  <data name="CapacityDesc" xml:space="preserve">
+    <value>서버에 있는 플레이어 수를 뜻합니다.</value>
+  </data>
+  <data name="ChangePosition" xml:space="preserve">
+    <value>포지션 변경</value>
+  </data>
+  <data name="ChangeServer" xml:space="preserve">
+    <value>서버 변경</value>
+  </data>
+  <data name="ChangingToTeamN" xml:space="preserve">
+    <value>{0}로 팀 변경</value>
+  </data>
+  <data name="ChatBtnTooltip" xml:space="preserve">
+    <value>친구와 채팅 및 게임 같이하기</value>
+  </data>
+  <data name="ChatCaps" xml:space="preserve">
+    <value>채팅</value>
+  </data>
+  <data name="CheatingWillResultInAPermanentBan" xml:space="preserve">
+    <value>치팅 유저는 영구 제재 대상입니다!</value>
+  </data>
+  <data name="CheckAvailability" xml:space="preserve">
+    <value>중복 확인</value>
+  </data>
+  <data name="CheckingAvailableGameServers" xml:space="preserve">
+    <value>가능한 서버를 확인중입니다...</value>
+  </data>
+  <data name="CheckingClanStatus" xml:space="preserve">
+    <value>클랜상태 확인중</value>
+  </data>
+  <data name="CheckMail" xml:space="preserve">
+    <value>메시지 확인</value>
+  </data>
+  <data name="ChooseAGameCaps" xml:space="preserve">
+    <value>방 목록</value>
+  </data>
+  <data name="ChooseAMap" xml:space="preserve">
+    <value>맵 선택</value>
+  </data>
+  <data name="ChooseCharacterName" xml:space="preserve">
+    <value>캐릭터 이름 입력</value>
+  </data>
+  <data name="ChooseYourRegionCaps" xml:space="preserve">
+    <value>서버 선택</value>
+  </data>
+  <data name="ClanAlreadyHasPendingRequestMsg" xml:space="preserve">
+    <value>클랜에서 이미 검토중인 요청이 있습니다.\n요청을 보낼 수 없습니다.</value>
+  </data>
+  <data name="ClanBtnTooltip" xml:space="preserve">
+    <value>클랜생성/관리하기</value>
+  </data>
+  <data name="ClanCreateSuccessMsg" xml:space="preserve">
+    <value>축하합니다! {0} 클랜을 성공적으로 생성하였습니다.\n친구를 멤버로 초대하세요!</value>
+  </data>
+  <data name="ClanDataNotFoundMsg" xml:space="preserve">
+    <value>클랜 데이터를 찾을 수 없습니다.\n에러가 발생했거나 클랜이 해체된 상태입니다.</value>
+  </data>
+  <data name="ClanDescriptionInvalidCharsMsg" xml:space="preserve">
+    <value>입력하신 내용에 문제가 있습니다.\n유효하지 않은 문자가 포함되어 있습니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanDescriptionRestrictedWordsMsg" xml:space="preserve">
+    <value>제한된 문자입니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanFullMsg" xml:space="preserve">
+    <value>클랜의 최대 정원에 도달하였습니다.\n클랜에 가입할 수 없습니다.</value>
+  </data>
+  <data name="ClanHQCaps" xml:space="preserve">
+    <value>클랜 본부</value>
+  </data>
+  <data name="ClanInvitationDeletedMsg" xml:space="preserve">
+    <value>초대장이 존재하지 않습니다.\n만료되었거나 취소되었습니다.</value>
+  </data>
+  <data name="ClanMottoInvalidMsg" xml:space="preserve">
+    <value>입력하신 문자에 문제가 있습니다.\n유효하지 않은 문자가 포함되어 있습니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanMottoRestrictedWordsMsg" xml:space="preserve">
+    <value>제한된 문자입니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanNameInUseMsg" xml:space="preserve">
+    <value>이미 사용중인 클랜명입니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanNameInvlidMsg" xml:space="preserve">
+    <value>알파벳이나 숫자만 허용됩니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanNameRestrictedWordsMsg" xml:space="preserve">
+    <value>제한된 문자입니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanNCreatedCaps" xml:space="preserve">
+    <value>{0} 클랜이 생성되었습니다.</value>
+  </data>
+  <data name="ClanRequestsYouHAveNPendingRequests" xml:space="preserve">
+    <value>클랜 요청 - {0}개의 보류중인 요청이 있습니다.</value>
+  </data>
+  <data name="Clans" xml:space="preserve">
+    <value>클랜</value>
+  </data>
+  <data name="ClansCaps" xml:space="preserve">
+    <value>클랜</value>
+  </data>
+  <data name="ClanStatusErrorMsg" xml:space="preserve">
+    <value>클랜 상태 에러 확인중\n잠시후에 다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanTagInUseMsg" xml:space="preserve">
+    <value>이미 사용중인 클랜 태그입니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanTagInvalidMsg" xml:space="preserve">
+    <value>알파벳과 숫자만을 허용합니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClanTagRestrictedWordsMsg" xml:space="preserve">
+    <value>제한된 문자입니다.\n다시 시도해 주세요.</value>
+  </data>
+  <data name="ClickHereGetCreditsMsg" xml:space="preserve">
+    <value>캐쉬 충전을 하시려면 클릭해 주세요!</value>
+  </data>
+  <data name="ColorCorrection" xml:space="preserve">
+    <value>색 조정</value>
+  </data>
+  <data name="ComeBackTomorrowForEvenMorePoints" xml:space="preserve">
+    <value>내일도 방문해 주시면 더 많은 포인트를 드려요!</value>
+  </data>
+  <data name="CongratulationsGrantedLicenseMsg" xml:space="preserve">
+    <value>축하합니다. 이제 게임을 플레이할 수 있어요!</value>
+  </data>
+  <data name="ConnectingToLobby" xml:space="preserve">
+    <value>로비에 접속중...</value>
+  </data>
+  <data name="ConnectingToServer" xml:space="preserve">
+    <value>서버에 접속중...</value>
+  </data>
+  <data name="ConnectionSlowMsg" xml:space="preserve">
+    <value>서버와의 통신이 원활하지 않습니다. 게임 플레이에 적절하지 않을 수 있습니다.</value>
+  </data>
+  <data name="CreateAClan" xml:space="preserve">
+    <value>클랜생성</value>
+  </data>
+  <data name="CreateAClanAndInviteYourFriends" xml:space="preserve">
+    <value>클랜을 생성하고 친구들을 초대하세요!</value>
+  </data>
+  <data name="CreateAClanCaps" xml:space="preserve">
+    <value>클랜생성</value>
+  </data>
+  <data name="CreateCaps" xml:space="preserve">
+    <value>생성하기</value>
+  </data>
+  <data name="CreatedN" xml:space="preserve">
+    <value>생성일: {0}</value>
+  </data>
+  <data name="CreateGameCaps" xml:space="preserve">
+    <value>방 만들기</value>
+  </data>
+  <data name="CreateYourCharacterCaps" xml:space="preserve">
+    <value>캐릭터 만들기</value>
+  </data>
+  <data name="CreatingAccount" xml:space="preserve">
+    <value>계정생성중</value>
+  </data>
+  <data name="CreatingAccountMsg" xml:space="preserve">
+    <value>계정 생성중입니다.\n잠시 기다려 주세요.</value>
+  </data>
+  <data name="Credits" xml:space="preserve">
+    <value>캐쉬</value>
+  </data>
+  <data name="CurrentXP" xml:space="preserve">
+    <value>현재 경험치:</value>
+  </data>
+  <data name="DailyRewardCaps" xml:space="preserve">
+    <value>출석보너스</value>
+  </data>
+  <data name="Damage" xml:space="preserve">
+    <value>데미지</value>
+  </data>
+  <data name="DamageXP" xml:space="preserve">
+    <value>데미지 경험치</value>
+  </data>
+  <data name="DataError" xml:space="preserve">
+    <value>데이터 에러</value>
+  </data>
+  <data name="DataInvalidMsg" xml:space="preserve">
+    <value>유효하지 않은 데이터입니다. 에러가 발생하였습니다.</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>일</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>일 전</value>
+  </data>
+  <data name="Deaths" xml:space="preserve">
+    <value>데스</value>
+  </data>
+  <data name="DeleteThreadCaps" xml:space="preserve">
+    <value>지우기</value>
+  </data>
+  <data name="DemoteMember" xml:space="preserve">
+    <value>멤버 강등</value>
+  </data>
+  <data name="DisbandClan" xml:space="preserve">
+    <value>클랜 해체</value>
+  </data>
+  <data name="DisbandClanCaps" xml:space="preserve">
+    <value>클랜 해체</value>
+  </data>
+  <data name="DisbandClanErrorMsg" xml:space="preserve">
+    <value>{0} 클랜을 해체시키는데 에러가 발생하였습니다.\n잠시 후에 다시 시도해 주세요.</value>
+  </data>
+  <data name="DisbandClanN" xml:space="preserve">
+    <value>{0} 클랜을 해체하시겠어요?</value>
+  </data>
+  <data name="DisbandClanSuccessMsg" xml:space="preserve">
+    <value>{0} 클랜이 해체되었습니다.</value>
+  </data>
+  <data name="DisbandClanWarningMsg" xml:space="preserve">
+    <value>클랜을 해체하면 모든 클랜정보를 삭제하게 됩니다.\n해체 이후에 클랜은 존재하지 않게 됩니다.</value>
+  </data>
+  <data name="DiscardCaps" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>완료</value>
+  </data>
+  <data name="DownloadClanRequestErrorMsg" xml:space="preserve">
+    <value>에러발생. 잠시 후에 다시 시도해 주세요.</value>
+  </data>
+  <data name="DownloadingClanData" xml:space="preserve">
+    <value>클랜정보 다운로드중...</value>
+  </data>
+  <data name="DownloadingClanDataErrorMsg" xml:space="preserve">
+    <value>다운로드 에러\n잠시 후에 다시 시도해 주세요.</value>
+  </data>
+  <data name="DownloadingRequestData" xml:space="preserve">
+    <value>다운로드중...</value>
+  </data>
+  <data name="DoYouReallyWantToRemoveNFromYourFriendsList" xml:space="preserve">
+    <value>{0}님을 정말로 친구목록에서 삭제하시겠어요?</value>
+  </data>
+  <data name="DoYouWantToDeleteTheConversation" xml:space="preserve">
+    <value>대화 내역을 삭제하시겠어요?</value>
+  </data>
+  <data name="DragToEquipTheN" xml:space="preserve">
+    <value>드래그하여 {0} 장착하기</value>
+  </data>
+  <data name="Draw" xml:space="preserve">
+    <value>Draw!</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>기간</value>
+  </data>
+  <data name="EffectsVolume" xml:space="preserve">
+    <value>효과음 :</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>이메일</value>
+  </data>
+  <data name="EmailAddressAndNameInUseMsg" xml:space="preserve">
+    <value>이메일 주소와 이름이 이미 사용중입니다. 다시 시도해 주세요.</value>
+  </data>
+  <data name="EmailAddressInUseMsg" xml:space="preserve">
+    <value>이미 사용중입니다. 다른 이메일을 입력하세요.</value>
+  </data>
+  <data name="EmailAddressIsInvalid" xml:space="preserve">
+    <value>유효하지 않은 이메일입니다.</value>
+  </data>
+  <data name="EmailInvalidMsg" xml:space="preserve">
+    <value>유효하지 않은 이메일입니다. 다시 입력해 주세요.</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>비어 있음</value>
+  </data>
+  <data name="EnableCustomizers" xml:space="preserve">
+    <value>커스터마이징 가능</value>
+  </data>
+  <data name="EnableGamepad" xml:space="preserve">
+    <value>게임패드 사용</value>
+  </data>
+  <data name="EnterGameName" xml:space="preserve">
+    <value>방제목입력</value>
+  </data>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>비밀번호입력</value>
+  </data>
+  <data name="EnterYourEmailAddress" xml:space="preserve">
+    <value>이메일주소입력</value>
+  </data>
+  <data name="EnterYourName" xml:space="preserve">
+    <value>이름입력</value>
+  </data>
+  <data name="EnterYourPassword" xml:space="preserve">
+    <value>비밀번호입력</value>
+  </data>
+  <data name="Equip" xml:space="preserve">
+    <value>장착</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>에러</value>
+  </data>
+  <data name="ErrorCreatingClan" xml:space="preserve">
+    <value>에러발생\n잠시후에 시도해 주세요.</value>
+  </data>
+  <data name="ErrorInvitingNToJoinClanN" xml:space="preserve">
+    <value>클랜 초대 에러\n잠시 후에 시도해 주세요.</value>
+  </data>
+  <data name="ErrorInvitingToJoinClanN" xml:space="preserve">
+    <value>{0} 클랜으로 초대하던 중 에러가 발생하였습니다.</value>
+  </data>
+  <data name="ErrorSendingMessage" xml:space="preserve">
+    <value>메시지 전송에러. 잠시 후에 시도해 주세요.</value>
+  </data>
+  <data name="ExitFullscreen" xml:space="preserve">
+    <value>전체화면 종료</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>만료</value>
+  </data>
+  <data name="Face" xml:space="preserve">
+    <value>얼굴</value>
+  </data>
+  <data name="FailedToGetContacts" xml:space="preserve">
+    <value>연락처 획득 실패</value>
+  </data>
+  <data name="FailedToRegister" xml:space="preserve">
+    <value>가입 실패</value>
+  </data>
+  <data name="FailedToRemoveNFromYourFriendList" xml:space="preserve">
+    <value>친구 목록에서 {0}님을 삭제하지 못하였습니다. </value>
+  </data>
+  <data name="FailedToSendYourMessage" xml:space="preserve">
+    <value>메시지 전송 실패</value>
+  </data>
+  <data name="FastCaps" xml:space="preserve">
+    <value>쾌적</value>
+  </data>
+  <data name="FiltersCaps" xml:space="preserve">
+    <value>필터</value>
+  </data>
+  <data name="FrameRate" xml:space="preserve">
+    <value>프레임</value>
+  </data>
+  <data name="FriendlyFire" xml:space="preserve">
+    <value>아군 공격허용</value>
+  </data>
+  <data name="FriendRequest" xml:space="preserve">
+    <value>친구 요청</value>
+  </data>
+  <data name="FriendRequestCaps" xml:space="preserve">
+    <value>친구 요청</value>
+  </data>
+  <data name="FriendRequestsYouHaveNPendingRequests" xml:space="preserve">
+    <value>친구 요청 - {0}개의 보류중인 요청이 있습니다.</value>
+  </data>
+  <data name="FriendsCaps" xml:space="preserve">
+    <value>친구</value>
+  </data>
+  <data name="Full" xml:space="preserve">
+    <value>포화</value>
+  </data>
+  <data name="FunctionalItem" xml:space="preserve">
+    <value>기능성 아이템</value>
+  </data>
+  <data name="FunctionalItems" xml:space="preserve">
+    <value>기능성 아이템</value>
+  </data>
+  <data name="Game" xml:space="preserve">
+    <value>게임</value>
+  </data>
+  <data name="GameName" xml:space="preserve">
+    <value>방 제목</value>
+  </data>
+  <data name="GameNotFull" xml:space="preserve">
+    <value>입장 가능</value>
+  </data>
+  <data name="Gamepad" xml:space="preserve">
+    <value>게임 패드</value>
+  </data>
+  <data name="Games" xml:space="preserve">
+    <value>게임</value>
+  </data>
+  <data name="GamesNotFound" xml:space="preserve">
+    <value>찾을 수 없습니다.</value>
+  </data>
+  <data name="GameType" xml:space="preserve">
+    <value>모드</value>
+  </data>
+  <data name="Gear" xml:space="preserve">
+    <value>방어구</value>
+  </data>
+  <data name="GeneralCaps" xml:space="preserve">
+    <value>일반</value>
+  </data>
+  <data name="GetCreditsCaps" xml:space="preserve">
+    <value>캐쉬 충전</value>
+  </data>
+  <data name="GettingClan" xml:space="preserve">
+    <value>클랜데이터 로딩중...</value>
+  </data>
+  <data name="GettingInventory" xml:space="preserve">
+    <value>인벤토리 확인중...</value>
+  </data>
+  <data name="GettingLabsData" xml:space="preserve">
+    <value>데이터 확인중...</value>
+  </data>
+  <data name="GettingLoadout" xml:space="preserve">
+    <value>장착 무기 확인중...</value>
+  </data>
+  <data name="GettingStats" xml:space="preserve">
+    <value>플레이어 정보 확인중</value>
+  </data>
+  <data name="Gloves" xml:space="preserve">
+    <value>장갑</value>
+  </data>
+  <data name="GoCaps" xml:space="preserve">
+    <value>시작!</value>
+  </data>
+  <data name="GoFullscreen" xml:space="preserve">
+    <value>전체화면</value>
+  </data>
+  <data name="Handguns" xml:space="preserve">
+    <value>권총</value>
+  </data>
+  <data name="HardcoreMode" xml:space="preserve">
+    <value>하드코어모드</value>
+  </data>
+  <data name="HaveAtLeastOneFriend" xml:space="preserve">
+    <value>- 1명 이상의 친구 필요</value>
+  </data>
+  <data name="Head" xml:space="preserve">
+    <value>머리</value>
+  </data>
+  <data name="HeadshotXP" xml:space="preserve">
+    <value>헤드샷 경험치</value>
+  </data>
+  <data name="HelpBtnTooltip" xml:space="preserve">
+    <value>게임 방법</value>
+  </data>
+  <data name="HelpCaps" xml:space="preserve">
+    <value>도움말</value>
+  </data>
+  <data name="HereYouCanCreateYourOwnClan" xml:space="preserve">
+    <value>클랜을 생성할 수 있습니다.</value>
+  </data>
+  <data name="HiYoureInvitedToJoinMyClanN" xml:space="preserve">
+    <value>안녕하세요. {0} 클랜으로 초대합니다.</value>
+  </data>
+  <data name="Holo" xml:space="preserve">
+    <value>전체</value>
+  </data>
+  <data name="HomeBtnTooltip" xml:space="preserve">
+    <value>비행선으로 돌아가기</value>
+  </data>
+  <data name="HomeCaps" xml:space="preserve">
+    <value>홈</value>
+  </data>
+  <data name="IAgreeToThe" xml:space="preserve">
+    <value>약관 동의</value>
+  </data>
+  <data name="IfTheErrorPersistsBugReportTaskbar" xml:space="preserve">
+    <value>만일 에러가 계속해서 발생한다면,\n버그리포트를 작성해주세요.</value>
+  </data>
+  <data name="Ignore" xml:space="preserve">
+    <value>무시</value>
+  </data>
+  <data name="IgnoringClanInvitation" xml:space="preserve">
+    <value>클랜초청 무시</value>
+  </data>
+  <data name="Impact" xml:space="preserve">
+    <value>충격</value>
+  </data>
+  <data name="InboxBtnTooltip" xml:space="preserve">
+    <value>받은 메시지 확인하기</value>
+  </data>
+  <data name="InboxCaps" xml:space="preserve">
+    <value>친구</value>
+  </data>
+  <data name="InGame" xml:space="preserve">
+    <value>게임중</value>
+  </data>
+  <data name="InivitingNToJoinClanN" xml:space="preserve">
+    <value>{0}님을 {1} 클랜으로 초대중...</value>
+  </data>
+  <data name="InMyClan" xml:space="preserve">
+    <value>내 클랜</value>
+  </data>
+  <data name="Instakill" xml:space="preserve">
+    <value>즉사</value>
+  </data>
+  <data name="InvalidData" xml:space="preserve">
+    <value>유효하지 않은 데이터입니다.</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>인벤토리</value>
+  </data>
+  <data name="InventoryCaps" xml:space="preserve">
+    <value>인벤토리</value>
+  </data>
+  <data name="InvertMouseButtons" xml:space="preserve">
+    <value>마우스 버튼 반전</value>
+  </data>
+  <data name="InvitationCancelled" xml:space="preserve">
+    <value>초대가 취소되었습니다.</value>
+  </data>
+  <data name="InvitationPending" xml:space="preserve">
+    <value>초대가 지연중입니다.</value>
+  </data>
+  <data name="InvitationToJoinClanNHasBeenSent" xml:space="preserve">
+    <value>{0} 클랜 가입 초대장\n전송 완료</value>
+  </data>
+  <data name="Invite" xml:space="preserve">
+    <value>초대!</value>
+  </data>
+  <data name="InviteFriends" xml:space="preserve">
+    <value>친구 초대</value>
+  </data>
+  <data name="InvitePlayer" xml:space="preserve">
+    <value>플레이어 초대</value>
+  </data>
+  <data name="InvitingToJoinClan" xml:space="preserve">
+    <value>클랜 초대중...</value>
+  </data>
+  <data name="JoinBlueCaps" xml:space="preserve">
+    <value>BLUE팀</value>
+  </data>
+  <data name="JoinCaps" xml:space="preserve">
+    <value>입장</value>
+  </data>
+  <data name="JoinDate" xml:space="preserve">
+    <value>가입일</value>
+  </data>
+  <data name="JoinRedCaps" xml:space="preserve">
+    <value>RED팀</value>
+  </data>
+  <data name="JoinClanSuccessMsg" xml:space="preserve">
+    <value>클랜에 성공적으로 가입하셨습니다.</value>
+  </data>
+  <data name="JoinClanErrorMsg" xml:space="preserve">
+    <value>클랜 가입중에 에러가 발생하였습니다.</value>
+  </data>
+  <data name="JustForFun" xml:space="preserve">
+    <value>펀모드</value>
+  </data>
+  <data name="KDR" xml:space="preserve">
+    <value>KDR</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>키보드</value>
+  </data>
+  <data name="KeyButton" xml:space="preserve">
+    <value>키/버튼</value>
+  </data>
+  <data name="Kills" xml:space="preserve">
+    <value>킬</value>
+  </data>
+  <data name="KillXP" xml:space="preserve">
+    <value>킬 경험치</value>
+  </data>
+  <data name="LabsCaps" xml:space="preserve">
+    <value>연구소</value>
+  </data>
+  <data name="LastDay" xml:space="preserve">
+    <value>마지막 날</value>
+  </data>
+  <data name="LastOnlineN" xml:space="preserve">
+    <value>최종 접속일: {0}</value>
+  </data>
+  <data name="Launchers" xml:space="preserve">
+    <value>런쳐</value>
+  </data>
+  <data name="Leader" xml:space="preserve">
+    <value>마스터</value>
+  </data>
+  <data name="LeaderN" xml:space="preserve">
+    <value>마스터: {0}</value>
+  </data>
+  <data name="LeaveClan" xml:space="preserve">
+    <value>클랜 탈퇴</value>
+  </data>
+  <data name="LeaveClanCaps" xml:space="preserve">
+    <value>클랜 탈퇴</value>
+  </data>
+  <data name="LeaveClanErrorMsg" xml:space="preserve">
+    <value>{0} 클랜을 탈퇴하는 중에 에러가 발생하였습니다. 잠시 후에 다시 시도해 주세요.</value>
+  </data>
+  <data name="LeaveClanN" xml:space="preserve">
+    <value>클랜을 탈퇴하시겠어요?</value>
+  </data>
+  <data name="LeaveClanSuccessMsg" xml:space="preserve">
+    <value>{0} 클랜에서 탈퇴하였습니다!</value>
+  </data>
+  <data name="LeaveClanWarningMsg" xml:space="preserve">
+    <value>{0} 클랜에서 탈퇴하면 멤버리스트에서 삭제 됩니다.\n클랜 탈퇴 후에는 더 이상 클랜공지를 볼 수 없고 클랜 태그도 삭제됩니다.</value>
+  </data>
+  <data name="LeavingClanN" xml:space="preserve">
+    <value>{0} 클랜 탈퇴중</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>레벨</value>
+  </data>
+  <data name="LevelAndXP" xml:space="preserve">
+    <value>레벨 / 경험치</value>
+  </data>
+  <data name="LimitFramerate" xml:space="preserve">
+    <value>프레임률 제한</value>
+  </data>
+  <data name="LoadingGameList" xml:space="preserve">
+    <value>방 목록 읽는중...</value>
+  </data>
+  <data name="LoadoutCaps" xml:space="preserve">
+    <value>장착중</value>
+  </data>
+  <data name="LoginFailed" xml:space="preserve">
+    <value>로그인 실패</value>
+  </data>
+  <data name="Low" xml:space="preserve">
+    <value>낮음</value>
+  </data>
+  <data name="LowerBody" xml:space="preserve">
+    <value>하의</value>
+  </data>
+  <data name="LowerBodyArmor" xml:space="preserve">
+    <value>하의 방어구</value>
+  </data>
+  <data name="LowGravity" xml:space="preserve">
+    <value>저중력</value>
+  </data>
+  <data name="Machineguns" xml:space="preserve">
+    <value>머신건</value>
+  </data>
+  <data name="ManageYourClan" xml:space="preserve">
+    <value>클랜 관리하기</value>
+  </data>
+  <data name="Map" xml:space="preserve">
+    <value>맵</value>
+  </data>
+  <data name="MasterVolume" xml:space="preserve">
+    <value>마스터 볼륨</value>
+  </data>
+  <data name="MatchPerformance" xml:space="preserve">
+    <value>매치 결과</value>
+  </data>
+  <data name="MaxPlayers" xml:space="preserve">
+    <value>최대 플레이어</value>
+  </data>
+  <data name="MedCaps" xml:space="preserve">
+    <value>보통</value>
+  </data>
+  <data name="Melee" xml:space="preserve">
+    <value>근접</value>
+  </data>
+  <data name="MeleeWeapons" xml:space="preserve">
+    <value>근접 무기</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>멤버</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>메시지</value>
+  </data>
+  <data name="MessageCaps" xml:space="preserve">
+    <value>메시지</value>
+  </data>
+  <data name="MessagesCaps" xml:space="preserve">
+    <value>메시지</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>시간</value>
+  </data>
+  <data name="Misc" xml:space="preserve">
+    <value>기타</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>모드</value>
+  </data>
+  <data name="Moderate" xml:space="preserve">
+    <value>중간</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>개월 전</value>
+  </data>
+  <data name="MostArmorPickedUp" xml:space="preserve">
+    <value>최고 방어구획득수</value>
+  </data>
+  <data name="MostCannonKills" xml:space="preserve">
+    <value>최고 캐논킬수</value>
+  </data>
+  <data name="MostConsecutiveSnipes" xml:space="preserve">
+    <value>최고 연속저격</value>
+  </data>
+  <data name="MostDamageDealt" xml:space="preserve">
+    <value>최고 데미지공격</value>
+  </data>
+  <data name="MostDamageReceived" xml:space="preserve">
+    <value>최고 데미지</value>
+  </data>
+  <data name="MostDeadlyWeapons" xml:space="preserve">
+    <value>무기별 데미지</value>
+  </data>
+  <data name="MostHandgunKills" xml:space="preserve">
+    <value>최고 권총킬수</value>
+  </data>
+  <data name="MostHeadshots" xml:space="preserve">
+    <value>최고 헤드샷수</value>
+  </data>
+  <data name="MostHealthPickedUp" xml:space="preserve">
+    <value>최고 에너지 획득수</value>
+  </data>
+  <data name="MostKills" xml:space="preserve">
+    <value>최고 킬수</value>
+  </data>
+  <data name="MostLauncherKills" xml:space="preserve">
+    <value>최고 런쳐킬수</value>
+  </data>
+  <data name="MostMachinegunKills" xml:space="preserve">
+    <value>최고 머신건킬수</value>
+  </data>
+  <data name="MostMeleeKills" xml:space="preserve">
+    <value>최고 근접킬수</value>
+  </data>
+  <data name="MostNutshots" xml:space="preserve">
+    <value>최고 너츠샷 수</value>
+  </data>
+  <data name="MostShotgunKills" xml:space="preserve">
+    <value>최고 샷건킬수</value>
+  </data>
+  <data name="MostSniperRifleKills" xml:space="preserve">
+    <value>최고 저격킬수</value>
+  </data>
+  <data name="MostSplattergunKills" xml:space="preserve">
+    <value>최고 스플래터건킬수</value>
+  </data>
+  <data name="MostValuablePlayers" xml:space="preserve">
+    <value>MVP</value>
+  </data>
+  <data name="MostXPEarned" xml:space="preserve">
+    <value>최고 경험치 획득</value>
+  </data>
+  <data name="MotionBlur" xml:space="preserve">
+    <value>블러효과</value>
+  </data>
+  <data name="Motto" xml:space="preserve">
+    <value>좌우명</value>
+  </data>
+  <data name="MottoN" xml:space="preserve">
+    <value>좌우명: {0}</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>마우스</value>
+  </data>
+  <data name="MouseSensitivity" xml:space="preserve">
+    <value>마우스감도</value>
+  </data>
+  <data name="Movement" xml:space="preserve">
+    <value>동작설정</value>
+  </data>
+  <data name="MusicVolume" xml:space="preserve">
+    <value>음악 볼륨</value>
+  </data>
+  <data name="Mute" xml:space="preserve">
+    <value>소리 끄기</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="NameInUseMsg" xml:space="preserve">
+    <value>이미 등록된 이름입니다.</value>
+  </data>
+  <data name="NameInvalidCharsMsg" xml:space="preserve">
+    <value>유효하지 않은 문자가 포함되었습니다.</value>
+  </data>
+  <data name="NameN" xml:space="preserve">
+    <value>클랜명: {0}</value>
+  </data>
+  <data name="NameTooManySpacesMsg" xml:space="preserve">
+    <value>너무 많은 띄어쓰기가 포함되어 있습니다.</value>
+  </data>
+  <data name="NameTooShortMsg" xml:space="preserve">
+    <value>너무 짧습니다.</value>
+  </data>
+  <data name="NClanInformation" xml:space="preserve">
+    <value>[{0}] 클랜 정보</value>
+  </data>
+  <data name="NClanRoster" xml:space="preserve">
+    <value>[{0}] 클랜 명단</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>네트워크 에러</value>
+  </data>
+  <data name="NewAndSaleItems" xml:space="preserve">
+    <value>신규 아이템</value>
+  </data>
+  <data name="NewHereSignUpAndPlayForFree" xml:space="preserve">
+    <value>첫 방문인가요? 가입하시고 무료로 즐기세요!</value>
+  </data>
+  <data name="NewMessage" xml:space="preserve">
+    <value>신규 메시지</value>
+  </data>
+  <data name="NextCaps" xml:space="preserve">
+    <value>다음</value>
+  </data>
+  <data name="NiceJobThatWasSeriousCarnage" xml:space="preserve">
+    <value>나이스! 굉장하시네요!</value>
+  </data>
+  <data name="NinetyDays" xml:space="preserve">
+    <value>90 일</value>
+  </data>
+  <data name="NIsNoLongerAMemberOfClanN" xml:space="preserve">
+    <value>{0}님은 더 이상 {1} 클랜멤버가 아닙니다.</value>
+  </data>
+  <data name="NIsNoLongerInvitedToJoinClanN" xml:space="preserve">
+    <value>{0}님은 더 이상 {1} 클랜멤버로 초대되지 않습니다.</value>
+  </data>
+  <data name="NMembersNOnline" xml:space="preserve">
+    <value>가입 인원 : {0}/{1}  ({2} 온라인)</value>
+  </data>
+  <data name="NNeedsAClanLicenseToBeLeader" xml:space="preserve">
+    <value>{0}님께서 클랜 마스터가 되기 위해서는\n클랜 라이센스가 필요합니다.\n클랜 라이센스는 상점에서 구매할 수 있습니다.</value>
+  </data>
+  <data name="NNeedsToBeLevelFourToBeAClanLeader" xml:space="preserve">
+    <value>클랜을 생성하려면 최소한 레벨4가 되어야 합니다.</value>
+  </data>
+  <data name="NNeedsToHaveOneFriendToBeAClanLeader" xml:space="preserve">
+    <value>클랜을 생성하려면 최소한 1명의 친구가 있어야 합니다.</value>
+  </data>
+  <data name="NoConversationSelected" xml:space="preserve">
+    <value>선택된 대화가 없습니다.</value>
+  </data>
+  <data name="NoFriendlyFire" xml:space="preserve">
+    <value>아군공격금지</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>없음</value>
+  </data>
+  <data name="NoSelectedItems" xml:space="preserve">
+    <value>선택된 무기없음</value>
+  </data>
+  <data name="NoThanks" xml:space="preserve">
+    <value>아니요.</value>
+  </data>
+  <data name="NotPasswordProtected" xml:space="preserve">
+    <value>비밀번호 없음</value>
+  </data>
+  <data name="NPercentOff" xml:space="preserve">
+    <value>{0:N0}% 할인!</value>
+  </data>
+  <data name="NPlayers" xml:space="preserve">
+    <value>{0} 명</value>
+  </data>
+  <data name="NTeamWins" xml:space="preserve">
+    <value>{0} 팀 승리!</value>
+  </data>
+  <data name="NutshotXP" xml:space="preserve">
+    <value>너츠샷 경험치</value>
+  </data>
+  <data name="OffensiveNameMsg" xml:space="preserve">
+    <value>공격적인 단어를 포함하고 있어요.</value>
+  </data>
+  <data name="Officer" xml:space="preserve">
+    <value>장교</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>오프라인</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="OneDay" xml:space="preserve">
+    <value>1일</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>온라인</value>
+  </data>
+  <data name="OnlyYourClanLeaderCanDoThis" xml:space="preserve">
+    <value>마스터만 가능합니다.</value>
+  </data>
+  <data name="OptionsBtnTooltip" xml:space="preserve">
+    <value>단축키, 그래픽, 사운드 설정</value>
+  </data>
+  <data name="OptionsCaps" xml:space="preserve">
+    <value>옵션</value>
+  </data>
+  <data name="PasswordDoNotMatch" xml:space="preserve">
+    <value>비밀번호가 맞지 않습니다.</value>
+  </data>
+  <data name="PasswordIncorrect" xml:space="preserve">
+    <value>비밀번호가 틀렸습니다.</value>
+  </data>
+  <data name="PasswordInvalidCharsMsg" xml:space="preserve">
+    <value>비밀번호에 허용하지 않는 문자가 있습니다.</value>
+  </data>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>비밀번호가 유효하지 않습니다.</value>
+  </data>
+  <data name="PasswordProtected" xml:space="preserve">
+    <value>비밀번호 설정</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>비밀번호가 맞지 않습니다.</value>
+  </data>
+  <data name="PendingRequestsCaps" xml:space="preserve">
+    <value>요청 보류중</value>
+  </data>
+  <data name="PerformanceReportCaps" xml:space="preserve">
+    <value>결과리포트</value>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>영구</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>개인</value>
+  </data>
+  <data name="PersonalRecordsPerLife" xml:space="preserve">
+    <value>개인기록 (Life 당)</value>
+  </data>
+  <data name="Ping" xml:space="preserve">
+    <value>핑</value>
+  </data>
+  <data name="PlayBtnTooltip" xml:space="preserve">
+    <value>방에 입장하기</value>
+  </data>
+  <data name="PlayCaps" xml:space="preserve">
+    <value>플레이</value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value>플레이어</value>
+  </data>
+  <data name="PlayerAlreadyHasPendingClanInviteMsg" xml:space="preserve">
+    <value>이미 초대 보류 상태입니다.\n다시 초대를 보낼 수 없습니다.</value>
+  </data>
+  <data name="PlayerAlreadyInClanMsg" xml:space="preserve">
+    <value>초대한 사람은 이미 클랜멤버입니다. 클랜멤버에게는 초대를 보낼 수 없습니다.</value>
+  </data>
+  <data name="PlayerCaps" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="PlayerLevelNMinusRestriction" xml:space="preserve">
+    <value>[플레이어레벨 &lt;{0} 제한=""]</value>
+  </data>
+  <data name="PlayerLevelNPlusRestriction" xml:space="preserve">
+    <value>[플레어어레벨 {0}+ 제한]</value>
+  </data>
+  <data name="PlayerLevelNRestriction" xml:space="preserve">
+    <value>[플레이어레벨 {0} 제한]</value>
+  </data>
+  <data name="PlayerLevelNToNRestriction" xml:space="preserve">
+    <value>[플레이어레벨 {0}-{1} 제한]</value>
+  </data>
+  <data name="Players" xml:space="preserve">
+    <value>플레이어</value>
+  </data>
+  <data name="PlayersOnline" xml:space="preserve">
+    <value>플레이어 온라인</value>
+  </data>
+  <data name="PleaseAgreeTOSMsg" xml:space="preserve">
+    <value>이용약관에 동의해 주세요.</value>
+  </data>
+  <data name="PleaseProvideValidEmailPasswordMsg" xml:space="preserve">
+    <value>유효한 이메일주소를 입력해 주세요. 로그인에 사용됩니다.</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>잠시만 기다려주세요.</value>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>포인트</value>
+  </data>
+  <data name="PointsEarnedN" xml:space="preserve">
+    <value>획득포인트 {0}</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>직위</value>
+  </data>
+  <data name="PressRefreshToSeeCurrentGames" xml:space="preserve">
+    <value>새로고침하여 방 목록을 갱신하세요.</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>가격</value>
+  </data>
+  <data name="PrimaryWeapon" xml:space="preserve">
+    <value>주무기</value>
+  </data>
+  <data name="PrivateChat" xml:space="preserve">
+    <value>1:1 채팅</value>
+  </data>
+  <data name="PrivateersLicense" xml:space="preserve">
+    <value>용병 라이센스</value>
+  </data>
+  <data name="PrivateersLicenseGranted" xml:space="preserve">
+    <value>용병 라이센스 획득!</value>
+  </data>
+  <data name="PrivatePosition" xml:space="preserve">
+    <value>1:1 채팅</value>
+  </data>
+  <data name="ProblemBuyingItem" xml:space="preserve">
+    <value>아이템 구매 오류</value>
+  </data>
+  <data name="ProcessingLogin" xml:space="preserve">
+    <value>로그인중...</value>
+  </data>
+  <data name="ProcessingTransactionPleaseWait" xml:space="preserve">
+    <value>거래중, 잠시만 기다리세요...</value>
+  </data>
+  <data name="PromoteMember" xml:space="preserve">
+    <value>멤버 진급</value>
+  </data>
+  <data name="QualitySettings" xml:space="preserve">
+    <value>그래픽설정</value>
+  </data>
+  <data name="QuickItem" xml:space="preserve">
+    <value>특수무기</value>
+  </data>
+  <data name="QuickItems" xml:space="preserve">
+    <value>특수무기</value>
+  </data>
+  <data name="QuickSearch" xml:space="preserve">
+    <value>빠른검색</value>
+  </data>
+  <data name="QuitCaps" xml:space="preserve">
+    <value>끝내기</value>
+  </data>
+  <data name="RateOfFire" xml:space="preserve">
+    <value>연사속도</value>
+  </data>
+  <data name="ReachLevelFour" xml:space="preserve">
+    <value>- 4레벨 달성</value>
+  </data>
+  <data name="ReadyCaps" xml:space="preserve">
+    <value>준비</value>
+  </data>
+  <data name="RecentPickupWeapons" xml:space="preserve">
+    <value>최근 획득 무기</value>
+  </data>
+  <data name="Recoil" xml:space="preserve">
+    <value>반동</value>
+  </data>
+  <data name="Red" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>새로고침</value>
+  </data>
+  <data name="RefreshCaps" xml:space="preserve">
+    <value>새로고침</value>
+  </data>
+  <data name="RefreshingServer" xml:space="preserve">
+    <value>서버 다시불러오기</value>
+  </data>
+  <data name="RejectClanInvitation" xml:space="preserve">
+    <value>클랜초대거부</value>
+  </data>
+  <data name="RejectTheClanInvitationFromN" xml:space="preserve">
+    <value>{0}님으로부터의 클랜초대를 거절하시겠어요?</value>
+  </data>
+  <data name="RemainingXP" xml:space="preserve">
+    <value>남은 경험치:</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>제거</value>
+  </data>
+  <data name="RemoveFriendCaps" xml:space="preserve">
+    <value>친구 삭제</value>
+  </data>
+  <data name="RemoveMember" xml:space="preserve">
+    <value>멤버 삭제</value>
+  </data>
+  <data name="RemoveMemberCaps" xml:space="preserve">
+    <value>멤버 삭제</value>
+  </data>
+  <data name="RemoveMemberErrorMsg" xml:space="preserve">
+    <value>{0}님을 {1} 클랜에서 삭제하는 중 에러발생.\n잠시후에 시도해 주세요.</value>
+  </data>
+  <data name="RemoveMemberWarningMsg" xml:space="preserve">
+    <value>클랜명단에서 삭제합니다.\n앞으로 해당 멤버의 클랜 태그는 없어지고 클랜공지는 보이지 않게 됩니다.</value>
+  </data>
+  <data name="RemoveNFromClanN" xml:space="preserve">
+    <value>{0}님을 {1} 클랜에서 내보내시겠어요?</value>
+  </data>
+  <data name="RemovingNFromClanN" xml:space="preserve">
+    <value>{0}님을 {1} 클랜에서 내보내는중...</value>
+  </data>
+  <data name="Renew" xml:space="preserve">
+    <value>갱신</value>
+  </data>
+  <data name="Reply" xml:space="preserve">
+    <value>답변하기</value>
+  </data>
+  <data name="ReportBug" xml:space="preserve">
+    <value>버그리포트</value>
+  </data>
+  <data name="ReportPlayer" xml:space="preserve">
+    <value>불량유저신고</value>
+  </data>
+  <data name="RequestNoLongerExistsMsg" xml:space="preserve">
+    <value>이 요청은 더이상 존재하지 않습니다.만료되거나 취소되었습니다.</value>
+  </data>
+  <data name="RequestsCaps" xml:space="preserve">
+    <value>요청</value>
+  </data>
+  <data name="ResetDefaults" xml:space="preserve">
+    <value>설정 초기화</value>
+  </data>
+  <data name="ResetFiltersCaps" xml:space="preserve">
+    <value>필터 리셋</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>재시도</value>
+  </data>
+  <data name="RetypeYourPassword" xml:space="preserve">
+    <value>비밀번호 재입력</value>
+  </data>
+  <data name="Round" xml:space="preserve">
+    <value>Round</value>
+  </data>
+  <data name="RoundEndCaps" xml:space="preserve">
+    <value>ROUND END!</value>
+  </data>
+  <data name="RoundStartsInN" xml:space="preserve">
+    <value>{0}초 후에 라운드 시작!</value>
+  </data>
+  <data name="RoundTime" xml:space="preserve">
+    <value>라운드 시간</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>검색</value>
+  </data>
+  <data name="SearchMessages" xml:space="preserve">
+    <value>메시지검색</value>
+  </data>
+  <data name="SecondaryWeapon" xml:space="preserve">
+    <value>보조무기</value>
+  </data>
+  <data name="SelectWeapon" xml:space="preserve">
+    <value>무기선택:</value>
+  </data>
+  <data name="SelectYourLoadoutCaps" xml:space="preserve">
+    <value>장착무기 선택</value>
+  </data>
+  <data name="SendCaps" xml:space="preserve">
+    <value>보내기</value>
+  </data>
+  <data name="SendingMessageToN" xml:space="preserve">
+    <value>{0}님에게 메시지 전송중...</value>
+  </data>
+  <data name="SendMessage" xml:space="preserve">
+    <value>메시지 보내기</value>
+  </data>
+  <data name="SendMessageCaps" xml:space="preserve">
+    <value>메시지 보내기</value>
+  </data>
+  <data name="SentInvites" xml:space="preserve">
+    <value>초대 전송</value>
+  </data>
+  <data name="ServerError" xml:space="preserve">
+    <value>서버 에러</value>
+  </data>
+  <data name="ServerFull" xml:space="preserve">
+    <value>서버 만원</value>
+  </data>
+  <data name="ServerFullMsg" xml:space="preserve">
+    <value>서버가 꽉 찼습니다. 다른 서버를 선택하세요.</value>
+  </data>
+  <data name="ServerIsNotReachable" xml:space="preserve">
+    <value>서버에 연결할 수 없습니다.</value>
+  </data>
+  <data name="ServerName" xml:space="preserve">
+    <value>서버명</value>
+  </data>
+  <data name="ServerNameDesc" xml:space="preserve">
+    <value>서버명은 서버가 설치된 지역명을 따르고 있습니다. 빠른 성능을 위해 가장 가까운 지역을 선택하세요.</value>
+  </data>
+  <data name="SettingUp" xml:space="preserve">
+    <value>설정중...</value>
+  </data>
+  <data name="SevenDays" xml:space="preserve">
+    <value>7일</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>알리기!</value>
+  </data>
+  <data name="ShareTheFunWithYourFaceBookFriends" xml:space="preserve">
+    <value>페이스북 친구에게 알리고 함께 즐겨요!</value>
+  </data>
+  <data name="ShopBtnTooltip" xml:space="preserve">
+    <value>최고의 무기와 방어구를 장착해 보세요!</value>
+  </data>
+  <data name="ShopCaps" xml:space="preserve">
+    <value>상점</value>
+  </data>
+  <data name="Shotguns" xml:space="preserve">
+    <value>샷건</value>
+  </data>
+  <data name="SingleWeaponLimit" xml:space="preserve">
+    <value>단일무기 제한</value>
+  </data>
+  <data name="SkinTone" xml:space="preserve">
+    <value>피부톤</value>
+  </data>
+  <data name="SlowCaps" xml:space="preserve">
+    <value>느림</value>
+  </data>
+  <data name="SmackdownXP" xml:space="preserve">
+    <value>패배 경험치</value>
+  </data>
+  <data name="SniperRifles" xml:space="preserve">
+    <value>스나이퍼라이플</value>
+  </data>
+  <data name="SocNetInvalidMsg" xml:space="preserve">
+    <value>접속경로가 바르지 않습니다.</value>
+  </data>
+  <data name="Spectate" xml:space="preserve">
+    <value>관전하기</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>스피드</value>
+  </data>
+  <data name="SpeedDesc" xml:space="preserve">
+    <value>게임서버와의 네트워크 연결상태를 나타냅니다. 여기에 나타난 숫자는(핑) PC와 게임서버간에 주고 받는 정보를 1000분의 1초로 표기한 것입니다. 낮은 핑이 더 나은 네트워크 연결상태를 나타내므로, 항상 가급적 빠른 서버를 이용해 주세요.</value>
+  </data>
+  <data name="KillLimit" xml:space="preserve">
+    <value>킬수 제한</value>
+  </data>
+  <data name="Splatterguns" xml:space="preserve">
+    <value>스플래터건</value>
+  </data>
+  <data name="StartTypingTheNameOfAFriend" xml:space="preserve">
+    <value>친구 이름을 입력하세요.</value>
+  </data>
+  <data name="StatsBtnTooltip" xml:space="preserve">
+    <value>캐릭터 정보 보기</value>
+  </data>
+  <data name="StatsCaps" xml:space="preserve">
+    <value>정보</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>상태</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>제목</value>
+  </data>
+  <data name="SuicideXP" xml:space="preserve">
+    <value>자살 경험치</value>
+  </data>
+  <data name="Tag" xml:space="preserve">
+    <value>마크</value>
+  </data>
+  <data name="TermsOfService" xml:space="preserve">
+    <value>약관</value>
+  </data>
+  <data name="TertiaryWeapon" xml:space="preserve">
+    <value>보조무기2</value>
+  </data>
+  <data name="TheAmountYouTriedToPurchaseIsInvalid" xml:space="preserve">
+    <value>구매하려는 금액이 맞지 않습니다.</value>
+  </data>
+  <data name="TheNTeamHadTheMostKillsAtMatchEnd" xml:space="preserve">
+    <value>{0}팀이 가장 많은 킬수를 기록하였습니다.</value>
+  </data>
+  <data name="ThereAreNoPendingRequestsForN" xml:space="preserve">
+    <value>보류중인 요청이 없습니다.</value>
+  </data>
+  <data name="ThirtyDays" xml:space="preserve">
+    <value>30일</value>
+  </data>
+  <data name="ThisActionCannotBeUndoneCaps" xml:space="preserve">
+    <value>이 행동을 끝내야만 합니다.</value>
+  </data>
+  <data name="ThisGameIsFull" xml:space="preserve">
+    <value>만원입니다.</value>
+  </data>
+  <data name="ThisGameNoLongerExists" xml:space="preserve">
+    <value>방이 존재하지 않습니다.</value>
+  </data>
+  <data name="ThisIsAListOfPeopleYouHaveAskedToJoinClanNotAccepted" xml:space="preserve">
+    <value>클랜가입 요청을 수락하지 않은 플레이어 리스트입니다.</value>
+  </data>
+  <data name="ThisIsTheOfficialNameOfYourClan" xml:space="preserve">
+    <value>클랜의 공식명입니다.</value>
+  </data>
+  <data name="ThisIsYourOfficialClanMotto" xml:space="preserve">
+    <value>클랜의 좌우명입니다.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedForDuration" xml:space="preserve">
+    <value>특정한 기간으로 구매할 수 없는 아이템입니다.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedFromTheShop" xml:space="preserve">
+    <value>상점에서 구매할 수 없는 아이템입니다.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedFromTheUnderground" xml:space="preserve">
+    <value>암거래상에서 구매할 수 없는 아이템입니다.</value>
+  </data>
+  <data name="ThisItemCannotBePurchasedPermanently" xml:space="preserve">
+    <value>귀속아이템이 아닙니다.</value>
+  </data>
+  <data name="ThisItemCannotBeRented" xml:space="preserve">
+    <value>대여불가능한 아이템입니다.</value>
+  </data>
+  <data name="ThisItemIsNotForSale" xml:space="preserve">
+    <value>판매불가 아이템입니다!</value>
+  </data>
+  <data name="ThisItemIsOutOfStock" xml:space="preserve">
+    <value>아이템 재고가 소진되었습니다.</value>
+  </data>
+  <data name="ThisPackIsDisabled" xml:space="preserve">
+    <value>불가능한 패키지입니다.</value>
+  </data>
+  <data name="ThisTagGetsDisplayedNextToYourName" xml:space="preserve">
+    <value>이 마크는 클랜원 이름 옆에 보여집니다.</value>
+  </data>
+  <data name="ThisWillChangeNPositionToN" xml:space="preserve">
+    <value>{0}님의 직위를 {1}으로 변경합니다.</value>
+  </data>
+  <data name="TiedForWinner" xml:space="preserve">
+    <value>동점!</value>
+  </data>
+  <data name="TimeLimit" xml:space="preserve">
+    <value>시간 제한</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>TO</value>
+  </data>
+  <data name="ToCreateAClanYouStillNeedTo" xml:space="preserve">
+    <value>[클랜생성 조건]</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>오늘</value>
+  </data>
+  <data name="TopBlues" xml:space="preserve">
+    <value>Top Blue</value>
+  </data>
+  <data name="TopReds" xml:space="preserve">
+    <value>Top Reds</value>
+  </data>
+  <data name="TrainingCaps" xml:space="preserve">
+    <value>연습</value>
+  </data>
+  <data name="TrainingModeCaps" xml:space="preserve">
+    <value>연습모드</value>
+  </data>
+  <data name="TrainingModeDesc" xml:space="preserve">
+    <value>연습모드는 다른 상대 없이 혼자서 연습을 할 수 있는 모드입니다.</value>
+  </data>
+  <data name="TranserClanSuccessMsg" xml:space="preserve">
+    <value>{0} 클랜의 지휘권을 {1}님에게 넘겨주었습니다.</value>
+  </data>
+  <data name="TransferClanErrorMsg" xml:space="preserve">
+    <value>{0} 클랜의 지휘권을 {1}님에게 넘겨주는 동안에 장애가 발생하였습니다.\n잠시후에 시도해 주세요.</value>
+  </data>
+  <data name="TransferClanLeaderhsipToN" xml:space="preserve">
+    <value>{0} 클랜의 지휘권을 {1}님에게 넘겨줄까요?</value>
+  </data>
+  <data name="TransferClanWarningMsg" xml:space="preserve">
+    <value>{0} 클랜의 지휘권을 {1}님에게 넘겨주게 됩니다.\n 이 클랜의 지휘권을 상실하게 됩니다.</value>
+  </data>
+  <data name="TransferLeadership" xml:space="preserve">
+    <value>지휘권 넘겨주기</value>
+  </data>
+  <data name="TransferLeadershipCaps" xml:space="preserve">
+    <value>지휘권 넘겨주기</value>
+  </data>
+  <data name="TransferringLeadershipOfClanNtoN" xml:space="preserve">
+    <value>{0}클랜 지휘권을 {1}님에게 넘겨주는 중...</value>
+  </data>
+  <data name="Try" xml:space="preserve">
+    <value>시험</value>
+  </data>
+  <data name="TryThe" xml:space="preserve">
+    <value>시험</value>
+  </data>
+  <data name="TryYourWeapons" xml:space="preserve">
+    <value>시험해 보세요.</value>
+  </data>
+  <data name="TypePasswordHere" xml:space="preserve">
+    <value>비밀번호를 입력하세요.</value>
+  </data>
+  <data name="UndergroundCaps" xml:space="preserve">
+    <value>암거래상</value>
+  </data>
+  <data name="UnequippingDuplicateFunctionalItemClass" xml:space="preserve">
+    <value>중복장착 해제</value>
+  </data>
+  <data name="UnequippingDuplicateQuickItemClass" xml:space="preserve">
+    <value>중복장착 해제</value>
+  </data>
+  <data name="UnequippingDuplicateWeaponClass" xml:space="preserve">
+    <value>중복장착 해제</value>
+  </data>
+  <data name="UnexpectedReturn" xml:space="preserve">
+    <value>예상치못한 복귀</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>알수없습니다.</value>
+  </data>
+  <data name="Unmute" xml:space="preserve">
+    <value>소리 켜기</value>
+  </data>
+  <data name="UnreadyCaps" xml:space="preserve">
+    <value>준비 안됨</value>
+  </data>
+  <data name="UnspecifiedErrorMsg" xml:space="preserve">
+    <value>알 수 없는 에러가 발생했습니다.\n버그리포트를 남겨주세요!</value>
+  </data>
+  <data name="UpdateMemberErrorMsg" xml:space="preserve">
+    <value>{0}님의 상태를 업데이트 하는 중에 에러가 발생했습니다.\n잠시후 다시 시도해 주세요.</value>
+  </data>
+  <data name="UpdateMemberStatus" xml:space="preserve">
+    <value>상태 업데이트하기</value>
+  </data>
+  <data name="UpdateMemberSuccessMsg" xml:space="preserve">
+    <value>{0}님의 상태 업데이트가 완료되었습니다.</value>
+  </data>
+  <data name="UpdateMemberWarningMsg" xml:space="preserve">
+    <value>{0}님의 직위를 {1}로 변경합니다.</value>
+  </data>
+  <data name="UpdateNPosition" xml:space="preserve">
+    <value>{0}님의 직위를 변경할까요?</value>
+  </data>
+  <data name="UpdatingInventory" xml:space="preserve">
+    <value>인벤토리 업데이트</value>
+  </data>
+  <data name="UpdatingItemMall" xml:space="preserve">
+    <value>아이템 업데이트</value>
+  </data>
+  <data name="UpdatingMemberStatusOfN" xml:space="preserve">
+    <value>{0}님의 상태 업데이트중...</value>
+  </data>
+  <data name="UpperBody" xml:space="preserve">
+    <value>상의</value>
+  </data>
+  <data name="UpperBodyArmor" xml:space="preserve">
+    <value>상의 방어구</value>
+  </data>
+  <data name="UseThisFormToSendClanInvitations" xml:space="preserve">
+    <value>이 양식을 친구에게 클랜가입초대할 때 사용하세요.</value>
+  </data>
+  <data name="Velocity" xml:space="preserve">
+    <value>빠른 속도</value>
+  </data>
+  <data name="VerifyPassword" xml:space="preserve">
+    <value>비밀번호 확인</value>
+  </data>
+  <data name="ViewOutstandingInvitesAndRequests" xml:space="preserve">
+    <value>확인하지 않은 초대&amp;요청 보기</value>
+  </data>
+  <data name="Volume" xml:space="preserve">
+    <value>볼륨</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>주의</value>
+  </data>
+  <data name="WaterQuality" xml:space="preserve">
+    <value>수면효과</value>
+  </data>
+  <data name="WeaponClassRecords" xml:space="preserve">
+    <value>무기별 기록</value>
+  </data>
+  <data name="WeaponLoadout" xml:space="preserve">
+    <value>무기 장착</value>
+  </data>
+  <data name="WeaponPerformaceTotal" xml:space="preserve">
+    <value>무기 성능 (종합)</value>
+  </data>
+  <data name="Weapons" xml:space="preserve">
+    <value>무기</value>
+  </data>
+  <data name="WeaponsCaps" xml:space="preserve">
+    <value>무기</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>환영합니다.</value>
+  </data>
+  <data name="WelcomeToUS" xml:space="preserve">
+    <value>환영합니다!</value>
+  </data>
+  <data name="WereUpdatingTheItemMallPleaseWait" xml:space="preserve">
+    <value>아이템을 업데이트하고 있습니다. 잠시만 기다려주세요.</value>
+  </data>
+  <data name="WereUpdatingYourInventoryPleaseWait" xml:space="preserve">
+    <value>인벤토리를 업데이트하고 있습니다. 잠시만 기다려주세요.</value>
+  </data>
+  <data name="WonWithAScoreOf" xml:space="preserve">
+    <value>점수로 승리하였습니다.</value>
+  </data>
+  <data name="XPEarnedN" xml:space="preserve">
+    <value>{0} 경험치 획득</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>어제</value>
+  </data>
+  <data name="YouAlreadyMasteredThisLevel" xml:space="preserve">
+    <value>이미 마스터한 레벨이에요!</value>
+  </data>
+  <data name="YouAlreadyOwnThisItem" xml:space="preserve">
+    <value>이미 가지고 있는 아이템입니다.</value>
+  </data>
+  <data name="YouCannotPurchaseThisItemForMoreThanNDays" xml:space="preserve">
+    <value>{0}일 이상의 기간동안 이 아이템을 구매할 수 없습니다.</value>
+  </data>
+  <data name="YouCantChangeYourClanInfoOnceCreated" xml:space="preserve">
+    <value>클랜을 만든 후에는 클랜정보를 변경할 수 없습니다. 주의 하세요!</value>
+  </data>
+  <data name="YouDontHaveEnoughPointsOrCreditsToPurchaseThisItem" xml:space="preserve">
+    <value>구매에 필요한 포인트나 캐쉬가 부족합니다.</value>
+  </data>
+  <data name="YouDontNeedToEquipLicenses" xml:space="preserve">
+    <value>라이센스가 필요하지 않습니다.</value>
+  </data>
+  <data name="YouDontPermissionToPerformThisAction" xml:space="preserve">
+    <value>수행할 수 없습니다.</value>
+  </data>
+  <data name="YouHaveNFriends" xml:space="preserve">
+    <value>{0}명의 친구가 있습니다.</value>
+  </data>
+  <data name="YouHaveNNewMessages" xml:space="preserve">
+    <value>{0}개의 메시지가 있습니다.</value>
+  </data>
+  <data name="YouHaveNoFriends" xml:space="preserve">
+    <value>친구가 없습니다.</value>
+  </data>
+  <data name="YouHaveOnlyOneFriend" xml:space="preserve">
+    <value>친구가 1명 있습니다.</value>
+  </data>
+  <data name="YouHaveToReachLevelNToJoinThisGame" xml:space="preserve">
+    <value>여기에 입장하기 위해서는 {0} 레벨을 달성해야 합니다.</value>
+  </data>
+  <data name="YouNeedAClanLicenseToCreateClanMsg" xml:space="preserve">
+    <value>클랜을 생성하기 위해서는 클랜라이센스가 필요합니다.\n클랜라이센스는 상점에서 판매하는 기능성 아이템입니다.</value>
+  </data>
+  <data name="YouNeedAtLeastOneFriendToCreateAClan" xml:space="preserve">
+    <value>클랜을 생성하기 위해서는 최소 1명의 친구가 필요합니다.</value>
+  </data>
+  <data name="YouNeedMoreCreditsToBuyThisItem" xml:space="preserve">
+    <value>캐쉬가 부족합니다.</value>
+  </data>
+  <data name="YouNeedToBeAtLeastLevelFourToCreateAClan" xml:space="preserve">
+    <value>클랜을 생성하기 위해서는 최소 레벨4가 되어야 합니다.</value>
+  </data>
+  <data name="YouNeedToBeLevelNToBuyThisItem" xml:space="preserve">
+    <value>{0}레벨이 되어야 구매할 수 있는 아이템입니다.</value>
+  </data>
+  <data name="YouNeedToEarnMorePointsToBuyThisItem" xml:space="preserve">
+    <value>포인트가 부족합니다.</value>
+  </data>
+  <data name="YourAccountHasBeenBanned" xml:space="preserve">
+    <value>제재된 계정입니다.</value>
+  </data>
+  <data name="YourAreNoLongerAMemberOfClanN" xml:space="preserve">
+    <value>더이상 {0} 클랜 멤버가 아닙니다.</value>
+  </data>
+  <data name="YourClanIsBeingCreated" xml:space="preserve">
+    <value>클랜이 생성되었습니다...</value>
+  </data>
+  <data name="YourFriendRequestIsAlreadySent" xml:space="preserve">
+    <value>이미 친구요청을 했습니다.</value>
+  </data>
+  <data name="YourGameNameIsInvalid" xml:space="preserve">
+    <value>허용되지 않는 방제목입니다.</value>
+  </data>
+  <data name="YourLevelIsTooLowToBuyThisItem" xml:space="preserve">
+    <value>레벨이 부족합니다.</value>
+  </data>
+  <data name="YourMessageHasBeenSent" xml:space="preserve">
+    <value>메시지가 전송되었습니다.</value>
+  </data>
+  <data name="YourMessageHasNotBeenSent" xml:space="preserve">
+    <value>메시지 전송에 실패하였습니다!</value>
+  </data>
+  <data name="YourRequestHasBeenSent" xml:space="preserve">
+    <value>요청이 전송되었습니다.</value>
+  </data>
+  <data name="YourStatsCaps" xml:space="preserve">
+    <value>정보</value>
+  </data>
+  <data name="YouveAlreadyInvitedThatPlayer" xml:space="preserve">
+    <value>이미 초대되었습니다.</value>
+  </data>
+  <data name="AddAsFriend" xml:space="preserve">
+    <value>친구 요청</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>관리자</value>
+  </data>
+  <data name="Always" xml:space="preserve">
+    <value>항상</value>
+  </data>
+  <data name="AreYouSureYouWantToLeaveTheGame" xml:space="preserve">
+    <value>정말 방에서 나가시겠습니까?</value>
+  </data>
+  <data name="AudioCaps" xml:space="preserve">
+    <value>오디오</value>
+  </data>
+  <data name="AutoEquipWeapons" xml:space="preserve">
+    <value>자동으로 무기 장착</value>
+  </data>
+  <data name="AutoPickupWeapons" xml:space="preserve">
+    <value>자동으로 무기 선택</value>
+  </data>
+  <data name="BugType" xml:space="preserve">
+    <value>버그 종류</value>
+  </data>
+  <data name="ChangingToBlueTeam" xml:space="preserve">
+    <value>블루팀으로 변경</value>
+  </data>
+  <data name="ChangingToRedTeam" xml:space="preserve">
+    <value>레드팀으로 변경</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>채팅</value>
+  </data>
+  <data name="ChatInClan" xml:space="preserve">
+    <value>클랜 채팅</value>
+  </data>
+  <data name="ChatInLobby" xml:space="preserve">
+    <value>로비 채팅</value>
+  </data>
+  <data name="ChatWith" xml:space="preserve">
+    <value>대화중 : </value>
+  </data>
+  <data name="Cheaters" xml:space="preserve">
+    <value>치터</value>
+  </data>
+  <data name="Clan" xml:space="preserve">
+    <value>클랜</value>
+  </data>
+  <data name="ClickToRespawn" xml:space="preserve">
+    <value>클릭하시면 리스폰됩니다!</value>
+  </data>
+  <data name="CongratulationsYouKilledYourself" xml:space="preserve">
+    <value>자살하였습니다!</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="ControlsCaps" xml:space="preserve">
+    <value>조작</value>
+  </data>
+  <data name="Crash" xml:space="preserve">
+    <value>사고</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>세부</value>
+  </data>
+  <data name="DisconnectionIn" xml:space="preserve">
+    <value>연결 끊김 : </value>
+  </data>
+  <data name="DontSpamTheLobbyChat" xml:space="preserve">
+    <value>스팸메시지는 금지됩니다.</value>
+  </data>
+  <data name="EnableRagdoll" xml:space="preserve">
+    <value>사살 장면</value>
+  </data>
+  <data name="EnterAMessageHere" xml:space="preserve">
+    <value>메시지를 입력하세요.</value>
+  </data>
+  <data name="EnterAMessageInGameHere" xml:space="preserve">
+    <value>메시지를 입력하세요.</value>
+  </data>
+  <data name="EnterAMessageToClanHere" xml:space="preserve">
+    <value>여기에 클랜 메시지를 입력하세요.</value>
+  </data>
+  <data name="EnterAMessageToLobbyHere" xml:space="preserve">
+    <value>여기에 로비 메시지를 입력하세요.</value>
+  </data>
+  <data name="EnteredTrainingMode" xml:space="preserve">
+    <value>훈련 모드에 입장하셨습니다!</value>
+  </data>
+  <data name="FirstTime" xml:space="preserve">
+    <value>처음</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>빈도</value>
+  </data>
+  <data name="Friends" xml:space="preserve">
+    <value>친구</value>
+  </data>
+  <data name="Gameplay" xml:space="preserve">
+    <value>게임 플레이</value>
+  </data>
+  <data name="Graphics" xml:space="preserve">
+    <value>그래픽</value>
+  </data>
+  <data name="HeadshotFromN" xml:space="preserve">
+    <value>{0}님에게 헤드샷을 맞았습니다!</value>
+  </data>
+  <data name="HowToReproduceIt" xml:space="preserve">
+    <value>재현할 수 있는 방법을 설명해 주세요!</value>
+  </data>
+  <data name="InviteToClan" xml:space="preserve">
+    <value>클랜 초대</value>
+  </data>
+  <data name="IsNotOnline" xml:space="preserve">
+    <value>접속중이 아닙니다.</value>
+  </data>
+  <data name="JoinedTheGame" xml:space="preserve">
+    <value>게임에 접속하였습니다.</value>
+  </data>
+  <data name="JoinGame" xml:space="preserve">
+    <value>같이하기</value>
+  </data>
+  <data name="KilledByN" xml:space="preserve">
+    <value>{0}님에 의해 사망하였습니다.</value>
+  </data>
+  <data name="LeaveCaps" xml:space="preserve">
+    <value>나가기</value>
+  </data>
+  <data name="LeaveGameWarningMsg" xml:space="preserve">
+    <value>게임 플레이 도중에 나가게 되면 경험치와 포인트를 획득할 수 없습니다. 정말로 방에서 나가시겠습니까?</value>
+  </data>
+  <data name="LeavingGame" xml:space="preserve">
+    <value>방에서 나가기</value>
+  </data>
+  <data name="LeftTheGame" xml:space="preserve">
+    <value>방에서 퇴장하였습니다.</value>
+  </data>
+  <data name="Lobby" xml:space="preserve">
+    <value>로비</value>
+  </data>
+  <data name="MoreInfo" xml:space="preserve">
+    <value>정보 더보기</value>
+  </data>
+  <data name="NKilledThemself" xml:space="preserve">
+    <value>{0}님께서 자살하였습니다.</value>
+  </data>
+  <data name="NKillsLeft" xml:space="preserve">
+    <value>{0}킬 남았습니다!</value>
+  </data>
+  <data name="NoMatchFound" xml:space="preserve">
+    <value>찾지 못하였습니다.</value>
+  </data>
+  <data name="NoPlayerSelected" xml:space="preserve">
+    <value>선택된 플레이어가 없습니다.</value>
+  </data>
+  <data name="NoPlayersToReport" xml:space="preserve">
+    <value>리포팅할 플레이어가 없습니다.</value>
+  </data>
+  <data name="NutshotFromN" xml:space="preserve">
+    <value>{0}님에게 너트샷을 맞으셨습니다.</value>
+  </data>
+  <data name="OneKillLeft" xml:space="preserve">
+    <value>1킬 남았습니다!</value>
+  </data>
+  <data name="OnlyOneTeamChangePerLife" xml:space="preserve">
+    <value>한 팀만 선택할 수 있습니다.</value>
+  </data>
+  <data name="OpenThisLinkInANewBrowserWindow" xml:space="preserve">
+    <value>새창에서 열기</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>기타</value>
+  </data>
+  <data name="PlayerNames" xml:space="preserve">
+    <value>플레이어</value>
+  </data>
+  <data name="Private" xml:space="preserve">
+    <value>비공개</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>리포트</value>
+  </data>
+  <data name="ReportBugCaps" xml:space="preserve">
+    <value>버그 리포트</value>
+  </data>
+  <data name="ReportBugSuccessMsg" xml:space="preserve">
+    <value>버그 리포트를 제출하였습니다!</value>
+  </data>
+  <data name="ReportPlayerCaps" xml:space="preserve">
+    <value>플레이어 신고</value>
+  </data>
+  <data name="ReportPlayerErrorMsg" xml:space="preserve">
+    <value>서버에 접속하지 않으셨기 때문에 신고할 수 없습니다.</value>
+  </data>
+  <data name="ReportPlayerInfoMsg" xml:space="preserve">
+    <value>위버스트라이크 플레이중에 치팅/버그 등의 불법 행위를 한 플레이어를 신고할 수 있습니다.</value>
+  </data>
+  <data name="ReportPlayerSuccessMsg" xml:space="preserve">
+    <value>신고가 접수되었습니다. 감사합니다.</value>
+  </data>
+  <data name="ReportPlayerWarningMsg" xml:space="preserve">
+    <value>{0}님을 신고하시겠습니까? 허위 신고를 할 경우 게임 플레이에 불이익을 당할 수 있습니다.</value>
+  </data>
+  <data name="ReportType" xml:space="preserve">
+    <value>신고 종류</value>
+  </data>
+  <data name="SelectAPlayer" xml:space="preserve">
+    <value>플레이어 선택</value>
+  </data>
+  <data name="SelectType" xml:space="preserve">
+    <value>선택 유형</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>보내기</value>
+  </data>
+  <data name="ServerDown" xml:space="preserve">
+    <value>서버 다운</value>
+  </data>
+  <data name="ShopTutorialMsg01" xml:space="preserve">
+    <value>테스트존에 오신 것을 환영합니다!</value>
+  </data>
+  <data name="ShopTutorialMsg02" xml:space="preserve">
+    <value>상점으로 되돌아가기 : ESC / Backspace</value>
+  </data>
+  <data name="SmackdownFromN" xml:space="preserve">
+    <value>{0}님에게 사살되었습니다.</value>
+  </data>
+  <data name="Sometimes" xml:space="preserve">
+    <value>가끔</value>
+  </data>
+  <data name="SysInfoCaps" xml:space="preserve">
+    <value>시스템 정보</value>
+  </data>
+  <data name="TheCommunicator" xml:space="preserve">
+    <value>채팅 대상</value>
+  </data>
+  <data name="TrainingBtnTooltip" xml:space="preserve">
+    <value>위버스트라이크 싱글 모드</value>
+  </data>
+  <data name="TrainingTutorialMsg01" xml:space="preserve">
+    <value>기본 훈련에 참여해주셔서 감사합니다.</value>
+  </data>
+  <data name="TrainingTutorialMsg02" xml:space="preserve">
+    <value>이 메시지를 보지 않으시려면 {0}키를 눌러주세요!</value>
+  </data>
+  <data name="TrainingTutorialMsg03" xml:space="preserve">
+    <value>자! 그럼 시작합니다!</value>
+  </data>
+  <data name="TrainingTutorialMsg04" xml:space="preserve">
+    <value>마우스를 이동시켜 주위를 살펴볼 수 있습니다.</value>
+  </data>
+  <data name="TrainingTutorialMsg05" xml:space="preserve">
+    <value>이제 {0}{1}{2}{3}키를 눌러 캐릭터를 이동시켜 보세요!</value>
+  </data>
+  <data name="TrainingTutorialMsg06" xml:space="preserve">
+    <value>{0}키를 눌러 총을 발사해 보세요!</value>
+  </data>
+  <data name="TrainingTutorialMsg07" xml:space="preserve">
+    <value>다음 무기선택:{0} /n이전 무기선택:{1}</value>
+  </data>
+  <data name="TrainingTutorialMsg08" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4}키를 눌러 바로 무기를 선택할 수도 있습니다.</value>
+  </data>
+  <data name="TrainingTutorialMsg09" xml:space="preserve">
+    <value>캐릭터를 앉게 하려면 {0}키를 눌러주세요!</value>
+  </data>
+  <data name="TrainingTutorialMsg10" xml:space="preserve">
+    <value>{0}를 눌러 전체 화면 모드로 변경할 수 있습니다.</value>
+  </data>
+  <data name="TrainingTutorialMsg11" xml:space="preserve">
+    <value>이제 모든 준비가 완료되었습니다! 행운을 빕니다!</value>
+  </data>
+  <data name="UnassignedKeyMappingsWarningMsg" xml:space="preserve">
+    <value>저장된 키가 아닙니다! 단축키 설정을 확인해 주세요!</value>
+  </data>
+  <data name="UserInterface" xml:space="preserve">
+    <value>유저 인터페이스</value>
+  </data>
+  <data name="VideoCaps" xml:space="preserve">
+    <value>그래픽</value>
+  </data>
+  <data name="WaitingForOtherPlayers" xml:space="preserve">
+    <value>다른 플레이어 기다리는중...</value>
+  </data>
+  <data name="WhatHappened" xml:space="preserve">
+    <value>버그 현상을 설명해 주세요!</value>
+  </data>
+  <data name="YouAreOnTheBlueTeam" xml:space="preserve">
+    <value>블루팀입니다.</value>
+  </data>
+  <data name="YouAreOnTheRedTeam" xml:space="preserve">
+    <value>레드팀입니다.</value>
+  </data>
+  <data name="YouCannotChangeToATeamWithEqual" xml:space="preserve">
+    <value>인원수가 동일하거나 더 많은 팀으로는 변경할 수 없습니다.</value>
+  </data>
+  <data name="YouKilledN" xml:space="preserve">
+    <value>{0}님을 사살하였습니다!</value>
+  </data>
+  <data name="YouShotNInTheHead" xml:space="preserve">
+    <value>{0}님에게 헤드샷 성공!</value>
+  </data>
+  <data name="YouShotNInTheNuts" xml:space="preserve">
+    <value>{0}님에게 너츠샷 성공!</value>
+  </data>
+  <data name="YouSmackedDownN" xml:space="preserve">
+    <value>{0}님을 사살하였습니다!</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>일반</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>홈</value>
+  </data>
+  <data name="HomeHelpDesc" xml:space="preserve">
+    <value>게임에 접속하게 되면 최초로 보여지는 화면입니다. 이곳에서는 친구들과 채팅을 할 수 있고, 모든 메뉴로의 이동이 가능합니다.</value>
+  </data>
+  <data name="Introduction" xml:space="preserve">
+    <value>게임 소개</value>
+  </data>
+  <data name="IntroHelpDesc" xml:space="preserve">
+    <value>누구나 쉽게 즐길 수 있는 FPS 게임! 위버스크라이크에 오신 것을 환영합니다! 위버스트라이크는 대한민국 최초로 웹에서 플레이 가능한 3D FPS 게임입니다.</value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>아이템</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>플레이</value>
+  </data>
+  <data name="PlayHelpDesc" xml:space="preserve">
+    <value>플레이 메뉴에서 방을 생성하고, 이미 생성된 방에 입장할 수 있습니다. 서버를 선택하실 때에는 쾌적한 플레이를 위해 핑(서버 속도에 ms로 표시된 숫자)이 낮은 서버를 선택하시는 것이 좋습니다.</value>
+  </data>
+  <data name="Shop" xml:space="preserve">
+    <value>상점</value>
+  </data>
+  <data name="ShopHelpDesc" xml:space="preserve">
+    <value>상점에서는 무기, 방어구 등의 아이템을 구매할 수 있습니다. 상점은 각 기능에 따라  장비, 인벤토리, 상점, 암거래상 4가지로 분류됩니다.</value>
+  </data>
+  <data name="Stats" xml:space="preserve">
+    <value>정보</value>
+  </data>
+  <data name="StatsHelpDesc" xml:space="preserve">
+    <value>정보에서는 위버스트라이크를 플레이하면서 저장되는 각종 기록들을 살펴볼 수 있습니다. 개인 기록에는 킬 수, 데미지, 에너지, 헤드샷, 스나이핑, 무기 타입별 최고 킬 수 등을 확인할 수 있고, 무기사용 기록에서는 각 무기 타입별로 데미지 입힌 내역을 확인할 수 있습니다.</value>
+  </data>
+  <data name="GunsNStuffCaps" xml:space="preserve">
+    <value>상점</value>
+  </data>
+  <data name="MainMenuPlayTooltip" xml:space="preserve">
+    <value>게임에 접속해 다른 유저들과 플레이 하세요!</value>
+  </data>
+  <data name="MainMenuQuitTooltip" xml:space="preserve">
+    <value>위버스트라이크 나가기</value>
+  </data>
+  <data name="MainMenuShopTooltip" xml:space="preserve">
+    <value>더 강한 무기를 구매할 수 있어요!</value>
+  </data>
+  <data name="MainMenuTrainTooltip" xml:space="preserve">
+    <value>싱글 플레이로 미리 연습할 수 있어요!</value>
+  </data>
+  <data name="FindingAServerToJoin" xml:space="preserve">
+    <value>접속할 서버를 검색중입니다...</value>
+  </data>
+  <data name="LostParadise2" xml:space="preserve">
+    <value>로스트 파라다이스</value>
+  </data>
+  <data name="MonkeyIsland2" xml:space="preserve">
+    <value>원숭이의 섬</value>
+  </data>
+  <data name="TemplOfTheRaven" xml:space="preserve">
+    <value>까마귀 신전</value>
+  </data>
+  <data name="TheWarehouse" xml:space="preserve">
+    <value>웨어하우스</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>주</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>월</value>
+  </data>
+  <data name="ThreeMonths" xml:space="preserve">
+    <value>3 개월</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>할인</value>
+  </data>
+  <data name="MIDescriptionMsg" xml:space="preserve">
+    <value>한 때 공포의 대상이였던 브래드 포트 선장이 잠든 곳입니다. 이 섬에는 브래드 포트의 보물이 숨겨져 있다는 소문이 있으며, 원숭이 킨의 부족을 위한 숭배의 장소이기도 합니다.</value>
+  </data>
+  <data name="LPDescriptionMsg" xml:space="preserve">
+    <value>코스타리카 해안 반경에 위치한 섬입니다. 이 섬에서는 저격수들이 활동하기에 좋은 구조로 되어 있으며 특히, 우뚝 솟아 있는 두 섬기둥에 숨어있는 저격수들을 조심해야 합니다.</value>
+  </data>
+  <data name="TWDescriptionMsg" xml:space="preserve">
+    <value>RAID사의 각종 무기들을 보관해 놓는 장소입니다. 웨어하우스 전투에서 승리하기 위해서는 빠른 판단력과 근거리 무기를 효율적으로 사용해야 합니다.</value>
+  </data>
+  <data name="TORDescriptionMsg" xml:space="preserve">
+    <value>고대의 강력한 까마귀신이 사원 전체를 감시하고 있습니다. 사원에 숨겨진 비밀을 찾아 보세요! 이 맵에서는 중거리 무기를 효율적으로 사용해야 합니다.</value>
+  </data>
+  <data name="GTDescriptionMsg" xml:space="preserve">
+    <value>위버 시티에 위치한 63빌딩과 맞먹는 규모의 기디언 타워입니다. 이 맵에서 플레이하실 때에는 떨어지지 않게 특히 조심하셔야 합니다.</value>
+  </data>
+  <data name="FWDescriptionMsg" xml:space="preserve">
+    <value>맵 제작 : Cmune\n포트 윈터는 겨울을 배경으로 한 팀서바이벌 모드 전용맵입니다. 6 vs 6 전투에 특화되어 있습니다.</value>
+  </data>
+  <data name="SGDescriptionMsg" xml:space="preserve">
+    <value>맵 제작 : Cmune\n하늘 정원은 오픈형 맵으로 시야 확보와 캐릭터의 움직임이 특히나 중요합니다. 캐논을 사용하면 더욱 효과적인 전투를 벌일 수 있습니다.</value>
+  </data>
+  <data name="DMModeDescriptionMsg" xml:space="preserve">
+    <value>아군과 적의 구분 없이 모두 공격할 수 있습니다. 가장 많은 킬수를 달성한 유저가 승리하는 모드입니다.</value>
+  </data>
+  <data name="TDMModeDescriptionMsg" xml:space="preserve">
+    <value>끊임없이 리스폰되는 상대 진영의 플레이어를 공격해야 합니다. 가장 많은 킬수를 달성한 팀이 승리하는 모드입니다.</value>
+  </data>
+  <data name="ELMModeDescriptionMsg" xml:space="preserve">
+    <value>상대 진영의 플레이어를 모두 사살해야 합니다. 마지막까지 유저가 남아있는 팀이 승리하게 됩니다.</value>
+  </data>
+  <data name="Effects" xml:space="preserve">
+    <value>효과</value>
+  </data>
+  <data name="ScreenResolution" xml:space="preserve">
+    <value>화면 해상도</value>
+  </data>
+  <data name="MaxRounds" xml:space="preserve">
+    <value>최대 판 수</value>
+  </data>
+  <data name="MaxKills" xml:space="preserve">
+    <value>최대 킬 수</value>
+  </data>
+  <data name="NewItem" xml:space="preserve">
+    <value>신규 아이템</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>다음에</value>
+  </data>
+  <data name="Congratulations" xml:space="preserve">
+    <value>축하합니다</value>
+  </data>
+  <data name="YouHaveBeenGrantedNItems" xml:space="preserve">
+    <value>공짜로 {0} 아이템을 획득하셨습니다! 상점>인벤토리에서 장착해 주세요!</value>
+  </data>
+  <data name="NoItems" xml:space="preserve">
+    <value>아이템이 없습니다.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>설명이 없습니다.</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>기본</value>
+  </data>
+  <data name="EliminateAllYourEnemies" xml:space="preserve">
+    <value>적들을 모두 섬멸하라!</value>
+  </data>
+  <data name="FinalRoundCaps" xml:space="preserve">
+    <value>파이널 라운드</value>
+  </data>
+  <data name="FinalRoundX" xml:space="preserve">
+    <value>파이널 라운드 {0}</value>
+  </data>
+  <data name="NRoundsLeft" xml:space="preserve">
+    <value>{0} 라운드 남았습니다!</value>
+  </data>
+  <data name="RedCaps" xml:space="preserve">
+    <value>RED</value>
+  </data>
+  <data name="BlueCaps" xml:space="preserve">
+    <value>BLUE</value>
+  </data>
+  <data name="Following" xml:space="preserve">
+    <value>관람 대상 :</value>
+  </data>
+  <data name="Nobody" xml:space="preserve">
+    <value>플레이어 없음</value>
+  </data>
+  <data name="SpectatorMode" xml:space="preserve">
+    <value>관람 모드</value>
+  </data>
+  <data name="YouAreNotLoggedIn" xml:space="preserve">
+    <value>로그인 상태가 아닙니다.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>업데이트 가능</value>
+  </data>
+  <data name="UberStrikeIsOutOfDatePleaseRefreshPage" xml:space="preserve">
+    <value>위버스트라이크 {0} 버전이 만료되었습니다. \n브라우저를 {1} 버전으로 업데이트시켜주세요!</value>
+  </data>
+  <data name="UberStrikeIsOutOfDatePleaseDownloadClient" xml:space="preserve">
+    <value>위버스트라이크 {0} 버전이 만료되었습니다.\n최신 버전은 {1}입니다.{2}에서\n새로운 버전을 다운로드해 주세요!</value>
+  </data>
+  <data name="UberStrikeIsOutOfDateVisitWebsite" xml:space="preserve">
+    <value>위버스트라이크 {0} 버전이 만료되었습니다.\nUberStrike.com을 방문해 {0} 버전을 다운로드 하세요!</value>
+  </data>
+  <data name="UberStrikeIsOutOfDateUpdateMacApp" xml:space="preserve">
+    <value>위버스트라이크 {0} 버전이 만료되었습니다.\nMac 앱스토어에서 업데이트시켜주세요!</value>
+  </data>
+  <data name="ConnectionProblem" xml:space="preserve">
+    <value>연결 오류</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>인터넷 연결이 감지되지 않습니다.\n인터넷 설정을 확인하시고 다시 시도해 주세요.</value>
+  </data>
+  <data name="ErrorWebservices" xml:space="preserve">
+    <value>서비스에 문제가 발생한 것 같습니다. 위버스트라이크를 다시 실행시켜 주세요. 그래도 문제가 해결되지 않는다면 crzyfish@nate.com으로 문의해 주세요!
+</value>
+  </data>
+  <data name="ErrorReadingConfiguration" xml:space="preserve">
+    <value>구성을 불러오는데 오류가 발생하였습니다.</value>
+  </data>
+  <data name="ThereWasProblemRetrievingWebplayerConfiguration" xml:space="preserve">
+    <value>웹플레이어 구성에 문제가 발생하였습니다. crzyfish@nate.com 으로 문의해주세요!</value>
+  </data>
+  <data name="RefreshWallet" xml:space="preserve">
+    <value>크레딧 갱신</value>
+  </data>
+  <data name="IfYouPurchasedCreditsClickOKToRefreshYourWallet" xml:space="preserve">
+    <value>크레딧을 구매하셨다면, 확인 버튼을 눌러 인벤토리와 크레딧을 갱신해 주세요.</value>
+  </data>
+  <data name="ClanInvite" xml:space="preserve">
+    <value>클랜 초대</value>
+  </data>
+  <data name="YouAlreadyInClanMsg" xml:space="preserve">
+    <value>이미 클랜에 가입되어 있습니다.\n현재 클랜에서 먼저 탈퇴해야합니다.</value>
+  </data>
+  <data name="Hits" xml:space="preserve">
+    <value>타격</value>
+  </data>
+  <data name="BlueLevelTooltip" xml:space="preserve">
+    <value>매핑이 되지 않은 테스트용 맵입니다.</value>
+  </data>
+  <data name="GideonsTower" xml:space="preserve">
+    <value>기디언 타워</value>
+  </data>
+  <data name="SkyGarden" xml:space="preserve">
+    <value>하늘 정원</value>
+  </data>
+  <data name="FortWinter" xml:space="preserve">
+    <value>포트 윈터</value>
+  </data>
+  <data name="AqualabResearchHub" xml:space="preserve">
+    <value>아쿠아 개발 연구소</value>
+  </data>
+  <data name="Instasplat" xml:space="preserve">
+    <value>Instasplat</value>
+  </data>
+  <data name="SplatLimit" xml:space="preserve">
+    <value>킬 제한</value>
+  </data>
+    <data name="AccountHistory">
+    <value>계정 내역</value>
+  </data>
+</root>

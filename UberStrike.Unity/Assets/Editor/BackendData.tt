@@ -1,0 +1,88 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core.dll" #>
+<#@ Assembly Name="System.Configuration.dll" #>
+<#@ Assembly Name="System.Data.Linq.dll" #>
+<#@ assembly name="$(SolutionDir)Cmune.DataCenter.DataAccess/bin/Debug/Cmune.DataCenter.DataAccess.dll" #>
+<#@ assembly name="$(SolutionDir)UberStrike.DataCenter.DataAccess/bin/Debug/UberStrike.DataCenter.DataAccess.dll" #>
+<#@ assembly name="$(SolutionDir)T4Helper/bin/Debug/T4Helper.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="Cmune.DataCenter.DataAccess" #>
+<#@ import namespace="UberStrike.DataCenter.DataAccess" #>
+<#@ import namespace="System.Configuration" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+T4Utils.WriteLine = this.WriteLine;
+T4Utils.FileHeader();
+#>
+using System.Collections.Generic;
+
+/// <summary>
+/// Here we provide data for consistency checks and editor scripts
+/// </summary>
+public static class BackendData
+{
+<#
+	foreach(KeyValuePair<Item,ItemGearConfig>  item in GetAllGearItems())
+	{
+#>
+		// <#= item.Key.ItemId#>, <#=item.Value.ArmorPoints#>, 	<#=item.Value.ArmorAbsorptionPercent#>, 	"<#=item.Key.Name#>"
+<#
+	}
+#>
+	public static readonly Dictionary<int, string> SupportedItems = new Dictionary<int, string>() {
+<#
+	foreach(Item item in GetAllItems())
+	{
+#>
+		{ <#= item.ItemId#>, "<#=item.Name.Replace("\"", "\\\"") #>" },	
+<#
+	}
+#>
+	};
+}
+<#+
+	IEnumerable GetAllItems()
+	{
+		ConfigurationManager.AppSettings.Set("CmuneAPIKey", "dev");
+
+	 	using (CmuneDataContext cmuneDb = new CmuneDataContext())
+	    {
+	        var result = cmuneDb.Items.Where(i => i.IsDisable == false).ToList();
+			foreach(var i in result)
+			{
+				yield return i;
+			}
+	    }
+	}
+	
+	IEnumerable GetAllGearItems()
+	{
+		ConfigurationManager.AppSettings.Set("CmuneAPIKey", "dev");
+		ConfigurationManager.AppSettings.Set("appsAPIKey", "dev");
+
+	 	using (CmuneDataContext cmuneDb = new CmuneDataContext())
+	    {
+			using (UberstrikeDataContext paradiseDB = new UberstrikeDataContext())
+            {
+				Dictionary<int, ItemGearConfig> gearItems = new Dictionary<int, ItemGearConfig>();
+				if (paradiseDB != null)
+	            {
+	                gearItems = paradiseDB.ItemGearConfigs.ToDictionary(i => i.ItemId);
+	            }
+				
+				var result = cmuneDb.Items.Where(i => i.IsDisable == false).ToList();
+				
+				foreach(var i in result)
+				{
+					ItemGearConfig config;
+					if(gearItems.TryGetValue(i.ItemId, out config) && config.ArmorPoints != 0)
+						yield return new KeyValuePair<Item,ItemGearConfig>(i,config);
+				}
+            }
+	    }	
+	}
+#>
