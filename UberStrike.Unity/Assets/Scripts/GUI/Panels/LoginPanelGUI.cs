@@ -233,7 +233,7 @@ public class LoginPanelGUI : PanelGuiBase
     private void DrawMiniButtons()
     {
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        if (!Application.isWebPlayer)
+        if (Application.platform != RuntimePlatform.WebGLPlayer)
         {
             // Mute
             if (GUITools.Button(new Rect(_rect.width - 57, 9, 16, 16), ApplicationDataManager.ApplicationOptions.AudioEnabled ? new GUIContent(panelQuadSoundOn, LocalizedStrings.Mute) : new GUIContent(panelQuadSoundOff, LocalizedStrings.Unmute), BlueStonez.panelquad_button))

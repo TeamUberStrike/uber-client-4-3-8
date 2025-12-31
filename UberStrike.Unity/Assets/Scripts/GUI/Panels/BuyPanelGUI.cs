@@ -59,7 +59,7 @@ public class BuyPanelGUI : PanelGuiBase
         GUI.EndGroup();
 
         //if clicked anything that is not a button, we exit
-        if (Event.current.type == EventType.mouseDown && !rect.Contains(Event.current.mousePosition))
+        if (Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))
         {
             Hide();
             Event.current.Use();

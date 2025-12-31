@@ -70,7 +70,7 @@ public abstract class LotteryPopupDialog : IPopupDialog
         }
 
         //if clicked anything that is not a button, we exit
-        if (ClickAnywhereToExit && Event.current.type == EventType.mouseDown && !rect.Contains(Event.current.mousePosition))//GUI.Button(new Rect(0, 0, Screen.width, Screen.height), GUIContent.none, GUIStyle.none))
+        if (ClickAnywhereToExit && Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))//GUI.Button(new Rect(0, 0, Screen.width, Screen.height), GUIContent.none, GUIStyle.none))
         {
             ClosePopup();
             Event.current.Use();
