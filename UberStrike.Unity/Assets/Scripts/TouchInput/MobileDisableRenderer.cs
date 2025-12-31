@@ -7,7 +7,7 @@ public class MobileDisableRenderer : MonoBehaviour
     {
         if (ApplicationDataManager.IsMobile)
         {
-            renderer.enabled = false;
+            GetComponent<Renderer>().enabled = false;
         }
     }
 }

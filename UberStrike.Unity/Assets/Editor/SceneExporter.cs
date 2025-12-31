@@ -98,10 +98,10 @@ public class SceneExporter
         // Setup the correct output path
         path = ApplicationDataManager.StandaloneFilename + ".apk";
 
-        string buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), string.Format("{0}/{1}", buildFolder, path), BuildTarget.Android, buildOptions);
-        if (!string.IsNullOrEmpty(buildResult))
+        var buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), string.Format("{0}/{1}", buildFolder, path), BuildTarget.Android, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
-            Debug.LogError("BuildPlayer: " + buildResult);
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
             return;
         }
     }
@@ -148,10 +148,10 @@ public class SceneExporter
         }
 
         //PrepareiOSBuildFolder(IOSBuildFolder);
-        string buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), IOSBuildFolder, BuildTarget.iPhone, buildOptions);
-        if (!string.IsNullOrEmpty(buildResult))
+        var buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), IOSBuildFolder, BuildTarget.iOS, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
-            Debug.LogError("BuildPlayer: " + buildResult);
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
             return;
         }
     }

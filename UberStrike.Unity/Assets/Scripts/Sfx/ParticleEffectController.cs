@@ -21,12 +21,8 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
 
     #endregion
 
-    private ExplosionController _explosionParticleSystem;
-
     private void Awake()
     {
-        _explosionParticleSystem = new ExplosionController();
-
         _allConfigurations = new Dictionary<ParticleConfigurationType, ParticleCobfigurationPerWeapon>();
 
         foreach (ParticleConfiguration particleConfiguration in _allWeaponData)
@@ -210,18 +206,18 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                     bool showDustAndTrails = QualitySettings.GetQualityLevel() > 0;
                     if (showDustAndTrails)
                     {
-                        Instance._explosionParticleSystem.EmitDust(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.DustParameters);
-                        Instance._explosionParticleSystem.EmitSmoke(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.SmokeParameters);
+                        ExplosionController.EmitDust(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.DustParameters);
+                        ExplosionController.EmitSmoke(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.SmokeParameters);
                     }
                     // if that was SplatterGun, then show Trails even on Fast and Fastest graphics
                     if (showDustAndTrails || splatterGun)
                     {
-                        Instance._explosionParticleSystem.EmitTrail(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.TrailParameters);
+                        ExplosionController.EmitTrail(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.TrailParameters);
                     }
 
-                    Instance._explosionParticleSystem.EmitBlast(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.BlastParameters);
-                    Instance._explosionParticleSystem.EmitRing(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.RingParameters);
-                    Instance._explosionParticleSystem.EmitSpark(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.SparkParameters);
+                    ExplosionController.EmitBlast(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.BlastParameters);
+                    ExplosionController.EmitRing(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.RingParameters);
+                    ExplosionController.EmitSpark(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.ExplosionParameterSet.SparkParameters);
                 }
             }
         }

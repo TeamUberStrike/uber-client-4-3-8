@@ -225,7 +225,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 // Set the initial Video options based on Cmune Prefs
                 if (applicationOptions.IsUsingCustom)
                 {
-                    QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
+                    QualitySettings.masterTextureLimit = applicationOptions.VideoTextureQuality;
                     QualitySettings.vSyncCount = applicationOptions.VideoVSyncCount;
                     QualitySettings.antiAliasing = applicationOptions.VideoAntiAliasing;
                 }

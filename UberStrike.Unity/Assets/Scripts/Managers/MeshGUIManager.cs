@@ -96,7 +96,7 @@ public class MeshGUIManager : MonoSingleton<MeshGUIManager>
 
     public void FreeQuadMesh(GameObject quadMeshObject)
     {
-        quadMeshObject.renderer.material.mainTextureOffset = Vector2.zero;
+        quadMeshObject.GetComponent<Renderer>().material.mainTextureOffset = Vector2.zero;
         quadMeshObject.transform.parent = _quadMeshContainer.transform;
         _quadMeshRecycler.FreeObject(quadMeshObject);
     }

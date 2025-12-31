@@ -113,7 +113,7 @@ public class CmuneSystemInfo
         // Unity Quality Settings Info
         CurrentQualityLevel = QualitySettings.GetQualityLevel().ToString();
         AnisotropicFiltering = QualitySettings.anisotropicFiltering.ToString();
-        MasterTextureLimit = QualitySettings.globalTextureMipmapLimit.ToString();
+        MasterTextureLimit = QualitySettings.masterTextureLimit.ToString();
         MaxQueuedFrames = QualitySettings.maxQueuedFrames.ToString();
         PixelLightCount = QualitySettings.pixelLightCount.ToString();
         ShadowCascades = QualitySettings.shadowCascades.ToString();
