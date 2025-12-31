@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Cross Platform Shaders/Particles/Alpha Blended Cull Front" {
 	Properties {
 		_TintColor ("Tint Color", Color) = (0.5,0.5,0.5,0.5)
@@ -54,7 +56,7 @@ Shader "Cross Platform Shaders/Particles/Alpha Blended Cull Front" {
 				v2f vert (appdata_t v)
 				{
 					v2f o;
-					o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+					o.vertex = UnityObjectToClipPos(v.vertex);
 					#ifdef SOFTPARTICLES_ON
 					o.projPos = ComputeScreenPos (o.vertex);
 					COMPUTE_EYEDEPTH(o.projPos.z);
