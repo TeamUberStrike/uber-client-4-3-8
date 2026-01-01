@@ -160,7 +160,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: 
     Standalone: unity.cmune.uberstrike
-    iPhone: com.cmune.uberstrike.ios
+    iPhone: com.yoxa.uberstrike
     tvOS: 
   buildNumber:
     Standalone: 0
@@ -231,7 +231,7 @@ PlayerSettings:
   metalAPIValidation: 1
   iOSRenderExtraFrameOnPause: 1
   iosCopyPluginsCodeInsteadOfSymlink: 0
-  appleDeveloperTeamID: 
+  appleDeveloperTeamID: Personal
   iOSManualSigningProvisioningProfileID: 
   tvOSManualSigningProvisioningProfileID: 
   iOSManualSigningProvisioningProfileType: 0
