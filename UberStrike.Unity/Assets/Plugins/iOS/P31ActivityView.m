@@ -102,13 +102,6 @@ static P31ActivityView *activityView = nil;
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-    [_activityLabel release];
-    [_activityIndicator release];
-    [_borderView release];
-    [_originalView release];
-    
-    [super dealloc];
-    
     activityView = nil;
 }
 
@@ -155,7 +148,6 @@ static P31ActivityView *activityView = nil;
     [activityView removeFromSuperview];
 	
     // Remove the global reference:
-    [activityView release];
     activityView = nil;
 }
 
@@ -391,10 +383,6 @@ static UIColor *__actvityLabelFontColor;
  */
 + (void)setBezelColor:(UIColor*)newBezelColor
 {
-	// Release the old __bezelColor is we have one
-	if( __bezelColor )
-		[__bezelColor release];
-	
 	__bezelColor = [newBezelColor copy];
 }
 
@@ -404,10 +392,6 @@ static UIColor *__actvityLabelFontColor;
  */
 + (void)setActvityLabelFontColor:(UIColor*)newBezelColor
 {
-	// Release the old __bezelColor is we have one
-	if( __actvityLabelFontColor )
-		[__actvityLabelFontColor release];
-	
 	__actvityLabelFontColor = [newBezelColor copy];
 }
 

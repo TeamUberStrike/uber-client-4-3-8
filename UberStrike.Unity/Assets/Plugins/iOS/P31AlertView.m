@@ -92,14 +92,7 @@ CGRect TTScreenBounds()
 
 - (void)dealloc
 {
-	[_message release];
-	[_title release];
-	[_backgroundView release];
-	[_textFields release];
-	[_okButtonTitle release];
-	[_cancelButtonTitle release];
-	
-	[super dealloc];
+	// ARC handles memory management automatically
 }
 
 
@@ -277,7 +270,6 @@ CGRect TTScreenBounds()
 		label.backgroundColor = [UIColor clearColor];
 		
 		[self addSubview:label];
-		[label release];
 		
 		yPos += _titleSize.height + 10.0;
 	}
@@ -296,7 +288,6 @@ CGRect TTScreenBounds()
 		label.backgroundColor = [UIColor clearColor];
 		
 		[self addSubview:label];
-		[label release];
 		
 		yPos += _messageSize.height + 10.0;
 	}
@@ -500,7 +491,6 @@ CGRect TTScreenBounds()
 	tf.text = value;
 	
 	[_textFields addObject:tf];
-	[tf release];
 	
 	// If this is a 2nd text field change the buttons to be next buttons
 	if( _textFields.count == 2 )

@@ -15,7 +15,7 @@
 #import <CommonCrypto/CommonDigest.h>
 
 
-void UnityPause( bool pause );
+// void UnityPause( bool pause );
 
 void UnitySendMessage( const char * className, const char * methodName, const char * param );
 
@@ -61,9 +61,9 @@ UIColor * ColorFromHex( int hexcolor )
     CFUUIDRef uuidObj = CFUUIDCreate(nil);
     
     // Get the string representation of the UUID
-    NSString *newUUID = (NSString*)CFUUIDCreateString( nil, uuidObj );
+    NSString *newUUID = (__bridge_transfer NSString*)CFUUIDCreateString( nil, uuidObj );
     CFRelease( uuidObj );
-    return [newUUID autorelease];
+    return newUUID;
 }
 
 
@@ -181,7 +181,6 @@ UIColor * ColorFromHex( int hexcolor )
 	else if( _viewControllerWrapper )
 	{
 		[_viewControllerWrapper.view removeFromSuperview];
-		[_viewControllerWrapper release];
 		_viewControllerWrapper = nil;
 	}
 }
@@ -289,7 +288,7 @@ UIColor * ColorFromHex( int hexcolor )
 - (void)showAlertWithTitle:(NSString*)title message:(NSString*)message buttons:(NSArray*)buttons
 {
 	UnityPause( true );
-	UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+	UIAlertView *alert = [[UIAlertView alloc] init];
 	alert.delegate = self;
 	alert.title = title;
 	alert.message = message;
@@ -340,7 +339,6 @@ UIColor * ColorFromHex( int hexcolor )
 		[alert textFieldAtIndex:0].autocorrectionType = UITextAutocorrectionTypeNo;
 	
 	[alert show];
-	[alert release];
 }
 
 
@@ -373,7 +371,6 @@ UIColor * ColorFromHex( int hexcolor )
 	}
 	
 	[alert show];
-	[alert release];
 }
 
 
@@ -385,8 +382,6 @@ UIColor * ColorFromHex( int hexcolor )
 	P31WebController *webCon = [[P31WebController alloc] initWithUrl:url showControls:showControls];
 	UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:webCon];
 	[self showViewControllerModallyInWrapper:navCon];
-	[navCon release];
-	[webCon release];
 }
 
 
@@ -557,10 +552,9 @@ UIColor * ColorFromHex( int hexcolor )
 										  otherButtonTitles:NSLocalizedString( @"Yes, rate it!", nil ), NSLocalizedString( @"Don't ask again", nil ), nil];
 	alert.tag = kRTAAlertTag;
 	[alert show];
-	[alert release];
 	
 	// Save the iTunesUrl for now
-	_itunesUrl = [iTunesUrl retain];
+	_itunesUrl = iTunesUrl;
 }
 
 
@@ -574,17 +568,16 @@ UIColor * ColorFromHex( int hexcolor )
 										  otherButtonTitles:NSLocalizedString( @"OK!", nil ), nil];
 	alert.tag = kRTAAlertTagNoOptions;
 	[alert show];
-	[alert release];
 	
 	// Save the iTunesUrl for now
-	_itunesUrl = [iTunesUrl retain];
+	_itunesUrl = iTunesUrl;
 }
 
 
 // Photo Library and Camera
 - (void)showPicker:(UIImagePickerControllerSourceType)type
 {
-	UIImagePickerController *picker = [[[UIImagePickerController alloc] init] autorelease];
+	UIImagePickerController *picker = [[UIImagePickerController alloc] init];
 	picker.delegate = self;
 	picker.sourceType = type;
 	picker.allowsEditing = _pickerAllowsEditing;
@@ -656,8 +649,6 @@ UIColor * ColorFromHex( int hexcolor )
 		[sheet showFromRect:popoverRect inView:[UIApplication sharedApplication].keyWindow animated:YES];
 	else
 		[sheet showInView:UnityGetGLViewController().view];
-	
-	[sheet release];
 }
 
 
@@ -722,32 +713,30 @@ UIColor * ColorFromHex( int hexcolor )
 
 - (void)processImageFromImagePicker:(UIImage*)image
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	// Get a filepath pointing to the docs directory
-	NSArray *dirs = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
-	NSString *filename = [NSString stringWithFormat:@"%@.png", [EtceteraManager stringWithNewUUID]];
-	NSString *filePath = [[dirs objectAtIndex:0] stringByAppendingPathComponent:filename];
-	
-	// Shrink the monster image down
-	if( _scaledImageSize != 1.0f )
-	{
-		float width = image.size.width * _scaledImageSize;
-		float height = image.size.height * _scaledImageSize;
-		CGSize targetSize = CGSizeMake( width, height );
-		UIGraphicsBeginImageContext( targetSize );
-		[image drawInRect:CGRectMake( 0, 0, targetSize.width, targetSize.height )];
-		UIImage *targetImage = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
+	@autoreleasepool {
+		// Get a filepath pointing to the docs directory
+		NSArray *dirs = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES );
+		NSString *filename = [NSString stringWithFormat:@"%@.png", [EtceteraManager stringWithNewUUID]];
+		NSString *filePath = [[dirs objectAtIndex:0] stringByAppendingPathComponent:filename];
 		
-		image = targetImage;
-	}
+		// Shrink the monster image down
+		if( _scaledImageSize != 1.0f )
+		{
+			float width = image.size.width * _scaledImageSize;
+			float height = image.size.height * _scaledImageSize;
+			CGSize targetSize = CGSizeMake( width, height );
+			UIGraphicsBeginImageContext( targetSize );
+			[image drawInRect:CGRectMake( 0, 0, targetSize.width, targetSize.height )];
+			UIImage *targetImage = UIGraphicsGetImageFromCurrentImageContext();
+			UIGraphicsEndImageContext();
+			
+			image = targetImage;
+		}
 
-	[UIImagePNGRepresentation( image ) writeToFile:filePath atomically:NO];
-	
-	[self performSelectorOnMainThread:@selector(notifyUnityOfSavedImageAtPath:) withObject:filePath waitUntilDone:NO];
-	
-	[pool release];
+		[UIImagePNGRepresentation( image ) writeToFile:filePath atomically:NO];
+		
+		[self performSelectorOnMainThread:@selector(notifyUnityOfSavedImageAtPath:) withObject:filePath waitUntilDone:NO];
+	}
 }
 
 
@@ -807,8 +796,7 @@ UIColor * ColorFromHex( int hexcolor )
 			}
 		}
 		
-		// release the url and reset the launch count
-		[_itunesUrl release];
+		// reset the url and launch count
 		_itunesUrl = nil;
 		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kRTATimesLaunchedSinceAsked];
 	}
@@ -869,9 +857,6 @@ UIColor * ColorFromHex( int hexcolor )
 	}
 	
 	UnitySendMessage( "EtceteraManager", "mailComposerFinishedWithResult", [resultString UTF8String] );
-	
-	// autorelease this after 2 seconds to avoid an odd crash when another mail composer is presented
-	[controller performSelector:@selector(autorelease) withObject:nil afterDelay:2.0];
 }
 
 
@@ -900,9 +885,6 @@ UIColor * ColorFromHex( int hexcolor )
 	}
 	
 	UnitySendMessage( "EtceteraManager", "smsComposerFinishedWithResult", [resultString UTF8String] );
-	
-	// autorelease this after 2 seconds to avoid an odd crash when another SMS composer is presented
-	[controller performSelector:@selector(autorelease) withObject:nil afterDelay:3.0];
 	
 	[UIApplication sharedApplication].statusBarHidden = YES;
 }

@@ -229,7 +229,6 @@ const char * _etceteraGetImageSize( const char * filePath )
 	
 	UIImage *i = [[UIImage alloc] initWithContentsOfFile:fullImagePath];
 	NSString *size = [NSString stringWithFormat:@"%.0f,%.0f", i.size.width, i.size.height];
-	[i release];
 	
 	return MakeStringCopy( size );
 	

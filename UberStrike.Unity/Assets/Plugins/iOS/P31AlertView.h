@@ -15,7 +15,7 @@
 @interface P31AlertView : UIView <UITextFieldDelegate>
 {
 @private
-	id<P31AlertViewDelegate> _delegate;
+	__unsafe_unretained id<P31AlertViewDelegate> _delegate;
 	NSString *_cancelButtonTitle;
 	NSString *_okButtonTitle;
 	NSMutableArray *_textFields;
@@ -29,12 +29,12 @@
 	CGSize _messageSize;
 	CGFloat _initialFrameHeight;
 }
-@property (nonatomic, assign) id<P31AlertViewDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<P31AlertViewDelegate> delegate;
 @property (nonatomic, copy) NSString *cancelButtonTitle;
 @property (nonatomic, copy) NSString *okButtonTitle;
-@property (nonatomic, retain) NSMutableArray *textFields;
+@property (nonatomic, strong) NSMutableArray *textFields;
 
-@property (nonatomic, retain) P31RadialBackgroundView *backgroundView;
+@property (nonatomic, strong) P31RadialBackgroundView *backgroundView;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *message;
 
