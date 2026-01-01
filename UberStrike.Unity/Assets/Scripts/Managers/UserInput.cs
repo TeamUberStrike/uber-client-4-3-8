@@ -99,7 +99,7 @@ public static class UserInput
 #else
         if (Camera.main != null)
         {
-            float factor = Mathf.Pow(Camera.main.fov / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);
+            float factor = Mathf.Pow(Camera.main.fieldOfView / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);
 
             //TURN AROUND
             Mouse.x += TouchInput.WishLook.x * GameState.Instance.TouchLookSensitivity.x 
