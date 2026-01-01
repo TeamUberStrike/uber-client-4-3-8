@@ -29,12 +29,12 @@
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
-	float comps[8] = {0.0, 0.0, 0.0, 0.4, 0, 0, 0, 0.7};
-	float locs[2] = {0, 1};
+	CGFloat comps[8] = {0.0, 0.0, 0.0, 0.4, 0, 0, 0, 0.7};
+	CGFloat locs[2] = {0, 1};
 	CGGradientRef gradient = CGGradientCreateWithColorComponents( space, comps, locs, 2 );
 	
-	float x = [self bounds].size.width / 2.0;
-	float y = [self bounds].size.height / 2.0;
+	CGFloat x = [self bounds].size.width / 2.0;
+	CGFloat y = [self bounds].size.height / 2.0;
 
 	CGContextDrawRadialGradient(ctx,
 								gradient, 
@@ -48,7 +48,7 @@
 
 - (void)dealloc
 {
-    [super dealloc];
+	// ARC handles deallocation automatically
 }
 
 

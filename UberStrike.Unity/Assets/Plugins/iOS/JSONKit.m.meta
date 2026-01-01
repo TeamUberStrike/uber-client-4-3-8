@@ -27,7 +27,7 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        CompileFlags: -fno-objc-arc
+        CompileFlags: -fno-objc-arc -Wno-deprecated-objc-isa-usage
         FrameworkDependencies: 
   userData: 
   assetBundleName: 

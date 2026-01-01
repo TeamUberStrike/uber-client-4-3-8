@@ -31,10 +31,6 @@
 - (void)dealloc
 {
 	[_webView stopLoading];
-	[_webView release];
-	[_url release];
-	
-	[super dealloc];
 }
 
 
@@ -43,11 +39,11 @@
 
 - (void)showPrintError
 {
-	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Print Error"
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Print Error"
 													 message:@"Printing is not supported on your device and/or iOS version"
-													delegate:nil
-										   cancelButtonTitle:@"OK"
-										   otherButtonTitles:nil] autorelease];
+													 delegate:nil
+									   cancelButtonTitle:@"OK"
+									   otherButtonTitles:nil];
 	[alert show];
 }
 
@@ -66,11 +62,11 @@
 
 - (void)onTouchAction
 {
-	UIActionSheet *sheet = [[[UIActionSheet alloc] initWithTitle:[_webView.request.mainDocumentURL absoluteString]
+	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[_webView.request.mainDocumentURL absoluteString]
 														delegate:self
-											   cancelButtonTitle:NSLocalizedString( @"Cancel", nil )
-										  destructiveButtonTitle:nil
-											   otherButtonTitles:NSLocalizedString( @"Open in Safari", nil ), NSLocalizedString( @"Copy URL", nil ), NSLocalizedString( @"Print", nil ), nil] autorelease];
+									   cancelButtonTitle:NSLocalizedString( @"Cancel", nil )
+								  destructiveButtonTitle:nil
+									   otherButtonTitles:NSLocalizedString( @"Open in Safari", nil ), NSLocalizedString( @"Copy URL", nil ), NSLocalizedString( @"Print", nil ), nil];
 	[sheet showFromToolbar:self.navigationController.toolbar];
 }
 
@@ -143,19 +139,19 @@
 														 style:UIBarButtonItemStylePlain
 														target:self
 														action:@selector(onTouchForward)];
-		UIBarButtonItem *action = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-																				  target:self
-																				  action:@selector(onTouchAction)] autorelease];
+		UIBarButtonItem *action = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+														  target:self
+														  action:@selector(onTouchAction)];
 		
 		
-		UIBarButtonItem *fixedSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-																						target:nil
-																						action:nil] autorelease];
+		UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+													target:nil
+													action:nil];
 		fixedSpace.width = 45;
 		
-		UIBarButtonItem *flexibleSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-																				  target:nil
-																				  action:nil] autorelease];
+		UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+													  target:nil
+													  action:nil];
 		
 		self.toolbarItems = [NSArray arrayWithObjects:backButton, fixedSpace, forwardButton, flexibleSpace, action, nil];
 		self.navigationController.toolbarHidden = NO;
@@ -163,10 +159,9 @@
 	
 	
 	// add a done button
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-																							target:self
-																							action:@selector(onTouchDone)] autorelease];
-	
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+																target:self
+																action:@selector(onTouchDone)];
 	// create the UIWebView and show the url
 	CGRect frame = [UIApplication sharedApplication].keyWindow.bounds;
 	_webView = [[UIWebView alloc] initWithFrame:frame];
