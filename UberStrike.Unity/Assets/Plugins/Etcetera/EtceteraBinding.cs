@@ -38,7 +38,7 @@ public class EtceteraBinding
     {
     	yield return new WaitForEndOfFrame();
 
-		Application.CaptureScreenshot( filename );
+		ScreenCapture.CaptureScreenshot( filename );
 		
 		// wait for the file to get written or 300 frames max (5 - 10 seconds)
 		var path = Application.persistentDataPath + "/" + filename;
