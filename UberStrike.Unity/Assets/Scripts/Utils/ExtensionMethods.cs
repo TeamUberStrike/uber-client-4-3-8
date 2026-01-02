@@ -220,4 +220,13 @@ public static class RectExtentions
     {
         return new Rect(x, (r.height - height) * 0.5f, width, height);
     }
+
+    /// <summary>
+    /// Checks if a touch is inside the rect
+    /// </summary>
+    public static bool ContainsTouch(this Rect rect, Vector2 touchPosition)
+    {
+        Vector2 invertedTouchPos = new Vector2(touchPosition.x, Screen.height - touchPosition.y);
+        return rect.Contains(invertedTouchPos);
+    }
 }

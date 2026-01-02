@@ -7,7 +7,10 @@ using UberStrike.Helper;
 
 public class InGameChatHud : Singleton<InGameChatHud>
 {
-    private int _maxMessageLength = 140;
+    private const int _maxMessageLength = 140;
+#if !UNITY_ANDROID && !UNITY_IPHONE
+    private bool _openChatPressed;
+#endif
 
     private bool _isEnabled;
     public bool Enabled { get { return _isEnabled; } set { _isEnabled = value; } }
@@ -17,8 +20,26 @@ public class InGameChatHud : Singleton<InGameChatHud>
         get { return _canInput; }
     }
 
+    public bool CanStartChat()
+    {
+        return _spamTimer <= 0 && _chatTimer <= 0 && !ClientCommCenter.IsPlayerMuted;
+    }
+
+    public void OpenChat()
+    {
+        //InputManager.Instance.IsInputEnabled = false;
+    }
+
+    public void PushMessage(string input)
+    {
+        _inputContent = input;
+
+        EndChat();
+    }
+
     public void Update()
     {
+#if !UNITY_ANDROID && !UNITY_IPHONE
         if (!PopupSystem.IsAnyPopupOpen && !InputManager.Instance.IsAnyDown &&
             _spamTimer <= 0 && (_chatTimer <= 0 || _canInput) &&
             Input.GetKeyDown(KeyCode.Return))
@@ -42,7 +63,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
                 }
             }
         }
-
+#endif
         if (_canInput && Input.GetKeyDown(KeyCode.Return))
         {
         }
@@ -52,9 +73,9 @@ public class InGameChatHud : Singleton<InGameChatHud>
             _chatMsgs[i].Timer -= Time.deltaTime * MsgFadeSpeed;
             if (_chatMsgs[i].Timer < 0) _chatMsgs.RemoveAt(i);
         }
-
+#if !UNITY_ANDROID && !UNITY_MOBILE
         MsgPosition.height = Screen.height - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
-
+#endif
         if (_chatTimer > 0) _chatTimer -= Time.deltaTime;
         if (_spamTimer > 0) _spamTimer -= Time.deltaTime;
     }
@@ -132,6 +153,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     private void DoChatInput()
     {
+#if !UNITY_ANDROID && !UNITY_IPHONE
         Rect pos = new Rect(44, MsgPosition.height - InputHeight, MsgPosition.width - 44, InputHeight);
 
         GUI.color = Color.white;
@@ -169,6 +191,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
             EndChat();
         }
+#endif
     }
 
     private void DoMuteMessage()
@@ -314,7 +337,11 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     private bool _canInput = false;
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
     private Rect MsgPosition = new Rect(10, 160, 300, 360);
+#else
+    private Rect MsgPosition = new Rect(15, 40, 400, 170);
+#endif
     private float MsgLifespan = 10;
     private float MsgFadeSpeed = 1;
 

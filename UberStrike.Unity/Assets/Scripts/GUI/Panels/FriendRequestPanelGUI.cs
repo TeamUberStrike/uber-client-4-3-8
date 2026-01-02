@@ -79,7 +79,7 @@ public class FriendRequestPanelGUI : PanelGuiBase
             if (string.IsNullOrEmpty(_friendName))
                 _msgRcvCmid = 0;
 
-            _friReqScroll = GUI.BeginScrollView(pRect, _friReqScroll, new Rect(0, 0, _friReqWidth, pRect.height));
+            _friReqScroll = GUITools.BeginScrollView(pRect, _friReqScroll, new Rect(0, 0, _friReqWidth, pRect.height));
             foreach (CommActorInfo i in CommConnectionManager.CommCenter.Players)
             {
                 if (i.Cmid == PlayerDataManager.Cmid || PlayerDataManager.IsFriend(i.Cmid))
@@ -102,7 +102,7 @@ public class FriendRequestPanelGUI : PanelGuiBase
 
                 y += 24;
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
 
             if (y == 0)
                 GUI.Label(pRect, LocalizedStrings.Empty, BlueStonez.label_interparkmed_11pt);

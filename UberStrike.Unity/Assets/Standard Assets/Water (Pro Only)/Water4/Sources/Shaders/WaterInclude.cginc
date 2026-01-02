@@ -4,8 +4,6 @@
 
 #include "UnityCG.cginc"
 
-half _GerstnerIntensity;
-
 inline half3 PerPixelNormal(sampler2D bumpMap, half4 coords, half3 vertexNormal, half bumpStrength) 
 {
 	half4 bump = tex2D(bumpMap, coords.xy) + tex2D(bumpMap, coords.zw);
@@ -242,7 +240,6 @@ half4  ExtinctColor (half4 baseColor, half extinctionAmount)
 		nrml.x -= dot(COS, half4(AB.xz, CD.xz));
 		nrml.z -= dot(COS, half4(AB.yw, CD.yw));
 		
-		nrml.xz *= _GerstnerIntensity;
 		nrml = normalize (nrml);
 
 		return nrml;			

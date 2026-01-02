@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cmune.DataCenter.Common.Entities;
 using UnityEngine;
 using Cmune.Util;
 
@@ -37,8 +38,8 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private const int TAB_GENERAL = 0;
     private const int TAB_CONTROL = 1;
-    private const int TAB_VIDEO = 2;
-    private const int TAB_AUDIO = 3;
+    private const int TAB_AUDIO = 2;
+    private const int TAB_VIDEO = 3;    
     private const int TAB_SYSINFO = 4;
 
     private bool _showWaterModeMenu = false;
@@ -88,9 +89,27 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private void Start()
     {
-        _optionsTabs = new GUIContent[] { new GUIContent(LocalizedStrings.GeneralCaps), new GUIContent(LocalizedStrings.ControlsCaps), new GUIContent(LocalizedStrings.VideoCaps), new GUIContent(LocalizedStrings.AudioCaps), new GUIContent(LocalizedStrings.SysInfoCaps) };
+        if (ApplicationDataManager.IsMobile)
+        {
+            _optionsTabs = new GUIContent[] { 
+                new GUIContent(LocalizedStrings.GeneralCaps), 
+                new GUIContent(LocalizedStrings.ControlsCaps),
+                new GUIContent(LocalizedStrings.AudioCaps) 
+            };
 
-        _keyCount = InputManager.Instance.KeyMapping.Values.Count;
+            _selectedOptionsTab = TAB_CONTROL;
+        }
+        else
+        {
+            _optionsTabs = new GUIContent[] { 
+                new GUIContent(LocalizedStrings.GeneralCaps), 
+                new GUIContent(LocalizedStrings.ControlsCaps), 
+                new GUIContent(LocalizedStrings.AudioCaps), 
+                new GUIContent(LocalizedStrings.VideoCaps), 
+                new GUIContent(LocalizedStrings.SysInfoCaps) 
+            };
+            _keyCount = InputManager.Instance.KeyMapping.Values.Count;
+        }
     }
 
     private void OnGUI()
@@ -122,7 +141,14 @@ public class OptionsPanelGUI : PanelGuiBase
         }
 
         //Draw Stats Tabs
-        _selectedOptionsTab = GUI.SelectionGrid(new Rect(2, 31, _rect.width - 5, 22), _selectedOptionsTab, _optionsTabs, 5, BlueStonez.tab_medium);
+        if (ApplicationDataManager.IsMobile)
+        {
+            _selectedOptionsTab = GUI.SelectionGrid(new Rect(2, 31, _rect.width - 5, 22), _selectedOptionsTab, _optionsTabs, 3, BlueStonez.tab_medium);
+        }
+        else
+        {
+            _selectedOptionsTab = GUI.SelectionGrid(new Rect(2, 31, _rect.width - 5, 22), _selectedOptionsTab, _optionsTabs, 5, BlueStonez.tab_medium);
+        }
         if (GUI.changed)
         {
             GUI.changed = false;
@@ -171,7 +197,7 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.contentColor = Color.white;
         }
 
-        if (_selectedOptionsTab == TAB_CONTROL && GUITools.Button(new Rect(16, _rect.height - 40, 150, 32), new GUIContent(LocalizedStrings.ResetDefaults), BlueStonez.button))
+        if (_selectedOptionsTab == TAB_CONTROL && !ApplicationDataManager.IsMobile && GUITools.Button(new Rect(16, _rect.height - 40, 150, 32), new GUIContent(LocalizedStrings.ResetDefaults), BlueStonez.button))
         {
             InputManager.Instance.Reset();
         }
@@ -216,7 +242,7 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         float height = 100;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = GUITools.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, width, 85), LocalizedStrings.Misc, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20, width, 85));
@@ -226,7 +252,7 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private const int GroupMarginX = 8;
@@ -315,6 +341,7 @@ public class OptionsPanelGUI : PanelGuiBase
         int spacing = 10;
         int boxWidth = 150;
         int resHeight = _screenResText.Length * 16 + 16;
+
         float width = videoRect.width - GroupMarginX - GroupMarginX - 20;
 
         if (!Application.isWebPlayer || showResolutions)
@@ -322,7 +349,7 @@ public class OptionsPanelGUI : PanelGuiBase
             contentRect.height += _screenResText.Length * 16;
         }
 
-        _scrollVideo = GUI.BeginScrollView(videoRect, _scrollVideo, contentRect);
+        _scrollVideo = GUITools.BeginScrollView(videoRect, _scrollVideo, contentRect);
         {
             GUI.enabled = true;
 
@@ -384,7 +411,6 @@ public class OptionsPanelGUI : PanelGuiBase
             //}
             //GUI.EndGroup();
             int resolutionY = 240;
-
             //RESOLUTIONS (standalone)
             if (!Application.isWebPlayer || showResolutions)
             {
@@ -409,14 +435,14 @@ public class OptionsPanelGUI : PanelGuiBase
                 GUI.EndGroup();
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DoAudioGroup()
     {
         float height = 130;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = GUITools.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, width, 130), LocalizedStrings.Volume, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20, width, 130));
@@ -465,7 +491,7 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DoControlsGroup()
@@ -474,7 +500,8 @@ public class OptionsPanelGUI : PanelGuiBase
         GUI.enabled = _targetMap == null;
 
         GUI.skin = BlueStonez.Skin;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21)); //720 + 15));
+#if !UNITY_ANDROID && !UNITY_IPHONE
+        _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21)); //720 + 15));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 65));
@@ -524,8 +551,58 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
+#else
+        _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, 100));
+        {
+            GUI.BeginGroup(new Rect(8, 20, _rect.width - 65, 95), string.Empty, BlueStonez.group_grey81);
+            {
+                bool multiTouch = GUI.Toggle(new Rect(15, 17, 200, 30), ApplicationDataManager.ApplicationOptions.UseMultiTouch, LocalizedStrings.UseMultiTouchInput, BlueStonez.toggle);
+                if (multiTouch != ApplicationDataManager.ApplicationOptions.UseMultiTouch)
+                {
+                    if (multiTouch)
+                    {
+                        PanelManager.Instance.ClosePanel(PanelType.Options);
+                        PopupSystem.ShowMessage("Multi-touch hints", "To use the multi-touch interface:\n* Touch anywhere to aim\n* While aiming, tap a second finger to shoot\n* In iPad Settings under General, disable 'Multitasking Gestures' as they can interrupt the game", PopupSystem.AlertType.OK, UseMultiTouch);
+                    }
+                    else
+                    {
+                        ApplicationDataManager.ApplicationOptions.UseMultiTouch = multiTouch;
+                    }
+                }
+
+                GUI.Label(new Rect(15, 30, 130, 30), LocalizedStrings.LookSensitivity, BlueStonez.label_interparkbold_11pt_left);
+                float s = GUI.HorizontalSlider(new Rect(155, 38, 200, 30), ApplicationDataManager.ApplicationOptions.TouchLookSensitivity, 0.5f, 3.0f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+                GUI.Label(new Rect(370, 30, 100, 30), ApplicationDataManager.ApplicationOptions.TouchLookSensitivity.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+                if (s != ApplicationDataManager.ApplicationOptions.TouchLookSensitivity)
+                {
+                    ApplicationDataManager.ApplicationOptions.TouchLookSensitivity = s;
+                }
+
+                if (!multiTouch)
+                {
+                    GUI.Label(new Rect(15, 60, 130, 30), LocalizedStrings.JoystickSensitivity, BlueStonez.label_interparkbold_11pt_left);
+                    s = GUI.HorizontalSlider(new Rect(155, 69, 200, 30), ApplicationDataManager.ApplicationOptions.TouchMoveSensitivity, 0.5f, 3.0f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+                    GUI.Label(new Rect(370, 60, 100, 30), ApplicationDataManager.ApplicationOptions.TouchMoveSensitivity.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+                    if (s != ApplicationDataManager.ApplicationOptions.TouchMoveSensitivity)
+                    {
+                        ApplicationDataManager.ApplicationOptions.TouchMoveSensitivity = s;
+                    }
+
+                }
+            }
+            GUI.EndGroup();
+            GUI.Label(new Rect(8 + 18, 20 - 8, GetWidth(LocalizedStrings.TouchInput), 16), LocalizedStrings.TouchInput, BlueStonez.label_group_interparkbold_18pt);
+        }
+        GUITools.EndScrollView();
+#endif
         GUITools.PopGUIState();
+    }
+
+    private void UseMultiTouch()
+    {
+        ApplicationDataManager.ApplicationOptions.UseMultiTouch = true;
+        PanelManager.Instance.OpenPanel(PanelType.Options);
     }
 
     private void DoSysInfoGroup()
@@ -534,7 +611,7 @@ public class OptionsPanelGUI : PanelGuiBase
         float height = 1450 + ((GameServerManager.Instance.PhotonServerCount > 0) ? (GameServerManager.Instance.PhotonServerCount * 20) + 60 : 80);
         float width = Mathf.Max(_rect.width, BlueStonez.label_interparkbold_11pt_left.CalcSize(new GUIContent("Absolute URL : " + ApplicationDataManager.Instance.LocalSystemInfo.AbsoluteURL)).x) + 100;
 
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, width + 15, height));//new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = GUITools.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, width + 15, height));//new Rect(0, 0, _rect.width - 50, height));
         {
             //System
             Rect systemGroupRect = new Rect(8, 20, width, 340);
@@ -661,7 +738,7 @@ public class OptionsPanelGUI : PanelGuiBase
                 GUI.EndGroup();
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DoInputControlMapping(Rect rect)
@@ -841,3 +918,4 @@ public class OptionsPanelGUI : PanelGuiBase
         }
     }
 }
+

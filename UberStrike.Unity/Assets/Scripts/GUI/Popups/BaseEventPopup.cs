@@ -61,12 +61,7 @@ public abstract class BaseEventPopup : IPopupDialog
             //always guarantee the exit through 'x'
             if (GUI.Button(new Rect(rect.width - 20, 0, 20, 20), "X", BlueStonez.friends_hidden_button))
             {
-                PopupSystem.HideMessage(this);
-
-                if (_onCloseButtonClicked != null)
-                {
-                    _onCloseButtonClicked();
-                }
+                Close();
             }
 
             //draw content
@@ -78,11 +73,22 @@ public abstract class BaseEventPopup : IPopupDialog
         //if clicked anything that is not a button, we exit
         if (ClickAnywhereToExit && Event.current.type == EventType.mouseDown && !rect.Contains(Event.current.mousePosition))
         {
-            PopupSystem.HideMessage(this);
+            Event.current.Use();
+            Close();
         }
 
         OnAfterGUI();
     }
 
     public virtual void OnAfterGUI() { }
+
+    private void Close()
+    {
+        PopupSystem.HideMessage(this);
+
+        if (_onCloseButtonClicked != null)
+        {
+            _onCloseButtonClicked();
+        }
+    }
 }

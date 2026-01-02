@@ -529,12 +529,6 @@ public class ChatManager : Singleton<ChatManager>
             _modUsers[v.Cmid] = new CommUser(v);
     }
 
-    public void SetNaughtyList(List<UberStrike.Core.Models.CommActorInfo> hackers)
-    {
-        foreach (var v in hackers)
-            _modUsers[v.Cmid] = new CommUser(v);
-    }
-
     public void AddClanMessage(int cmid, InstantMessage msg)
     {
         ClanDialog.AddMessage(msg);

@@ -6,8 +6,8 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Xml;
+using Cmune.Util;
 using UberStrike.Core.Types;
 using UnityEngine;
 
@@ -26,7 +26,7 @@ public static class LocalizedStrings
 
             var fields = GetAllStrings(XmlReader.Create(new StringReader(strings.text), settings));
 
-            foreach (var field in typeof(LocalizedStrings).GetFields(BindingFlags.Static | BindingFlags.Public))
+            foreach (var field in ReflectionHelper.GetAllFields(typeof(LocalizedStrings), false))
             {
                 string value;
                 if (fields.TryGetValue(field.Name, out value))
@@ -69,6 +69,8 @@ public static class LocalizedStrings
     }
 
 	public static string Login = "Login";
+	public static string Logout = "Logout";
+	public static string LogoutCaps = "LOGOUT";
 	public static string EmailAddress = "Email Address";
 	public static string Password = "Password";
 	public static string RememberMe = "Remember Me";
@@ -747,6 +749,10 @@ public static class LocalizedStrings
 	public static string TrainingTutorialMsg09 = "To crouch, hold down the {0} key.";
 	public static string TrainingTutorialMsg10 = "Use {0} to enter full screen mode.";
 	public static string TrainingTutorialMsg11 = "That's all you need to get started. Good luck!";
+	public static string TrainingMobileMsg1 = "Swipe your finger to look around.";
+	public static string TrainingMobileMsg2 = "You can change between multi-finger mode and two-thumb mode at any time.";
+	public static string TrainingMobileMsg3 = "Tap the buttons on screen to control your character.";
+	public static string TrainingMobileMsg4 = "In multi-finger mode, double tap to zoom your weapon.";
 	public static string UnassignedKeyMappingsWarningMsg = "There are unassigned key mappings!\nPlease check your Control Settings.";
 	public static string UserInterface = "User Interface";
 	public static string VideoCaps = "VIDEO";
@@ -844,9 +850,15 @@ public static class LocalizedStrings
 	public static string RecommendedArmorCaps = "RECOMMENDED ARMOR";
 	public static string StaffPickCaps = "STAFF PICK";
 	public static string RecommendedWeaponCaps = "RECOMMENDED WEAPON";
+	public static string UseMultiTouchInput = "Use Multi-touch input";
+	public static string LookSensitivity = "Look Sensitivity";
+	public static string JoystickSensitivity = "Joystick Sensitivity";
+	public static string TouchInput = "Touch Input";
 	public static string PackOneAmount = "10 Uses";
 	public static string PackTwoAmount = "100 Uses";
 	public static string PackThreeAmount = "1000 Uses";
 	public static string DiscountPercentOff = "{0}% Off!";
+	public static string NonMobileServer = "This server contains non-mobile players. There is a good chance you'll get owned.\n\nAdvanced players only!";
 	public static string MessageQuickItemsTry = "QuickItems will not be consumed in this training mode";
+	public static string TapToRespawn = "Tap to Respawn!";
 }

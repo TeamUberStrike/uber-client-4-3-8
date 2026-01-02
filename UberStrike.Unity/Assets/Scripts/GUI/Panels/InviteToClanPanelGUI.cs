@@ -121,7 +121,7 @@ public class InviteToClanPanelGUI : PanelGuiBase
             {
                 int j = 0;
                 int i = 0;
-                _friendListScroll = GUI.BeginScrollView(new Rect(0, 0, rect.width, rect.height), _friendListScroll, new Rect(0, 0, rect.width - 20, PlayerDataManager.Instance.FriendsCount * 24));
+                _friendListScroll = GUITools.BeginScrollView(new Rect(0, 0, rect.width, rect.height), _friendListScroll, new Rect(0, 0, rect.width - 20, PlayerDataManager.Instance.FriendsCount * 24));
                 foreach (var friend in PlayerDataManager.Instance.FriendList)
                 {
                     if (_name.Length > 0 && !friend.Name.ToLower().Contains(_name.ToLower()))
@@ -158,7 +158,7 @@ public class InviteToClanPanelGUI : PanelGuiBase
                     j++;
                 }
 
-                GUI.EndScrollView();
+                GUITools.EndScrollView();
             }
             else
             {

@@ -58,6 +58,8 @@ public class StatsPageGUI : MonoBehaviour
     private Vector2 _scrollGeneral;
     private Vector2 _filterScroll;
 
+    private const int StatsWidth = 490;
+
     private Rect statsPage;
     private int _selectedStatsTab = 0;
     private int _playerCurrentLevelXpReq;
@@ -97,7 +99,7 @@ public class StatsPageGUI : MonoBehaviour
         while (t < time)
         {
             t += Time.deltaTime;
-            statsPositionX = Mathf.Lerp(0, 490, (t / time) * (t / time));
+            statsPositionX = Mathf.Lerp(0, StatsWidth, (t / time) * (t / time));
             yield return new WaitForEndOfFrame();
         }
     }
@@ -182,6 +184,14 @@ public class StatsPageGUI : MonoBehaviour
         StartCoroutine(ScrollStatsFromRight(0.25f));
 
         UpdateWeaponStatList();
+
+        // override mouseorbit to prevent scrolling interfering with orbit
+        MouseOrbit.Instance.MaxX = Screen.width - StatsWidth;
+    }
+
+    private void OnDisable()
+    {
+        MouseOrbit.Instance.MaxX = Screen.width;
     }
 
     private void DrawWeaponsStatsTab(Rect rect)
@@ -212,7 +222,7 @@ public class StatsPageGUI : MonoBehaviour
         }
 
         //draw Weapon Stats
-        _scrollGeneral = GUI.BeginScrollView(new Rect(0, 26, rect.width - 2, rect.height - 26), _scrollGeneral, new Rect(0, 0, 340, 680));
+        _scrollGeneral = GUITools.BeginScrollView(new Rect(0, 26, rect.width - 2, rect.height - 26), _scrollGeneral, new Rect(0, 0, 340, 680));
         {
             DrawGroupControl(new Rect(14, 16, rect.width - 40, 646), title, BlueStonez.label_group_interparkbold_18pt);
 
@@ -226,7 +236,7 @@ public class StatsPageGUI : MonoBehaviour
                 i++;
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
         GUI.enabled = guiEnabled;
 
         //DoDropDownList(new Rect(0, 0, statsPage.width, 22));
@@ -315,7 +325,7 @@ public class StatsPageGUI : MonoBehaviour
 
     private void DrawPersonalStatsTab(Rect rect)
     {
-        _scrollGeneral = GUI.BeginScrollView(rect, _scrollGeneral, new Rect(0, 0, 340, 915));
+        _scrollGeneral = GUITools.BeginScrollView(rect, _scrollGeneral, new Rect(0, 0, 340, 915));
         {
             int columnWidth = Mathf.RoundToInt((rect.width - 80) * 0.5f);
 
@@ -355,7 +365,7 @@ public class StatsPageGUI : MonoBehaviour
             DrawPersonalStat(36 + columnWidth, 745, columnWidth, LocalizedStrings.MostSniperRifleKills, stats.MostSniperSplats.ToString(), _mostSniperSplatsIcon);
             DrawPersonalStat(36 + columnWidth, 821, columnWidth, LocalizedStrings.MostLauncherKills, stats.MostLauncherSplats.ToString(), _mostLauncherSplatsIcon);
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawAccountStatsTab(Rect rect)
@@ -379,7 +389,7 @@ public class StatsPageGUI : MonoBehaviour
         {
             Rect rect = new Rect(position.x, position.y + position.height, position.width - position.height, ((_selectionsToShow.Length) * 20) + 1);
             GUI.Box(rect, string.Empty, BlueStonez.window_standard_grey38);
-            _filterScroll = GUI.BeginScrollView(rect, _filterScroll, new Rect(0, 0, rect.width - 20, (_selectionsToShow.Length) * 20));
+            _filterScroll = GUITools.BeginScrollView(rect, _filterScroll, new Rect(0, 0, rect.width - 20, (_selectionsToShow.Length) * 20));
 
             //Other Filters
             for (int i = 0; i < _selectionsToShow.Length; i++)
@@ -392,7 +402,7 @@ public class StatsPageGUI : MonoBehaviour
                     UpdateWeaponStatList();
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         else
         {

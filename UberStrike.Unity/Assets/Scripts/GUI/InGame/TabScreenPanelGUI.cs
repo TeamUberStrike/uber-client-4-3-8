@@ -7,6 +7,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 {
     private void Awake()
     {
+        ForceShow = false;
+
         _rect = new Rect();
 
         _panelSize.x = 700;
@@ -36,7 +38,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         if (!GameState.HasCurrentGame || !GameState.HasCurrentPlayer) return;
 
         bool showTabScreen =
-            InputManager.Instance.RawValue(GameInputKey.Tabscreen) > 0 &&
+            (InputManager.Instance.RawValue(GameInputKey.Tabscreen) > 0 || ForceShow) &&
             !PanelManager.IsAnyPanelOpen &&
             GameState.CurrentGame.CanShowTabscreen;
 
@@ -258,7 +260,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             // Seperating line
             GUI.Label(new Rect(10, 32, position.width - 20, 1), GUIContent.none, BlueStonez.horizontal_line_grey95);
 
-            scroll = GUI.BeginScrollView(new Rect(10, 36, position.width - 20, position.height - 45), scroll, new Rect(0, 0, position.width - 40, players.Count * 36));
+            scroll = GUITools.BeginScrollView(new Rect(10, 36, position.width - 20, position.height - 45), scroll, new Rect(0, 0, position.width - 40, players.Count * 36));
             {
                 int i = 0;
 
@@ -348,7 +350,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
                     i++;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         GUI.EndGroup();
 
@@ -389,6 +391,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
     {
         get { return _redTeam.Count; }
     }
+
+    public bool ForceShow { get; set; }
 
     #endregion
 

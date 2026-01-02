@@ -215,7 +215,7 @@ public class InboxPageGUI : MonoBehaviour
 
         if (InboxManager.Instance.ThreadCount > 0)
         {
-            Vector2 newThreadScroll = GUI.BeginScrollView(rect, _threadScroll, new Rect(0, 0, _threadViewWidth, _threadViewHeight));
+            Vector2 newThreadScroll = GUITools.BeginScrollView(rect, _threadScroll, new Rect(0, 0, _threadViewWidth, _threadViewHeight));
             bool isScrollYIncreased = newThreadScroll.y > _threadScroll.y;
             _threadScroll = newThreadScroll;
             int y = 0;
@@ -258,7 +258,7 @@ public class InboxPageGUI : MonoBehaviour
             _threadViewHeight = y;
             _threadViewWidth = (int)((_threadViewHeight > rect.height) ? rect.width - 22 : rect.width - 8);
 
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         else
         {
@@ -304,7 +304,7 @@ public class InboxPageGUI : MonoBehaviour
         Rect msgRect = new Rect(r.x + 8, r.y + 48, r.width - 8, r.height - (isAdminThread ? 49 : 90));
         if (InboxThread.Current != null)
         {
-            thread.Scroll = GUI.BeginScrollView(msgRect, thread.Scroll, new Rect(0, 0, _messageViewWidth, _messageViewHeight));
+            thread.Scroll = GUITools.BeginScrollView(msgRect, thread.Scroll, new Rect(0, 0, _messageViewWidth, _messageViewHeight));
             {
                 y = thread.DrawMessageList(y, _messageViewWidth, msgRect.height, thread.Scroll.y);
 
@@ -320,7 +320,7 @@ public class InboxPageGUI : MonoBehaviour
                     _messageViewWidth = (int)msgRect.width - 8;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         else
         {
@@ -396,7 +396,7 @@ public class InboxPageGUI : MonoBehaviour
 
             if (PlayerDataManager.Instance.FriendsCount > 0)
             {
-                _friendScroll = GUI.BeginScrollView(r, _friendScroll, new Rect(0, 0, _friendWidth, _friendHeight));
+                _friendScroll = GUITools.BeginScrollView(r, _friendScroll, new Rect(0, 0, _friendWidth, _friendHeight));
 
                 int j = 0;
                 string search = _searchFriend.ToLower();
@@ -412,7 +412,7 @@ public class InboxPageGUI : MonoBehaviour
                 }
 
                 _friendHeight = j - 2;
-                GUI.EndScrollView();
+                GUITools.EndScrollView();
             }
             else
             {
@@ -498,7 +498,7 @@ public class InboxPageGUI : MonoBehaviour
             _requestWidth = (int)reqRect.width - (_requestHeight > reqRect.height ? 22 : 8);
 
             //FRIEND REQUESTS
-            _requestScroll = GUI.BeginScrollView(new Rect(0, voffset, reqRect.width, reqRect.height), _requestScroll, new Rect(0, 0, _requestWidth, _requestHeight));
+            _requestScroll = GUITools.BeginScrollView(new Rect(0, voffset, reqRect.width, reqRect.height), _requestScroll, new Rect(0, 0, _requestWidth, _requestHeight));
             {
                 GUI.Box(new Rect(4, 0, _requestWidth, 50), GUIContent.none, BlueStonez.box_grey38);
                 GUI.Label(new Rect(14, 0, _requestWidth - 10, 50), string.Format(LocalizedStrings.FriendRequestsYouHaveNPendingRequests, InboxManager.Instance._friendRequests.Count.ToString(), (InboxManager.Instance._friendRequests.Count != 1 ? "s" : string.Empty)), BlueStonez.label_interparkmed_18pt_left);
@@ -539,7 +539,7 @@ public class InboxPageGUI : MonoBehaviour
                 }
 
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
 
         }
         GUI.EndGroup();

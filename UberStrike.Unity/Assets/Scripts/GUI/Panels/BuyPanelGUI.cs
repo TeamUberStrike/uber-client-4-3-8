@@ -40,10 +40,14 @@ public class BuyPanelGUI : PanelGuiBase
     {
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
-            if (GUI.Button(new Rect(rect.width - 20, 0, 20, 20), "X", BlueStonez.friends_hidden_button))
+            int exitButtonWidth = 20;
+            if (ApplicationDataManager.Channel == ChannelType.Android || ApplicationDataManager.Channel == ChannelType.IPad || ApplicationDataManager.Channel == ChannelType.IPhone)
             {
-                Hide();
+                exitButtonWidth = 45;
             }
+
+            if (GUI.Button(new Rect(rect.width - exitButtonWidth, 0, exitButtonWidth, exitButtonWidth), "X", BlueStonez.friends_hidden_button))
+                Hide();
 
             DrawTitle(new Rect(BORDER, BORDER, rect.width - BORDER * 2, TITLE_HEIGHT));
 
@@ -53,6 +57,13 @@ public class BuyPanelGUI : PanelGuiBase
             DrawBuyButton(new Rect(0, rect.height - 90, rect.width, 90));
         }
         GUI.EndGroup();
+
+        //if clicked anything that is not a button, we exit
+        if (Event.current.type == EventType.mouseDown && !rect.Contains(Event.current.mousePosition))
+        {
+            Hide();
+            Event.current.Use();
+        }
     }
 
     private void DrawTitle(Rect rect)
@@ -68,8 +79,14 @@ public class BuyPanelGUI : PanelGuiBase
             if (_item.ItemView.LevelLock > PlayerDataManager.PlayerLevel)
             {
                 GUI.color = new Color(1, 1, 1, 0.5f);
-                GUI.Label(new Rect(rect.width - BORDER - 32, 8, 32, 32), UberstrikeIcons.LevelLock);
-                GUI.Label(new Rect(rect.width - BORDER - 31, 16, 24, 24), _item.ItemView.LevelLock.ToString(), BlueStonez.label_interparkmed_11pt);
+
+                // offset for mobile to compensate larger exit button
+                int offset = 0;
+                if (ApplicationDataManager.Channel == ChannelType.Android || ApplicationDataManager.Channel == ChannelType.IPad || ApplicationDataManager.Channel == ChannelType.IPhone)
+                    offset = 25;
+
+                GUI.Label(new Rect(rect.width - BORDER - 32 - offset, 8, 32, 32), UberstrikeIcons.LevelLock);
+                GUI.Label(new Rect(rect.width - BORDER - 31 - offset, 16, 24, 24), _item.ItemView.LevelLock.ToString(), BlueStonez.label_interparkmed_11pt);
                 GUI.color = Color.white;
             }
 

@@ -19,6 +19,9 @@ public class LoginPanelGUI : PanelGuiBase
     private bool _rememberPassword = false;
     private float _errorAlpha;
 
+    private TouchScreenKeyboard _loginKeyboard;
+    private TouchScreenKeyboard _passwordKeyboard;
+
     public static string ErrorMessage { get; set; }
     public static bool IsBanned { get; set; }
 
@@ -48,6 +51,35 @@ public class LoginPanelGUI : PanelGuiBase
 
     private void Update()
     {
+        if (ApplicationDataManager.IsMobile)
+        {
+            if (_loginKeyboard != null)
+            {
+                if (_loginKeyboard.done)
+                {
+                    _emailAddress = _loginKeyboard.text;
+                    _loginKeyboard = null;
+                }
+                else if (!_loginKeyboard.active)
+                {
+                    _loginKeyboard = null;
+                }
+            }
+
+            if (_passwordKeyboard != null)
+            {
+                if (_passwordKeyboard.done)
+                {
+                    _password = _passwordKeyboard.text;
+                    _passwordKeyboard = null;
+                }
+                else if (!_passwordKeyboard.active)
+                {
+                    _passwordKeyboard = null;
+                }
+            }
+        }
+
         // Remove CRLF from email address
         if (!string.IsNullOrEmpty(_emailAddress))
         {
@@ -81,6 +113,7 @@ public class LoginPanelGUI : PanelGuiBase
         }
     }
 
+
     private void DrawLoginPanel()
     {
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window);
@@ -104,24 +137,42 @@ public class LoginPanelGUI : PanelGuiBase
             GUI.Label(new Rect(8, 30, _rect.width - 16, 23), ErrorMessage, BlueStonez.label_interparkmed_11pt);
             GUI.contentColor = Color.white;
         }
-
-        // Email Address
-        _emailAddress = GUI.TextField(new Rect(8, 64, 220, 24), _emailAddress, CommonConfig.MemberEmailMaxLength, BlueStonez.textField);
-        if (string.IsNullOrEmpty(_emailAddress))
+#if !UNITY_EDITOR
+        if (ApplicationDataManager.IsMobile)
         {
-            GUI.color = Color.white.SetAlpha(0.3f);
-            GUI.Label(new Rect(8, 64, 200, 24), "  " + LocalizedStrings.Email, BlueStonez.label_interparkbold_13pt_left);
-            GUI.color = Color.white;
+            if (GUI.Button(new Rect(8, 64, 220, 24), new GUIContent(_emailAddress), BlueStonez.textField))
+            {
+                _loginKeyboard = TouchScreenKeyboard.Open(_emailAddress, TouchScreenKeyboardType.EmailAddress, false, false, false, false);
+            }
+            string maskedPassword = "".PadLeft(_password.Length, '*');
+            if (GUI.Button(new Rect(8, 92, 220, 24), new GUIContent(maskedPassword), BlueStonez.textField))
+            {
+                _passwordKeyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true, false);
+            }
         }
-
-        // Password
-        _password = GUI.PasswordField(new Rect(8, 92, 220, 24), _password, '*', CommonConfig.MemberPasswordMaxLength, BlueStonez.textField);
-        if (string.IsNullOrEmpty(_password))
+        else
         {
-            GUI.color = Color.white.SetAlpha(0.3f);
-            GUI.Label(new Rect(8, 92, 200, 24), "  " + LocalizedStrings.Password, BlueStonez.label_interparkbold_13pt_left);
-            GUI.color = Color.white;
+#endif
+            // Email Address
+            _emailAddress = GUI.TextField(new Rect(8, 64, 220, 24), _emailAddress, CommonConfig.MemberEmailMaxLength, BlueStonez.textField);
+            if (string.IsNullOrEmpty(_emailAddress))
+            {
+                GUI.color = Color.white.SetAlpha(0.3f);
+                GUI.Label(new Rect(8, 64, 200, 24), "  " + LocalizedStrings.Email, BlueStonez.label_interparkbold_13pt_left);
+                GUI.color = Color.white;
+            }
+
+            // Password
+            _password = GUI.PasswordField(new Rect(8, 92, 220, 24), _password, '*', CommonConfig.MemberPasswordMaxLength, BlueStonez.textField);
+            if (string.IsNullOrEmpty(_password))
+            {
+                GUI.color = Color.white.SetAlpha(0.3f);
+                GUI.Label(new Rect(8, 92, 200, 24), "  " + LocalizedStrings.Password, BlueStonez.label_interparkbold_13pt_left);
+                GUI.color = Color.white;
+            }
+#if !UNITY_EDITOR
         }
+#endif
 
         GUI.color = Color.white.SetAlpha(0.7f);
 
@@ -166,11 +217,13 @@ public class LoginPanelGUI : PanelGuiBase
             PanelManager.Instance.OpenPanel(PanelType.Signup);
         }
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
         // I play UberStrike on Facebook
         if (GUITools.Button(new Rect(178, 160, 152, 30), new GUIContent("", "If you already play UberStrike on Facebook,\nget your email and password set up."), BlueStonez.button_fbconnect))
         {
             ApplicationDataManager.Instance.OpenLinkFacebookUrl();
         }
+#endif
 
         DrawMiniButtons();
 
@@ -179,11 +232,8 @@ public class LoginPanelGUI : PanelGuiBase
 
     private void DrawMiniButtons()
     {
-        /* Close button for standalone build */
-        if (ApplicationDataManager.Channel == ChannelType.OSXStandalone ||
-            ApplicationDataManager.Channel == ChannelType.MacAppStore ||
-            ApplicationDataManager.Channel == ChannelType.WindowsStandalone ||
-            Application.isEditor)
+#if !UNITY_ANDROID && !UNITY_IPHONE
+        if (!Application.isWebPlayer)
         {
             // Mute
             if (GUITools.Button(new Rect(_rect.width - 57, 9, 16, 16), ApplicationDataManager.ApplicationOptions.AudioEnabled ? new GUIContent(panelQuadSoundOn, LocalizedStrings.Mute) : new GUIContent(panelQuadSoundOff, LocalizedStrings.Unmute), BlueStonez.panelquad_button))
@@ -208,6 +258,7 @@ public class LoginPanelGUI : PanelGuiBase
                 Application.Quit();
             }
         }
+#endif
     }
 
     private void Login(string emailAddress, string password, bool remember)

@@ -12,7 +12,7 @@ public class LotteryShopGUI
     public void Draw(Rect position)
     {
         float contentHeight = Mathf.Max(position.height, scrollHeight);
-        scroll = GUI.BeginScrollView(position, scroll, new Rect(0, 0, position.width - 17, contentHeight), false, true);
+        scroll = GUITools.BeginScrollView(position, scroll, new Rect(0, 0, position.width - 17, contentHeight), false, true);
         {
             int yOffset = 4;
             foreach (BundleCategoryType bundle in Enum.GetValues(typeof(BundleCategoryType)))
@@ -44,7 +44,7 @@ public class LotteryShopGUI
             }
             scrollHeight = yOffset;
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawLotterySlot(Rect position, LotteryShopItem item)

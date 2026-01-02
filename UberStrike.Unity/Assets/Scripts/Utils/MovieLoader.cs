@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if !UNITY_ANDROID && !UNITY_IPHONE
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -48,3 +49,4 @@ public class MovieLoader : Singleton<MovieLoader>
 
     #endregion
 }
+#endif

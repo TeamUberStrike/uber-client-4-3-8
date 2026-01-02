@@ -230,6 +230,11 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         return _weapons[1];
     }
 
+    public WeaponSlot GetCurrentWeapon()
+    {
+        return _weapon;
+    }
+
     public void InitializeAllWeapons(Transform _weaponAttachPoint)
     {
         for (int i = 0; i < _weapons.Length; i++)

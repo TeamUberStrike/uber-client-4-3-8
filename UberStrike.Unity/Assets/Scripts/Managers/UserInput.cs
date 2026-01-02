@@ -22,6 +22,7 @@ public static class UserInput
     {
         ResetDirection();
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
         if ((GameState.LocalCharacter.Keys & KeyState.Left) != 0) HorizontalDirection.x -= 127;
         if ((GameState.LocalCharacter.Keys & KeyState.Right) != 0) HorizontalDirection.x += 127;
         if ((GameState.LocalCharacter.Keys & KeyState.Forward) != 0) HorizontalDirection.z += 127;
@@ -34,6 +35,18 @@ public static class UserInput
         //e.g. (1,0,1) shouldn't result in faster movement than (1,0,0)
         HorizontalDirection.Normalize();
         VerticalDirection.Normalize();
+#else
+        GameState.LocalCharacter.Keys = 0;
+        if (TouchInput.WishJump) GameState.LocalCharacter.Keys |= KeyState.Jump;
+        if (TouchInput.WishCrouch) GameState.LocalCharacter.Keys |= KeyState.Crouch;
+        if (TouchInput.WishDirection.x > 0.1f) GameState.LocalCharacter.Keys |= KeyState.Right;
+        if (TouchInput.WishDirection.x < -0.1f) GameState.LocalCharacter.Keys |= KeyState.Left;
+        if (TouchInput.WishDirection.y > 0.1f) GameState.LocalCharacter.Keys |= KeyState.Forward;
+        if (TouchInput.WishDirection.y < -0.1f) GameState.LocalCharacter.Keys |= KeyState.Backward;
+
+        HorizontalDirection = new Vector3(TouchInput.WishDirection.x, 0, TouchInput.WishDirection.y);
+        VerticalDirection = new Vector3(0, TouchInput.WishCrouch ? -1 : TouchInput.WishJump ? 1 : 0, 0);
+#endif
     }
 
     public static void ResetDirection()
@@ -66,6 +79,7 @@ public static class UserInput
 
     public static void UpdateMouse()
     {
+#if !UNITY_ANDROID && !UNITY_IPHONE
         if (Camera.main != null)
         {
             float factor = Mathf.Pow(Camera.main.fov / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);
@@ -82,6 +96,26 @@ public static class UserInput
         }
 
         Rotation = Quaternion.AngleAxis(Mouse.x, Vector3.up) * Quaternion.AngleAxis(Mouse.y, Vector3.left);
+#else
+        if (Camera.main != null)
+        {
+            float factor = Mathf.Pow(Camera.main.fov / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);
+
+            //TURN AROUND
+            Mouse.x += TouchInput.WishLook.x * GameState.Instance.TouchLookSensitivity.x 
+                * ApplicationDataManager.ApplicationOptions.TouchLookSensitivity * factor;
+            Mouse.x = ClampAngle(Mouse.x, -360f, 360f);
+
+            //UP AND DOWN
+            int inv = (ApplicationDataManager.ApplicationOptions.InputInvertMouse) ? -1 : 1;
+
+            Mouse.y += TouchInput.WishLook.y * GameState.Instance.TouchLookSensitivity.y 
+                * ApplicationDataManager.ApplicationOptions.TouchLookSensitivity * inv * factor;
+            Mouse.y = ClampAngle(Mouse.y, -88, 88);
+        }
+
+        Rotation = Quaternion.AngleAxis(Mouse.x, Vector3.up) * Quaternion.AngleAxis(Mouse.y, Vector3.left);
+#endif
     }
 
     public static bool IsPressed(KeyState k)

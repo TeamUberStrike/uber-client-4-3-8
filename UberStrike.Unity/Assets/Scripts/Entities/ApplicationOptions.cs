@@ -28,6 +28,12 @@ public class ApplicationOptions
     public float InputMouseRotationMinY = -90;
     public bool InputInvertMouse = false;
 
+    // Mobile
+    public float TouchLookSensitivity = 1.0f;
+    public float TouchMoveSensitivity = 1.0f;
+
+    public bool UseMultiTouch = false;
+
     // Gameplay
     public bool GameplayAutoPickupEnabled = true;
     public bool GameplayAutoEquipEnabled = false;
@@ -52,7 +58,9 @@ public class ApplicationOptions
         {
             isReset = true;
             CmunePrefs.Reset();
+#if !UNITY_ANDROID && !UNITY_IPHONE
             QualitySettings.SetQualityLevel(1, true);
+#endif
             PlayerPrefs.SetString("Version", ApplicationDataManager.VersionShort);
         }
 
@@ -64,7 +72,13 @@ public class ApplicationOptions
         VideoWaterMode = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoWaterMode, VideoWaterMode);
 
         // Water4 High currently not supported on OSX, force to medium
-        if ((Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXWebPlayer) && VideoWaterMode == 2) VideoWaterMode = 1;
+        if ((Application.platform == RuntimePlatform.OSXPlayer ||
+            Application.platform == RuntimePlatform.OSXWebPlayer ||
+            Application.platform == RuntimePlatform.IPhonePlayer ||
+            Application.platform == RuntimePlatform.Android) && VideoWaterMode == 2)
+        {
+            VideoWaterMode = 1;
+        }
 
         VideoMaxQueuedFrames = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoMaxQueuedFrames, VideoMaxQueuedFrames);
         VideoTextureQuality = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoTextureQuality, VideoTextureQuality);
@@ -88,6 +102,13 @@ public class ApplicationOptions
         InputInvertMouse = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputInvertMouse, false);
         bool isGamePadEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputEnableGamepad, false);
         InputManager.Instance.IsGamepadEnabled = Input.GetJoystickNames().Length > 0 && isGamePadEnabled;
+
+#if UNITY_ANDROID || UNITY_IPHONE
+        // Mobile
+        UseMultiTouch = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileUseMultiTouch, false);
+        TouchLookSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileTouchLookSensitivity, 1.0f), 0.5f, 3.0f);
+        TouchMoveSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileTouchMoveSensitivity, 1.0f), 0.5f, 3.0f);
+#endif
 
         // Gameplay
         GameplayAutoPickupEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, true);
@@ -130,6 +151,12 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMinY, InputMouseRotationMinY);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputInvertMouse, InputInvertMouse);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputEnableGamepad, InputManager.Instance.IsGamepadEnabled);
+
+#if UNITY_ANDROID || UNITY_IPHONE
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileUseMultiTouch, UseMultiTouch);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchLookSensitivity, TouchLookSensitivity);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchMoveSensitivity, TouchMoveSensitivity);
+#endif
 
         // Gameplay
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, GameplayAutoPickupEnabled);

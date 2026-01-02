@@ -168,7 +168,7 @@ public class ModerationPanelGUI : PanelGuiBase
             GUI.Label(new Rect(10, 52, position.width, 25), online, BlueStonez.label_interparkbold_18pt_left);
             GUI.Label(new Rect(0, 76, position.width, position.height - 76), GUIContent.none, BlueStonez.box_grey50);
 
-            _playerScroll = GUI.BeginScrollView(new Rect(0, 77, position.width, position.height - 78), _playerScroll, new Rect(0, 0, position.width - 20, _playerCount * 20));
+            _playerScroll = GUITools.BeginScrollView(new Rect(0, 77, position.width, position.height - 78), _playerScroll, new Rect(0, 0, position.width - 20, _playerCount * 20));
             {
                 int i = 0;
                 string s = _filterText.ToLower();
@@ -199,7 +199,7 @@ public class ModerationPanelGUI : PanelGuiBase
 
                 _playerCount = i;
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         GUI.EndGroup();
     }
@@ -211,14 +211,14 @@ public class ModerationPanelGUI : PanelGuiBase
         {
             GUI.Label(new Rect(0, 0, position.width, position.height), GUIContent.none, BlueStonez.box_grey50);
 
-            _moderationScroll = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), _moderationScroll, new Rect(0, 1, position.width - 20, moderationHeight));
+            _moderationScroll = GUITools.BeginScrollView(new Rect(0, 0, position.width, position.height), _moderationScroll, new Rect(0, 1, position.width - 20, moderationHeight));
             {
                 for (int i = 0, j = 0; i < _moderations.Count; i++)
                 {
                     _moderations[i].Draw(_moderations[i], new Rect(10, j++ * 100, 360, 100));
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         GUI.EndGroup();
     }

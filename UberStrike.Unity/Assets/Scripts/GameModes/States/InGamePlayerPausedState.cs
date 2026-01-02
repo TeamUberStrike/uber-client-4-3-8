@@ -11,8 +11,8 @@ class InGamePlayerPausedState : IState
     {
         HudDrawFlagGroup.Instance.AddFlag(pauseDrawFlagTuning);
         HudUtil.Instance.ShowContinueButton();
-        WeaponsHud.Instance.QuickItems.Expand();
-
+        if (!ApplicationDataManager.IsMobile)
+            WeaponsHud.Instance.QuickItems.Expand();
         CmuneEventHandler.AddListener<OnPlayerUnpauseEvent>(OnPlayerUnpaused);
     }
 
@@ -20,8 +20,8 @@ class InGamePlayerPausedState : IState
     {
         PlayerStateMsgHud.Instance.ButtonEnabled = false;
         HudDrawFlagGroup.Instance.RemoveFlag(pauseDrawFlagTuning);
-        WeaponsHud.Instance.QuickItems.Collapse();
-
+        if (!ApplicationDataManager.IsMobile)
+          WeaponsHud.Instance.QuickItems.Collapse();
         CmuneEventHandler.RemoveListener<OnPlayerUnpauseEvent>(OnPlayerUnpaused);
     }
 
@@ -39,5 +39,5 @@ class InGamePlayerPausedState : IState
     }
 
     private StateMachine _stateMachine;
-    private const HudDrawFlags pauseDrawFlagTuning = ~(HudDrawFlags.Reticle);
+    private const HudDrawFlags pauseDrawFlagTuning = ~(HudDrawFlags.Reticle | HudDrawFlags.Weapons);
 }

@@ -82,39 +82,41 @@ class TrainingState : IState
 
     private void ShowTrainingGameMessages()
     {
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, string.Empty);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.TrainingTutorialMsg01);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.MessageQuickItemsTry);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.TrainingTutorialMsg03);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.TrainingTutorialMsg04);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
-            string.Format(LocalizedStrings.TrainingTutorialMsg05,
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Forward),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Left),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Backward),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Right)));
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
-            string.Format(LocalizedStrings.TrainingTutorialMsg06,
-            InputManager.Instance.InputChannelForSlot(GameInputKey.PrimaryFire)));
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
-            string.Format(LocalizedStrings.TrainingTutorialMsg07,
-            InputManager.Instance.InputChannelForSlot(GameInputKey.NextWeapon),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.PrevWeapon)));
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
-            string.Format(LocalizedStrings.TrainingTutorialMsg08,
-            InputManager.Instance.InputChannelForSlot(GameInputKey.WeaponMelee),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon1),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon2),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon3),
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon4)));
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
-            string.Format(LocalizedStrings.TrainingTutorialMsg09,
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Crouch)));
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
-            string.Format(LocalizedStrings.TrainingTutorialMsg10,
-            InputManager.Instance.InputChannelForSlot(GameInputKey.Fullscreen)));
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
-            LocalizedStrings.TrainingTutorialMsg11);
+        if (!ApplicationDataManager.IsMobile) {
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, string.Empty);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.TrainingTutorialMsg01);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.MessageQuickItemsTry);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.TrainingTutorialMsg03);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.TrainingTutorialMsg04);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
+                string.Format(LocalizedStrings.TrainingTutorialMsg05,
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Forward),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Left),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Backward),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Right)));
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
+                string.Format(LocalizedStrings.TrainingTutorialMsg06,
+                InputManager.Instance.InputChannelForSlot(GameInputKey.PrimaryFire)));
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
+                string.Format(LocalizedStrings.TrainingTutorialMsg07,
+                InputManager.Instance.InputChannelForSlot(GameInputKey.NextWeapon),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.PrevWeapon)));
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
+                string.Format(LocalizedStrings.TrainingTutorialMsg08,
+                InputManager.Instance.InputChannelForSlot(GameInputKey.WeaponMelee),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon1),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon2),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon3),
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Weapon4)));
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
+                string.Format(LocalizedStrings.TrainingTutorialMsg09,
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Crouch)));
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
+                string.Format(LocalizedStrings.TrainingTutorialMsg10,
+                InputManager.Instance.InputChannelForSlot(GameInputKey.Fullscreen)));
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
+                LocalizedStrings.TrainingTutorialMsg11);
+        }
     }
 
     private TrainingFpsMode _trainingGameMode;

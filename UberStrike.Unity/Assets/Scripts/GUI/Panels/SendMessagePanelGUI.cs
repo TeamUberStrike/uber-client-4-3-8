@@ -132,7 +132,7 @@ public class SendMessagePanelGUI : PanelGuiBase
         if (PlayerDataManager.Instance.FriendsCount > 0)
         {
             int j = 0;
-            _friendDropdownScroll = GUI.BeginScrollView(new Rect(0, 0, rcvRect.width, rcvRect.height), _friendDropdownScroll, new Rect(0, 0, _rcvDropdownWidth, _receiverCount * 24));
+            _friendDropdownScroll = GUITools.BeginScrollView(new Rect(0, 0, rcvRect.width, rcvRect.height), _friendDropdownScroll, new Rect(0, 0, _rcvDropdownWidth, _receiverCount * 24));
             foreach (var friend in PlayerDataManager.Instance.FriendList)
             {
                 if (_msgReceiver.Length > 0 && !friend.Name.ToLower().Contains(_msgReceiver.ToLower())) continue;
@@ -159,7 +159,7 @@ public class SendMessagePanelGUI : PanelGuiBase
             else
                 _rcvDropdownWidth = rcvRect.width - 8;
 
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         else GUI.Label(new Rect(0, 0, rcvRect.width, rcvRect.height), LocalizedStrings.YouHaveNoFriends, BlueStonez.label_interparkmed_11pt);
 

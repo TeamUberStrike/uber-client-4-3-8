@@ -18,9 +18,10 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
         _ccd = new CameraCollisionDetector();
         _ccd.Offset = 1;
         _ccd.LayerMask = 1;
-
+#if !UNITY_ANDROID && !UNITY_IPHONE
         _lowpassFilter = gameObject.AddComponent<AudioLowPassFilter>();
         if (_lowpassFilter) _lowpassFilter.cutoffFrequency = 755;
+#endif
     }
 
     private void LateUpdate()
@@ -397,12 +398,13 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
             return new Ray();
         }
     }
-
+#if !UNITY_ANDROID && !UNITY_IPHONE
     public void EnableLowPassFilter(bool enabled)
     {
         if (_lowpassFilter)
             _lowpassFilter.enabled = enabled;
     }
+#endif
 
     public void ResetFeedback()
     {
@@ -466,12 +468,12 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
     {
         get { return _bobManager.Mode; }
     }
-
+#if !UNITY_ANDROID && !UNITY_IPHONE
     public bool LowpassFilterEnabled
     {
         get { return _lowpassFilter && _lowpassFilter.enabled; }
     }
-
+#endif
     public bool CanDip
     {
         get;
@@ -505,8 +507,9 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
 
     private Quaternion _userInputCache;
     private Quaternion _userInputRotation;
-
+#if !UNITY_ANDROID && !UNITY_IPHONE
     private AudioLowPassFilter _lowpassFilter;
+#endif
 
     #endregion
 

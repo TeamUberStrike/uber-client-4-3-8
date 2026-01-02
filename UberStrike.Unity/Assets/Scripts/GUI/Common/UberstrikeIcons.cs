@@ -18,12 +18,13 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
             if (_white == null)
             {
                 _white = new Texture2D(16, 16, TextureFormat.RGBA32, false);
-                var colors = new Color[16 * 16];
-                for (int i = 0; i < colors.Length; i++)
+                for (int i = 0; i < _white.height; i++)
                 {
-                    colors[i] = Color.white;
+                    for (int j = 0; j < _white.width; j++)
+                    {
+                        _white.SetPixel(j, i, Color.white);
+                    }
                 }
-                _white.SetPixels(colors);
                 _white.Apply();
             }
             return _white;
@@ -269,7 +270,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
 
         return tex;
     }
-
+#if !UNITY_ANDROID && !UNITY_IPHONE
     [SerializeField]
     private MovieTexture[] _achievementBadges;
     public static MovieTexture GetAchievementBadge(AchievementType achievementType)
@@ -298,6 +299,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
                 return null;
         }
     }
+#endif
 
     public static string GetAchievementTitle(AchievementType type)
     {
@@ -322,6 +324,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
         }
     }
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
     [SerializeField]
     private MovieTexture[] _recommendationBadges;
     public static MovieTexture GetRecommendBadge(RecommendType recomType)
@@ -344,6 +347,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
                 return null;
         }
     }
+#endif
 
     [SerializeField]
     private Texture2D[] _stats;

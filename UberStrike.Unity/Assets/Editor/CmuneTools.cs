@@ -641,4 +641,64 @@ public static class CmuneTools
     //        }
     //    }
     //}
+
+    #region Mobile
+
+    [MenuItem("Cmune Tools/Mobile/Show Textures with Android Import")]
+    static void TexturesWithAndroidImport()
+    {
+        //Object[] allTextures = TextureImporter.(typeof(Texture));
+        
+        //int i = 0;
+        //foreach (Object o in allTextures)
+        //{
+        //    if (o.GetType() == typeof(Texture2D))
+        //    {
+        //        string path = AssetDatabase.GetAssetPath(o);
+        //        if (!string.IsNullOrEmpty(path))
+        //        {
+        //            Debug.Log(o.name + "/" + path + ":" + o.GetType());
+
+        //            TextureImporter asset = (TextureImporter)TextureImporter.GetAtPath(path);
+        //            Debug.Log(i.ToString() + " : " + asset.maxTextureSize);
+        //            i++;
+        //        }
+        //    }
+        //}
+    }
+
+    [MenuItem("Cmune Tools/Mobile/Show Material Summary")]
+    static void MaterialSummary()
+    {
+        string materialReport = "";
+        string nonMobileReport = "";
+        Dictionary<string, int> shaders = new Dictionary<string, int>();
+        foreach (Material mat in Selection.GetFiltered(typeof(Material), SelectionMode.DeepAssets))
+        {
+            if (shaders.ContainsKey(mat.shader.name))
+            {
+                shaders[mat.shader.name]++;
+            }
+            else
+            {
+                shaders[mat.shader.name] = 1;
+            }
+            materialReport = materialReport + mat.name + ": " + mat.shader.name + "\n";
+            if (!mat.shader.name.Contains("Cross Platform Shaders"))
+            {
+                nonMobileReport = nonMobileReport + mat.name + ": " + mat.shader.name + "\n";
+            }
+        }
+        Debug.Log("Material and Shaders report: \n\n" + materialReport);
+        Debug.Log("Non-Mobile Shaders: \n\n" + nonMobileReport);
+
+        string shaderUsageReport = "";
+        foreach (KeyValuePair<string, int> kvp in shaders)
+        {
+            shaderUsageReport = shaderUsageReport + kvp.Key + ": " + kvp.Value + "\n";
+        }
+        Debug.Log("Shader usage: \n\n" + shaderUsageReport);
+    }
+
+    #endregion
 }

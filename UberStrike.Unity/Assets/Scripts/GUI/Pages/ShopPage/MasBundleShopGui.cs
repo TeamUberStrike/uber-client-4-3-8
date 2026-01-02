@@ -19,7 +19,7 @@ public class MasBundleShopGUI
     private void DrawPacksBasic(Rect position)
     {
         float contentHeight = Mathf.Max(position.height, scrollHeight);
-        masterScrollPosition = GUI.BeginScrollView(position, masterScrollPosition, new Rect(0, 0, position.width - 17, contentHeight), false, true);
+        masterScrollPosition = GUITools.BeginScrollView(position, masterScrollPosition, new Rect(0, 0, position.width - 17, contentHeight), false, true);
         {
             if (MasBundleManager.Instance.Count == 0)
             {
@@ -53,7 +53,7 @@ public class MasBundleShopGUI
                 scrollHeight = yOffset;
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawItem(Rect position, IUnityItem baseItem)
@@ -126,7 +126,7 @@ public class MasBundleShopGUI
         {
             GUITools.Clicked();
             if (ScreenResolutionManager.IsFullScreen) ScreenResolutionManager.IsFullScreen = false;
-            MasBundleManager.Instance.BuyStoreKitItem(masBundleView.BundleView.MacAppStoreUniqueId, masBundleView.BundleView.Id);
+            MasBundleManager.Instance.BuyStoreKitItem(masBundleView.BundleView);
         }
         else
         {

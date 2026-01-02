@@ -137,7 +137,7 @@ public class ClanPageGUI : MonoBehaviour
             // draw actual clan members
             int i = 0;
             int height = PlayerDataManager.Instance.ClanMembersCount * 50;
-            _clanMembersScrollView = GUI.BeginScrollView(new Rect(0, 25, rect.width, rect.height - 25), _clanMembersScrollView, new Rect(0, 0, rect.width - 20, height));
+            _clanMembersScrollView = GUITools.BeginScrollView(new Rect(0, 25, rect.width, rect.height - 25), _clanMembersScrollView, new Rect(0, 0, rect.width - 20, height));
             {
                 _onlineMemberCount = 0;
                 foreach (var m in PlayerDataManager.Instance.ClanMembers)
@@ -145,7 +145,7 @@ public class ClanPageGUI : MonoBehaviour
                     DrawClanMembers(new Rect(0, 50 * i++, rect.width - 20, 50), m);
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         GUI.EndGroup();
     }

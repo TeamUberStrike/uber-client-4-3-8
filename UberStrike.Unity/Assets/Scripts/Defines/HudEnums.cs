@@ -1,5 +1,4 @@
 ﻿using Cmune.Realtime.Common;
-using UberStrike.Core.Types;
 
 [System.Flags]
 public enum HudDrawFlags

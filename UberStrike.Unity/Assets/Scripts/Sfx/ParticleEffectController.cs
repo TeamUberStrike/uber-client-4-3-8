@@ -49,7 +49,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
 
     public static void ShowHeatwaveEffect(Vector3 pos)
     {
-        if (Exists && Instance._heatWave)
+        if (Exists && Instance._heatWave && !ApplicationDataManager.IsMobile)
         {
             Instance._heatWave.Emit(pos, Vector3.zero, 1, 1, Color.white);
         }

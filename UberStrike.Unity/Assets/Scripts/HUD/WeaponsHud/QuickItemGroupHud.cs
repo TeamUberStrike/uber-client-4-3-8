@@ -7,6 +7,7 @@ using UberStrike.Core.Types;
 
 public class QuickItemGroupHud
 {
+    public Animatable2DGroup Group { get { return _quickItemsGroup; } }
     public bool Enabled
     {
         get { return _quickItemsGroup.IsVisible; }
@@ -47,11 +48,11 @@ public class QuickItemGroupHud
         }
     }
 
-    public void SetSelected(int slotIndex)
+    public void SetSelected(int slotIndex, bool moveNext = true)
     {
         for (int i = 0; i < _quickItemSlots.Count; i++)
         {
-            _quickItemSlots[i].SetSelected(slotIndex == i);
+            _quickItemSlots[i].SetSelected(slotIndex == i, moveNext);
         }
     }
 
@@ -112,6 +113,7 @@ public class QuickItemGroupHud
 
     public void Expand()
     {
+        if (ApplicationDataManager.IsMobile) return;
         int n = 0;
         for (int i = 0; i < _quickItemSlots.Count; i++)
         {
@@ -125,6 +127,7 @@ public class QuickItemGroupHud
 
     public void Collapse()
     {
+        if (ApplicationDataManager.IsMobile) return;
         int n = 0;
         for (int i = 0; i < _quickItemSlots.Count; i++)
         {
@@ -229,7 +232,9 @@ public class QuickItemGroupHud
             Collapse();
         }
 
-        _quickItemsGroup.Position = new Vector2(Screen.width * 0.95f - slot.Group.Rect.width / 2, Screen.height * 0.9f - 10);
+        float height = Screen.height * 0.9f - 10;
+        if (ApplicationDataManager.IsMobile) height = 160;
+        _quickItemsGroup.Position = new Vector2(Screen.width * 0.95f - slot.Group.Rect.width / 2, height);
     }
 
     private Animatable2DGroup _quickItemsGroup;

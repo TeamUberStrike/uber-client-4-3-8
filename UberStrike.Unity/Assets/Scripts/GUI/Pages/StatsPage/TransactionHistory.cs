@@ -49,7 +49,7 @@ public class TransactionHistory : Singleton<TransactionHistory>
 
     #endregion
 
-    private class TransactionCache<T>
+    public class TransactionCache<T>
     {
         public SortedList<int, T> PageCache { get; private set; }
         public int CurrentPageIndex { get; set; }
@@ -286,7 +286,7 @@ public class TransactionHistory : Singleton<TransactionHistory>
 
         if (_itemTransactions.CurrentPage != null)
         {
-            _scrollControls = GUI.BeginScrollView(scrollViewRect.ExpandBy(0, -1), _scrollControls, new Rect(0, 0, scrollViewRect.width - 17, _itemTransactions.CurrentPage.ItemTransactions.Count * RowHeight));
+            _scrollControls = GUITools.BeginScrollView(scrollViewRect.ExpandBy(0, -1), _scrollControls, new Rect(0, 0, scrollViewRect.width - 17, _itemTransactions.CurrentPage.ItemTransactions.Count * RowHeight));
             {
                 //Rect entryRect = new Rect(0, 0, scrollViewRect.width, _rowHeight);
                 float yOffset = 0;
@@ -302,7 +302,7 @@ public class TransactionHistory : Singleton<TransactionHistory>
                     yOffset += RowHeight;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
     }
 
@@ -355,7 +355,7 @@ public class TransactionHistory : Singleton<TransactionHistory>
 
         if (_pointTransactions.CurrentPage != null)
         {
-            _scrollControls = GUI.BeginScrollView(scrollViewRect.ExpandBy(0, -1), _scrollControls, new Rect(0, 0, scrollViewRect.width - 17, _pointTransactions.CurrentPage.PointDeposits.Count * RowHeight));
+            _scrollControls = GUITools.BeginScrollView(scrollViewRect.ExpandBy(0, -1), _scrollControls, new Rect(0, 0, scrollViewRect.width - 17, _pointTransactions.CurrentPage.PointDeposits.Count * RowHeight));
             {
                 float yOffset = 0;
                 foreach (var d in _pointTransactions.CurrentPage.PointDeposits)
@@ -366,7 +366,7 @@ public class TransactionHistory : Singleton<TransactionHistory>
                     yOffset += RowHeight;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
     }
 
@@ -419,7 +419,7 @@ public class TransactionHistory : Singleton<TransactionHistory>
 
         if (_creditTransactions.CurrentPage != null)
         {
-            _scrollControls = GUI.BeginScrollView(scrollViewRect.ExpandBy(0, -1), _scrollControls, new Rect(0, 0, scrollViewRect.width - 17, _creditTransactions.CurrentPage.CurrencyDeposits.Count * RowHeight));
+            _scrollControls = GUITools.BeginScrollView(scrollViewRect.ExpandBy(0, -1), _scrollControls, new Rect(0, 0, scrollViewRect.width - 17, _creditTransactions.CurrentPage.CurrencyDeposits.Count * RowHeight));
             {
                 float yOffset = 0;
                 foreach (var entry in _creditTransactions.CurrentPage.CurrencyDeposits)
@@ -433,7 +433,7 @@ public class TransactionHistory : Singleton<TransactionHistory>
                     yOffset += RowHeight;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
     }
 

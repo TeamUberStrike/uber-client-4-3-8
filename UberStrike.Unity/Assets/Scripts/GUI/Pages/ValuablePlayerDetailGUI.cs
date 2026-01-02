@@ -46,12 +46,15 @@ class ValuablePlayerDetailGUI
     }
 
     #region Private
+
     private void DrawPlayerBadge(Rect rect)
     {
+#if !UNITY_ANDROID && !UNITY_IPHONE
         if (_curBadge != null)
         {
             GUI.DrawTexture(rect, _curBadge);
         }
+#endif
     }
 
     private void DrawStatsDetail(Rect rect)
@@ -98,6 +101,7 @@ class ValuablePlayerDetailGUI
 
     private void SetCurrentAchievementBadge(AchievementType type, int value)
     {
+#if !UNITY_ANDROID && !UNITY_IPHONE
         if (_curBadge != null)
         {
             _curBadge.Stop();
@@ -105,6 +109,7 @@ class ValuablePlayerDetailGUI
 
         _curBadge = UberstrikeIcons.GetAchievementBadge(type);
         _curBadge.Play();
+#endif
 
         _curBadgeTitle = UberstrikeIcons.GetAchievementTitle(type);
 
@@ -136,7 +141,9 @@ class ValuablePlayerDetailGUI
 
     private StatsSummary _curPlayerStats;
     private List<AchievementType> _types;
+#if !UNITY_ANDROID && !UNITY_IPHONE
     private MovieTexture _curBadge;
+#endif
     private string _curBadgeTitle;
     private string _curBadgeText;
     private int _curAchievementIndex = -1;

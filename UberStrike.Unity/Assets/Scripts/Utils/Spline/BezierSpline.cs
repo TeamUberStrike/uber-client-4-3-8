@@ -103,7 +103,11 @@ public class BezierSplines
     public Vector3 LatestPosition()
     {
         if (Packets.Count > 0)
+#if UNITY_IPHONE
+            return Packets.LastItem.Pos;
+#else
             return Packets.Last().Pos;
+#endif
         else
             return Vector3.zero;
     }
@@ -163,8 +167,8 @@ public class BezierSplines
         {
             Time = t;
             Pos = p;
-            S1 = prev * GameState.Tangent;
-            S2 = -prev * GameState.Tangent;
+            S1 = prev * 0.3f;
+            S2 = -prev * 0.3f;
             GameTime = UnityEngine.Time.realtimeSinceStartup;
         }
     }

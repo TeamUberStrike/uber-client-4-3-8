@@ -22,6 +22,7 @@ public class QuickItemController : Singleton<QuickItemController>
     public int CurrentSlotIndex { get; private set; }
     public float NextCooldownFinishTime { get; set; }
     public QuickItemRestriction Restriction { get; private set; }
+    public bool IsQuickItemMobilePushed = false;
 
     public void Initialize()
     {
@@ -188,10 +189,23 @@ public class QuickItemController : Singleton<QuickItemController>
                         WeaponsHud.Instance.QuickItems.SetSelected(CurrentSlotIndex);
                     }
                     break;
+                case GameInputKey.PrevQuickItem:
+                    if (_quickItems.Length > 0)
+                    {
+                        CurrentSlotIndex = GetPrevAvailableSlotIndex(CurrentSlotIndex);
+                        WeaponsHud.Instance.QuickItems.SetSelected(CurrentSlotIndex, false);
+                    }
+                    break;
                 case GameInputKey.UseQuickItem:
                     UseQuickItem(CurrentSlotIndex);
                     break;
             }
+        }
+        
+        // take response from mobile input
+        if (ev.Key == GameInputKey.UseQuickItem && !LevelCamera.Instance.IsZoomedIn && IsEnabled)
+        {
+            IsQuickItemMobilePushed = ev.IsDown;
         }
     }
 
@@ -205,6 +219,22 @@ public class QuickItemController : Singleton<QuickItemController>
                 return slot;
             }
             slot = (slot + 1) % _quickItems.Length;
+        }
+        return currentSlot;
+    }
+
+    private int GetPrevAvailableSlotIndex(int currentSlot)
+    {
+        int slot = (currentSlot - 1) % _quickItems.Length;
+        
+        while (slot != currentSlot)
+        {
+            if (slot < 0) slot = _quickItems.Length - 1;
+            if (!WeaponsHud.Instance.QuickItems.GetLoadoutQuickItemHud(slot).IsEmpty)
+            {
+                return slot;
+            }
+            slot = (slot - 1) % _quickItems.Length;
         }
         return currentSlot;
     }

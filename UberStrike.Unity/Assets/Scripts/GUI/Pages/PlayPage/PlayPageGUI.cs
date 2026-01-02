@@ -160,13 +160,13 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         {
             GUI.Box(new Rect(0, 0, position.width, 32), LocalizedStrings.HelpCaps, BlueStonez.box_grey50);
             GUI.Box(new Rect(0, 31, position.width, position.height - 31 - 55), string.Empty, BlueStonez.box_grey50);
-            _serverSelectionHelpScrollBar = GUI.BeginScrollView(new Rect(0, 33, position.width, position.height - 31 - 60), _serverSelectionHelpScrollBar, new Rect(0, 0, position.width - 20, 400));
+            _serverSelectionHelpScrollBar = GUITools.BeginScrollView(new Rect(0, 33, position.width, position.height - 31 - 60), _serverSelectionHelpScrollBar, new Rect(0, 0, position.width - 20, 400));
             {
                 DrawGroupLabel(new Rect(5, 5, position.width - 25, 100), "1. " + LocalizedStrings.ServerName, LocalizedStrings.ServerNameDesc);
                 DrawGroupLabel(new Rect(5, 105, position.width - 25, 70), "2. " + LocalizedStrings.Capacity, LocalizedStrings.CapacityDesc);
                 DrawGroupLabel(new Rect(5, 180, position.width - 25, 180), "3. " + LocalizedStrings.Speed, LocalizedStrings.SpeedDesc);
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         GUI.EndGroup();
     }
@@ -253,7 +253,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         int length = GameServerManager.Instance.PhotonServerCount * 48;
 
         GUI.color = Color.white;
-        _serverSelectionScrollBar = GUI.BeginScrollView(new Rect(0, 31, pos.width + 1, pos.height - 31 - 55), _serverSelectionScrollBar, new Rect(0, 0, pos.width - 20, length));
+        _serverSelectionScrollBar = GUITools.BeginScrollView(new Rect(0, 31, pos.width + 1, pos.height - 31 - 55), _serverSelectionScrollBar, new Rect(0, 0, pos.width - 20, length));
 
         int i = 0;
         string text = string.Empty;
@@ -397,7 +397,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GUI.EndGroup();
             i++;
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     /// <summary>
@@ -449,7 +449,18 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             }
             else
             {
+#if UNITY_ANDROID || UNITY_IPHONE
+                if (GameServerController.Instance.SelectedServer.UsageType != PhotonUsageType.Mobile)
+                {
+                    PopupSystem.ShowMessage(LocalizedStrings.Warning, LocalizedStrings.NonMobileServer, PopupSystem.AlertType.OKCancel, ShowGameSelection, LocalizedStrings.OkCaps, null, LocalizedStrings.CancelCaps);
+                }
+                else
+                {
+                    ShowGameSelection();
+                }
+#else
                 ShowGameSelection();
+#endif
             }
         }
         else
@@ -670,11 +681,11 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             if (LobbyConnectionManager.IsConnected)
             {
                 Vector2 tmp = _serverScroll;
-                _serverScroll = GUI.BeginScrollView(new Rect(0, 25, serverRect.width, serverRect.height - 1 - 25), _serverScroll, new Rect(0, 0, serverRect.width - 60, length), BlueStonez.horizontalScrollbar, BlueStonez.verticalScrollbar);
+                _serverScroll = GUITools.BeginScrollView(new Rect(0, 25, serverRect.width, serverRect.height - 1 - 25), _serverScroll, new Rect(0, 0, serverRect.width - 60, length), BlueStonez.horizontalScrollbar, BlueStonez.verticalScrollbar);
                 {
                     _filteredActiveRoomCount = DrawAllGames(serverRect, serverRect.height <= length);
                 }
-                GUI.EndScrollView();
+                GUITools.EndScrollView();
                 if (tmp != _serverScroll)
                 {
                     ResetLobbyDisconnectTimeout();
@@ -885,7 +896,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         {
             ShowServerSelection();
         }
-
+#if !UNITY_ANDROID && !UNITY_IPHONE
         bool tmp = _showFilters;
         _showFilters = GUI.Toggle(new Rect(147, rect.height - 42, 120, 32), _showFilters, LocalizedStrings.FiltersCaps, BlueStonez.button);
 
@@ -915,6 +926,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             RefreshGameList();
             _refreshGameListOnFilterChange = false;
         }
+#endif
 
         GUI.enabled = true;
 
@@ -995,7 +1007,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         }
 
         GUI.Box(_dropDownRect, string.Empty, BlueStonez.window);
-        _filterScroll = GUI.BeginScrollView(_dropDownRect, _filterScroll, new Rect(0, 0, _dropDownRect.width - 20, 20 * contents.Length));
+        _filterScroll = GUITools.BeginScrollView(_dropDownRect, _filterScroll, new Rect(0, 0, _dropDownRect.width - 20, 20 * contents.Length));
         for (int i = 0; i < contents.Length; i++)
         {
             GUI.Label(new Rect(2, 20 * i, _dropDownRect.width, 20), contents[i], BlueStonez.dropdown_list);
@@ -1020,7 +1032,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
                 _filterScroll.y = 0;
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     /// <summary>
@@ -1178,19 +1190,24 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
 
                 int y = 48 * i - 1;
 
-                string tooltip = LocalizedStrings.PlayCaps;
-                if (!game.IsLevelAllowed(playerLevel) && game.LevelMin > playerLevel) tooltip = string.Format(LocalizedStrings.YouHaveToReachLevelNToJoinThisGame, game.LevelMin);
-                else if (!game.IsLevelAllowed(playerLevel) && game.LevelMax < playerLevel) tooltip = string.Format(LocalizedStrings.YouAlreadyMasteredThisLevel);
-                else if (game.IsFull) tooltip = string.Format(LocalizedStrings.ThisGameIsFull);
-                else if (!game.HasLevelRestriction && game.ConnectedPlayers == 0) tooltip = string.Format(LocalizedStrings.ThisGameNoLongerExists);
+                if (!ApplicationDataManager.IsMobile)
+                {
+                    string tooltip = LocalizedStrings.PlayCaps;
+                    if (!game.IsLevelAllowed(playerLevel) && game.LevelMin > playerLevel) tooltip = string.Format(LocalizedStrings.YouHaveToReachLevelNToJoinThisGame, game.LevelMin);
+                    else if (!game.IsLevelAllowed(playerLevel) && game.LevelMax < playerLevel) tooltip = string.Format(LocalizedStrings.YouAlreadyMasteredThisLevel);
+                    else if (game.IsFull) tooltip = string.Format(LocalizedStrings.ThisGameIsFull);
+                    else if (!game.HasLevelRestriction && game.ConnectedPlayers == 0) tooltip = string.Format(LocalizedStrings.ThisGameNoLongerExists);
 
-                GUI.Box(new Rect(0, y, rect.width, 49), new GUIContent(string.Empty, tooltip), BlueStonez.box_grey50);
+                    GUI.Box(new Rect(0, y, rect.width, 49), new GUIContent(string.Empty, tooltip), BlueStonez.box_grey50);
+                }
+
                 if (_selectedGame != null && _selectedGame.RoomID == game.RoomID)
                 {
                     GUI.color = new Color(1f, 1f, 1f, 0.1f);
                     GUI.DrawTexture(new Rect(1, y, rect.width + 1, 48), UberstrikeIcons.White);
                     GUI.color = Color.white;
                 }
+
                 int length = 48;
 
                 GUIStyle style = canJoinGame ? BlueStonez.label_interparkbold_11pt_left : BlueStonez.label_interparkmed_10pt_left;
@@ -1586,7 +1603,9 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
     private const float _doubleClickFrame = 0.5f;
 
     private bool _isConnectedToGameServer = false;
+#if !UNITY_ANDROID && !UNITY_IPHONE
     private bool _refreshGameListOnFilterChange = false;
+#endif
     private bool _refreshGameListOnSortChange = false;
 
     private Vector2 _serverScroll;

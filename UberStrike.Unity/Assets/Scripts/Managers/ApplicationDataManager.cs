@@ -31,6 +31,13 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static string VersionLong = string.Empty;
     public static string VersionShort = string.Empty;
     public static BuildType BuildType;
+    public static bool IsMobile
+    {
+        get
+        {
+            return Channel == ChannelType.Android || Channel == ChannelType.IPad || Channel == ChannelType.IPhone;
+        }
+    }
 
     private static CmuneSystemInfo localSystemInfo;
 
@@ -51,6 +58,16 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     public static LocaleType CurrentLocale { get; private set; }
     public static string CurrentLocaleString { get { return LocalizationHelper.GetLocaleString(CurrentLocale); } }
+
+#if UNITY_IPHONE
+    // AOT Helper - Construct classes that are only referenced using reflection here.
+    private void AOTHelperMethod()
+    {
+        var temp = new System.Collections.Generic.SortedList<int, UberStrike.Core.ViewModel.ItemTransactionsViewModel>();
+        var temp1 = new System.Collections.Generic.SortedList<int, UberStrike.Core.ViewModel.PointDepositsViewModel>();
+        var temp2 = new System.Collections.Generic.SortedList<int, UberStrike.Core.ViewModel.CurrencyDepositsViewModel>();
+    }
+#endif
 
     private void Awake()
     {
@@ -77,14 +94,74 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         enabled = AutoLogin;
 
         if (_locale != LocaleType.en_US)
-        {
             LocalizedStrings.UpdateLocalization(_locale);
+    }
+
+#if UNITY_ANDROID
+    private string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
+                                        <UberStrike>
+                                          <Application
+                                            BuildType=""Prod""
+                                            DebugLevel=""Error""
+                                            Version=""4.3.8""
+                                            WebServiceBaseUrl=""http://ws.uberstrike.cmune.com/1.0.0/""
+                                            ContentBaseUrl=""http://distro.client.cloud.cmune.com/UberStrike""
+                                            ChannelType=""Android"" />
+                                        </UberStrike>";
+
+#endif
+
+#if UNITY_IPHONE
+    private string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
+                                        <UberStrike>
+                                          <Application
+                                            BuildType=""Prod""
+                                            DebugLevel=""Error""
+                                            Version=""4.3.8""
+                                            WebServiceBaseUrl=""http://ws.uberstrike.cmune.com/1.0.0/""
+                                            ContentBaseUrl=""http://distro.client.cloud.cmune.com/UberStrike""
+                                            ChannelType=""IPad"" />
+                                        </UberStrike>";
+
+#endif
+
+#if UNITY_ANDROID || UNITY_IPHONE
+
+    [SerializeField]
+    private Texture2D backgroundTexture;
+
+    private float _backgroundAlpha = 1.0f;
+
+    private bool _showLoadingBackground;
+
+    private void OnGUI()
+    {
+        if (_showLoadingBackground)
+        {
+            GUI.depth = 10;
+            GUI.DrawTexture(new Rect(0, 0, backgroundTexture.width, backgroundTexture.height), backgroundTexture);
+        }
+        else if (_backgroundAlpha > 0.01f)
+        {
+            _backgroundAlpha = Mathf.Lerp(_backgroundAlpha, 0, Time.deltaTime * 2);
+            GUI.color = new Color(1, 1, 1, _backgroundAlpha);
+            GUI.depth = 10;
+            GUI.DrawTexture(new Rect(0, 0, backgroundTexture.width, backgroundTexture.height), backgroundTexture);
+            GUI.color = Color.white;
         }
     }
 
+#endif
+
     private IEnumerator Start()
     {
-        initApplicationProgressPopup = PopupSystem.ShowProgress("Initializing", "Initializing UberStrike...");
+#if UNITY_ANDROID || UNITY_IPHONE
+        _showLoadingBackground = true;
+#endif
+        if (PopupSystem.IsAnyPopupOpen)
+            PopupSystem.ClearAll();
+
+        initApplicationProgressPopup = PopupSystem.ShowProgress("Initializing", "Connecting to UberStrike...");
         initApplicationProgressPopup.ManualProgress = 0.1f;
 
         // Write the step tracking info (Game Loaded)
@@ -97,18 +174,23 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 #if UNITY_EDITOR
         if (!File.Exists(Application.dataPath + "/../EditorConfiguration.xml"))
         {
-            HandleGeneralError("The EditorConfiguration.xml file was not found in your Unity project folder.\nTo create it, select 'File > Create Editor Configuration Xml' and select the configuration and channel type.");
+            HandleApplicationAuthenticationError("The EditorConfiguration.xml file was not found in your Unity project folder.\nTo create it, select 'File > Create Editor Configuration Xml' and select the configuration and channel type.");
             yield break;
         }
 #endif
 
+#if UNITY_ANDROID || UNITY_IPHONE
+        CmuneDebug.LogWarning("Loading Android/iOS XML Configuration from internal settings.");
+        clientConfigurationXml = mobileConfigXml;
+#else
         yield return StartCoroutine(LoadConfigurationXml(GetConfigurationXmlFilePath()));
+#endif
+
         initApplicationProgressPopup.ManualProgress = 0.3f;
 
         if (string.IsNullOrEmpty(clientConfigurationXml))
         {
-            HandleGeneralError("There was a problem loading UberStrike. Please check your internet connection and try again.");
-            //"The Client Configuration XML was null or empty. Uberstrike cannot continue.");
+            HandleConfigurationMissingError("The Client Configuration XML was null or empty. Uberstrike cannot continue.");
         }
         else
         {
@@ -116,7 +198,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
             if (clientConfiguration == null)
             {
-                HandleGeneralError("The ClientConfiguration object was null. Uberstrike cannot continue.");
+                HandleConfigurationMissingError("The ClientConfiguration object was null. Uberstrike cannot continue.");
             }
             else
             {
@@ -139,6 +221,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 // Setup Application Options
                 applicationOptions.Initialize();
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
                 // Set the initial Video options based on Cmune Prefs
                 if (applicationOptions.IsUsingCustom)
                 {
@@ -150,6 +233,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 {
                     QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
                 }
+#endif
 
                 // Set the initial Audio options based on Cmune Prefs
                 SfxManager.EnableAudio(ApplicationOptions.AudioEnabled);
@@ -171,22 +255,35 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 // Log the load time to Google Analytics
                 //GoogleAnalytics.Instance.LogEvent("app-main-load", "Main Scene", true);
 
-                // Authenticate the Application against the server
-                yield return ApplicationWebServiceClient.AuthenticateApplication(
-                    clientConfiguration.Version,
-                    ApplicationDataManager.Channel,
-                    string.Empty,
-                    (callback) => OnAuthenticateApplication(callback),
-                    (exception) => OnAuthenticateApplicationException(exception));
-
-                PopupSystem.HideMessage(initApplicationProgressPopup);
+                StartCoroutine(BeginAuthenticateApplication());
             }
         }
 
 #if UNITY_STANDALONE_OSX
         //Setup In-App Purchases for Mac App Store build
         InitializeStoreKit();
+#elif UNITY_IPHONE
+        InitializeiOSStoreKit();
 #endif
+    }
+
+    private IEnumerator BeginAuthenticateApplication()
+    {
+        if (!PopupSystem.IsAnyPopupOpen)
+        {
+            initApplicationProgressPopup = PopupSystem.ShowProgress("Initializing", "Connecting to UberStrike...");
+            initApplicationProgressPopup.ManualProgress = 0.3f;
+        }
+
+        // Authenticate the Application against the server
+        yield return ApplicationWebServiceClient.AuthenticateApplication(
+            ApplicationDataManager.VersionLong,
+            ApplicationDataManager.Channel,
+            string.Empty,
+            (callback) => OnAuthenticateApplication(callback),
+            (exception) => OnAuthenticateApplicationException(exception));
+
+        PopupSystem.HideMessage(initApplicationProgressPopup);
     }
 
     protected override void OnShutdown()
@@ -252,6 +349,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             Debug.LogError("Invalid url supplied for the Configuration XML file.\n'" + configurationXmlFilePath + "'");
             yield break;
         }
+
 
         WWW www = new WWW(configurationXmlFilePath);
         yield return www;
@@ -319,7 +417,36 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         return clientConfiguration;
     }
 
-    private void HandleGeneralError(string message)
+    private void HandleApplicationAuthenticationError(string message)
+    {
+        PopupSystem.HideMessage(initApplicationProgressPopup);
+
+        switch (Channel)
+        {
+            case ChannelType.MacAppStore:
+                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.OK, Application.Quit);
+                break;
+            case ChannelType.WebPortal:
+            case ChannelType.WebFacebook:
+            case ChannelType.Kongregate:
+                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.None);
+                break;
+            case ChannelType.OSXStandalone:
+            case ChannelType.WindowsStandalone:
+                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.OK, RetryAuthentiateApplication);
+                break;
+            case ChannelType.Android:
+            case ChannelType.IPhone:
+            case ChannelType.IPad:
+                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.OK, RetryAuthentiateApplication);
+                break;
+            default:
+                PopupSystem.ShowMessage(LocalizedStrings.Error, message + "This client type is not supported.", PopupSystem.AlertType.OK, Application.Quit);
+                break;
+        }
+    }
+
+    private void HandleConfigurationMissingError(string message)
     {
         PopupSystem.HideMessage(initApplicationProgressPopup);
 
@@ -340,7 +467,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             case ChannelType.Android:
             case ChannelType.IPhone:
             case ChannelType.IPad:
-                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.OK, Logout);
+                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.OK, Application.Quit);
                 break;
             default:
                 PopupSystem.ShowMessage(LocalizedStrings.Error, message + "This client type is not supported.", PopupSystem.AlertType.OK, Application.Quit);
@@ -348,12 +475,17 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
     }
 
+    private void RetryAuthentiateApplication()
+    {
+        StartCoroutine(BeginAuthenticateApplication());
+    }
+
     private void OnAuthenticateApplicationException(Exception exception)
     {
         CmuneDebug.LogError("An exception occurred while authenticating the application: " + exception.Message);
 
         //string message = (exception.Message.Contains("Could not resolve host:") || exception.Message.Contains("Failed downloading http://")) ? "There was an error connecting to the server.\nPlease check your Internet connection." : "There was an error authenticating UberStrike with the server.";
-        HandleGeneralError("There was a problem loading UberStrike. Please check your internet connection and try again.");
+        HandleApplicationAuthenticationError("There was a problem loading UberStrike. Please check your internet connection and try again.");
     }
 
     private void OnAuthenticateApplication(AuthenticateApplicationView ev)
@@ -408,6 +540,10 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             {
                 CmuneNetworkManager.CurrentCommServer = new GameServerView(ev.CommServer);
             }
+
+#if UNITY_ANDROID || UNITY_IPHONE
+            _showLoadingBackground = false;
+#endif
 
             // If the client is out of date but still usable, we warn the player
             if (ev.WarnPlayer)
@@ -504,7 +640,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 break;
             case ChannelType.OSXStandalone:
             case ChannelType.WindowsStandalone:
-                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.OK, Application.Quit);
+                PopupSystem.ShowMessage(LocalizedStrings.Error, message, PopupSystem.AlertType.OK, Logout);
                 break;
             case ChannelType.Android:
             case ChannelType.IPhone:
@@ -566,7 +702,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             GameStateController.Instance.UnloadGameMode();
         }
         // remove avatar
-        AvatarBuilder.Destroy(GameState.LocalDecorator.gameObject);
+        if (GameState.LocalDecorator != null)
+            AvatarBuilder.Destroy(GameState.LocalDecorator.gameObject);
         GameState.LocalDecorator = null;
 
         // reset singletons
@@ -659,6 +796,18 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             case ChannelType.WindowsStandalone:
                 OpenUrl(string.Empty, GetStandalonePaymentUrl());
                 StartCoroutine(ShowStandaloneRefreshBalancePopup(2.0f));
+                break;
+            case ChannelType.IPad:
+            case ChannelType.IPhone:
+                if (MasBundleManager.Instance.CanMakeMasPayments)
+                {
+                    MenuPageManager.Instance.LoadPage(PageType.Shop, false);
+                    CmuneEventHandler.Route(new SelectShopAreaEvent() { ShopArea = ShopArea.Credits });
+                }
+                else
+                {
+                    PopupSystem.ShowMessage(LocalizedStrings.Error, "Sorry, In App Purchases are currently unavailable.", PopupSystem.AlertType.OK);
+                }
                 break;
             case ChannelType.MacAppStore:
                 if (MasBundleManager.Instance.CanMakeMasPayments)
@@ -797,6 +946,24 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             catch
             {
                 CmuneDebug.LogError("Couldn't Start the StoreKitMacManager. The EventListener and Manager GameObjects are most likely missing from the GameObject Hierarchy.");
+            }
+        }
+    }
+#endif
+
+#if UNITY_IPHONE
+    private void InitializeiOSStoreKit()
+    {
+        if ((Channel == ChannelType.IPad || Channel == ChannelType.IPhone))
+        {
+            try
+            {
+                GameObject storeKit = new GameObject("StoreKitManager");
+                storeKit.AddComponent(typeof(StoreKitManager));
+            }
+            catch
+            {
+                CmuneDebug.LogError("Couldn't Start the StoreKitManager. The EventListener and Manager GameObjects are most likely missing from the GameObject Hierarchy.");
             }
         }
     }

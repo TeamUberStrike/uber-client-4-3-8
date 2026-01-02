@@ -65,7 +65,7 @@ public class HelpPanelGUI : PanelGuiBase
     {
         GUI.skin = BlueStonez.Skin;
         int height = 550;
-        _scrollItems = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
+        _scrollItems = GUITools.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
         {
             //System
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30);
@@ -96,14 +96,14 @@ public class HelpPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawGeneralGroup()
     {
         GUI.skin = BlueStonez.Skin;
         int height = 490;
-        _scrollBasics = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollBasics, new Rect(0, 0, WIDTH + 60, height));
+        _scrollBasics = GUITools.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollBasics, new Rect(0, 0, WIDTH + 60, height));
         {
             //System
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30); // 508
@@ -119,14 +119,14 @@ public class HelpPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawGameplayGroup()
     {
         GUI.skin = BlueStonez.Skin;
         int height = 950;
-        _scrollGameplay = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollGameplay, new Rect(0, 0, WIDTH + 60, height));
+        _scrollGameplay = GUITools.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollGameplay, new Rect(0, 0, WIDTH + 60, height));
         {
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30);
             DrawGroupControl(systemGroupRect, LocalizedStrings.Gameplay, BlueStonez.label_group_interparkbold_18pt);
@@ -149,14 +149,14 @@ public class HelpPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawItemsGroup()
     {
         GUI.skin = BlueStonez.Skin;
         int height = 690;
-        _scrollItems = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
+        _scrollItems = GUITools.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
         {
             //System
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30);
@@ -175,14 +175,14 @@ public class HelpPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawCreditsGroup()
     {
         GUI.skin = BlueStonez.Skin;
         int height = 360;
-        _scrollItems = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
+        _scrollItems = GUITools.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
         {
             //System
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30);
@@ -199,7 +199,7 @@ public class HelpPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private float DrawGroupLabel(float yOffset, string header, string text, bool center = false)

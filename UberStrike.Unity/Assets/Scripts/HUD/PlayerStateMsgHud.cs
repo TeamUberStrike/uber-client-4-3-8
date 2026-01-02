@@ -64,8 +64,13 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
     {
         if (ButtonEnabled)
         {
+#if !UNITY_ANDROID && !UNITY_IPHONE
             if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 100,
                 Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 200, 50),
+#else
+            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 150,
+                Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 300, 75),
+#endif
                     new GUIContent(ButtonCaption), _buttonGuiStyle))
             {
                 if (OnButtonClicked != null)
@@ -92,7 +97,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void DisplayClickToRespawnMsg()
     {
-        _temporaryMsgText.Text = LocalizedStrings.ClickToRespawn;
+        if (ApplicationDataManager.IsMobile)
+        {
+            _temporaryMsgText.Text = LocalizedStrings.TapToRespawn;
+        }
+        else
+        {
+            _temporaryMsgText.Text = LocalizedStrings.ClickToRespawn;
+        }
         _temporaryMsgText.Color = Color.white;
         _temporaryMsgText.Position = TemporaryMsgPosition;
         ButtonEnabled = false;

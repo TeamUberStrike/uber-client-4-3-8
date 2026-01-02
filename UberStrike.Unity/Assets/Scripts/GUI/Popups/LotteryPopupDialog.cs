@@ -13,6 +13,7 @@ public abstract class LotteryPopupDialog : IPopupDialog
 
     protected int Width = 650;
     protected int Height = 330;
+    protected bool ClickAnywhereToExit = true;
 
     protected State _state = State.Normal;
     protected Action _onLotteryRolled;
@@ -47,7 +48,11 @@ public abstract class LotteryPopupDialog : IPopupDialog
 
         GUI.BeginGroup(rect);
         {
+#if !UNITY_ANDROID && !UNITY_IPHONE
             if (_showExitButton && GUI.Button(new Rect(rect.width - 20, 0, 20, 20), "X", BlueStonez.friends_hidden_button))
+#else
+            if (_showExitButton && GUI.Button(new Rect(rect.width - 45, 0, 45, 45), "X", BlueStonez.friends_hidden_button))
+#endif
             {
                 PopupSystem.HideMessage(this);
                 LotteryAudioPlayer.Instance.Stop();
@@ -62,6 +67,13 @@ public abstract class LotteryPopupDialog : IPopupDialog
         if (IsWaiting)
         {
             WaitingTexture.Draw(rect.center);
+        }
+
+        //if clicked anything that is not a button, we exit
+        if (ClickAnywhereToExit && Event.current.type == EventType.mouseDown && !rect.Contains(Event.current.mousePosition))//GUI.Button(new Rect(0, 0, Screen.width, Screen.height), GUIContent.none, GUIStyle.none))
+        {
+            ClosePopup();
+            Event.current.Use();
         }
 
         OnAfterGUI();
@@ -101,6 +113,11 @@ public abstract class LotteryPopupDialog : IPopupDialog
             LotteryManager.Instance.ShowNextItem(item);
             SfxManager.Play2dAudioClip(SoundEffectType.UIButtonClick);
         }
+    }
+
+    protected void ClosePopup()
+    {
+        PopupSystem.HideMessage(this);
     }
 
     private Rect GetPosition()

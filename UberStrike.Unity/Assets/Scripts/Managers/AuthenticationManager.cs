@@ -47,6 +47,9 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             case ChannelType.OSXStandalone:
             case ChannelType.WindowsStandalone:
             case ChannelType.MacAppStore:
+            case ChannelType.Android:
+            case ChannelType.IPad:
+            case ChannelType.IPhone:
                 {
                     // Show the login panel
                     MenuPageManager.Instance.LoadPage(PageType.Login, true);

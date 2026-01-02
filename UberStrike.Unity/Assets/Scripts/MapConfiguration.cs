@@ -89,5 +89,41 @@ public class MapConfiguration : MonoBehaviour
         gameObject.active = enabled;
         _staticContentParent.gameObject.SetActiveRecursively(enabled);
         _camera.gameObject.SetActiveRecursively(enabled);
+
+#if UNITY_ANDROID || UNITY_IPHONE
+        foreach (AudioSource source in GetComponentsInChildren<AudioSource>()) {
+            source.enabled = false;
+        }
+
+        foreach (AudioReverbZone source in GetComponentsInChildren<AudioReverbZone>())
+        {
+            source.enabled = false;
+        }
+
+        foreach (AudioReverbFilter source in GetComponentsInChildren<AudioReverbFilter>())
+        {
+            source.enabled = false;
+        }
+
+        foreach (AudioLowPassFilter source in GetComponentsInChildren<AudioLowPassFilter>())
+        {
+            source.enabled = false;
+        }
+
+        foreach (AudioHighPassFilter source in GetComponentsInChildren<AudioHighPassFilter>())
+        {
+            source.enabled = false;
+        }
+
+        foreach (AudioEchoFilter source in GetComponentsInChildren<AudioEchoFilter>())
+        {
+            source.enabled = false;
+        }
+
+        foreach (AudioChorusFilter source in GetComponentsInChildren<AudioChorusFilter>())
+        {
+            source.enabled = false;
+        }
+#endif
     }
 }

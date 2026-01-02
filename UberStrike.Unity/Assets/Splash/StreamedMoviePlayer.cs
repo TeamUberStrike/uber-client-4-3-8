@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if !UNITY_ANDROID && !UNITY_IPHONE
+using System.Collections;
 using UnityEngine;
 
 public class StreamedMoviePlayer : MonoBehaviour
@@ -45,3 +46,4 @@ public class StreamedMoviePlayer : MonoBehaviour
         }
     }
 }
+#endif

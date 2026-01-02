@@ -54,7 +54,7 @@ public class MysteryBoxPopup : LotteryPopupDialog
             Rect imgRect = new Rect((width - LotteryManager.IMG_WIDTH) / 2, (height - LotteryManager.IMG_HEIGHT) / 2, LotteryManager.IMG_WIDTH, LotteryManager.IMG_HEIGHT);
             mysteryBox.Image.Draw(imgRect);
 
-            _lotteryItemGrid.Show = imgRect.Contains(Event.current.mousePosition) && !IsUIDisabled;
+            _lotteryItemGrid.Show = (imgRect.Contains(Event.current.mousePosition) || ApplicationDataManager.IsMobile) && !IsUIDisabled;
 
             if (mysteryBox.View.ExposeItemsToPlayers)
             {

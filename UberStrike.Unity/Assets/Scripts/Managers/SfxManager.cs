@@ -229,6 +229,19 @@ public class SfxManager : MonoSingleton<SfxManager>
         }
     }
 
+#if UNITY_ANDROID || UNITY_IPHONE
+    public void PlayMusicMobile(AudioClip clip, float volume)
+    {
+        if (clip != null)
+        {
+            musicAudioSource.volume = MusicAudioVolume * volume;
+            musicAudioSource.clip = clip;
+            musicAudioSource.loop = true;
+            musicAudioSource.Play();
+        }
+    }
+#endif
+
     public static void PlayFootStepAudioClip(FootStepSoundType footStep, Vector3 position)
     {
         SoundEffectType[] currentSoundEffectTypes = null;

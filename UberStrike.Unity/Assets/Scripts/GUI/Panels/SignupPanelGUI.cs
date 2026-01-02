@@ -17,6 +17,10 @@ public class SignupPanelGUI : PanelGuiBase
 
     private bool _enableGUI = true;
 
+    private TouchScreenKeyboard _emailKeyboard;
+    private TouchScreenKeyboard _password1Keyboard;
+    private TouchScreenKeyboard _password2Keyboard;
+
     private const float NORMAL_HEIGHT = 300;
     private const float EXTENDED_HEIGHT = 340;
 
@@ -47,6 +51,48 @@ public class SignupPanelGUI : PanelGuiBase
 
     private void Update()
     {
+        if (ApplicationDataManager.IsMobile)
+        {
+            if (_emailKeyboard != null)
+            {
+                if (_emailKeyboard.done)
+                {
+                    _emailAddress = _emailKeyboard.text;
+                    _emailKeyboard = null;
+                }
+                else if (!_emailKeyboard.active)
+                {
+                    _emailKeyboard = null;
+                }
+            }
+
+            if (_password1Keyboard != null)
+            {
+                if (_password1Keyboard.done)
+                {
+                    _password1 = _password1Keyboard.text;
+                    _password1Keyboard = null;
+                }
+                else if (!_password1Keyboard.active)
+                {
+                    _password1Keyboard = null;
+                }
+            }
+
+            if (_password2Keyboard != null)
+            {
+                if (_password2Keyboard.done)
+                {
+                    _password2 = _password2Keyboard.text;
+                    _password2Keyboard = null;
+                }
+                else if (!_password2Keyboard.active)
+                {
+                    _password2Keyboard = null;
+                }
+            }
+        }
+
         if (_height != _targetHeight)
         {
             _height = Mathf.Lerp(_height, _targetHeight, 10 * Time.deltaTime);
@@ -76,32 +122,77 @@ public class SignupPanelGUI : PanelGuiBase
 
                 GUI.enabled = _enableGUI;
 
-                GUI.SetNextControlName("@Email");
-                _emailAddress = GUI.TextField(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField);
-                if (string.IsNullOrEmpty(_emailAddress) && GUI.GetNameOfFocusedControl() != "@Email")
+#if !UNITY_EDITOR
+                if (ApplicationDataManager.IsMobile)
                 {
-                    GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(188, 137 - 62, 180, 22), LocalizedStrings.EnterYourEmailAddress, BlueStonez.label_interparkmed_11pt_left);
-                    GUI.color = Color.white;
-                }
+                    if (GUI.Button(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField)) {
+                        _emailKeyboard = TouchScreenKeyboard.Open(_emailAddress, TouchScreenKeyboardType.EmailAddress, false, false, false, false);
+                    }
 
-                GUI.SetNextControlName("@Password1");
-                _password1 = GUI.PasswordField(new Rect(180, 168 - 64, 180, 22), _password1, '*', BlueStonez.textField);
-                if (string.IsNullOrEmpty(_password1) && GUI.GetNameOfFocusedControl() != "@Password1")
-                {
-                    GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(188, 172 - 62, 172, 18), LocalizedStrings.EnterYourPassword, BlueStonez.label_interparkmed_11pt_left);
-                    GUI.color = Color.white;
-                }
+                    if (string.IsNullOrEmpty(_emailAddress))
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 137 - 62, 180, 22), LocalizedStrings.EnterYourEmailAddress, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
 
-                GUI.SetNextControlName("@Password2");
-                _password2 = GUI.PasswordField(new Rect(180, 204 - 64, 180, 22), _password2, '*', BlueStonez.textField);
-                if (string.IsNullOrEmpty(_password2) && GUI.GetNameOfFocusedControl() != "@Password2")
-                {
-                    GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(188, 208 - 62, 180, 22), LocalizedStrings.RetypeYourPassword, BlueStonez.label_interparkmed_11pt_left);
-                    GUI.color = Color.white;
+                    string maskedPassword1 = "".PadLeft(_password1.Length, '*');
+                    if (GUI.Button(new Rect(180, 168 - 64, 180, 22), maskedPassword1, BlueStonez.textField)) {
+                        _password1Keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true, false);
+                    }
+
+                    if (string.IsNullOrEmpty(_password1))
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 172 - 62, 172, 18), LocalizedStrings.EnterYourPassword, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
+
+                    string maskedPassword2 = "".PadLeft(_password2.Length, '*');
+                    if (GUI.Button(new Rect(180, 204 - 64, 180, 22), maskedPassword2, BlueStonez.textField))
+                    {
+                        _password2Keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true, false);
+                    }
+
+                    if (string.IsNullOrEmpty(_password2))
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 208 - 62, 180, 22), LocalizedStrings.RetypeYourPassword, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
                 }
+                else
+                {
+#endif
+                    GUI.SetNextControlName("@Email");
+                    _emailAddress = GUI.TextField(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField);
+                    if (string.IsNullOrEmpty(_emailAddress) && GUI.GetNameOfFocusedControl() != "@Email")
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 137 - 62, 180, 22), LocalizedStrings.EnterYourEmailAddress, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
+
+                    GUI.SetNextControlName("@Password1");
+                    _password1 = GUI.PasswordField(new Rect(180, 168 - 64, 180, 22), _password1, '*', BlueStonez.textField);
+                    if (string.IsNullOrEmpty(_password1) && GUI.GetNameOfFocusedControl() != "@Password1")
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 172 - 62, 172, 18), LocalizedStrings.EnterYourPassword, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
+
+                    GUI.SetNextControlName("@Password2");
+                    _password2 = GUI.PasswordField(new Rect(180, 204 - 64, 180, 22), _password2, '*', BlueStonez.textField);
+                    if (string.IsNullOrEmpty(_password2) && GUI.GetNameOfFocusedControl() != "@Password2")
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 208 - 62, 180, 22), LocalizedStrings.RetypeYourPassword, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
+#if !UNITY_EDITOR
+                 }
+#endif
 
                 GUI.enabled = true;
 

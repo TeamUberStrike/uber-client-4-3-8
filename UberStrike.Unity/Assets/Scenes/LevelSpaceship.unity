@@ -10155,7 +10155,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 368}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -26.4159679, y: .616299093, z: -3.4627552}
+  m_LocalPosition: {x: -26.4198761, y: .616299093, z: -3.4627552}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 827}
@@ -22008,7 +22008,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f99e4615b2ab8b4babe52caa1543e78, type: 1}
   m_Name: 
   useVignetting: 0
-  useBloomAndFlares: 1
+  useBloomAndFlares: 0
 --- !u!114 &1609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22282,6 +22282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49c3f5eeed9c55742a8a593fa5c3f6f2, type: 1}
   m_Name: 
   target: {fileID: 459}
+  MaxX: 0
 --- !u!114 &1624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25224,7 +25225,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 0
 --- !u!4 &1032561183
 Transform:
@@ -25252,7 +25253,7 @@ Light:
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_Strength: 1
     m_Bias: .0500000007

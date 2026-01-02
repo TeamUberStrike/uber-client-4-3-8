@@ -29,19 +29,19 @@ public static partial class GUITools
 
     public static IEnumerator StartScreenSizeListener(float s)
     {
-        updateScreenSize();
+        UpdateScreenSize();
 
         yield return new WaitForEndOfFrame();
 
         while (true)
         {
-            updateScreenSize();
+            UpdateScreenSize();
 
             yield return new WaitForSeconds(s);
         }
     }
 
-    private static void updateScreenSize()
+    public static void UpdateScreenSize()
     {
         if (ScreenWidth != Screen.width)
         {
@@ -216,6 +216,17 @@ public static partial class GUITools
         return false;
     }
 
+    #region ScrollView
+
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_EDITOR
+    private static int touchFingerId = -1;
+    private static Rect selectedRect;
+    private static Vector2 scrollVelocity = Vector2.zero;
+    private static float inertiaDuration = 1.0f; // how long should inertia last
+    private static float timeTouchPhaseEnded; // when did the last touch end
+    private static Queue<Vector2> lastTouchesPos = new Queue<Vector2>(); // stores a list of previous touch locations
+    private static Queue<float> lastTouchesTime = new Queue<float>(); // stores a list of previous touch times
+#endif
     public static Rect ToGlobal(Rect rect)
     {
         Vector2 p = GUIUtility.GUIToScreenPoint(new Vector2(rect.x, rect.y));
@@ -227,4 +238,150 @@ public static partial class GUITools
         GUI.Label(rect, image, style);
         return rect.Contains(Event.current.mousePosition);
     }
+
+    public static Vector2 BeginScrollView(Rect position, Vector2 scrollPosition, Rect contentRect, bool showHorizontalScrollbar, bool showVerticalScrollbar, GUIStyle hStyle, GUIStyle vStyle, bool allowDrag=true)
+    {
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_EDITOR
+        if (Input.touchCount > 0 && allowDrag && !DragAndDrop.Instance.IsDragging)
+        {
+            foreach (Touch touch in Input.touches)
+            {
+                if (touch.phase == TouchPhase.Began && touchFingerId == -1)
+                {
+                    // convert from touch to GUI coordinates (flip y)
+                    Vector2 invertedTouchPos = new Vector2(touch.position.x, Screen.height - touch.position.y);
+                    // did we hit this GUI ScrollView?
+                    if (position.Contains(GUIUtility.ScreenToGUIPoint(invertedTouchPos)))
+                    {
+                        touchFingerId = touch.fingerId;
+                        scrollVelocity = Vector2.zero;
+                        selectedRect = contentRect; // workaround to identify selected item
+                        break;
+                    }
+                }
+
+                // only respond to movement on the right finger and content
+                if (touch.fingerId == touchFingerId && selectedRect == contentRect)
+                {
+                    if (touch.phase == TouchPhase.Moved)
+                    {
+                        // respond to movement
+                        scrollPosition += touch.deltaPosition;
+
+                        // only store a specific amount of touches
+                        if (lastTouchesPos.Count > 15)
+                        {
+                            lastTouchesPos.Dequeue();
+                            lastTouchesTime.Dequeue();
+                        }
+
+                        // push touch onto list
+                        lastTouchesPos.Enqueue(touch.deltaPosition);
+                        lastTouchesTime.Enqueue(touch.deltaTime);
+                    }
+                    else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                    {
+                        touchFingerId = -1;
+                        timeTouchPhaseEnded = Time.time;
+
+                        // total the movements and time for averaging
+                        Vector2 totalVel = Vector2.zero;
+                        float totalTime = 0.0f;
+                        while (lastTouchesPos.Count > 0)
+                        {
+                            totalVel += lastTouchesPos.Dequeue();
+                            totalTime += lastTouchesTime.Dequeue();
+                        }
+
+                        // calculate the final average velocity and clamp to reasonable speeds
+                        if (totalVel != Vector2.zero && totalTime > 0)
+                        {
+                            scrollVelocity = totalVel / totalTime;
+                            scrollVelocity.x = Mathf.Clamp(scrollVelocity.x, -200, 200);
+                            scrollVelocity.y = Mathf.Clamp(scrollVelocity.y, -200, 200);
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            touchFingerId = -1;
+        }
+
+        if (touchFingerId == -1 && scrollVelocity != Vector2.zero && selectedRect == contentRect)
+        {
+                // slow down over time
+                float t = (Time.time - timeTouchPhaseEnded) / inertiaDuration;
+                Vector2 frameVelocity = Vector2.Lerp(scrollVelocity, Vector2.zero, t);
+                
+                scrollPosition += frameVelocity * Time.deltaTime;
+
+                // after N seconds, we've stopped
+                if (t >= inertiaDuration) scrollVelocity = Vector2.zero;
+        }
+#endif
+
+        return GUI.BeginScrollView(position, scrollPosition, contentRect);
+    }
+
+    public static Vector2 BeginScrollView(
+        Rect position,
+        Vector2 scrollPosition,
+        Rect contentRect,
+        bool useHorizontal = false,
+        bool useVertical = false,
+        bool allowDrag = true)
+    {
+        return BeginScrollView(position, scrollPosition, contentRect, useHorizontal, useVertical, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, allowDrag);
+    }
+
+    public static Vector2 BeginScrollView(
+    Rect position,
+    Vector2 scrollPosition,
+    Rect contentRect,
+    GUIStyle hStyle, 
+    GUIStyle vStyle)
+    {
+        return BeginScrollView(position, scrollPosition, contentRect, false, false, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar);
+    }
+
+    public static void EndScrollView()
+    {
+        GUI.EndScrollView();
+    }
+
+    #endregion
+
+    #region PopupList
+
+    // determines if a list should be started, or if it has been clicked off
+    public static bool BeginList(ref bool showList, Rect listRect, Rect buttonRect)
+    {
+        // if false, ignore
+        if (!showList) return false;
+
+        // if we receive a click outside the box, close the window
+        if (Input.GetMouseButtonUp(0) && !listRect.ContainsTouch(Input.mousePosition) && !buttonRect.ContainsTouch(Input.mousePosition))
+        {
+            showList = false;
+        }
+
+        if (Input.touchCount > 0)
+        {
+            foreach (Touch touch in Input.touches)
+            {
+                if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) 
+                    && !listRect.ContainsTouch(touch.position)
+                    && !buttonRect.ContainsTouch(touch.position))
+                {
+                    showList = false;
+                }
+            }
+        }
+
+        return showList;
+    }
+
+    #endregion
 }

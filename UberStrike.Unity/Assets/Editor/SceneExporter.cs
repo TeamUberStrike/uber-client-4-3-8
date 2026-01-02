@@ -21,10 +21,13 @@ public class SceneExporter
     public static readonly string Windows64StandaloneFolder = Application.dataPath + "/../Latest/Windows64Standalone";
     public static readonly string OsxStandaloneFolder = Application.dataPath + "/../Latest/OsxStandalone";
     public static readonly string MacAppStoreStandaloneFolder = Application.dataPath + "/../Latest/MacAppStoreStandalone";
+    public static readonly string AndroidFolder = Application.dataPath + "/../Latest/Android";
+    public static readonly string IOSBuildFolder = Application.dataPath + "/../iOS/";
 
     public const string SceneFolder = "Assets/Scenes/";
     public const string SplashScene = "Splash";
     public const string SplashSceneWeb = "SplashWeb";
+    public const string SplashSceneMobile = "SplashMobile";
     public const string MainScene = "Latest";
     public const string SpaceshipScene = "LevelSpaceship";
     public const string ClientVersion = "4.3.8";
@@ -45,13 +48,122 @@ public class SceneExporter
         { 10, "LevelSpaceportAlpha" },
      };
 
+    #region Android
+
+    [MenuItem("File/Build UberStrike/Internal Dev/Android")]
+    public static void BuildAndroidDev()
+    {
+        BuildAndroid();
+    }
+
+    [MenuItem("File/Build UberStrike/Internal Dev/Android (Main Only)")]
+    public static void BuildAndroidDevMainOnly()
+    {
+        BuildAndroid(false);
+    }
+
+    public static void BuildAndroid(bool buildAllMaps = true, bool buildSplashLoader = false)
+    {
+        PrepareBuildFolder(AndroidFolder);
+        BuildAndroidPlayer(AndroidFolder, buildAllMaps, buildSplashLoader, BuildOptions.None);
+    }
+
+    private static void BuildAndroidPlayer(string buildFolder, bool buildAllMaps, bool buildSplashLoader, BuildOptions buildOptions = BuildOptions.BuildAdditionalStreamedScenes)
+    {
+        string path = string.Empty;
+
+        List<string> scenesToBuild = new List<string>();
+
+        if (buildSplashLoader)
+        {
+            scenesToBuild.Add(SceneFolder + SplashSceneMobile + ".unity");
+        }
+
+        scenesToBuild.Add(SceneFolder + MainScene + ".unity");
+        scenesToBuild.Add(SceneFolder + SpaceshipScene + ".unity");
+
+        if (buildAllMaps)
+        {
+            //scenesToBuild.Add(SceneFolder + MapsToExport[1] + ".unity");
+            //scenesToBuild.Add(SceneFolder + MapsToExport[2] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[3] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[4] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[5] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[6] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[7] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[8] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[10] + ".unity");
+        }
+
+        // Setup the correct output path
+        path = ApplicationDataManager.StandaloneFilename + ".apk";
+
+        string buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), string.Format("{0}/{1}", buildFolder, path), BuildTarget.Android, buildOptions);
+        if (!string.IsNullOrEmpty(buildResult))
+        {
+            Debug.LogError("BuildPlayer: " + buildResult);
+            return;
+        }
+    }
+
+    #endregion
+
+    #region iOS
+
+    [MenuItem("File/Build UberStrike/Internal Dev/iOS")]
+    public static void BuildiOS()
+    {
+        BuildiOS(true, false);
+    }
+
+    [MenuItem("File/Build UberStrike/Internal Dev/iOS (Main Only)")]
+    public static void BuildiOSMainOnly()
+    {
+        BuildiOS(false, false);
+    }
+
+    public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, BuildOptions buildOptions = BuildOptions.None)
+    {
+        List<string> scenesToBuild = new List<string>();
+
+        if (buildSplashLoader)
+        {
+            scenesToBuild.Add(SceneFolder + SplashSceneMobile + ".unity");
+        }
+
+        scenesToBuild.Add(SceneFolder + MainScene + ".unity");
+        scenesToBuild.Add(SceneFolder + SpaceshipScene + ".unity");
+
+        if (buildAllMaps)
+        {
+            //scenesToBuild.Add(SceneFolder + MapsToExport[1] + ".unity");
+            //scenesToBuild.Add(SceneFolder + MapsToExport[2] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[3] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[4] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[5] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[6] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[7] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[8] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[10] + ".unity");
+        }
+
+        //PrepareiOSBuildFolder(IOSBuildFolder);
+        string buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), IOSBuildFolder, BuildTarget.iPhone, buildOptions);
+        if (!string.IsNullOrEmpty(buildResult))
+        {
+            Debug.LogError("BuildPlayer: " + buildResult);
+            return;
+        }
+    }
+
+    #endregion
+
     #region Mac App Store
 
     [MenuItem("File/Build UberStrike/Internal Dev/Mac App Store")]
     public static void BuildMacAppStoreStandaloneDev()
     {
         BuildMacAppStoreStandalone(true, true);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.MacAppStore);
     }
 
@@ -59,7 +171,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneDevMainOnly()
     {
         BuildMacAppStoreStandalone(false, true);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.MacAppStore);
     }
 
@@ -67,7 +178,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneExternalQA()
     {
         BuildMacAppStoreStandalone(true, true);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.MacAppStore);
     }
 
@@ -75,7 +185,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneExternalQAMainOnly()
     {
         BuildMacAppStoreStandalone(false, false);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.MacAppStore);
     }
 
@@ -83,7 +192,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneProd()
     {
         BuildMacAppStoreStandalone(true, false);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.MacAppStore);
     }
 
@@ -91,7 +199,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneProdMainOnly()
     {
         BuildMacAppStoreStandalone(false, false);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.MacAppStore);
     }
 
@@ -495,34 +602,6 @@ public class SceneExporter
         }
     }
 
-    private static void BuildMainPlayer(string buildFolder, BuildTarget buildTarget, BuildOptions buildOptions = BuildOptions.None)
-    {
-        string filename = string.Empty;
-
-        // Setup the correct output filename
-        switch (buildTarget)
-        {
-            case BuildTarget.StandaloneWindows:
-            case BuildTarget.StandaloneWindows64:
-                filename = ApplicationDataManager.StandaloneFilename + ".exe";
-                break;
-            case BuildTarget.StandaloneOSXIntel:
-                filename = ApplicationDataManager.StandaloneFilename + ".app";
-                break;
-            case BuildTarget.WebPlayer:
-            case BuildTarget.WebPlayerStreamed:
-                filename = ApplicationDataManager.HeaderFilename;
-                break;
-        }
-
-        string buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
-        if (!string.IsNullOrEmpty(buildResult))
-        {
-            Debug.LogError("BuildPlayer: " + buildResult);
-            return;
-        }
-    }
-
     private static void BuildMainScene(string buildFolder, BuildTarget buildTarget, BuildOptions buildOptions = BuildOptions.BuildAdditionalStreamedScenes)
     {
         string path = string.Empty;
@@ -540,6 +619,9 @@ public class SceneExporter
             case BuildTarget.WebPlayer:
             case BuildTarget.WebPlayerStreamed:
                 path = ApplicationDataManager.MainFilename;
+                break;
+            case BuildTarget.Android:
+                path = ApplicationDataManager.StandaloneFilename + ".apk";
                 break;
         }
 
@@ -644,6 +726,13 @@ public class SceneExporter
         Directory.CreateDirectory(exportFolder);
     }
 
+    private static void PrepareiOSBuildFolder(string exportFolder)
+    {
+        //if (Directory.Exists(exportFolder)) FileUtil.DeleteFileOrDirectory(exportFolder);
+        if (!Directory.Exists(exportFolder))
+            Directory.CreateDirectory(exportFolder);
+    }
+
     #region Create Local Configuration XML
 
     [MenuItem("File/Create Editor Configuration Xml/Local/Mac App Store")]
@@ -685,6 +774,9 @@ public class SceneExporter
 
     [MenuItem("File/Create Editor Configuration Xml/Internal Dev/Windows Standalone")]
     private static void CreateConfigurationXmlInternalDevWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WindowsStandalone); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Internal Dev/Android")]
+    private static void CreateConfigurationXmlInternalDevAndroid() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.Android); }
 
     #endregion
 

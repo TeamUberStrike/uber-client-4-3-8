@@ -32,6 +32,7 @@ class InGamePlayerKilledState : IState
         HudDrawFlagGroup.Instance.BaseDrawFlag = _gameModeFlag;
         GamePageManager.Instance.UnloadCurrentPage();
         HudUtil.Instance.ClearAllFeedbackHud();
+        PlayerStateMsgHud.Instance.ButtonEnabled = false;
 
         QuickItemController.Instance.IsEnabled = true;
 
