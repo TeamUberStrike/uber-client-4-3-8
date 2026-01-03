@@ -284,7 +284,7 @@ public class OptionsPanelGUI : PanelGuiBase
         _currentQuality = QualitySettings.GetQualityLevel();
 
         _targetFrameRate = Application.targetFrameRate;
-        _textureQuality = MasterTextureLimit - QualitySettings.masterTextureLimit;
+        _textureQuality = MasterTextureLimit - QualitySettings.globalTextureMipmapLimit;
         _queuedFrames = QualitySettings.maxQueuedFrames;
 
         switch (_currentQuality)
@@ -870,8 +870,8 @@ public class OptionsPanelGUI : PanelGuiBase
     private void UpdateTextureQuality()
     {
         _textureQuality = Mathf.RoundToInt(_textureQuality);
-        QualitySettings.masterTextureLimit = MasterTextureLimit - (int)_textureQuality;
-        ApplicationDataManager.ApplicationOptions.VideoTextureQuality = QualitySettings.masterTextureLimit;
+        QualitySettings.globalTextureMipmapLimit = MasterTextureLimit - (int)_textureQuality;
+        ApplicationDataManager.ApplicationOptions.VideoTextureQuality = QualitySettings.globalTextureMipmapLimit;
     }
 
     private void UpdateVSyncCount()
