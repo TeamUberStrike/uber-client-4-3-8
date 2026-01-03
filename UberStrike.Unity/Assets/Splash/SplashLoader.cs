@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Video;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class SplashLoader : MonoBehaviour
 {
@@ -60,9 +61,12 @@ public class SplashLoader : MonoBehaviour
             
             // Configure video playback
             videoPlayer.clip = uberStrikeLogoMovie;
-            videoPlayer.playOnAwake = false;
+            videoPlayer.playOnAwake = true;
             videoPlayer.isLooping = false;
             videoPlayer.Play();
+
+            // Wait for frame shows up
+            yield return new WaitForSeconds(0.5f);
         }
         
         // Download the bundle from web or cache
@@ -76,8 +80,11 @@ public class SplashLoader : MonoBehaviour
         float splashStartTime = Time.time;
         while (Time.time - splashStartTime < 3.0f && (videoPlayer == null || videoPlayer.isPlaying))
         {
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.5f);
         }
+
+        // Wait for dark screen before switching scene
+        yield return new WaitForSeconds(1f);
 
         // Load the Main Scene
         yield return StartCoroutine(LoadMainScene());
@@ -86,7 +93,7 @@ public class SplashLoader : MonoBehaviour
     private IEnumerator LoadMainScene()
     {
         // Load the level in the background
-        asyncOperation = Application.LoadLevelAsync("Latest");
+        asyncOperation = SceneManager.LoadSceneAsync("Latest");
 
         // Wait until the loading process starts
         if (asyncOperation != null)

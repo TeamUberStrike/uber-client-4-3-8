@@ -54,6 +54,7 @@ public enum UberstrikeLayer
     TransparentFX = 1,
     IgnoreRaycast = 2,
     Water = 4,
+    UI = 5,
     GloballyLit = 8,
     GloballyLit_Reflect = 9,
     GloballyLit_Refract = 10,

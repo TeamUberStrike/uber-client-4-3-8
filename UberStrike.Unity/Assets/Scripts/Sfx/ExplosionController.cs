@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ExplosionController
+public class ExplosionController:MonoBehaviour
 {
     public void EmitBlast(Vector3 hitPoint, Vector3 hitNormal, ExplosionBaseParameters parameters)
     {
