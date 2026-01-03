@@ -71,7 +71,7 @@ public abstract class BaseEventPopup : IPopupDialog
         GUI.color = Color.white;
 
         //if clicked anything that is not a button, we exit
-        if (ClickAnywhereToExit && Event.current.type == EventType.mouseDown && !rect.Contains(Event.current.mousePosition))
+        if (ClickAnywhereToExit && Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))
         {
             Event.current.Use();
             Close();

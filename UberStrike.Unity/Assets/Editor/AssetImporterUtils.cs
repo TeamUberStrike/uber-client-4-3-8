@@ -125,19 +125,31 @@ internal static class AssetImporterUtils
 
                 TextureImporter i = TextureImporter.GetAtPath(path) as TextureImporter;
                 if (i.normalmap)
-                    format = TextureImporterFormat.AutomaticCompressed;
+                {
+                    i.textureCompression = TextureImporterCompression.Compressed;
+                }
+                else
+                {
+                    // Use compression based on the original format parameter intent
+                    i.textureCompression = TextureImporterCompression.Compressed;
+                }
 
-                i.textureType = TextureImporterType.Advanced;
+                i.textureType = TextureImporterType.Default;
                 i.mipmapEnabled = useMipmaps;
                 i.mipmapFilter = TextureImporterMipFilter.BoxFilter;
-                i.textureFormat = format;
+                // textureFormat property replaced with textureCompression
                 i.maxTextureSize = hdSize;
                 i.anisoLevel = 0;
                 if (!useMipmaps) i.npotScale = TextureImporterNPOTScale.None;
                 i.ClearPlatformTextureSettings("Standalone");
-                i.ClearPlatformTextureSettings("Web");
+                i.ClearPlatformTextureSettings("WebGL");
                 if (sdSize != hdSize)
-                    i.SetPlatformTextureSettings("Web", sdSize, format);
+                {
+                    var platformSettings = i.GetPlatformTextureSettings("WebGL");
+                    platformSettings.maxTextureSize = sdSize;
+                    platformSettings.compressionQuality = 50;
+                    i.SetPlatformTextureSettings(platformSettings);
+                }
 
                 AssetDatabase.ImportAsset(path);
             }
@@ -176,9 +188,11 @@ internal static class AssetImporterUtils
                 Debug.LogWarning(string.Format("Import Sound {0}\n{1}", o.name, path));
 
                 AudioImporter i = AudioImporter.GetAtPath(path) as AudioImporter;
-                i.format = AudioImporterFormat.Compressed;
-                i.loadType = AudioImporterLoadType.CompressedInMemory;
-                i.compressionBitrate = 56 * 1000;
+                var sampleSettings = i.defaultSampleSettings;
+                sampleSettings.compressionFormat = AudioCompressionFormat.Vorbis;
+                sampleSettings.loadType = AudioClipLoadType.CompressedInMemory;
+                sampleSettings.quality = 0.2f; // Equivalent to ~56 kbs
+                i.defaultSampleSettings = sampleSettings;
                 i.threeD = false;
                 i.forceToMono = true;
                 //i.stream = false;
@@ -201,9 +215,11 @@ internal static class AssetImporterUtils
                 Debug.LogWarning(string.Format("Import Sound {0}\n{1}", o.name, path));
 
                 AudioImporter i = AudioImporter.GetAtPath(path) as AudioImporter;
-                i.format = AudioImporterFormat.Compressed;
-                i.loadType = AudioImporterLoadType.DecompressOnLoad;
-                i.compressionBitrate = 56 * 1000;
+                var sampleSettings = i.defaultSampleSettings;
+                sampleSettings.compressionFormat = AudioCompressionFormat.Vorbis;
+                sampleSettings.loadType = AudioClipLoadType.DecompressOnLoad;
+                sampleSettings.quality = 0.2f; // Equivalent to ~56 kbs
+                i.defaultSampleSettings = sampleSettings;
                 i.threeD = true;
                 i.forceToMono = true;
                 //i.stream = false;

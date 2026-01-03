@@ -73,7 +73,7 @@ public class ApplicationOptions
 
         // Water4 High currently not supported on OSX, force to medium
         if ((Application.platform == RuntimePlatform.OSXPlayer ||
-            Application.platform == RuntimePlatform.OSXWebPlayer ||
+            Application.platform == RuntimePlatform.WebGLPlayer ||
             Application.platform == RuntimePlatform.IPhonePlayer ||
             Application.platform == RuntimePlatform.Android) && VideoWaterMode == 2)
         {

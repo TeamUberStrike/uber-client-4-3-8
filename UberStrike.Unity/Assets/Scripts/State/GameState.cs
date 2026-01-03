@@ -6,7 +6,7 @@ using System.Text;
 public class GameState : MonoSingleton<GameState>
 {
     public static LocalPlayer LocalPlayer { get { return Instance._player; } }
-    public static CharacterInfo LocalCharacter { get { return _localCharacter; } }
+    public static UberStrike.Realtime.Common.CharacterInfo LocalCharacter { get { return _localCharacter; } }
     public static AvatarDecorator LocalDecorator { get; set; }
     public static bool IsShuttingDown { get; private set; }
     public Vector2 Offset;
@@ -30,7 +30,7 @@ public class GameState : MonoSingleton<GameState>
 
     private static FpsGameMode _currentGameMode;
     private static MapConfiguration _currentSpace;
-    private static CharacterInfo _localCharacter = new CharacterInfo();
+    private static UberStrike.Realtime.Common.CharacterInfo _localCharacter = new UberStrike.Realtime.Common.CharacterInfo();
     #endregion
 
     private void FixedUpdate()

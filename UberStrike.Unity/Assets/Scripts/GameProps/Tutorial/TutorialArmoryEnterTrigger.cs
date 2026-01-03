@@ -148,8 +148,8 @@ public class TutorialArmoryEnterTrigger : MonoBehaviour
             {
                 played = true;
 
-                LevelTutorial.Instance.NPC.animation.Blend(AnimationIndex.TutorialGuideIdle.ToString(), 0);
-                LevelTutorial.Instance.NPC.animation.Blend(AnimationIndex.TutorialGuideArmory.ToString(), 1);
+                LevelTutorial.Instance.NPC.GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideIdle.ToString(), 0);
+                LevelTutorial.Instance.NPC.GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideArmory.ToString(), 1);
             }
         }
 
@@ -176,8 +176,8 @@ public class TutorialArmoryEnterTrigger : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
-        LevelTutorial.Instance.NPC.animation.Blend(AnimationIndex.TutorialGuideArmory.ToString(), 0);
-        LevelTutorial.Instance.NPC.animation.Blend(AnimationIndex.TutorialGuideTalk.ToString(), 1);
+        LevelTutorial.Instance.NPC.GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideArmory.ToString(), 0);
+        LevelTutorial.Instance.NPC.GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideTalk.ToString(), 1);
 
         ApplicationWebServiceClient.RecordTutorialStep(PlayerDataManager.CmidSecure, TutorialStepType.WalkToArmory,
             () => Debug.Log("WalkToArmory recorded"),
@@ -188,8 +188,8 @@ public class TutorialArmoryEnterTrigger : MonoBehaviour
 
         yield return new WaitForSeconds(LevelTutorial.Instance.VoicePickupWeapon.length);
 
-        LevelTutorial.Instance.NPC.animation.Blend(AnimationIndex.TutorialGuideTalk.ToString(), 0);
-        LevelTutorial.Instance.NPC.animation.Blend(AnimationIndex.TutorialGuideIdle.ToString(), 1);
+        LevelTutorial.Instance.NPC.GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideTalk.ToString(), 0);
+        LevelTutorial.Instance.NPC.GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideIdle.ToString(), 1);
 
         InputManager.Instance.IsInputEnabled = true;
 

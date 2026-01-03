@@ -665,7 +665,7 @@ public class ShopPageGUI : PageGUI
         _shopArea.y += _rectLabs.y;
 
         bool drawRefreshButton = false;
-        if (!Application.isWebPlayer || Application.isEditor)
+        if (Application.platform != RuntimePlatform.WebGLPlayer || Application.isEditor)
         {
             drawRefreshButton = true;
         }

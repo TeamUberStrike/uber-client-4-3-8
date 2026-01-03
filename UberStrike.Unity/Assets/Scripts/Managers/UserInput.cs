@@ -82,7 +82,7 @@ public static class UserInput
 #if !UNITY_ANDROID && !UNITY_IPHONE
         if (Camera.main != null)
         {
-            float factor = Mathf.Pow(Camera.main.fov / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);
+            float factor = Mathf.Pow(Camera.main.fieldOfView / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);
 
             //TURN AROUND
             Mouse.x += InputManager.Instance.RawValue(GameInputKey.HorizontalLook) * ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity * factor;

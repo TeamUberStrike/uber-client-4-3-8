@@ -23,9 +23,35 @@ public static class CloneUtil
 
     public static void CopyAllFields<T>(T destination, T source) where T : class
     {
-        foreach (var p in ReflectionHelper.GetAllFields(source.GetType(), true))
+        var destType = destination.GetType();
+        var sourceFields = ReflectionHelper.GetAllFields(source.GetType(), true);
+        var destFields = ReflectionHelper.GetAllFields(destType, true);
+        
+        foreach (var sourceField in sourceFields)
         {
-            p.SetValue(destination, p.GetValue(source));
+            // Find matching field in destination type
+            System.Reflection.FieldInfo destField = null;
+            foreach (var df in destFields)
+            {
+                if (df.Name == sourceField.Name && df.FieldType == sourceField.FieldType)
+                {
+                    destField = df;
+                    break;
+                }
+            }
+            
+            if (destField != null)
+            {
+                try
+                {
+                    destField.SetValue(destination, sourceField.GetValue(source));
+                }
+                catch (System.ArgumentException ex)
+                {
+                    // Log the field mismatch but continue with other fields
+                    CmuneDebug.LogWarning("Field copy failed for " + sourceField.Name + ": " + ex.Message);
+                }
+            }
         }
     }
 }

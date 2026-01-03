@@ -11,9 +11,10 @@ class PostBuildEventController : AssetPostprocessor
 
     public static void ClearConsole()
     {
-        Assembly assembly = Assembly.GetAssembly(typeof(UnityEditorInternal.Macros));
-        Type type = assembly.GetType("UnityEditorInternal.LogEntries");
-        MethodInfo method = type.GetMethod("Clear");
+        // Use the modern way to access LogEntries
+        var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
+        var type = assembly.GetType("UnityEditor.LogEntries");
+        var method = type.GetMethod("Clear");
         method.Invoke(new object(), null);
     }
 }

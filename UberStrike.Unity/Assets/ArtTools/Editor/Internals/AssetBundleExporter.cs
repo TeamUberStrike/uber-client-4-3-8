@@ -17,11 +17,11 @@ namespace UberStrike.Unity.ArtTools
             if (obj != null)
             {
                 Debug.Log("Build Map: " + EditorApplication.currentScene);
-                string buildResult = BuildPipeline.BuildPlayer(new string[] { EditorApplication.currentScene }, ArtAssetDefines.MapAssetBundlePath + bundleName, target, BuildOptions.BuildAdditionalStreamedScenes);
+                var buildResult = BuildPipeline.BuildPlayer(new string[] { EditorApplication.currentScene }, ArtAssetDefines.MapAssetBundlePath + bundleName, target, BuildOptions.BuildAdditionalStreamedScenes);
 
-                if (!string.IsNullOrEmpty(buildResult))
+                if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 {
-                    Debug.LogError("BuildPlayer: " + buildResult);
+                    Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
                 }
                 else
                 {

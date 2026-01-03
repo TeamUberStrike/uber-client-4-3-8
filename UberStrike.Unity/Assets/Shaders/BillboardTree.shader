@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Hidden/TerrainEngine/BillboardTree" {
 	Properties {
 		_MainTex ("Base (RGB) Alpha (A)", 2D) = "white" {}
@@ -27,7 +29,7 @@ Shader "Hidden/TerrainEngine/BillboardTree" {
 			v2f vert (appdata_tree_billboard v) {
 				v2f o;
 				TerrainBillboardTree(v.vertex, v.texcoord1.xy, v.texcoord.y);	
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos (v.vertex);
 				o.fog = o.pos.z;
 				o.uv.x = v.texcoord.x;
 				o.uv.y = v.texcoord.y > 0;
@@ -70,7 +72,7 @@ Shader "Hidden/TerrainEngine/BillboardTree" {
 			v2f vert (appdata_tree_billboard v) {
 				v2f o;
 				TerrainBillboardTree(v.vertex, v.texcoord1.xy, v.texcoord.y);	
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos (v.vertex);
 				o.fog = o.pos.z;
 				o.uv.x = v.texcoord.x;
 				o.uv.y = v.texcoord.y > 0;

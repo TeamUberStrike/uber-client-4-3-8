@@ -230,7 +230,7 @@ public abstract class FpsGameMode : ClientGameMode
         }
     }
 
-    private void ConfigureCharacter(CharacterInfo info, CharacterConfig character, bool isLocal)
+    private void ConfigureCharacter(UberStrike.Realtime.Common.CharacterInfo info, CharacterConfig character, bool isLocal)
     {
         if (character != null && info != null)
         {
@@ -279,7 +279,7 @@ public abstract class FpsGameMode : ClientGameMode
 
         ChatManager.Instance.SetGameSection(GameData.RoomID, Players.Values);
 
-        CharacterInfo player;
+        UberStrike.Realtime.Common.CharacterInfo player;
         if (Players.TryGetValue(data.Id, out player))
         {
             OnNormalJoin(player);
@@ -290,7 +290,7 @@ public abstract class FpsGameMode : ClientGameMode
         }
     }
 
-    protected virtual void OnNormalJoin(CharacterInfo info)
+    protected virtual void OnNormalJoin(UberStrike.Realtime.Common.CharacterInfo info)
     {
         if (info.ActorId != MyActorId)
         {
@@ -311,7 +311,7 @@ public abstract class FpsGameMode : ClientGameMode
         try
         {
             //Remove avatar instance
-            CharacterInfo info = GetPlayerWithID(actorId);
+            UberStrike.Realtime.Common.CharacterInfo info = GetPlayerWithID(actorId);
 
             if (info != null)
                 EventStreamHud.Instance.AddEventText(info.PlayerName, info.TeamID, LocalizedStrings.LeftTheGame);
@@ -422,7 +422,7 @@ public abstract class FpsGameMode : ClientGameMode
                         _stateInterpolator.UpdateCharacterInfo(data);
                     }
 
-                    if (data.Contains(CharacterInfo.FieldTag.TeamID))
+                    if (data.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.TeamID))
                     {
                         teamsChanged = true;
                     }
@@ -447,9 +447,9 @@ public abstract class FpsGameMode : ClientGameMode
     {
         try
         {
-            if (delta.Contains(CharacterInfo.FieldTag.Health))
+            if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.Health))
             {
-                int newHealth = (short)delta.Data[CharacterInfo.FieldTag.Health];
+                int newHealth = (short)delta.Data[UberStrike.Realtime.Common.CharacterInfo.FieldTag.Health];
                 HpApHud.Instance.HP = newHealth;
 
                 if (newHealth <= 0)
@@ -458,15 +458,15 @@ public abstract class FpsGameMode : ClientGameMode
                 }
             }
 
-            if (delta.Contains(CharacterInfo.FieldTag.Armor))
+            if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.Armor))
             {
-                ArmorInfo newArmor = (ArmorInfo)delta.Data[CharacterInfo.FieldTag.Armor];
+                ArmorInfo newArmor = (ArmorInfo)delta.Data[UberStrike.Realtime.Common.CharacterInfo.FieldTag.Armor];
                 HpApHud.Instance.AP = newArmor.ArmorPoints;
             }
 
-            if (delta.Contains(CharacterInfo.FieldTag.Stats))
+            if (delta.Contains(UberStrike.Realtime.Common.CharacterInfo.FieldTag.Stats))
             {
-                StatsInfo stats = (StatsInfo)delta.Data[CharacterInfo.FieldTag.Stats];
+                StatsInfo stats = (StatsInfo)delta.Data[UberStrike.Realtime.Common.CharacterInfo.FieldTag.Stats];
                 //Debug.LogError("%%%%%%%%%% XP AND POINTS: " + CmunePrint.Properties(stats) + " " + CmunePrint.Properties(GameState.LocalCharacter.Stats));
 
                 if (stats.XP == 0 && stats.Points == 0 && stats.Kills == 0 && stats.Deaths == 0)
@@ -705,7 +705,7 @@ public abstract class FpsGameMode : ClientGameMode
     [NetworkMethod(FpsGameRPC.SplatGameEvent)]
     protected virtual void OnSplatGameEvent(int shooter, int target, byte weaponClass, byte bodyPart)
     {
-        CharacterInfo shooterInfo, targetInfo;
+        UberStrike.Realtime.Common.CharacterInfo shooterInfo, targetInfo;
         if (Players.TryGetValue(shooter, out shooterInfo) && Players.TryGetValue(target, out targetInfo))
         {
             UberstrikeItemClass category = (UberstrikeItemClass)weaponClass;
@@ -786,7 +786,7 @@ public abstract class FpsGameMode : ClientGameMode
     public void UpdatePlayerReadyForNextRound()
     {
         _playerReadyForNextRound = 0;
-        foreach (CharacterInfo c in Players.Values)
+        foreach (UberStrike.Realtime.Common.CharacterInfo c in Players.Values)
         {
             if (c.IsReadyForGame) _playerReadyForNextRound++;
         }
@@ -1009,7 +1009,7 @@ public abstract class FpsGameMode : ClientGameMode
         }
     }
 
-    public bool TryGetPlayerWithCmid(int cmid, out CharacterInfo config)
+    public bool TryGetPlayerWithCmid(int cmid, out UberStrike.Realtime.Common.CharacterInfo config)
     {
         config = null;
         foreach (var i in Players.Values)
@@ -1022,7 +1022,7 @@ public abstract class FpsGameMode : ClientGameMode
         return config != null;
     }
 
-    protected void InstantiateCharacter(CharacterInfo info)
+    protected void InstantiateCharacter(UberStrike.Realtime.Common.CharacterInfo info)
     {
         //only load a character, if tyhere is no existing entry for this ActorId already
         if (!_characterByActorId.ContainsKey(info.ActorId))
