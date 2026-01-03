@@ -320,7 +320,7 @@ public class InventoryManager : Singleton<InventoryManager>
         var inventory = new List<InventoryItem>();
         foreach (var item in _inventoryItems.Values)
         {
-            bool expiredItems = item.DaysRemaining <= 0 && item.Item.ItemView.Prices.Count > 0;
+            bool expiredItems = item.DaysRemaining <= 0 && (item.Item.ItemView.Prices?.Count ?? 0) > 0;
 
             if (item.DaysRemaining > 0 || item.IsPermanent || expiredItems)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Cmune.Util;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public static class LayerUtil
 
     public static void ValidateUberstrikeLayers()
     {
-        for (int i = 0; i < 32; i++)
+        for (int i = 0; i < (int)Enum.GetValues(typeof(UberstrikeLayer)).Cast<UberstrikeLayer>().Last(); i++)
         {
             //skip the Ignore Raycast layer
             if (i == 2) continue;
