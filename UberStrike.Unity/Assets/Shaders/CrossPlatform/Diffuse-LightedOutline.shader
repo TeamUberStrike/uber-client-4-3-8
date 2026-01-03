@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Cross Platform Shaders/Diffuse Lighted Outline" {
 	Properties {
 		_Color ("Main Color", Color) = (0.5,0.5,0.5,1)
@@ -48,7 +50,7 @@ SubShader {
 			{
 				v2f o;
 				
-				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				o.cubenormal = mul (UNITY_MATRIX_MV, float4(v.normal, 0)).xyz;
 				
 				// Don't calc pos.z - line thickness changes based on distance

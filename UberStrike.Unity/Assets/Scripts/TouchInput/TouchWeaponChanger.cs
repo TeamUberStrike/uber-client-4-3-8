@@ -132,7 +132,7 @@ public class TouchWeaponChanger : TouchButton
         if (_incomingQuad != null)
         {
             _incomingQuad.FreeObject();
-            _incomingQuad.QuadMesh.renderer.material.mainTextureOffset = Vector2.zero;
+            _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = Vector2.zero;
             _incomingQuad = null;
         }
         _quad = new MeshGUIQuad(weapons[(int)WeaponController.Instance.GetCurrentWeapon().Item.ItemClass], TextAnchor.MiddleCenter);
@@ -172,7 +172,7 @@ public class TouchWeaponChanger : TouchButton
 
         _incomingQuad = new MeshGUIQuad(weapons[(int)weaponClass], TextAnchor.MiddleCenter);
         _incomingQuad.Position = Position;
-        _incomingQuad.QuadMesh.renderer.material.mainTextureOffset = new Vector2(1, 0);
+        _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(1, 0);
         _incomingQuad.Scale = new Vector2(1, 1);
         _incomingQuad.Alpha = 0;
 
@@ -196,14 +196,14 @@ public class TouchWeaponChanger : TouchButton
         if (_startWeaponSwitch + WeaponSwitchTime > Time.time)
         {
             float t = (Time.time - _startWeaponSwitch) / WeaponSwitchTime;
-            _incomingQuad.QuadMesh.renderer.material.mainTextureOffset = new Vector2(Mathf.Lerp(left, mid, t), 0);
+            _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(Mathf.Lerp(left, mid, t), 0);
             _incomingQuad.Alpha = Mathf.Lerp(-1, 1, t); // go negative so only second half of animation is visible
-            _quad.QuadMesh.renderer.material.mainTextureOffset = new Vector2(Mathf.Lerp(mid, right, t), 0);
+            _quad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(Mathf.Lerp(mid, right, t), 0);
             _quad.Alpha = Mathf.Lerp(1, -1, t);
         }
         else if (_incomingQuad != null)
         {
-            _incomingQuad.QuadMesh.renderer.material.mainTextureOffset = Vector2.zero;
+            _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = Vector2.zero;
             _incomingQuad.Alpha = 1.0f;
 
             _quad.FreeObject();

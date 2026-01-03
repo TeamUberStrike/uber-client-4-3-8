@@ -99,29 +99,29 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
 #if UNITY_ANDROID
     private string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
-                                        <UberStrike>
-                                          <Application
-                                            BuildType=""Prod""
-                                            DebugLevel=""Error""
-                                            Version=""4.3.8""
-                                            WebServiceBaseUrl=""http://ws.uberstrike.cmune.com/1.0.0/""
-                                            ContentBaseUrl=""http://distro.client.cloud.cmune.com/UberStrike""
-                                            ChannelType=""Android"" />
-                                        </UberStrike>";
+                                    <UberStrike>
+                                    <Application
+                                        BuildType=""Dev""
+                                        DebugLevel=""Debug""
+                                        Version=""4.3.8""
+                                        WebServiceBaseUrl=""https://ws-dev.uberforever.eu/""
+                                        ContentBaseUrl=""http://client-dev.uberforever.eu/""
+                                        ChannelType=""Android"" />
+                                    </UberStrike>";
 
 #endif
 
 #if UNITY_IPHONE
     private string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
-                                        <UberStrike>
-                                          <Application
-                                            BuildType=""Prod""
-                                            DebugLevel=""Error""
-                                            Version=""4.3.8""
-                                            WebServiceBaseUrl=""http://ws.uberstrike.cmune.com/1.0.0/""
-                                            ContentBaseUrl=""http://distro.client.cloud.cmune.com/UberStrike""
-                                            ChannelType=""IPad"" />
-                                        </UberStrike>";
+                                    <UberStrike>
+                                    <Application
+                                        BuildType=""Dev""
+                                        DebugLevel=""Debug""
+                                        Version=""4.3.8""
+                                        WebServiceBaseUrl=""https://ws-dev.uberforever.eu/""
+                                        ContentBaseUrl=""http://client-dev.uberforever.eu/""
+                                        ChannelType=""IPad"" />
+                                    </UberStrike>";
 
 #endif
 
@@ -225,7 +225,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 // Set the initial Video options based on Cmune Prefs
                 if (applicationOptions.IsUsingCustom)
                 {
-                    QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
+                    QualitySettings.masterTextureLimit = applicationOptions.VideoTextureQuality;
                     QualitySettings.vSyncCount = applicationOptions.VideoVSyncCount;
                     QualitySettings.antiAliasing = applicationOptions.VideoAntiAliasing;
                 }
