@@ -3906,7 +3906,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 2053101799}
       WaterCircleEffect:
         ParticleMinSize: 1.5
         ParticleMaxSize: 2
@@ -4231,7 +4231,7 @@ MonoBehaviour:
         MaxLifeTime: 0
         MinSize: 0
         MaxSize: 0
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1667052475}
       DustParameters:
         ParticleCount: 0
         MinStartPositionSize: 0
@@ -4240,19 +4240,19 @@ MonoBehaviour:
         MaxLifeTime: 0
         MinSize: 0
         MaxSize: 0
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 906328238}
       RingParameters:
         StartSize: 0
         MinLifeTime: 0
         MaxLifeTime: 0
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1213627942}
       SmokeParameters:
         ParticleCount: 0
         MinLifeTime: 0
         MaxLifeTime: 0
         MinSize: 0
         MaxSize: 0
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 735857173}
       SparkParameters:
         ParticleCount: 0
         MinLifeTime: 0
@@ -4260,7 +4260,7 @@ MonoBehaviour:
         MinSize: 0
         MaxSize: 0
         Speed: 0
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1045264408}
       TrailParameters:
         ParticleCount: 0
         MinLifeTime: 0
@@ -4268,7 +4268,7 @@ MonoBehaviour:
         MinSize: 0
         MaxSize: 0
         Speed: 0
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1060643489}
     FireParticleConfigurationForInstantHit:
       ParticleMinSize: 1.2
       ParticleMaxSize: 1.8
@@ -4276,14 +4276,14 @@ MonoBehaviour:
       ParticleMinLiveTime: 0.6
       ParticleMaxLiveTime: 1
       ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-      ParticleEmitter: {fileID: 0}
+      ParticleEmitter: {fileID: 162351251}
     TrailParticleConfigurationForInstantHit:
       ParticleMinSize: 0.5
       ParticleMaxSize: 0.5
       ParticleMinLiveTime: 1
       ParticleMaxLiveTime: 1
       ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-      ParticleEmitter: {fileID: 0}
+      ParticleEmitter: {fileID: 36147738}
     SurfaceParameterSet:
       WoodEffect:
         ParticleMinSize: 0.1
@@ -4296,7 +4296,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 2053101799}
       WaterCircleEffect:
         ParticleMinSize: 1.5
         ParticleMaxSize: 2
@@ -4304,7 +4304,7 @@ MonoBehaviour:
         ParticleMinLiveTime: 1
         ParticleMaxLiveTime: 1.2
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 112976577}
       WaterExtraSplashEffect:
         ParticleMinSize: 0.8
         ParticleMaxSize: 1.2
@@ -4312,7 +4312,7 @@ MonoBehaviour:
         ParticleMinLiveTime: 0.5
         ParticleMaxLiveTime: 0.6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 695698924}
       StoneEffect:
         ParticleMinSize: 0.2
         ParticleMaxSize: 0.3
@@ -4324,7 +4324,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 392828780}
       MetalEffect:
         ParticleMinSize: 0.1
         ParticleMaxSize: 0.15
@@ -4336,7 +4336,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 2063561066}
       GrassEffect:
         ParticleMinSize: 0.1
         ParticleMaxSize: 0.6
@@ -4348,7 +4348,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1321957868}
       SandEffect:
         ParticleMinSize: 0.5
         ParticleMaxSize: 1.2
@@ -4360,7 +4360,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1178486731}
       Splat:
         ParticleMinSize: 3
         ParticleMaxSize: 3
@@ -4372,9 +4372,9 @@ MonoBehaviour:
         ParticleMinZVelocity: 0
         ParticleMaxZVelocity: 0
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 566492806}
     TrailrendererTrailPrefab: {fileID: 0}
-    UseTrailrendererForTrail: 0
+    UseTrailrendererForTrail: 1
 --- !u!114 &293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7343,9 +7343,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -7401,7 +7401,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -12140,9 +12140,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -12198,7 +12198,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -16937,9 +16937,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -16995,7 +16995,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -21734,9 +21734,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -21792,7 +21792,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -26705,9 +26705,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -26763,7 +26763,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -31535,9 +31535,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -31593,7 +31593,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -32151,7 +32151,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
+    type: 0
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -36332,9 +36332,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -36390,7 +36390,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -41173,9 +41173,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -41231,7 +41231,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -45970,9 +45970,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -46028,7 +46028,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -50767,9 +50767,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -50825,7 +50825,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -55708,9 +55708,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -55766,7 +55766,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -60505,9 +60505,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -60563,7 +60563,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -65302,9 +65302,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -65360,7 +65360,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -70099,9 +70099,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -70157,7 +70157,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -74896,9 +74896,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -74954,7 +74954,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -79724,9 +79724,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -79782,7 +79782,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -84799,7 +84799,7 @@ MonoBehaviour:
         MaxLifeTime: 0.4
         MinSize: 1
         MaxSize: 2
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1667052475}
       DustParameters:
         ParticleCount: 10
         MinStartPositionSize: 0.1
@@ -84808,19 +84808,19 @@ MonoBehaviour:
         MaxLifeTime: 1
         MinSize: 1
         MaxSize: 2
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 906328238}
       RingParameters:
         StartSize: 0
         MinLifeTime: 0
         MaxLifeTime: 0
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1213627942}
       SmokeParameters:
         ParticleCount: 10
         MinLifeTime: 0.5
         MaxLifeTime: 0.8
         MinSize: 1
         MaxSize: 1.5
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 735857173}
       SparkParameters:
         ParticleCount: 20
         MinLifeTime: 0.8
@@ -84828,7 +84828,7 @@ MonoBehaviour:
         MinSize: 0.04
         MaxSize: 0.04
         Speed: 4
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1045264408}
       TrailParameters:
         ParticleCount: 20
         MinLifeTime: 0.3
@@ -84836,7 +84836,7 @@ MonoBehaviour:
         MinSize: 0.4
         MaxSize: 0.6
         Speed: 8
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1060643489}
     FireParticleConfigurationForInstantHit:
       ParticleMinSize: 1.5
       ParticleMaxSize: 2
@@ -84844,14 +84844,14 @@ MonoBehaviour:
       ParticleMinLiveTime: 0.6
       ParticleMaxLiveTime: 1
       ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-      ParticleEmitter: {fileID: 0}
+      ParticleEmitter: {fileID: 162351251}
     TrailParticleConfigurationForInstantHit:
       ParticleMinSize: 0.3
       ParticleMaxSize: 0.3
       ParticleMinLiveTime: 1
       ParticleMaxLiveTime: 1
       ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-      ParticleEmitter: {fileID: 0}
+      ParticleEmitter: {fileID: 36147738}
     SurfaceParameterSet:
       WoodEffect:
         ParticleMinSize: 0.15
@@ -84864,7 +84864,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 2053101799}
       WaterCircleEffect:
         ParticleMinSize: 1.5
         ParticleMaxSize: 2
@@ -84872,7 +84872,7 @@ MonoBehaviour:
         ParticleMinLiveTime: 1
         ParticleMaxLiveTime: 1.2
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 112976577}
       WaterExtraSplashEffect:
         ParticleMinSize: 0.8
         ParticleMaxSize: 1.2
@@ -84880,7 +84880,7 @@ MonoBehaviour:
         ParticleMinLiveTime: 0.5
         ParticleMaxLiveTime: 0.6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 695698924}
       StoneEffect:
         ParticleMinSize: 0.25
         ParticleMaxSize: 0.35
@@ -84892,7 +84892,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 392828780}
       MetalEffect:
         ParticleMinSize: 0.1
         ParticleMaxSize: 0.15
@@ -84904,7 +84904,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 2063561066}
       GrassEffect:
         ParticleMinSize: 0.1
         ParticleMaxSize: 6
@@ -84916,7 +84916,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1321957868}
       SandEffect:
         ParticleMinSize: 0.05
         ParticleMaxSize: 0.05
@@ -84928,7 +84928,7 @@ MonoBehaviour:
         ParticleMinZVelocity: 4
         ParticleMaxZVelocity: 6
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 1178486731}
       Splat:
         ParticleMinSize: 3
         ParticleMaxSize: 3
@@ -84940,9 +84940,9 @@ MonoBehaviour:
         ParticleMinZVelocity: 0
         ParticleMaxZVelocity: 0
         ParticleColor: {r: 0, g: 0, b: 0, a: 0}
-        ParticleEmitter: {fileID: 0}
+        ParticleEmitter: {fileID: 566492806}
     TrailrendererTrailPrefab: {fileID: 0}
-    UseTrailrendererForTrail: 0
+    UseTrailrendererForTrail: 1
 --- !u!199 &1358744695
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -85032,9 +85032,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -85090,7 +85090,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -89748,22 +89748,22 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 27}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 3
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 0.1
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -89876,7 +89876,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -90371,7 +90371,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
+    type: 0
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -94509,7 +94509,7 @@ ParticleSystemRenderer:
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
-  m_MaxParticleSize: 0.5
+  m_MaxParticleSize: 0.01
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2
@@ -94719,9 +94719,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -94777,7 +94777,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -95335,7 +95335,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
+    type: 0
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -99547,9 +99547,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -99605,7 +99605,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -104344,9 +104344,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -104402,7 +104402,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -109141,9 +109141,9 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -109199,7 +109199,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
