@@ -200,8 +200,8 @@ public class DebugConsoleManager : MonoBehaviour
             {
                 _isExceptionSent = true;
 
-                        DebugLogMessages.Console.ToHTML() + ApplicationDataManager.Instance.LocalSystemInfo.ToHTML(),
-                        () => Debug.Log("SendExceptionReport Called."), null);
+                        // DebugLogMessages.Console.ToHTML() + ApplicationDataManager.Instance.LocalSystemInfo.ToHTML(),
+                        // () => Debug.Log("SendExceptionReport Called."), null);
             }
 
             if (!string.IsNullOrEmpty(popupMessage))
