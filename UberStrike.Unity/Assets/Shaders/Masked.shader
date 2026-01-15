@@ -13,11 +13,10 @@ Shader "MaskedTexture"
       Blend SrcAlpha OneMinusSrcAlpha
       Pass
       {
-         SetTexture [_Mask] 
-			{
-				combine texture
-			}
-         SetTexture [_MainTex] 
+         SetTexture [_MainTex] {
+                combine texture * primary
+            }
+        SetTexture [_MainTex] 
 			{
 				matrix [_Rotation]
 				combine texture, previous

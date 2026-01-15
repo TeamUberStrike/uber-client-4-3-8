@@ -74,10 +74,19 @@ public class TempleTeleporter : SecretDoor
     {
         enabled = true;
 
-        var emission = _particles.emission;
-        emission.enabled = true;
-        foreach (Renderer r in _visuals)
-            r.enabled = true;
+        if (_particles != null)
+        {
+            _particles.Stop(); // This line was added based on the user's instruction, but it might conflict with the original intent of enabling emission.
+            var emission = _particles.emission;
+            emission.enabled = true;
+        }
+        if (_visuals != null)
+        {
+            // _visuals.SetActive(true) is not valid for a Renderer[] array.
+            // The original code iterates to enable each renderer.
+            foreach (Renderer r in _visuals)
+                r.enabled = true;
+        }
 
         _timeOut = Time.time + _activationTime;
 

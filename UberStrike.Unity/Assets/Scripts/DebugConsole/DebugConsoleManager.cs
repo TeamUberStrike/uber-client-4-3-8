@@ -200,13 +200,6 @@ public class DebugConsoleManager : MonoBehaviour
             {
                 _isExceptionSent = true;
 
-                UberStrike.WebService.Unity.ApplicationWebServiceClient.RecordException(
-                        PlayerDataManager.CmidSecure,
-                        ApplicationDataManager.BuildType,
-                        ApplicationDataManager.Channel,
-                        ApplicationDataManager.VersionLong,
-                        logString,
-                        stackTrace,
                         DebugLogMessages.Console.ToHTML() + ApplicationDataManager.Instance.LocalSystemInfo.ToHTML(),
                         () => Debug.Log("SendExceptionReport Called."), null);
             }
