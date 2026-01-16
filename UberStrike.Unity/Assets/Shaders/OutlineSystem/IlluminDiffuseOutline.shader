@@ -6,7 +6,7 @@ Properties {
 	_EmissionLM ("Emission (Lightmapper)", Float) = 0
 }
 SubShader {
-	Tags { "RenderType"="Opaque" "RenderType"="Funky"}
+	Tags { "RenderType"="Opaque" }
 	LOD 200
 	
 CGPROGRAM

@@ -6,7 +6,7 @@ Properties {
 }
 
 SubShader {
-	Tags { "RenderType"="Opaque" "RenderType"="Funky"}
+	Tags { "RenderType"="Opaque" }
 	LOD 250
 	
 CGPROGRAM
