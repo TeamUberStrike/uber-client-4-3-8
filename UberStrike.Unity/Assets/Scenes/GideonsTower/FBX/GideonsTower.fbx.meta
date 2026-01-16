@@ -1,2128 +1,2335 @@
 fileFormatVersion: 2
 guid: 05d0a1f8b1896f0459bac5593413268e
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: Building_3
-    4300002: Building_4
-    4300004: Building_5
-    4300006: Building_9
-    4300008: Building_8
-    4300010: Building_7
-    4300012: Building_1
-    4300014: Building_2
-    4300016: Building_6
-    4300018: SmallHouse1
-    4300020: SmallHouse2
-    4300022: StreetLamp1
-    4300024: StreetLamp2
-    4300026: StreetLamp3
-    4300028: StreetLamp4
-    4300030: StreetLamp5
-    4300032: GardenBed1
-    4300034: GardenBed2
-    4300036: GardenBed3
-    4300038: GardenBed4
-    4300040: GardenBed5
-    4300042: GardenBed6
-    4300044: GardenBed7
-    4300046: Ground
-    4300048: AirconModels1
-    4300050: AirconModels2
-    4300052: AirconModels3
-    4300054: AirconModels4
-    4300056: Props29
-    4300058: Props30
-    4300060: Props31
-    4300062: Props32
-    4300064: Props33
-    4300066: Props34
-    4300068: Props35
-    4300070: Props36
-    4300072: Props37
-    4300074: Props38
-    4300076: Props39
-    4300078: Props40
-    4300080: Props41
-    4300082: Props42
-    4300084: Props43
-    4300086: Props44
-    4300088: Props45
-    4300090: Props46
-    4300092: Props47
-    4300094: Props48
-    4300096: Props49
-    4300098: Props1
-    4300100: Boardwalk1
-    4300102: Borardwalk2
-    4300104: Joints1
-    4300106: Joints2
-    4300108: Frame1
-    4300110: Frame2
-    4300112: StoneBright
-    4300114: StoneDark1
-    4300116: StoneDark2
-    4300118: StoneDark
-    4300120: WindowFrames1
-    4300122: WindowFrames3
-    4300124: DoorFrames
-    4300126: Glass
-    4300128: Roof
-    4300130: WallRoof
-    4300132: Ropes
-    4300134: Ladders
-    4300136: NetFrame
-    4300138: Net
-    4300140: Flooring
-    4300142: Wall
-    4300144: Brick
-    4300146: Exit
-    4300148: StoneBright1
-    4300150: StoneBright2
-    4300152: StoneBright3
-    4300154: StoneDark1
-    4300156: StoneDark2
-    4300158: StoneDark3
-    4300160: Windows_Frame_Red1
-    4300162: Windows_Frame_Red2
-    4300164: Windows_Frame_Red3
-    4300166: Glass1
-    4300168: Glass2
-    4300170: Glass3
-    4300172: Props29
-    4300174: Props30
-    4300176: Props31
-    4300178: Props32
-    4300180: Props33
-    4300182: Props34
-    4300184: Props35
-    4300186: Props36
-    4300188: Props37
-    4300190: Props38
-    4300192: Props39
-    4300194: Props40
-    4300196: Props41
-    4300198: Props42
-    4300200: Props43
-    4300202: Props44
-    4300204: Props45
-    4300206: Props46
-    4300208: Props47
-    4300210: Props48
-    4300212: Props49
-    4300214: Props1
-    4300216: Boardwalk1
-    4300218: Borardwalk2
-    4300220: Joints1
-    4300222: Joints2
-    4300224: Frame1
-    4300226: Frame2
-    4300228: StoneBright
-    4300230: StoneDark1
-    4300232: StoneDark2
-    4300234: StoneDark
-    4300236: WindowFrames1
-    4300238: WindowFrames3
-    4300240: DoorFrames
-    4300242: Glass
-    4300244: Roof
-    4300246: WallRoof
-    4300248: Ropes
-    4300250: Ladders
-    4300252: NetFrame
-    4300254: Net
-    4300256: Flooring
-    4300258: Wall
-    4300260: Brick
-    4300262: Exit
-    4300264: StoneBright1
-    4300266: StoneBright2
-    4300268: StoneBright3
-    4300270: StoneDark1
-    4300272: StoneDark2
-    4300274: StoneDark3
-    4300276: Windows_Frame_Red1
-    4300278: Windows_Frame_Red2
-    4300280: Windows_Frame_Red3
-    4300282: Glass1
-    4300284: Glass2
-    4300286: Glass3
-    4300288: AirconModels0
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: Building_3
+  - first:
+      43: 4300002
+    second: Building_4
+  - first:
+      43: 4300004
+    second: Building_5
+  - first:
+      43: 4300006
+    second: Building_9
+  - first:
+      43: 4300008
+    second: Building_8
+  - first:
+      43: 4300010
+    second: Building_7
+  - first:
+      43: 4300012
+    second: Building_1
+  - first:
+      43: 4300014
+    second: Building_2
+  - first:
+      43: 4300016
+    second: Building_6
+  - first:
+      43: 4300018
+    second: SmallHouse1
+  - first:
+      43: 4300020
+    second: SmallHouse2
+  - first:
+      43: 4300022
+    second: StreetLamp1
+  - first:
+      43: 4300024
+    second: StreetLamp2
+  - first:
+      43: 4300026
+    second: StreetLamp3
+  - first:
+      43: 4300028
+    second: StreetLamp4
+  - first:
+      43: 4300030
+    second: StreetLamp5
+  - first:
+      43: 4300032
+    second: GardenBed1
+  - first:
+      43: 4300034
+    second: GardenBed2
+  - first:
+      43: 4300036
+    second: GardenBed3
+  - first:
+      43: 4300038
+    second: GardenBed4
+  - first:
+      43: 4300040
+    second: GardenBed5
+  - first:
+      43: 4300042
+    second: GardenBed6
+  - first:
+      43: 4300044
+    second: GardenBed7
+  - first:
+      43: 4300046
+    second: Ground
+  - first:
+      43: 4300048
+    second: AirconModels1
+  - first:
+      43: 4300050
+    second: AirconModels2
+  - first:
+      43: 4300052
+    second: AirconModels3
+  - first:
+      43: 4300054
+    second: AirconModels4
+  - first:
+      43: 4300056
+    second: Props29
+  - first:
+      43: 4300058
+    second: Props30
+  - first:
+      43: 4300060
+    second: Props31
+  - first:
+      43: 4300062
+    second: Props32
+  - first:
+      43: 4300064
+    second: Props33
+  - first:
+      43: 4300066
+    second: Props34
+  - first:
+      43: 4300068
+    second: Props35
+  - first:
+      43: 4300070
+    second: Props36
+  - first:
+      43: 4300072
+    second: Props37
+  - first:
+      43: 4300074
+    second: Props38
+  - first:
+      43: 4300076
+    second: Props39
+  - first:
+      43: 4300078
+    second: Props40
+  - first:
+      43: 4300080
+    second: Props41
+  - first:
+      43: 4300082
+    second: Props42
+  - first:
+      43: 4300084
+    second: Props43
+  - first:
+      43: 4300086
+    second: Props44
+  - first:
+      43: 4300088
+    second: Props45
+  - first:
+      43: 4300090
+    second: Props46
+  - first:
+      43: 4300092
+    second: Props47
+  - first:
+      43: 4300094
+    second: Props48
+  - first:
+      43: 4300096
+    second: Props49
+  - first:
+      43: 4300098
+    second: Props1
+  - first:
+      43: 4300100
+    second: Boardwalk1
+  - first:
+      43: 4300102
+    second: Borardwalk2
+  - first:
+      43: 4300104
+    second: Joints1
+  - first:
+      43: 4300106
+    second: Joints2
+  - first:
+      43: 4300108
+    second: Frame1
+  - first:
+      43: 4300110
+    second: Frame2
+  - first:
+      43: 4300112
+    second: StoneBright
+  - first:
+      43: 4300114
+    second: StoneDark1
+  - first:
+      43: 4300116
+    second: StoneDark2
+  - first:
+      43: 4300118
+    second: StoneDark
+  - first:
+      43: 4300120
+    second: WindowFrames1
+  - first:
+      43: 4300122
+    second: WindowFrames3
+  - first:
+      43: 4300124
+    second: DoorFrames
+  - first:
+      43: 4300126
+    second: Glass
+  - first:
+      43: 4300128
+    second: Roof
+  - first:
+      43: 4300130
+    second: WallRoof
+  - first:
+      43: 4300132
+    second: Ropes
+  - first:
+      43: 4300134
+    second: Ladders
+  - first:
+      43: 4300136
+    second: NetFrame
+  - first:
+      43: 4300138
+    second: Net
+  - first:
+      43: 4300140
+    second: Flooring
+  - first:
+      43: 4300142
+    second: Wall
+  - first:
+      43: 4300144
+    second: Brick
+  - first:
+      43: 4300146
+    second: Exit
+  - first:
+      43: 4300148
+    second: StoneBright1
+  - first:
+      43: 4300150
+    second: StoneBright2
+  - first:
+      43: 4300152
+    second: StoneBright3
+  - first:
+      43: 4300154
+    second: StoneDark1
+  - first:
+      43: 4300156
+    second: StoneDark2
+  - first:
+      43: 4300158
+    second: StoneDark3
+  - first:
+      43: 4300160
+    second: Windows_Frame_Red1
+  - first:
+      43: 4300162
+    second: Windows_Frame_Red2
+  - first:
+      43: 4300164
+    second: Windows_Frame_Red3
+  - first:
+      43: 4300166
+    second: Glass1
+  - first:
+      43: 4300168
+    second: Glass2
+  - first:
+      43: 4300170
+    second: Glass3
+  - first:
+      43: 4300172
+    second: Props29
+  - first:
+      43: 4300174
+    second: Props30
+  - first:
+      43: 4300176
+    second: Props31
+  - first:
+      43: 4300178
+    second: Props32
+  - first:
+      43: 4300180
+    second: Props33
+  - first:
+      43: 4300182
+    second: Props34
+  - first:
+      43: 4300184
+    second: Props35
+  - first:
+      43: 4300186
+    second: Props36
+  - first:
+      43: 4300188
+    second: Props37
+  - first:
+      43: 4300190
+    second: Props38
+  - first:
+      43: 4300192
+    second: Props39
+  - first:
+      43: 4300194
+    second: Props40
+  - first:
+      43: 4300196
+    second: Props41
+  - first:
+      43: 4300198
+    second: Props42
+  - first:
+      43: 4300200
+    second: Props43
+  - first:
+      43: 4300202
+    second: Props44
+  - first:
+      43: 4300204
+    second: Props45
+  - first:
+      43: 4300206
+    second: Props46
+  - first:
+      43: 4300208
+    second: Props47
+  - first:
+      43: 4300210
+    second: Props48
+  - first:
+      43: 4300212
+    second: Props49
+  - first:
+      43: 4300214
+    second: Props1
+  - first:
+      43: 4300216
+    second: Boardwalk1
+  - first:
+      43: 4300218
+    second: Borardwalk2
+  - first:
+      43: 4300220
+    second: Joints1
+  - first:
+      43: 4300222
+    second: Joints2
+  - first:
+      43: 4300224
+    second: Frame1
+  - first:
+      43: 4300226
+    second: Frame2
+  - first:
+      43: 4300228
+    second: StoneBright
+  - first:
+      43: 4300230
+    second: StoneDark1
+  - first:
+      43: 4300232
+    second: StoneDark2
+  - first:
+      43: 4300234
+    second: StoneDark
+  - first:
+      43: 4300236
+    second: WindowFrames1
+  - first:
+      43: 4300238
+    second: WindowFrames3
+  - first:
+      43: 4300240
+    second: DoorFrames
+  - first:
+      43: 4300242
+    second: Glass
+  - first:
+      43: 4300244
+    second: Roof
+  - first:
+      43: 4300246
+    second: WallRoof
+  - first:
+      43: 4300248
+    second: Ropes
+  - first:
+      43: 4300250
+    second: Ladders
+  - first:
+      43: 4300252
+    second: NetFrame
+  - first:
+      43: 4300254
+    second: Net
+  - first:
+      43: 4300256
+    second: Flooring
+  - first:
+      43: 4300258
+    second: Wall
+  - first:
+      43: 4300260
+    second: Brick
+  - first:
+      43: 4300262
+    second: Exit
+  - first:
+      43: 4300264
+    second: StoneBright1
+  - first:
+      43: 4300266
+    second: StoneBright2
+  - first:
+      43: 4300268
+    second: StoneBright3
+  - first:
+      43: 4300270
+    second: StoneDark1
+  - first:
+      43: 4300272
+    second: StoneDark2
+  - first:
+      43: 4300274
+    second: StoneDark3
+  - first:
+      43: 4300276
+    second: Windows_Frame_Red1
+  - first:
+      43: 4300278
+    second: Windows_Frame_Red2
+  - first:
+      43: 4300280
+    second: Windows_Frame_Red3
+  - first:
+      43: 4300282
+    second: Glass1
+  - first:
+      43: 4300284
+    second: Glass2
+  - first:
+      43: 4300286
+    second: Glass3
+  - first:
+      43: 4300288
+    second: AirconModels0
+  - first:
+      1: 100012
+    second: //RootNode
+  - first:
+      4: 400012
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100250
+    second: AirconModels0
+  - first:
+      4: 400250
+    second: AirconModels0
+  - first:
+      33: 3300232
+    second: AirconModels0
+  - first:
+      23: 2300232
+    second: AirconModels0
+  - first:
+      1: 100256
+    second: AirconModels1
+  - first:
+      4: 400256
+    second: AirconModels1
+  - first:
+      33: 3300238
+    second: AirconModels1
+  - first:
+      23: 2300238
+    second: AirconModels1
+  - first:
+      1: 100254
+    second: AirconModels2
+  - first:
+      4: 400254
+    second: AirconModels2
+  - first:
+      33: 3300236
+    second: AirconModels2
+  - first:
+      23: 2300236
+    second: AirconModels2
+  - first:
+      1: 100252
+    second: AirconModels3
+  - first:
+      4: 400252
+    second: AirconModels3
+  - first:
+      33: 3300234
+    second: AirconModels3
+  - first:
+      23: 2300234
+    second: AirconModels3
+  - first:
+      1: 100070
+    second: BlueMainLevel
+  - first:
+      4: 400070
+    second: BlueMainLevel
+  - first:
+      1: 100130
+    second: BlueProps
+  - first:
+      4: 400130
+    second: BlueProps
+  - first:
+      1: 100084
+    second: BlueScaffolding
+  - first:
+      4: 400084
+    second: BlueScaffolding
+  - first:
+      1: 100032
+    second: BlueTower
+  - first:
+      4: 400032
+    second: BlueTower
+  - first:
+      1: 100082
+    second: Boardwalk1
+  - first:
+      4: 400082
+    second: Boardwalk1
+  - first:
+      33: 3300076
+    second: Boardwalk1
+  - first:
+      23: 2300076
+    second: Boardwalk1
+  - first:
+      1: 100200
+    second: Boardwalk1 1
+  - first:
+      4: 400200
+    second: Boardwalk1 1
+  - first:
+      33: 3300186
+    second: Boardwalk1 1
+  - first:
+      23: 2300186
+    second: Boardwalk1 1
+  - first:
+      1: 100080
+    second: Borardwalk2
+  - first:
+      4: 400080
+    second: Borardwalk2
+  - first:
+      33: 3300074
+    second: Borardwalk2
+  - first:
+      23: 2300074
+    second: Borardwalk2
+  - first:
+      1: 100198
+    second: Borardwalk2 1
+  - first:
+      4: 400198
+    second: Borardwalk2 1
+  - first:
+      33: 3300184
+    second: Borardwalk2 1
+  - first:
+      23: 2300184
+    second: Borardwalk2 1
+  - first:
+      1: 100036
+    second: Brick
+  - first:
+      4: 400036
+    second: Brick
+  - first:
+      33: 3300032
+    second: Brick
+  - first:
+      23: 2300032
+    second: Brick
+  - first:
+      1: 100154
+    second: Brick 1
+  - first:
+      4: 400154
+    second: Brick 1
+  - first:
+      33: 3300142
+    second: Brick 1
+  - first:
+      23: 2300142
+    second: Brick 1
+  - first:
+      1: 100292
+    second: Building_1
+  - first:
+      4: 400292
+    second: Building_1
+  - first:
+      33: 3300274
+    second: Building_1
+  - first:
+      23: 2300274
+    second: Building_1
+  - first:
+      1: 100290
+    second: Building_2
+  - first:
+      4: 400290
+    second: Building_2
+  - first:
+      33: 3300272
+    second: Building_2
+  - first:
+      23: 2300272
+    second: Building_2
+  - first:
+      1: 100304
+    second: Building_3
+  - first:
+      4: 400304
+    second: Building_3
+  - first:
+      33: 3300286
+    second: Building_3
+  - first:
+      23: 2300286
+    second: Building_3
+  - first:
+      1: 100302
+    second: Building_4
+  - first:
+      4: 400302
+    second: Building_4
+  - first:
+      33: 3300284
+    second: Building_4
+  - first:
+      23: 2300284
+    second: Building_4
+  - first:
+      1: 100300
+    second: Building_5
+  - first:
+      4: 400300
+    second: Building_5
+  - first:
+      33: 3300282
+    second: Building_5
+  - first:
+      23: 2300282
+    second: Building_5
+  - first:
+      1: 100288
+    second: Building_6
+  - first:
+      4: 400288
+    second: Building_6
+  - first:
+      33: 3300270
+    second: Building_6
+  - first:
+      23: 2300270
+    second: Building_6
+  - first:
+      1: 100294
+    second: Building_7
+  - first:
+      4: 400294
+    second: Building_7
+  - first:
+      33: 3300276
+    second: Building_7
+  - first:
+      23: 2300276
+    second: Building_7
+  - first:
+      1: 100296
+    second: Building_8
+  - first:
+      4: 400296
+    second: Building_8
+  - first:
+      33: 3300278
+    second: Building_8
+  - first:
+      23: 2300278
+    second: Building_8
+  - first:
+      1: 100298
+    second: Building_9
+  - first:
+      4: 400298
+    second: Building_9
+  - first:
+      33: 3300280
+    second: Building_9
+  - first:
+      23: 2300280
+    second: Building_9
+  - first:
+      1: 100056
+    second: DoorFrames
+  - first:
+      4: 400056
+    second: DoorFrames
+  - first:
+      33: 3300052
+    second: DoorFrames
+  - first:
+      23: 2300052
+    second: DoorFrames
+  - first:
+      1: 100174
+    second: DoorFrames 1
+  - first:
+      4: 400174
+    second: DoorFrames 1
+  - first:
+      33: 3300162
+    second: DoorFrames 1
+  - first:
+      23: 2300162
+    second: DoorFrames 1
+  - first:
+      1: 100306
+    second: Environment
+  - first:
+      4: 400306
+    second: Environment
+  - first:
+      1: 100034
+    second: Exit
+  - first:
+      4: 400034
+    second: Exit
+  - first:
+      33: 3300030
+    second: Exit
+  - first:
+      23: 2300030
+    second: Exit
+  - first:
+      1: 100152
+    second: Exit 1
+  - first:
+      4: 400152
+    second: Exit 1
+  - first:
+      33: 3300140
+    second: Exit 1
+  - first:
+      23: 2300140
+    second: Exit 1
+  - first:
+      1: 100040
+    second: Flooring
+  - first:
+      4: 400040
+    second: Flooring
+  - first:
+      33: 3300036
+    second: Flooring
+  - first:
+      23: 2300036
+    second: Flooring
+  - first:
+      1: 100158
+    second: Flooring 1
+  - first:
+      4: 400158
+    second: Flooring 1
+  - first:
+      33: 3300146
+    second: Flooring 1
+  - first:
+      23: 2300146
+    second: Flooring 1
+  - first:
+      1: 100074
+    second: Frame1
+  - first:
+      4: 400074
+    second: Frame1
+  - first:
+      33: 3300068
+    second: Frame1
+  - first:
+      23: 2300068
+    second: Frame1
+  - first:
+      1: 100192
+    second: Frame1 1
+  - first:
+      4: 400192
+    second: Frame1 1
+  - first:
+      33: 3300178
+    second: Frame1 1
+  - first:
+      23: 2300178
+    second: Frame1 1
+  - first:
+      1: 100072
+    second: Frame2
+  - first:
+      4: 400072
+    second: Frame2
+  - first:
+      33: 3300066
+    second: Frame2
+  - first:
+      23: 2300066
+    second: Frame2
+  - first:
+      1: 100190
+    second: Frame2 1
+  - first:
+      4: 400190
+    second: Frame2 1
+  - first:
+      33: 3300176
+    second: Frame2 1
+  - first:
+      23: 2300176
+    second: Frame2 1
+  - first:
+      1: 100272
+    second: GardenBed1
+  - first:
+      4: 400272
+    second: GardenBed1
+  - first:
+      33: 3300254
+    second: GardenBed1
+  - first:
+      23: 2300254
+    second: GardenBed1
+  - first:
+      1: 100270
+    second: GardenBed2
+  - first:
+      4: 400270
+    second: GardenBed2
+  - first:
+      33: 3300252
+    second: GardenBed2
+  - first:
+      23: 2300252
+    second: GardenBed2
+  - first:
+      1: 100268
+    second: GardenBed3
+  - first:
+      4: 400268
+    second: GardenBed3
+  - first:
+      33: 3300250
+    second: GardenBed3
+  - first:
+      23: 2300250
+    second: GardenBed3
+  - first:
+      1: 100266
+    second: GardenBed4
+  - first:
+      4: 400266
+    second: GardenBed4
+  - first:
+      33: 3300248
+    second: GardenBed4
+  - first:
+      23: 2300248
+    second: GardenBed4
+  - first:
+      1: 100264
+    second: GardenBed5
+  - first:
+      4: 400264
+    second: GardenBed5
+  - first:
+      33: 3300246
+    second: GardenBed5
+  - first:
+      23: 2300246
+    second: GardenBed5
+  - first:
+      1: 100262
+    second: GardenBed6
+  - first:
+      4: 400262
+    second: GardenBed6
+  - first:
+      33: 3300244
+    second: GardenBed6
+  - first:
+      23: 2300244
+    second: GardenBed6
+  - first:
+      1: 100260
+    second: GardenBed7
+  - first:
+      4: 400260
+    second: GardenBed7
+  - first:
+      33: 3300242
+    second: GardenBed7
+  - first:
+      23: 2300242
+    second: GardenBed7
+  - first:
+      1: 100054
+    second: Glass
+  - first:
+      4: 400054
+    second: Glass
+  - first:
+      33: 3300050
+    second: Glass
+  - first:
+      23: 2300050
+    second: Glass
+  - first:
+      1: 100172
+    second: Glass 1
+  - first:
+      4: 400172
+    second: Glass 1
+  - first:
+      33: 3300160
+    second: Glass 1
+  - first:
+      23: 2300160
+    second: Glass 1
+  - first:
+      1: 100018
+    second: Glass1
+  - first:
+      4: 400018
+    second: Glass1
+  - first:
+      33: 3300016
+    second: Glass1
+  - first:
+      23: 2300016
+    second: Glass1
+  - first:
+      1: 100136
+    second: Glass1 1
+  - first:
+      4: 400136
+    second: Glass1 1
+  - first:
+      33: 3300126
+    second: Glass1 1
+  - first:
+      23: 2300126
+    second: Glass1 1
+  - first:
+      1: 100016
+    second: Glass2
+  - first:
+      4: 400016
+    second: Glass2
+  - first:
+      33: 3300014
+    second: Glass2
+  - first:
+      23: 2300014
+    second: Glass2
+  - first:
+      1: 100134
+    second: Glass2 1
+  - first:
+      4: 400134
+    second: Glass2 1
+  - first:
+      33: 3300124
+    second: Glass2 1
+  - first:
+      23: 2300124
+    second: Glass2 1
+  - first:
+      1: 100014
+    second: Glass3
+  - first:
+      4: 400014
+    second: Glass3
+  - first:
+      33: 3300012
+    second: Glass3
+  - first:
+      23: 2300012
+    second: Glass3
+  - first:
+      1: 100132
+    second: Glass3 1
+  - first:
+      4: 400132
+    second: Glass3 1
+  - first:
+      33: 3300122
+    second: Glass3 1
+  - first:
+      23: 2300122
+    second: Glass3 1
+  - first:
+      1: 100258
+    second: Ground
+  - first:
+      4: 400258
+    second: Ground
+  - first:
+      33: 3300240
+    second: Ground
+  - first:
+      23: 2300240
+    second: Ground
+  - first:
+      1: 100078
+    second: Joints1
+  - first:
+      4: 400078
+    second: Joints1
+  - first:
+      33: 3300072
+    second: Joints1
+  - first:
+      23: 2300072
+    second: Joints1
+  - first:
+      1: 100196
+    second: Joints1 1
+  - first:
+      4: 400196
+    second: Joints1 1
+  - first:
+      33: 3300182
+    second: Joints1 1
+  - first:
+      23: 2300182
+    second: Joints1 1
+  - first:
+      1: 100076
+    second: Joints2
+  - first:
+      4: 400076
+    second: Joints2
+  - first:
+      33: 3300070
+    second: Joints2
+  - first:
+      23: 2300070
+    second: Joints2
+  - first:
+      1: 100194
+    second: Joints2 1
+  - first:
+      4: 400194
+    second: Joints2 1
+  - first:
+      33: 3300180
+    second: Joints2 1
+  - first:
+      23: 2300180
+    second: Joints2 1
+  - first:
+      1: 100046
+    second: Ladders
+  - first:
+      4: 400046
+    second: Ladders
+  - first:
+      33: 3300042
+    second: Ladders
+  - first:
+      23: 2300042
+    second: Ladders
+  - first:
+      1: 100164
+    second: Ladders 1
+  - first:
+      4: 400164
+    second: Ladders 1
+  - first:
+      33: 3300152
+    second: Ladders 1
+  - first:
+      23: 2300152
+    second: Ladders 1
+  - first:
+      1: 100042
+    second: Net
+  - first:
+      4: 400042
+    second: Net
+  - first:
+      33: 3300038
+    second: Net
+  - first:
+      23: 2300038
+    second: Net
+  - first:
+      1: 100160
+    second: Net 1
+  - first:
+      4: 400160
+    second: Net 1
+  - first:
+      33: 3300148
+    second: Net 1
+  - first:
+      23: 2300148
+    second: Net 1
+  - first:
+      1: 100044
+    second: NetFrame
+  - first:
+      4: 400044
+    second: NetFrame
+  - first:
+      33: 3300040
+    second: NetFrame
+  - first:
+      23: 2300040
+    second: NetFrame
+  - first:
+      1: 100162
+    second: NetFrame 1
+  - first:
+      4: 400162
+    second: NetFrame 1
+  - first:
+      33: 3300150
+    second: NetFrame 1
+  - first:
+      23: 2300150
+    second: NetFrame 1
+  - first:
+      1: 100086
+    second: Props1
+  - first:
+      4: 400086
+    second: Props1
+  - first:
+      33: 3300078
+    second: Props1
+  - first:
+      23: 2300078
+    second: Props1
+  - first:
+      1: 100204
+    second: Props1 1
+  - first:
+      4: 400204
+    second: Props1 1
+  - first:
+      33: 3300188
+    second: Props1 1
+  - first:
+      23: 2300188
+    second: Props1 1
+  - first:
+      1: 100128
+    second: Props29
+  - first:
+      4: 400128
+    second: Props29
+  - first:
+      33: 3300120
+    second: Props29
+  - first:
+      23: 2300120
+    second: Props29
+  - first:
+      1: 100246
+    second: Props29 1
+  - first:
+      4: 400246
+    second: Props29 1
+  - first:
+      33: 3300230
+    second: Props29 1
+  - first:
+      23: 2300230
+    second: Props29 1
+  - first:
+      1: 100126
+    second: Props30
+  - first:
+      4: 400126
+    second: Props30
+  - first:
+      33: 3300118
+    second: Props30
+  - first:
+      23: 2300118
+    second: Props30
+  - first:
+      1: 100244
+    second: Props30 1
+  - first:
+      4: 400244
+    second: Props30 1
+  - first:
+      33: 3300228
+    second: Props30 1
+  - first:
+      23: 2300228
+    second: Props30 1
+  - first:
+      1: 100124
+    second: Props31
+  - first:
+      4: 400124
+    second: Props31
+  - first:
+      33: 3300116
+    second: Props31
+  - first:
+      23: 2300116
+    second: Props31
+  - first:
+      1: 100242
+    second: Props31 1
+  - first:
+      4: 400242
+    second: Props31 1
+  - first:
+      33: 3300226
+    second: Props31 1
+  - first:
+      23: 2300226
+    second: Props31 1
+  - first:
+      1: 100122
+    second: Props32
+  - first:
+      4: 400122
+    second: Props32
+  - first:
+      33: 3300114
+    second: Props32
+  - first:
+      23: 2300114
+    second: Props32
+  - first:
+      1: 100240
+    second: Props32 1
+  - first:
+      4: 400240
+    second: Props32 1
+  - first:
+      33: 3300224
+    second: Props32 1
+  - first:
+      23: 2300224
+    second: Props32 1
+  - first:
+      1: 100120
+    second: Props33
+  - first:
+      4: 400120
+    second: Props33
+  - first:
+      33: 3300112
+    second: Props33
+  - first:
+      23: 2300112
+    second: Props33
+  - first:
+      1: 100238
+    second: Props33 1
+  - first:
+      4: 400238
+    second: Props33 1
+  - first:
+      33: 3300222
+    second: Props33 1
+  - first:
+      23: 2300222
+    second: Props33 1
+  - first:
+      1: 100118
+    second: Props34
+  - first:
+      4: 400118
+    second: Props34
+  - first:
+      33: 3300110
+    second: Props34
+  - first:
+      23: 2300110
+    second: Props34
+  - first:
+      1: 100236
+    second: Props34 1
+  - first:
+      4: 400236
+    second: Props34 1
+  - first:
+      33: 3300220
+    second: Props34 1
+  - first:
+      23: 2300220
+    second: Props34 1
+  - first:
+      1: 100116
+    second: Props35
+  - first:
+      4: 400116
+    second: Props35
+  - first:
+      33: 3300108
+    second: Props35
+  - first:
+      23: 2300108
+    second: Props35
+  - first:
+      1: 100234
+    second: Props35 1
+  - first:
+      4: 400234
+    second: Props35 1
+  - first:
+      33: 3300218
+    second: Props35 1
+  - first:
+      23: 2300218
+    second: Props35 1
+  - first:
+      1: 100114
+    second: Props36
+  - first:
+      4: 400114
+    second: Props36
+  - first:
+      33: 3300106
+    second: Props36
+  - first:
+      23: 2300106
+    second: Props36
+  - first:
+      1: 100232
+    second: Props36 1
+  - first:
+      4: 400232
+    second: Props36 1
+  - first:
+      33: 3300216
+    second: Props36 1
+  - first:
+      23: 2300216
+    second: Props36 1
+  - first:
+      1: 100112
+    second: Props37
+  - first:
+      4: 400112
+    second: Props37
+  - first:
+      33: 3300104
+    second: Props37
+  - first:
+      23: 2300104
+    second: Props37
+  - first:
+      1: 100230
+    second: Props37 1
+  - first:
+      4: 400230
+    second: Props37 1
+  - first:
+      33: 3300214
+    second: Props37 1
+  - first:
+      23: 2300214
+    second: Props37 1
+  - first:
+      1: 100110
+    second: Props38
+  - first:
+      4: 400110
+    second: Props38
+  - first:
+      33: 3300102
+    second: Props38
+  - first:
+      23: 2300102
+    second: Props38
+  - first:
+      1: 100228
+    second: Props38 1
+  - first:
+      4: 400228
+    second: Props38 1
+  - first:
+      33: 3300212
+    second: Props38 1
+  - first:
+      23: 2300212
+    second: Props38 1
+  - first:
+      1: 100108
+    second: Props39
+  - first:
+      4: 400108
+    second: Props39
+  - first:
+      33: 3300100
+    second: Props39
+  - first:
+      23: 2300100
+    second: Props39
+  - first:
+      1: 100226
+    second: Props39 1
+  - first:
+      4: 400226
+    second: Props39 1
+  - first:
+      33: 3300210
+    second: Props39 1
+  - first:
+      23: 2300210
+    second: Props39 1
+  - first:
+      1: 100106
+    second: Props40
+  - first:
+      4: 400106
+    second: Props40
+  - first:
+      33: 3300098
+    second: Props40
+  - first:
+      23: 2300098
+    second: Props40
+  - first:
+      1: 100224
+    second: Props40 1
+  - first:
+      4: 400224
+    second: Props40 1
+  - first:
+      33: 3300208
+    second: Props40 1
+  - first:
+      23: 2300208
+    second: Props40 1
+  - first:
+      1: 100104
+    second: Props41
+  - first:
+      4: 400104
+    second: Props41
+  - first:
+      33: 3300096
+    second: Props41
+  - first:
+      23: 2300096
+    second: Props41
+  - first:
+      1: 100222
+    second: Props41 1
+  - first:
+      4: 400222
+    second: Props41 1
+  - first:
+      33: 3300206
+    second: Props41 1
+  - first:
+      23: 2300206
+    second: Props41 1
+  - first:
+      1: 100102
+    second: Props42
+  - first:
+      4: 400102
+    second: Props42
+  - first:
+      33: 3300094
+    second: Props42
+  - first:
+      23: 2300094
+    second: Props42
+  - first:
+      1: 100220
+    second: Props42 1
+  - first:
+      4: 400220
+    second: Props42 1
+  - first:
+      33: 3300204
+    second: Props42 1
+  - first:
+      23: 2300204
+    second: Props42 1
+  - first:
+      1: 100100
+    second: Props43
+  - first:
+      4: 400100
+    second: Props43
+  - first:
+      33: 3300092
+    second: Props43
+  - first:
+      23: 2300092
+    second: Props43
+  - first:
+      1: 100218
+    second: Props43 1
+  - first:
+      4: 400218
+    second: Props43 1
+  - first:
+      33: 3300202
+    second: Props43 1
+  - first:
+      23: 2300202
+    second: Props43 1
+  - first:
+      1: 100098
+    second: Props44
+  - first:
+      4: 400098
+    second: Props44
+  - first:
+      33: 3300090
+    second: Props44
+  - first:
+      23: 2300090
+    second: Props44
+  - first:
+      1: 100216
+    second: Props44 1
+  - first:
+      4: 400216
+    second: Props44 1
+  - first:
+      33: 3300200
+    second: Props44 1
+  - first:
+      23: 2300200
+    second: Props44 1
+  - first:
+      1: 100096
+    second: Props45
+  - first:
+      4: 400096
+    second: Props45
+  - first:
+      33: 3300088
+    second: Props45
+  - first:
+      23: 2300088
+    second: Props45
+  - first:
+      1: 100214
+    second: Props45 1
+  - first:
+      4: 400214
+    second: Props45 1
+  - first:
+      33: 3300198
+    second: Props45 1
+  - first:
+      23: 2300198
+    second: Props45 1
+  - first:
+      1: 100094
+    second: Props46
+  - first:
+      4: 400094
+    second: Props46
+  - first:
+      33: 3300086
+    second: Props46
+  - first:
+      23: 2300086
+    second: Props46
+  - first:
+      1: 100212
+    second: Props46 1
+  - first:
+      4: 400212
+    second: Props46 1
+  - first:
+      33: 3300196
+    second: Props46 1
+  - first:
+      23: 2300196
+    second: Props46 1
+  - first:
+      1: 100092
+    second: Props47
+  - first:
+      4: 400092
+    second: Props47
+  - first:
+      33: 3300084
+    second: Props47
+  - first:
+      23: 2300084
+    second: Props47
+  - first:
+      1: 100210
+    second: Props47 1
+  - first:
+      4: 400210
+    second: Props47 1
+  - first:
+      33: 3300194
+    second: Props47 1
+  - first:
+      23: 2300194
+    second: Props47 1
+  - first:
+      1: 100090
+    second: Props48
+  - first:
+      4: 400090
+    second: Props48
+  - first:
+      33: 3300082
+    second: Props48
+  - first:
+      23: 2300082
+    second: Props48
+  - first:
+      1: 100208
+    second: Props48 1
+  - first:
+      4: 400208
+    second: Props48 1
+  - first:
+      33: 3300192
+    second: Props48 1
+  - first:
+      23: 2300192
+    second: Props48 1
+  - first:
+      1: 100088
+    second: Props49
+  - first:
+      4: 400088
+    second: Props49
+  - first:
+      33: 3300080
+    second: Props49
+  - first:
+      23: 2300080
+    second: Props49
+  - first:
+      1: 100206
+    second: Props49 1
+  - first:
+      4: 400206
+    second: Props49 1
+  - first:
+      33: 3300190
+    second: Props49 1
+  - first:
+      23: 2300190
+    second: Props49 1
+  - first:
+      1: 100188
+    second: RedMainLevel
+  - first:
+      4: 400188
+    second: RedMainLevel
+  - first:
+      1: 100248
+    second: RedProps
+  - first:
+      4: 400248
+    second: RedProps
+  - first:
+      1: 100202
+    second: RedScaffolding
+  - first:
+      4: 400202
+    second: RedScaffolding
+  - first:
+      1: 100150
+    second: RedTower
+  - first:
+      4: 400150
+    second: RedTower
+  - first:
+      1: 100052
+    second: Roof
+  - first:
+      4: 400052
+    second: Roof
+  - first:
+      33: 3300048
+    second: Roof
+  - first:
+      23: 2300048
+    second: Roof
+  - first:
+      1: 100170
+    second: Roof 1
+  - first:
+      4: 400170
+    second: Roof 1
+  - first:
+      33: 3300158
+    second: Roof 1
+  - first:
+      23: 2300158
+    second: Roof 1
+  - first:
+      1: 100048
+    second: Ropes
+  - first:
+      4: 400048
+    second: Ropes
+  - first:
+      33: 3300044
+    second: Ropes
+  - first:
+      23: 2300044
+    second: Ropes
+  - first:
+      1: 100166
+    second: Ropes 1
+  - first:
+      4: 400166
+    second: Ropes 1
+  - first:
+      33: 3300154
+    second: Ropes 1
+  - first:
+      23: 2300154
+    second: Ropes 1
+  - first:
+      1: 100286
+    second: SmallHouse1
+  - first:
+      4: 400286
+    second: SmallHouse1
+  - first:
+      33: 3300268
+    second: SmallHouse1
+  - first:
+      23: 2300268
+    second: SmallHouse1
+  - first:
+      1: 100284
+    second: SmallHouse2
+  - first:
+      4: 400284
+    second: SmallHouse2
+  - first:
+      33: 3300266
+    second: SmallHouse2
+  - first:
+      23: 2300266
+    second: SmallHouse2
+  - first:
+      1: 100068
+    second: StoneBright
+  - first:
+      4: 400068
+    second: StoneBright
+  - first:
+      33: 3300064
+    second: StoneBright
+  - first:
+      23: 2300064
+    second: StoneBright
+  - first:
+      1: 100186
+    second: StoneBright 1
+  - first:
+      4: 400186
+    second: StoneBright 1
+  - first:
+      33: 3300174
+    second: StoneBright 1
+  - first:
+      23: 2300174
+    second: StoneBright 1
+  - first:
+      1: 100030
+    second: StoneBright1
+  - first:
+      4: 400030
+    second: StoneBright1
+  - first:
+      33: 3300028
+    second: StoneBright1
+  - first:
+      23: 2300028
+    second: StoneBright1
+  - first:
+      1: 100148
+    second: StoneBright1 1
+  - first:
+      4: 400148
+    second: StoneBright1 1
+  - first:
+      33: 3300138
+    second: StoneBright1 1
+  - first:
+      23: 2300138
+    second: StoneBright1 1
+  - first:
+      1: 100028
+    second: StoneBright2
+  - first:
+      4: 400028
+    second: StoneBright2
+  - first:
+      33: 3300026
+    second: StoneBright2
+  - first:
+      23: 2300026
+    second: StoneBright2
+  - first:
+      1: 100146
+    second: StoneBright2 1
+  - first:
+      4: 400146
+    second: StoneBright2 1
+  - first:
+      33: 3300136
+    second: StoneBright2 1
+  - first:
+      23: 2300136
+    second: StoneBright2 1
+  - first:
+      1: 100026
+    second: StoneBright3
+  - first:
+      4: 400026
+    second: StoneBright3
+  - first:
+      33: 3300024
+    second: StoneBright3
+  - first:
+      23: 2300024
+    second: StoneBright3
+  - first:
+      1: 100144
+    second: StoneBright3 1
+  - first:
+      4: 400144
+    second: StoneBright3 1
+  - first:
+      33: 3300134
+    second: StoneBright3 1
+  - first:
+      23: 2300134
+    second: StoneBright3 1
+  - first:
+      1: 100062
+    second: StoneDark
+  - first:
+      4: 400062
+    second: StoneDark
+  - first:
+      33: 3300058
+    second: StoneDark
+  - first:
+      23: 2300058
+    second: StoneDark
+  - first:
+      1: 100180
+    second: StoneDark 1
+  - first:
+      4: 400180
+    second: StoneDark 1
+  - first:
+      33: 3300168
+    second: StoneDark 1
+  - first:
+      23: 2300168
+    second: StoneDark 1
+  - first:
+      1: 100066
+    second: StoneDark1
+  - first:
+      4: 400066
+    second: StoneDark1
+  - first:
+      33: 3300062
+    second: StoneDark1
+  - first:
+      23: 2300062
+    second: StoneDark1
+  - first:
+      1: 100024
+    second: StoneDark1 1
+  - first:
+      4: 400024
+    second: StoneDark1 1
+  - first:
+      33: 3300022
+    second: StoneDark1 1
+  - first:
+      23: 2300022
+    second: StoneDark1 1
+  - first:
+      1: 100184
+    second: StoneDark1 2
+  - first:
+      4: 400184
+    second: StoneDark1 2
+  - first:
+      33: 3300172
+    second: StoneDark1 2
+  - first:
+      23: 2300172
+    second: StoneDark1 2
+  - first:
+      1: 100142
+    second: StoneDark1 3
+  - first:
+      4: 400142
+    second: StoneDark1 3
+  - first:
+      33: 3300132
+    second: StoneDark1 3
+  - first:
+      23: 2300132
+    second: StoneDark1 3
+  - first:
+      1: 100064
+    second: StoneDark2
+  - first:
+      4: 400064
+    second: StoneDark2
+  - first:
+      33: 3300060
+    second: StoneDark2
+  - first:
+      23: 2300060
+    second: StoneDark2
+  - first:
+      1: 100022
+    second: StoneDark2 1
+  - first:
+      4: 400022
+    second: StoneDark2 1
+  - first:
+      33: 3300020
+    second: StoneDark2 1
+  - first:
+      23: 2300020
+    second: StoneDark2 1
+  - first:
+      1: 100182
+    second: StoneDark2 2
+  - first:
+      4: 400182
+    second: StoneDark2 2
+  - first:
+      33: 3300170
+    second: StoneDark2 2
+  - first:
+      23: 2300170
+    second: StoneDark2 2
+  - first:
+      1: 100140
+    second: StoneDark2 3
+  - first:
+      4: 400140
+    second: StoneDark2 3
+  - first:
+      33: 3300130
+    second: StoneDark2 3
+  - first:
+      23: 2300130
+    second: StoneDark2 3
+  - first:
+      1: 100020
+    second: StoneDark3
+  - first:
+      4: 400020
+    second: StoneDark3
+  - first:
+      33: 3300018
+    second: StoneDark3
+  - first:
+      23: 2300018
+    second: StoneDark3
+  - first:
+      1: 100138
+    second: StoneDark3 1
+  - first:
+      4: 400138
+    second: StoneDark3 1
+  - first:
+      33: 3300128
+    second: StoneDark3 1
+  - first:
+      23: 2300128
+    second: StoneDark3 1
+  - first:
+      1: 100282
+    second: StreetLamp1
+  - first:
+      4: 400282
+    second: StreetLamp1
+  - first:
+      33: 3300264
+    second: StreetLamp1
+  - first:
+      23: 2300264
+    second: StreetLamp1
+  - first:
+      1: 100280
+    second: StreetLamp2
+  - first:
+      4: 400280
+    second: StreetLamp2
+  - first:
+      33: 3300262
+    second: StreetLamp2
+  - first:
+      23: 2300262
+    second: StreetLamp2
+  - first:
+      1: 100278
+    second: StreetLamp3
+  - first:
+      4: 400278
+    second: StreetLamp3
+  - first:
+      33: 3300260
+    second: StreetLamp3
+  - first:
+      23: 2300260
+    second: StreetLamp3
+  - first:
+      1: 100276
+    second: StreetLamp4
+  - first:
+      4: 400276
+    second: StreetLamp4
+  - first:
+      33: 3300258
+    second: StreetLamp4
+  - first:
+      23: 2300258
+    second: StreetLamp4
+  - first:
+      1: 100274
+    second: StreetLamp5
+  - first:
+      4: 400274
+    second: StreetLamp5
+  - first:
+      33: 3300256
+    second: StreetLamp5
+  - first:
+      23: 2300256
+    second: StreetLamp5
+  - first:
+      1: 100038
+    second: Wall
+  - first:
+      4: 400038
+    second: Wall
+  - first:
+      33: 3300034
+    second: Wall
+  - first:
+      23: 2300034
+    second: Wall
+  - first:
+      1: 100156
+    second: Wall 1
+  - first:
+      4: 400156
+    second: Wall 1
+  - first:
+      33: 3300144
+    second: Wall 1
+  - first:
+      23: 2300144
+    second: Wall 1
+  - first:
+      1: 100050
+    second: WallRoof
+  - first:
+      4: 400050
+    second: WallRoof
+  - first:
+      33: 3300046
+    second: WallRoof
+  - first:
+      23: 2300046
+    second: WallRoof
+  - first:
+      1: 100168
+    second: WallRoof 1
+  - first:
+      4: 400168
+    second: WallRoof 1
+  - first:
+      33: 3300156
+    second: WallRoof 1
+  - first:
+      23: 2300156
+    second: WallRoof 1
+  - first:
+      1: 100060
+    second: WindowFrames1
+  - first:
+      4: 400060
+    second: WindowFrames1
+  - first:
+      33: 3300056
+    second: WindowFrames1
+  - first:
+      23: 2300056
+    second: WindowFrames1
+  - first:
+      1: 100178
+    second: WindowFrames1 1
+  - first:
+      4: 400178
+    second: WindowFrames1 1
+  - first:
+      33: 3300166
+    second: WindowFrames1 1
+  - first:
+      23: 2300166
+    second: WindowFrames1 1
+  - first:
+      1: 100058
+    second: WindowFrames3
+  - first:
+      4: 400058
+    second: WindowFrames3
+  - first:
+      33: 3300054
+    second: WindowFrames3
+  - first:
+      23: 2300054
+    second: WindowFrames3
+  - first:
+      1: 100176
+    second: WindowFrames3 1
+  - first:
+      4: 400176
+    second: WindowFrames3 1
+  - first:
+      33: 3300164
+    second: WindowFrames3 1
+  - first:
+      23: 2300164
+    second: WindowFrames3 1
+  - first:
+      1: 100010
+    second: Windows_Frame_Red1
+  - first:
+      4: 400010
+    second: Windows_Frame_Red1
+  - first:
+      33: 3300010
+    second: Windows_Frame_Red1
+  - first:
+      23: 2300010
+    second: Windows_Frame_Red1
+  - first:
+      1: 100008
+    second: Windows_Frame_Red1 1
+  - first:
+      4: 400008
+    second: Windows_Frame_Red1 1
+  - first:
+      33: 3300008
+    second: Windows_Frame_Red1 1
+  - first:
+      23: 2300008
+    second: Windows_Frame_Red1 1
+  - first:
+      1: 100000
+    second: Windows_Frame_Red2
+  - first:
+      4: 400000
+    second: Windows_Frame_Red2
+  - first:
+      33: 3300000
+    second: Windows_Frame_Red2
+  - first:
+      23: 2300000
+    second: Windows_Frame_Red2
+  - first:
+      1: 100006
+    second: Windows_Frame_Red2 1
+  - first:
+      4: 400006
+    second: Windows_Frame_Red2 1
+  - first:
+      33: 3300006
+    second: Windows_Frame_Red2 1
+  - first:
+      23: 2300006
+    second: Windows_Frame_Red2 1
+  - first:
+      1: 100002
+    second: Windows_Frame_Red3
+  - first:
+      4: 400002
+    second: Windows_Frame_Red3
+  - first:
+      33: 3300002
+    second: Windows_Frame_Red3
+  - first:
+      23: 2300002
+    second: Windows_Frame_Red3
+  - first:
+      1: 100004
+    second: Windows_Frame_Red3 1
+  - first:
+      4: 400004
+    second: Windows_Frame_Red3 1
+  - first:
+      33: 3300004
+    second: Windows_Frame_Red3 1
+  - first:
+      23: 2300004
+    second: Windows_Frame_Red3 1
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 0
+    legacyGenerateAnimations: 0
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 1
     tangentImportMode: 2
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 111
-        second: 605fa900
-    AirconModels0:
-      data:
-        first: 1
-        second: 9a870100
-      data:
-        first: 4
-        second: 7a1b0600
-      data:
-        first: 23
-        second: 48192300
-      data:
-        first: 33
-        second: 885b3200
-    AirconModels1:
-      data:
-        first: 1
-        second: a0870100
-      data:
-        first: 4
-        second: 801b0600
-      data:
-        first: 23
-        second: 4e192300
-      data:
-        first: 33
-        second: 8e5b3200
-    AirconModels2:
-      data:
-        first: 1
-        second: 9e870100
-      data:
-        first: 4
-        second: 7e1b0600
-      data:
-        first: 23
-        second: 4c192300
-      data:
-        first: 33
-        second: 8c5b3200
-    AirconModels3:
-      data:
-        first: 1
-        second: 9c870100
-      data:
-        first: 4
-        second: 7c1b0600
-      data:
-        first: 23
-        second: 4a192300
-      data:
-        first: 33
-        second: 8a5b3200
-    BlueMainLevel:
-      data:
-        first: 1
-        second: e6860100
-      data:
-        first: 4
-        second: c61a0600
-    BlueProps:
-      data:
-        first: 1
-        second: 22870100
-      data:
-        first: 4
-        second: 021b0600
-    BlueScaffolding:
-      data:
-        first: 1
-        second: f4860100
-      data:
-        first: 4
-        second: d41a0600
-    BlueTower:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-    Boardwalk1:
-      data:
-        first: 1
-        second: f2860100
-      data:
-        first: 4
-        second: d21a0600
-      data:
-        first: 23
-        second: ac182300
-      data:
-        first: 33
-        second: ec5a3200
-    Boardwalk1 1:
-      data:
-        first: 1
-        second: 68870100
-      data:
-        first: 4
-        second: 481b0600
-      data:
-        first: 23
-        second: 1a192300
-      data:
-        first: 33
-        second: 5a5b3200
-    Borardwalk2:
-      data:
-        first: 1
-        second: f0860100
-      data:
-        first: 4
-        second: d01a0600
-      data:
-        first: 23
-        second: aa182300
-      data:
-        first: 33
-        second: ea5a3200
-    Borardwalk2 1:
-      data:
-        first: 1
-        second: 66870100
-      data:
-        first: 4
-        second: 461b0600
-      data:
-        first: 23
-        second: 18192300
-      data:
-        first: 33
-        second: 585b3200
-    Brick:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-      data:
-        first: 23
-        second: 80182300
-      data:
-        first: 33
-        second: c05a3200
-    Brick 1:
-      data:
-        first: 1
-        second: 3a870100
-      data:
-        first: 4
-        second: 1a1b0600
-      data:
-        first: 23
-        second: ee182300
-      data:
-        first: 33
-        second: 2e5b3200
-    Building_1:
-      data:
-        first: 1
-        second: c4870100
-      data:
-        first: 4
-        second: a41b0600
-      data:
-        first: 23
-        second: 72192300
-      data:
-        first: 33
-        second: b25b3200
-    Building_2:
-      data:
-        first: 1
-        second: c2870100
-      data:
-        first: 4
-        second: a21b0600
-      data:
-        first: 23
-        second: 70192300
-      data:
-        first: 33
-        second: b05b3200
-    Building_3:
-      data:
-        first: 1
-        second: d0870100
-      data:
-        first: 4
-        second: b01b0600
-      data:
-        first: 23
-        second: 7e192300
-      data:
-        first: 33
-        second: be5b3200
-    Building_4:
-      data:
-        first: 1
-        second: ce870100
-      data:
-        first: 4
-        second: ae1b0600
-      data:
-        first: 23
-        second: 7c192300
-      data:
-        first: 33
-        second: bc5b3200
-    Building_5:
-      data:
-        first: 1
-        second: cc870100
-      data:
-        first: 4
-        second: ac1b0600
-      data:
-        first: 23
-        second: 7a192300
-      data:
-        first: 33
-        second: ba5b3200
-    Building_6:
-      data:
-        first: 1
-        second: c0870100
-      data:
-        first: 4
-        second: a01b0600
-      data:
-        first: 23
-        second: 6e192300
-      data:
-        first: 33
-        second: ae5b3200
-    Building_7:
-      data:
-        first: 1
-        second: c6870100
-      data:
-        first: 4
-        second: a61b0600
-      data:
-        first: 23
-        second: 74192300
-      data:
-        first: 33
-        second: b45b3200
-    Building_8:
-      data:
-        first: 1
-        second: c8870100
-      data:
-        first: 4
-        second: a81b0600
-      data:
-        first: 23
-        second: 76192300
-      data:
-        first: 33
-        second: b65b3200
-    Building_9:
-      data:
-        first: 1
-        second: ca870100
-      data:
-        first: 4
-        second: aa1b0600
-      data:
-        first: 23
-        second: 78192300
-      data:
-        first: 33
-        second: b85b3200
-    DoorFrames:
-      data:
-        first: 1
-        second: d8860100
-      data:
-        first: 4
-        second: b81a0600
-      data:
-        first: 23
-        second: 94182300
-      data:
-        first: 33
-        second: d45a3200
-    DoorFrames 1:
-      data:
-        first: 1
-        second: 4e870100
-      data:
-        first: 4
-        second: 2e1b0600
-      data:
-        first: 23
-        second: 02192300
-      data:
-        first: 33
-        second: 425b3200
-    Environment:
-      data:
-        first: 1
-        second: d2870100
-      data:
-        first: 4
-        second: b21b0600
-    Exit:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
-    Exit 1:
-      data:
-        first: 1
-        second: 38870100
-      data:
-        first: 4
-        second: 181b0600
-      data:
-        first: 23
-        second: ec182300
-      data:
-        first: 33
-        second: 2c5b3200
-    Flooring:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 84182300
-      data:
-        first: 33
-        second: c45a3200
-    Flooring 1:
-      data:
-        first: 1
-        second: 3e870100
-      data:
-        first: 4
-        second: 1e1b0600
-      data:
-        first: 23
-        second: f2182300
-      data:
-        first: 33
-        second: 325b3200
-    Frame1:
-      data:
-        first: 1
-        second: ea860100
-      data:
-        first: 4
-        second: ca1a0600
-      data:
-        first: 23
-        second: a4182300
-      data:
-        first: 33
-        second: e45a3200
-    Frame1 1:
-      data:
-        first: 1
-        second: 60870100
-      data:
-        first: 4
-        second: 401b0600
-      data:
-        first: 23
-        second: 12192300
-      data:
-        first: 33
-        second: 525b3200
-    Frame2:
-      data:
-        first: 1
-        second: e8860100
-      data:
-        first: 4
-        second: c81a0600
-      data:
-        first: 23
-        second: a2182300
-      data:
-        first: 33
-        second: e25a3200
-    Frame2 1:
-      data:
-        first: 1
-        second: 5e870100
-      data:
-        first: 4
-        second: 3e1b0600
-      data:
-        first: 23
-        second: 10192300
-      data:
-        first: 33
-        second: 505b3200
-    GardenBed1:
-      data:
-        first: 1
-        second: b0870100
-      data:
-        first: 4
-        second: 901b0600
-      data:
-        first: 23
-        second: 5e192300
-      data:
-        first: 33
-        second: 9e5b3200
-    GardenBed2:
-      data:
-        first: 1
-        second: ae870100
-      data:
-        first: 4
-        second: 8e1b0600
-      data:
-        first: 23
-        second: 5c192300
-      data:
-        first: 33
-        second: 9c5b3200
-    GardenBed3:
-      data:
-        first: 1
-        second: ac870100
-      data:
-        first: 4
-        second: 8c1b0600
-      data:
-        first: 23
-        second: 5a192300
-      data:
-        first: 33
-        second: 9a5b3200
-    GardenBed4:
-      data:
-        first: 1
-        second: aa870100
-      data:
-        first: 4
-        second: 8a1b0600
-      data:
-        first: 23
-        second: 58192300
-      data:
-        first: 33
-        second: 985b3200
-    GardenBed5:
-      data:
-        first: 1
-        second: a8870100
-      data:
-        first: 4
-        second: 881b0600
-      data:
-        first: 23
-        second: 56192300
-      data:
-        first: 33
-        second: 965b3200
-    GardenBed6:
-      data:
-        first: 1
-        second: a6870100
-      data:
-        first: 4
-        second: 861b0600
-      data:
-        first: 23
-        second: 54192300
-      data:
-        first: 33
-        second: 945b3200
-    GardenBed7:
-      data:
-        first: 1
-        second: a4870100
-      data:
-        first: 4
-        second: 841b0600
-      data:
-        first: 23
-        second: 52192300
-      data:
-        first: 33
-        second: 925b3200
-    Glass:
-      data:
-        first: 1
-        second: d6860100
-      data:
-        first: 4
-        second: b61a0600
-      data:
-        first: 23
-        second: 92182300
-      data:
-        first: 33
-        second: d25a3200
-    Glass 1:
-      data:
-        first: 1
-        second: 4c870100
-      data:
-        first: 4
-        second: 2c1b0600
-      data:
-        first: 23
-        second: 00192300
-      data:
-        first: 33
-        second: 405b3200
-    Glass1:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    Glass1 1:
-      data:
-        first: 1
-        second: 28870100
-      data:
-        first: 4
-        second: 081b0600
-      data:
-        first: 23
-        second: de182300
-      data:
-        first: 33
-        second: 1e5b3200
-    Glass2:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    Glass2 1:
-      data:
-        first: 1
-        second: 26870100
-      data:
-        first: 4
-        second: 061b0600
-      data:
-        first: 23
-        second: dc182300
-      data:
-        first: 33
-        second: 1c5b3200
-    Glass3:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    Glass3 1:
-      data:
-        first: 1
-        second: 24870100
-      data:
-        first: 4
-        second: 041b0600
-      data:
-        first: 23
-        second: da182300
-      data:
-        first: 33
-        second: 1a5b3200
-    Ground:
-      data:
-        first: 1
-        second: a2870100
-      data:
-        first: 4
-        second: 821b0600
-      data:
-        first: 23
-        second: 50192300
-      data:
-        first: 33
-        second: 905b3200
-    Joints1:
-      data:
-        first: 1
-        second: ee860100
-      data:
-        first: 4
-        second: ce1a0600
-      data:
-        first: 23
-        second: a8182300
-      data:
-        first: 33
-        second: e85a3200
-    Joints1 1:
-      data:
-        first: 1
-        second: 64870100
-      data:
-        first: 4
-        second: 441b0600
-      data:
-        first: 23
-        second: 16192300
-      data:
-        first: 33
-        second: 565b3200
-    Joints2:
-      data:
-        first: 1
-        second: ec860100
-      data:
-        first: 4
-        second: cc1a0600
-      data:
-        first: 23
-        second: a6182300
-      data:
-        first: 33
-        second: e65a3200
-    Joints2 1:
-      data:
-        first: 1
-        second: 62870100
-      data:
-        first: 4
-        second: 421b0600
-      data:
-        first: 23
-        second: 14192300
-      data:
-        first: 33
-        second: 545b3200
-    Ladders:
-      data:
-        first: 1
-        second: ce860100
-      data:
-        first: 4
-        second: ae1a0600
-      data:
-        first: 23
-        second: 8a182300
-      data:
-        first: 33
-        second: ca5a3200
-    Ladders 1:
-      data:
-        first: 1
-        second: 44870100
-      data:
-        first: 4
-        second: 241b0600
-      data:
-        first: 23
-        second: f8182300
-      data:
-        first: 33
-        second: 385b3200
-    Net:
-      data:
-        first: 1
-        second: ca860100
-      data:
-        first: 4
-        second: aa1a0600
-      data:
-        first: 23
-        second: 86182300
-      data:
-        first: 33
-        second: c65a3200
-    Net 1:
-      data:
-        first: 1
-        second: 40870100
-      data:
-        first: 4
-        second: 201b0600
-      data:
-        first: 23
-        second: f4182300
-      data:
-        first: 33
-        second: 345b3200
-    NetFrame:
-      data:
-        first: 1
-        second: cc860100
-      data:
-        first: 4
-        second: ac1a0600
-      data:
-        first: 23
-        second: 88182300
-      data:
-        first: 33
-        second: c85a3200
-    NetFrame 1:
-      data:
-        first: 1
-        second: 42870100
-      data:
-        first: 4
-        second: 221b0600
-      data:
-        first: 23
-        second: f6182300
-      data:
-        first: 33
-        second: 365b3200
-    Props1:
-      data:
-        first: 1
-        second: f6860100
-      data:
-        first: 4
-        second: d61a0600
-      data:
-        first: 23
-        second: ae182300
-      data:
-        first: 33
-        second: ee5a3200
-    Props1 1:
-      data:
-        first: 1
-        second: 6c870100
-      data:
-        first: 4
-        second: 4c1b0600
-      data:
-        first: 23
-        second: 1c192300
-      data:
-        first: 33
-        second: 5c5b3200
-    Props29:
-      data:
-        first: 1
-        second: 20870100
-      data:
-        first: 4
-        second: 001b0600
-      data:
-        first: 23
-        second: d8182300
-      data:
-        first: 33
-        second: 185b3200
-    Props29 1:
-      data:
-        first: 1
-        second: 96870100
-      data:
-        first: 4
-        second: 761b0600
-      data:
-        first: 23
-        second: 46192300
-      data:
-        first: 33
-        second: 865b3200
-    Props30:
-      data:
-        first: 1
-        second: 1e870100
-      data:
-        first: 4
-        second: fe1a0600
-      data:
-        first: 23
-        second: d6182300
-      data:
-        first: 33
-        second: 165b3200
-    Props30 1:
-      data:
-        first: 1
-        second: 94870100
-      data:
-        first: 4
-        second: 741b0600
-      data:
-        first: 23
-        second: 44192300
-      data:
-        first: 33
-        second: 845b3200
-    Props31:
-      data:
-        first: 1
-        second: 1c870100
-      data:
-        first: 4
-        second: fc1a0600
-      data:
-        first: 23
-        second: d4182300
-      data:
-        first: 33
-        second: 145b3200
-    Props31 1:
-      data:
-        first: 1
-        second: 92870100
-      data:
-        first: 4
-        second: 721b0600
-      data:
-        first: 23
-        second: 42192300
-      data:
-        first: 33
-        second: 825b3200
-    Props32:
-      data:
-        first: 1
-        second: 1a870100
-      data:
-        first: 4
-        second: fa1a0600
-      data:
-        first: 23
-        second: d2182300
-      data:
-        first: 33
-        second: 125b3200
-    Props32 1:
-      data:
-        first: 1
-        second: 90870100
-      data:
-        first: 4
-        second: 701b0600
-      data:
-        first: 23
-        second: 40192300
-      data:
-        first: 33
-        second: 805b3200
-    Props33:
-      data:
-        first: 1
-        second: 18870100
-      data:
-        first: 4
-        second: f81a0600
-      data:
-        first: 23
-        second: d0182300
-      data:
-        first: 33
-        second: 105b3200
-    Props33 1:
-      data:
-        first: 1
-        second: 8e870100
-      data:
-        first: 4
-        second: 6e1b0600
-      data:
-        first: 23
-        second: 3e192300
-      data:
-        first: 33
-        second: 7e5b3200
-    Props34:
-      data:
-        first: 1
-        second: 16870100
-      data:
-        first: 4
-        second: f61a0600
-      data:
-        first: 23
-        second: ce182300
-      data:
-        first: 33
-        second: 0e5b3200
-    Props34 1:
-      data:
-        first: 1
-        second: 8c870100
-      data:
-        first: 4
-        second: 6c1b0600
-      data:
-        first: 23
-        second: 3c192300
-      data:
-        first: 33
-        second: 7c5b3200
-    Props35:
-      data:
-        first: 1
-        second: 14870100
-      data:
-        first: 4
-        second: f41a0600
-      data:
-        first: 23
-        second: cc182300
-      data:
-        first: 33
-        second: 0c5b3200
-    Props35 1:
-      data:
-        first: 1
-        second: 8a870100
-      data:
-        first: 4
-        second: 6a1b0600
-      data:
-        first: 23
-        second: 3a192300
-      data:
-        first: 33
-        second: 7a5b3200
-    Props36:
-      data:
-        first: 1
-        second: 12870100
-      data:
-        first: 4
-        second: f21a0600
-      data:
-        first: 23
-        second: ca182300
-      data:
-        first: 33
-        second: 0a5b3200
-    Props36 1:
-      data:
-        first: 1
-        second: 88870100
-      data:
-        first: 4
-        second: 681b0600
-      data:
-        first: 23
-        second: 38192300
-      data:
-        first: 33
-        second: 785b3200
-    Props37:
-      data:
-        first: 1
-        second: 10870100
-      data:
-        first: 4
-        second: f01a0600
-      data:
-        first: 23
-        second: c8182300
-      data:
-        first: 33
-        second: 085b3200
-    Props37 1:
-      data:
-        first: 1
-        second: 86870100
-      data:
-        first: 4
-        second: 661b0600
-      data:
-        first: 23
-        second: 36192300
-      data:
-        first: 33
-        second: 765b3200
-    Props38:
-      data:
-        first: 1
-        second: 0e870100
-      data:
-        first: 4
-        second: ee1a0600
-      data:
-        first: 23
-        second: c6182300
-      data:
-        first: 33
-        second: 065b3200
-    Props38 1:
-      data:
-        first: 1
-        second: 84870100
-      data:
-        first: 4
-        second: 641b0600
-      data:
-        first: 23
-        second: 34192300
-      data:
-        first: 33
-        second: 745b3200
-    Props39:
-      data:
-        first: 1
-        second: 0c870100
-      data:
-        first: 4
-        second: ec1a0600
-      data:
-        first: 23
-        second: c4182300
-      data:
-        first: 33
-        second: 045b3200
-    Props39 1:
-      data:
-        first: 1
-        second: 82870100
-      data:
-        first: 4
-        second: 621b0600
-      data:
-        first: 23
-        second: 32192300
-      data:
-        first: 33
-        second: 725b3200
-    Props40:
-      data:
-        first: 1
-        second: 0a870100
-      data:
-        first: 4
-        second: ea1a0600
-      data:
-        first: 23
-        second: c2182300
-      data:
-        first: 33
-        second: 025b3200
-    Props40 1:
-      data:
-        first: 1
-        second: 80870100
-      data:
-        first: 4
-        second: 601b0600
-      data:
-        first: 23
-        second: 30192300
-      data:
-        first: 33
-        second: 705b3200
-    Props41:
-      data:
-        first: 1
-        second: 08870100
-      data:
-        first: 4
-        second: e81a0600
-      data:
-        first: 23
-        second: c0182300
-      data:
-        first: 33
-        second: 005b3200
-    Props41 1:
-      data:
-        first: 1
-        second: 7e870100
-      data:
-        first: 4
-        second: 5e1b0600
-      data:
-        first: 23
-        second: 2e192300
-      data:
-        first: 33
-        second: 6e5b3200
-    Props42:
-      data:
-        first: 1
-        second: 06870100
-      data:
-        first: 4
-        second: e61a0600
-      data:
-        first: 23
-        second: be182300
-      data:
-        first: 33
-        second: fe5a3200
-    Props42 1:
-      data:
-        first: 1
-        second: 7c870100
-      data:
-        first: 4
-        second: 5c1b0600
-      data:
-        first: 23
-        second: 2c192300
-      data:
-        first: 33
-        second: 6c5b3200
-    Props43:
-      data:
-        first: 1
-        second: 04870100
-      data:
-        first: 4
-        second: e41a0600
-      data:
-        first: 23
-        second: bc182300
-      data:
-        first: 33
-        second: fc5a3200
-    Props43 1:
-      data:
-        first: 1
-        second: 7a870100
-      data:
-        first: 4
-        second: 5a1b0600
-      data:
-        first: 23
-        second: 2a192300
-      data:
-        first: 33
-        second: 6a5b3200
-    Props44:
-      data:
-        first: 1
-        second: 02870100
-      data:
-        first: 4
-        second: e21a0600
-      data:
-        first: 23
-        second: ba182300
-      data:
-        first: 33
-        second: fa5a3200
-    Props44 1:
-      data:
-        first: 1
-        second: 78870100
-      data:
-        first: 4
-        second: 581b0600
-      data:
-        first: 23
-        second: 28192300
-      data:
-        first: 33
-        second: 685b3200
-    Props45:
-      data:
-        first: 1
-        second: 00870100
-      data:
-        first: 4
-        second: e01a0600
-      data:
-        first: 23
-        second: b8182300
-      data:
-        first: 33
-        second: f85a3200
-    Props45 1:
-      data:
-        first: 1
-        second: 76870100
-      data:
-        first: 4
-        second: 561b0600
-      data:
-        first: 23
-        second: 26192300
-      data:
-        first: 33
-        second: 665b3200
-    Props46:
-      data:
-        first: 1
-        second: fe860100
-      data:
-        first: 4
-        second: de1a0600
-      data:
-        first: 23
-        second: b6182300
-      data:
-        first: 33
-        second: f65a3200
-    Props46 1:
-      data:
-        first: 1
-        second: 74870100
-      data:
-        first: 4
-        second: 541b0600
-      data:
-        first: 23
-        second: 24192300
-      data:
-        first: 33
-        second: 645b3200
-    Props47:
-      data:
-        first: 1
-        second: fc860100
-      data:
-        first: 4
-        second: dc1a0600
-      data:
-        first: 23
-        second: b4182300
-      data:
-        first: 33
-        second: f45a3200
-    Props47 1:
-      data:
-        first: 1
-        second: 72870100
-      data:
-        first: 4
-        second: 521b0600
-      data:
-        first: 23
-        second: 22192300
-      data:
-        first: 33
-        second: 625b3200
-    Props48:
-      data:
-        first: 1
-        second: fa860100
-      data:
-        first: 4
-        second: da1a0600
-      data:
-        first: 23
-        second: b2182300
-      data:
-        first: 33
-        second: f25a3200
-    Props48 1:
-      data:
-        first: 1
-        second: 70870100
-      data:
-        first: 4
-        second: 501b0600
-      data:
-        first: 23
-        second: 20192300
-      data:
-        first: 33
-        second: 605b3200
-    Props49:
-      data:
-        first: 1
-        second: f8860100
-      data:
-        first: 4
-        second: d81a0600
-      data:
-        first: 23
-        second: b0182300
-      data:
-        first: 33
-        second: f05a3200
-    Props49 1:
-      data:
-        first: 1
-        second: 6e870100
-      data:
-        first: 4
-        second: 4e1b0600
-      data:
-        first: 23
-        second: 1e192300
-      data:
-        first: 33
-        second: 5e5b3200
-    RedMainLevel:
-      data:
-        first: 1
-        second: 5c870100
-      data:
-        first: 4
-        second: 3c1b0600
-    RedProps:
-      data:
-        first: 1
-        second: 98870100
-      data:
-        first: 4
-        second: 781b0600
-    RedScaffolding:
-      data:
-        first: 1
-        second: 6a870100
-      data:
-        first: 4
-        second: 4a1b0600
-    RedTower:
-      data:
-        first: 1
-        second: 36870100
-      data:
-        first: 4
-        second: 161b0600
-    Roof:
-      data:
-        first: 1
-        second: d4860100
-      data:
-        first: 4
-        second: b41a0600
-      data:
-        first: 23
-        second: 90182300
-      data:
-        first: 33
-        second: d05a3200
-    Roof 1:
-      data:
-        first: 1
-        second: 4a870100
-      data:
-        first: 4
-        second: 2a1b0600
-      data:
-        first: 23
-        second: fe182300
-      data:
-        first: 33
-        second: 3e5b3200
-    Ropes:
-      data:
-        first: 1
-        second: d0860100
-      data:
-        first: 4
-        second: b01a0600
-      data:
-        first: 23
-        second: 8c182300
-      data:
-        first: 33
-        second: cc5a3200
-    Ropes 1:
-      data:
-        first: 1
-        second: 46870100
-      data:
-        first: 4
-        second: 261b0600
-      data:
-        first: 23
-        second: fa182300
-      data:
-        first: 33
-        second: 3a5b3200
-    SmallHouse1:
-      data:
-        first: 1
-        second: be870100
-      data:
-        first: 4
-        second: 9e1b0600
-      data:
-        first: 23
-        second: 6c192300
-      data:
-        first: 33
-        second: ac5b3200
-    SmallHouse2:
-      data:
-        first: 1
-        second: bc870100
-      data:
-        first: 4
-        second: 9c1b0600
-      data:
-        first: 23
-        second: 6a192300
-      data:
-        first: 33
-        second: aa5b3200
-    StoneBright:
-      data:
-        first: 1
-        second: e4860100
-      data:
-        first: 4
-        second: c41a0600
-      data:
-        first: 23
-        second: a0182300
-      data:
-        first: 33
-        second: e05a3200
-    StoneBright 1:
-      data:
-        first: 1
-        second: 5a870100
-      data:
-        first: 4
-        second: 3a1b0600
-      data:
-        first: 23
-        second: 0e192300
-      data:
-        first: 33
-        second: 4e5b3200
-    StoneBright1:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-    StoneBright1 1:
-      data:
-        first: 1
-        second: 34870100
-      data:
-        first: 4
-        second: 141b0600
-      data:
-        first: 23
-        second: ea182300
-      data:
-        first: 33
-        second: 2a5b3200
-    StoneBright2:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    StoneBright2 1:
-      data:
-        first: 1
-        second: 32870100
-      data:
-        first: 4
-        second: 121b0600
-      data:
-        first: 23
-        second: e8182300
-      data:
-        first: 33
-        second: 285b3200
-    StoneBright3:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    StoneBright3 1:
-      data:
-        first: 1
-        second: 30870100
-      data:
-        first: 4
-        second: 101b0600
-      data:
-        first: 23
-        second: e6182300
-      data:
-        first: 33
-        second: 265b3200
-    StoneDark:
-      data:
-        first: 1
-        second: de860100
-      data:
-        first: 4
-        second: be1a0600
-      data:
-        first: 23
-        second: 9a182300
-      data:
-        first: 33
-        second: da5a3200
-    StoneDark 1:
-      data:
-        first: 1
-        second: 54870100
-      data:
-        first: 4
-        second: 341b0600
-      data:
-        first: 23
-        second: 08192300
-      data:
-        first: 33
-        second: 485b3200
-    StoneDark1:
-      data:
-        first: 1
-        second: e2860100
-      data:
-        first: 4
-        second: c21a0600
-      data:
-        first: 23
-        second: 9e182300
-      data:
-        first: 33
-        second: de5a3200
-    StoneDark1 1:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    StoneDark1 2:
-      data:
-        first: 1
-        second: 58870100
-      data:
-        first: 4
-        second: 381b0600
-      data:
-        first: 23
-        second: 0c192300
-      data:
-        first: 33
-        second: 4c5b3200
-    StoneDark1 3:
-      data:
-        first: 1
-        second: 2e870100
-      data:
-        first: 4
-        second: 0e1b0600
-      data:
-        first: 23
-        second: e4182300
-      data:
-        first: 33
-        second: 245b3200
-    StoneDark2:
-      data:
-        first: 1
-        second: e0860100
-      data:
-        first: 4
-        second: c01a0600
-      data:
-        first: 23
-        second: 9c182300
-      data:
-        first: 33
-        second: dc5a3200
-    StoneDark2 1:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    StoneDark2 2:
-      data:
-        first: 1
-        second: 56870100
-      data:
-        first: 4
-        second: 361b0600
-      data:
-        first: 23
-        second: 0a192300
-      data:
-        first: 33
-        second: 4a5b3200
-    StoneDark2 3:
-      data:
-        first: 1
-        second: 2c870100
-      data:
-        first: 4
-        second: 0c1b0600
-      data:
-        first: 23
-        second: e2182300
-      data:
-        first: 33
-        second: 225b3200
-    StoneDark3:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    StoneDark3 1:
-      data:
-        first: 1
-        second: 2a870100
-      data:
-        first: 4
-        second: 0a1b0600
-      data:
-        first: 23
-        second: e0182300
-      data:
-        first: 33
-        second: 205b3200
-    StreetLamp1:
-      data:
-        first: 1
-        second: ba870100
-      data:
-        first: 4
-        second: 9a1b0600
-      data:
-        first: 23
-        second: 68192300
-      data:
-        first: 33
-        second: a85b3200
-    StreetLamp2:
-      data:
-        first: 1
-        second: b8870100
-      data:
-        first: 4
-        second: 981b0600
-      data:
-        first: 23
-        second: 66192300
-      data:
-        first: 33
-        second: a65b3200
-    StreetLamp3:
-      data:
-        first: 1
-        second: b6870100
-      data:
-        first: 4
-        second: 961b0600
-      data:
-        first: 23
-        second: 64192300
-      data:
-        first: 33
-        second: a45b3200
-    StreetLamp4:
-      data:
-        first: 1
-        second: b4870100
-      data:
-        first: 4
-        second: 941b0600
-      data:
-        first: 23
-        second: 62192300
-      data:
-        first: 33
-        second: a25b3200
-    StreetLamp5:
-      data:
-        first: 1
-        second: b2870100
-      data:
-        first: 4
-        second: 921b0600
-      data:
-        first: 23
-        second: 60192300
-      data:
-        first: 33
-        second: a05b3200
-    Wall:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-      data:
-        first: 23
-        second: 82182300
-      data:
-        first: 33
-        second: c25a3200
-    Wall 1:
-      data:
-        first: 1
-        second: 3c870100
-      data:
-        first: 4
-        second: 1c1b0600
-      data:
-        first: 23
-        second: f0182300
-      data:
-        first: 33
-        second: 305b3200
-    WallRoof:
-      data:
-        first: 1
-        second: d2860100
-      data:
-        first: 4
-        second: b21a0600
-      data:
-        first: 23
-        second: 8e182300
-      data:
-        first: 33
-        second: ce5a3200
-    WallRoof 1:
-      data:
-        first: 1
-        second: 48870100
-      data:
-        first: 4
-        second: 281b0600
-      data:
-        first: 23
-        second: fc182300
-      data:
-        first: 33
-        second: 3c5b3200
-    WindowFrames1:
-      data:
-        first: 1
-        second: dc860100
-      data:
-        first: 4
-        second: bc1a0600
-      data:
-        first: 23
-        second: 98182300
-      data:
-        first: 33
-        second: d85a3200
-    WindowFrames1 1:
-      data:
-        first: 1
-        second: 52870100
-      data:
-        first: 4
-        second: 321b0600
-      data:
-        first: 23
-        second: 06192300
-      data:
-        first: 33
-        second: 465b3200
-    WindowFrames3:
-      data:
-        first: 1
-        second: da860100
-      data:
-        first: 4
-        second: ba1a0600
-      data:
-        first: 23
-        second: 96182300
-      data:
-        first: 33
-        second: d65a3200
-    WindowFrames3 1:
-      data:
-        first: 1
-        second: 50870100
-      data:
-        first: 4
-        second: 301b0600
-      data:
-        first: 23
-        second: 04192300
-      data:
-        first: 33
-        second: 445b3200
-    Windows_Frame_Red1:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    Windows_Frame_Red1 1:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    Windows_Frame_Red2:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    Windows_Frame_Red2 1:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    Windows_Frame_Red3:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    Windows_Frame_Red3 1:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
