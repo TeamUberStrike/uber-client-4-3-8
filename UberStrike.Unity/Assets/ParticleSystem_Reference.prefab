@@ -1,0 +1,6757 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400000}
+  - 15: {fileID: 1500034}
+  - 12: {fileID: 1200034}
+  - 26: {fileID: 2600034}
+  m_Layer: 12
+  m_Name: Wood
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100001
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100002
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400002}
+  - 15: {fileID: 1500032}
+  - 12: {fileID: 1200032}
+  - 26: {fileID: 2600032}
+  m_Layer: 12
+  m_Name: WaterDrops
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100003
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100004
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400004}
+  - 15: {fileID: 1500030}
+  - 12: {fileID: 1200030}
+  - 26: {fileID: 2600030}
+  m_Layer: 12
+  m_Name: WaterCircle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100005
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100006
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400006}
+  - 15: {fileID: 1500028}
+  - 12: {fileID: 1200028}
+  - 26: {fileID: 2600028}
+  m_Layer: 12
+  m_Name: Trail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100007
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100008
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400008}
+  - 15: {fileID: 1500026}
+  - 12: {fileID: 1200026}
+  - 26: {fileID: 2600026}
+  m_Layer: 12
+  m_Name: Stone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100009
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100010
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400010}
+  - 15: {fileID: 1500024}
+  - 12: {fileID: 1200024}
+  - 26: {fileID: 2600024}
+  m_Layer: 12
+  m_Name: Splat
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100011
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100012
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400012}
+  - 15: {fileID: 1500022}
+  - 12: {fileID: 1200022}
+  - 26: {fileID: 2600022}
+  m_Layer: 12
+  m_Name: PlayerStar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100013
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100014
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400014}
+  - 15: {fileID: 1500020}
+  - 12: {fileID: 1200020}
+  - 26: {fileID: 2600020}
+  m_Layer: 12
+  m_Name: PaintOrange
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100015
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100016
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400016}
+  - 15: {fileID: 1500018}
+  - 12: {fileID: 1200018}
+  - 26: {fileID: 2600018}
+  m_Layer: 12
+  m_Name: PaintBlue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100017
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100018
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400018}
+  - 15: {fileID: 1500016}
+  - 12: {fileID: 1200016}
+  - 26: {fileID: 2600016}
+  m_Layer: 12
+  m_Name: Metal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100019
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100020
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400020}
+  - 15: {fileID: 1500014}
+  - 12: {fileID: 1200014}
+  - 26: {fileID: 2600014}
+  m_Layer: 12
+  m_Name: Grass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100021
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100022
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400022}
+  - 15: {fileID: 1500012}
+  - 12: {fileID: 1200012}
+  - 26: {fileID: 2600012}
+  m_Layer: 12
+  m_Name: Fire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100023
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100024
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400024}
+  - 15: {fileID: 1500010}
+  - 12: {fileID: 1200010}
+  - 26: {fileID: 2600010}
+  m_Layer: 12
+  m_Name: ExplosionTrail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100025
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100026
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400026}
+  - 15: {fileID: 1500008}
+  - 12: {fileID: 1200008}
+  - 26: {fileID: 2600008}
+  m_Layer: 12
+  m_Name: ExplosionSpark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100027
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100028
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400028}
+  - 15: {fileID: 1500006}
+  - 12: {fileID: 1200006}
+  - 26: {fileID: 2600006}
+  m_Layer: 12
+  m_Name: ExplosionSmoke
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100029
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100030
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400030}
+  - 15: {fileID: 1500004}
+  - 12: {fileID: 1200004}
+  - 26: {fileID: 2600004}
+  m_Layer: 12
+  m_Name: ExplosionRing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100031
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100032
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400032}
+  - 15: {fileID: 1500002}
+  - 12: {fileID: 1200002}
+  - 26: {fileID: 2600002}
+  m_Layer: 12
+  m_Name: ExplosionDust
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100033
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100034
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400034}
+  - 15: {fileID: 1500000}
+  - 12: {fileID: 1200000}
+  - 26: {fileID: 2600000}
+  m_Layer: 12
+  m_Name: ExplosionBlast
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100035
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400036}
+  m_Layer: 12
+  m_Name: DefaultParticleSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100037
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100038
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400038}
+  - 15: {fileID: 1500036}
+  - 12: {fileID: 1200036}
+  - 26: {fileID: 2600036}
+  m_Layer: 12
+  m_Name: WaterExtra
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100039
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400040}
+  - 114: {fileID: 11400022}
+  m_Layer: 12
+  m_Name: ParticleSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100041
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100042
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400042}
+  - 114: {fileID: 11400020}
+  m_Layer: 12
+  m_Name: None
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100043
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100044
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400044}
+  - 114: {fileID: 11400018}
+  m_Layer: 12
+  m_Name: MeleeDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100045
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100046
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400046}
+  - 114: {fileID: 11400016}
+  m_Layer: 12
+  m_Name: HGDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100047
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400048}
+  - 114: {fileID: 11400014}
+  m_Layer: 12
+  m_Name: MGDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100049
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100050
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400050}
+  - 114: {fileID: 11400012}
+  m_Layer: 12
+  m_Name: SGDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100051
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100052
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400052}
+  - 114: {fileID: 11400010}
+  m_Layer: 12
+  m_Name: CNDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100053
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400054}
+  - 114: {fileID: 11400008}
+  m_Layer: 12
+  m_Name: LRDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100055
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400056}
+  - 114: {fileID: 11400006}
+  m_Layer: 12
+  m_Name: CNEnigmaCannon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100057
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400058}
+  - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
+  m_Layer: 12
+  m_Name: SplatParticleController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100059
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400060}
+  - 114: {fileID: 11400004}
+  m_Layer: 12
+  m_Name: SRFusionLance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100061
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100062
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400062}
+  - 15: {fileID: 1500040}
+  - 12: {fileID: 1200040}
+  - 26: {fileID: 2600040}
+  m_Layer: 12
+  m_Name: ExplosionBlast
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100063
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100064
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400064}
+  - 15: {fileID: 1500042}
+  - 12: {fileID: 1200042}
+  - 26: {fileID: 2600042}
+  m_Layer: 12
+  m_Name: ExplosionDust
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100065
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100066
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400066}
+  - 15: {fileID: 1500044}
+  - 12: {fileID: 1200044}
+  - 26: {fileID: 2600044}
+  m_Layer: 12
+  m_Name: ExplosionSmoke
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100067
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100068
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400068}
+  - 15: {fileID: 1500046}
+  - 12: {fileID: 1200046}
+  - 26: {fileID: 2600046}
+  m_Layer: 12
+  m_Name: ExplosionSpark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100069
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100070
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400070}
+  - 15: {fileID: 1500048}
+  - 12: {fileID: 1200048}
+  - 26: {fileID: 2600048}
+  m_Layer: 12
+  m_Name: ExplosionTrail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100071
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100072
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400072}
+  - 15: {fileID: 1500038}
+  - 12: {fileID: 1200038}
+  - 26: {fileID: 2600038}
+  m_Layer: 12
+  m_Name: PaintGreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100073
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100074
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400074}
+  - 15: {fileID: 1500050}
+  - 12: {fileID: 1200050}
+  - 26: {fileID: 2600050}
+  m_Layer: 12
+  m_Name: SpawnParticles
+  m_TagString: Weapon
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100075
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100076
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400076}
+  - 15: {fileID: 1500052}
+  - 12: {fileID: 1200052}
+  - 26: {fileID: 2600052}
+  m_Layer: 12
+  m_Name: Sand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100077
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100078
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400080}
+  - 114: {fileID: 11400024}
+  m_Layer: 12
+  m_Name: MGUMG
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100079
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100080
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400078}
+  - 15: {fileID: 1500054}
+  - 12: {fileID: 1200054}
+  - 26: {fileID: 2600054}
+  m_Layer: 12
+  m_Name: Trail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100081
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400082}
+  - 114: {fileID: 11400026}
+  m_Layer: 12
+  m_Name: SRDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100083
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400084}
+  - 114: {fileID: 11400028}
+  m_Layer: 12
+  m_Name: SPDefault
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100085
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1 &100086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 3
+  m_Component:
+  - 4: {fileID: 400086}
+  - 114: {fileID: 11400030}
+  m_Layer: 12
+  m_Name: SRParticleLance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1002 &100087
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400001
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400002
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400003
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400004
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400005
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400006
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400080}
+--- !u!1002 &400007
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400008
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400009
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400010
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400011
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400012
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400013
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400014
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100014}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400015
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400016
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100016}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400084}
+--- !u!1002 &400017
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400018
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100018}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400019
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400020
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100020}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400021
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400022
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100022}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400023
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400024
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400084}
+--- !u!1002 &400025
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400026
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100026}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400084}
+--- !u!1002 &400027
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400028
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100028}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400084}
+--- !u!1002 &400029
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400030
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100030}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400031
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400032
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400084}
+--- !u!1002 &400033
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400034
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100034}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400084}
+--- !u!1002 &400035
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400036
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100036}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .877520561, y: .117000103, z: -.834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 400062}
+  - {fileID: 400064}
+  - {fileID: 400030}
+  - {fileID: 400066}
+  - {fileID: 400068}
+  - {fileID: 400070}
+  - {fileID: 400022}
+  - {fileID: 400020}
+  - {fileID: 400018}
+  - {fileID: 400072}
+  - {fileID: 400014}
+  - {fileID: 400076}
+  - {fileID: 400012}
+  - {fileID: 400010}
+  - {fileID: 400008}
+  - {fileID: 400078}
+  - {fileID: 400004}
+  - {fileID: 400002}
+  - {fileID: 400038}
+  - {fileID: 400000}
+  m_Father: {fileID: 400040}
+--- !u!1002 &400037
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400038
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100038}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400039
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400040
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100040}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 400036}
+  - {fileID: 400048}
+  - {fileID: 400042}
+  - {fileID: 400044}
+  - {fileID: 400046}
+  - {fileID: 400080}
+  - {fileID: 400050}
+  - {fileID: 400052}
+  - {fileID: 400054}
+  - {fileID: 400074}
+  - {fileID: 400084}
+  - {fileID: 400056}
+  - {fileID: 400058}
+  - {fileID: 400082}
+  - {fileID: 400060}
+  - {fileID: 400086}
+  m_Father: {fileID: 0}
+--- !u!1002 &400041
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400042
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100042}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400043
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400044
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100044}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400045
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400046
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100046}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400047
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400048
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100048}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400049
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400050
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100050}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400051
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400052
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100052}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400053
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400054
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100054}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400055
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400056
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400057
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400058
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400059
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400060
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100060}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400061
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400062
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100062}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400063
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400064
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100064}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400065
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400066
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100066}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400067
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400068
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400069
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400070
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100070}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400071
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400072
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100072}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400073
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400074
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100074}
+  m_LocalRotation: {x: 0, y: .643915176, z: 0, w: .765096903}
+  m_LocalPosition: {x: 15.8213596, y: 3.63036418, z: 31.5782452}
+  m_LocalScale: {x: 2.00000024, y: 2, z: 2.00000024}
+  m_LocalEulerAnglesHint: {x: 0, y: 80.1687622, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400075
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400076
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100076}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400077
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400078
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100080}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.877520561, y: -.117000103, z: .834853172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!1002 &400079
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400080
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100078}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 400006}
+  m_Father: {fileID: 400040}
+--- !u!1002 &400081
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400082
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100082}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400083
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400084
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100084}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 400034}
+  - {fileID: 400032}
+  - {fileID: 400028}
+  - {fileID: 400026}
+  - {fileID: 400024}
+  - {fileID: 400016}
+  m_Father: {fileID: 400040}
+--- !u!1002 &400085
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!4 &400086
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100086}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 400040}
+--- !u!1002 &400087
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200000
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100034}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: -.800000012
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200001
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200002
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: .517000377, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200003
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200004
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100030}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3439329279
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 2583691263
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 16777215
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 50
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200005
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200006
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100028}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 1694498815
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 1694498815
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 1
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: .529224396, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200007
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200008
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100026}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: -.100000001
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200009
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200010
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: -.100000001
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -1, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200011
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200012
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100022}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 2164260863
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 2113929215
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4292730367
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 2160839679
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 179220223
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: .300000012
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 1, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200013
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200014
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100020}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -15, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200015
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200016
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100018}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: -.100000001
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -10, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200017
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200018
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100016}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 2
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -5, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200019
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200020
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100014}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 2
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -5, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200021
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200022
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 5, y: 5, z: 5}
+  force: {x: 0, y: -1, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200023
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200024
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -15, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200025
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200026
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100008}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -15, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200027
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200028
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 4294967295
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200029
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200030
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 1.5
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: .300000012
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200031
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200032
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 1
+  rndForce: {x: 1, y: 2, z: 1}
+  force: {x: 0, y: -5, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200033
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200034
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -15, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200035
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200036
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100038}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 67108863
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 2734686207
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 1191182335
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 2
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -4, z: 0}
+  damping: .100000001
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200037
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200038
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100072}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 2
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -5, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200039
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200040
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100062}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: -.800000012
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200041
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200042
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100064}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: .517000377, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200043
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200044
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100066}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 1694498815
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 1694498815
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 1
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: .529224396, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200045
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200046
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100068}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: -.100000001
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200047
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200048
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100070}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 184549375
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: -.100000001
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -1, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200049
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200050
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100074}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 16777215
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 2164260863
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 2164260863
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 1509949439
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 16777215
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: .100000001
+  rndForce: {x: 4, y: 4, z: 4}
+  force: {x: 0, y: 1, z: 0}
+  damping: .100000001
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200051
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200052
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100076}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 3036676095
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 184549375
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: -15, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200053
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!12 &1200054
+ParticleAnimator:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100080}
+  Does Animate Color?: 1
+  colorAnimation[0]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[1]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[2]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[3]:
+    serializedVersion: 2
+    rgba: 4294967295
+  colorAnimation[4]:
+    serializedVersion: 2
+    rgba: 4294967295
+  worldRotationAxis: {x: 0, y: 0, z: 0}
+  localRotationAxis: {x: 0, y: 0, z: 0}
+  sizeGrow: 0
+  rndForce: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  damping: 1
+  stopSimulation: 0
+  autodestruct: 0
+--- !u!1002 &1200055
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500000
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100034}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500001
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500002
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500003
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500004
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100030}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500005
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500006
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100028}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500007
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500008
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100026}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500009
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500010
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500011
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500012
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100022}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500013
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500014
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100020}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500015
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500016
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100018}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500017
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500018
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100016}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500019
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500020
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100014}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500021
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500022
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: -.00999999978
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 1
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500023
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500024
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500025
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500026
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100008}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500027
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500028
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: 2
+  maxSize: 2
+  minEnergy: 2
+  maxEnergy: 2
+  minEmission: 1
+  maxEmission: 1
+  worldVelocity: {x: .00999999978, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 0, y: 0, z: 0}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500029
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500030
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500031
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500032
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500033
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500034
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500035
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500036
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100038}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 2, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500037
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500038
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100072}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500039
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500040
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100062}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500041
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500042
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100064}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500043
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500044
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100066}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500045
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500046
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100068}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500047
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500048
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100070}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500049
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500050
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100074}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .0500000007
+  maxSize: .150000006
+  minEnergy: .100000001
+  maxEnergy: 3
+  minEmission: 100
+  maxEmission: 100
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 1, z: 0}
+  rndVelocity: {x: 2, y: 2, z: 2}
+  emitterVelocityScale: 0
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: .5, y: 0, z: .5}
+  m_MinEmitterRange: 1
+--- !u!1002 &1500051
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500052
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100076}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: .100000001
+  maxSize: .100000001
+  minEnergy: 3
+  maxEnergy: 3
+  minEmission: 50
+  maxEmission: 50
+  worldVelocity: {x: 0, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 1, y: 1, z: 1}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500053
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!15 &1500054
+EllipsoidParticleEmitter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100080}
+  serializedVersion: 2
+  m_Enabled: 1
+  m_Emit: 0
+  minSize: 2
+  maxSize: 2
+  minEnergy: 2
+  maxEnergy: 2
+  minEmission: 1
+  maxEmission: 1
+  worldVelocity: {x: .00999999978, y: 0, z: 0}
+  localVelocity: {x: 0, y: 0, z: 0}
+  rndVelocity: {x: 0, y: 0, z: 0}
+  emitterVelocityScale: .0500000007
+  tangentVelocity: {x: 0, y: 0, z: 0}
+  angularVelocity: 0
+  rndAngularVelocity: 0
+  rndRotation: 0
+  Simulate in Worldspace?: 1
+  m_OneShot: 1
+  m_Ellipsoid: {x: 0, y: 0, z: 0}
+  m_MinEmitterRange: 0
+--- !u!1002 &1500055
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600000
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100034}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 191756e5cbac87a40b50631bda8886f7, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: .5
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 2
+    y Tile: 2
+    cycles: 1
+--- !u!1002 &2600001
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600002
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: b26645d44f0846141b0a73ffd9ffc9bd, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: .5
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600003
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600004
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100030}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 44a1ba3581883bd45a9802e93bcc08a8, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 4
+  m_LengthScale: .5
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600005
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600006
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100028}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 28dcce5fcc748ce46a8327e22245e2b4, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 1
+--- !u!1002 &2600007
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600008
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100026}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 121fd22c275f2bd40a29815bb645c014, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 3
+  m_LengthScale: 4
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 3
+    cycles: 1
+--- !u!1002 &2600009
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600010
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: bb3c337d8ef7b5d4392bf331575a454a, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 3
+  m_LengthScale: 4
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 3
+    cycles: 1
+--- !u!1002 &2600011
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600012
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100022}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 86ebbdda7b90f5849881f617970cc468, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 1
+--- !u!1002 &2600013
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600014
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100020}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: c801e4d4e6b6e4541b1b2db3648c6207, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 1
+--- !u!1002 &2600015
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600016
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100018}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: c092e711383e67448a23ec8bd5fa621e, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 3
+  m_LengthScale: 4
+  m_VelocityScale: .00999999978
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600017
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600018
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100016}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 23f15979f11a4594e82354197aad123f, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 4
+--- !u!1002 &2600019
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600020
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100014}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: cd6495222eb86784e80baeb4152c95fb, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 4
+--- !u!1002 &2600021
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600022
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 8db953552025fbd4ea4e76cdfa5cbbb7, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600023
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600024
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 51bc1e31e4de1a843b097af66a9fe5cd, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 1
+--- !u!1002 &2600025
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600026
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100008}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 613136389d10912429904db19528e188, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 3
+--- !u!1002 &2600027
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600028
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 747385aa0c4d423428574fcf75a6be76, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 3
+  m_LengthScale: 10
+  m_VelocityScale: 0
+  m_MaxParticleSize: 30
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600029
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600030
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 135edb8fb22d80d4c8b1cb73bb932590, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 4
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600031
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600032
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: c6848fb8176f18f439085e7fe0ec9fba, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 4
+--- !u!1002 &2600033
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600034
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 0254ae3216378f24288ca20ace72ec2e, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 3
+--- !u!1002 &2600035
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600036
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100038}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 7f0141ca8540bb14791b3d89287ae4bf, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 5
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600037
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600038
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100072}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 23f15979f11a4594e82354197aad123f, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 4
+--- !u!1002 &2600039
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600040
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100062}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 52474e0023d0eee4f844f170c500524b, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: .5
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 2
+    y Tile: 2
+    cycles: 1
+--- !u!1002 &2600041
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600042
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100064}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 3230e4d39ffbfa84aa9b5f0ace6fc749, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: .5
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600043
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600044
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100066}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: c36c9d5f85e01a748bcf0cf52f4285fa, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: 1000
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 1
+--- !u!1002 &2600045
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600046
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100068}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: c092e711383e67448a23ec8bd5fa621e, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 3
+  m_LengthScale: 4
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 3
+    cycles: 1
+--- !u!1002 &2600047
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600048
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100070}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 51a64f4dff41ac24e881853efcbb0bc7, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 3
+  m_LengthScale: 4
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 3
+    cycles: 1
+--- !u!1002 &2600049
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600050
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100074}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 1d5200e79c40c3a40a5ab7c57eabe45f, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 3
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600051
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600052
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100076}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 51bc1e31e4de1a843b097af66a9fe5cd, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 0
+  m_LengthScale: 2
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 4
+    y Tile: 4
+    cycles: 1
+--- !u!1002 &2600053
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!26 &2600054
+ParticleRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100080}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: c131df966e2cfef419ea047cfb823ef5, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  serializedVersion: 2
+  m_CameraVelocityScale: 0
+  m_StretchParticles: 3
+  m_LengthScale: 1
+  m_VelocityScale: 0
+  m_MaxParticleSize: .25
+  UV Animation:
+    x Tile: 1
+    y Tile: 1
+    cycles: 1
+--- !u!1002 &2600055
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add5045804ac2bd48955065fdeb3ebbf, type: 1}
+  m_Name: 
+--- !u!1002 &11400001
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed89ce0856c816b4c9c02c8c81a65351, type: 1}
+  m_Name: 
+--- !u!1002 &11400003
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: 1
+      ParticleMaxSize: 1.20000005
+      ParticleCount: 3
+      ParticleMinLiveTime: .800000012
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .200000003
+        ParticleMaxSize: .25
+        ParticleCount: 4
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 10
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .300000012
+        ParticleMaxSize: .349999994
+        ParticleCount: 5
+        ParticleMinSpeed: 3
+        ParticleMaxSpeed: 6
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 5
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 12
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: 1.20000005
+          ParticleMaxSize: 1.5
+          ParticleCount: 15
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 11400000, guid: 4f9c4faf31cdc1f438ea711144c8f384,
+      type: 2}
+    UseTrailrendererForTrail: 1
+--- !u!1002 &11400005
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 3
+        MinLifeTime: .300000012
+        MaxLifeTime: .400000006
+        MinSize: 5
+        MaxSize: 8
+        ParticleEmitter: {fileID: 1500000}
+      DustParameters:
+        ParticleCount: 10
+        MinStartPositionSize: .100000001
+        MaxStartPositionSize: 3
+        MinLifeTime: .800000012
+        MaxLifeTime: 1
+        MinSize: 3
+        MaxSize: 4.5
+        ParticleEmitter: {fileID: 1500002}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 10
+        MinLifeTime: .5
+        MaxLifeTime: .800000012
+        MinSize: 3
+        MaxSize: 5
+        ParticleEmitter: {fileID: 1500006}
+      SparkParameters:
+        ParticleCount: 20
+        MinLifeTime: .800000012
+        MaxLifeTime: 1
+        MinSize: .100000001
+        MaxSize: .100000001
+        Speed: 4
+        ParticleEmitter: {fileID: 1500008}
+      TrailParameters:
+        ParticleCount: 20
+        MinLifeTime: .300000012
+        MaxLifeTime: .5
+        MinSize: .800000012
+        MaxSize: 1.20000005
+        Speed: 8
+        ParticleEmitter: {fileID: 1500010}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: 1.5
+      ParticleMaxSize: 2
+      ParticleCount: 5
+      ParticleMinLiveTime: .600000024
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: .300000012
+      ParticleMaxSize: .300000012
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 0}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .150000006
+        ParticleMaxSize: .200000003
+        ParticleCount: 10
+        ParticleMinSpeed: 4
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: .800000012
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .25
+        ParticleMaxSize: .349999994
+        ParticleCount: 6
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 12
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 15
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: 6
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: 1
+          ParticleMaxSize: 1.29999995
+          ParticleCount: 18
+          ParticleMinSpeed: 1.5
+          ParticleMaxSpeed: 2.5
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400007
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 3
+        MinLifeTime: .300000012
+        MaxLifeTime: .400000006
+        MinSize: 1
+        MaxSize: 3
+        ParticleEmitter: {fileID: 1500040}
+      DustParameters:
+        ParticleCount: 10
+        MinStartPositionSize: .100000001
+        MaxStartPositionSize: 3
+        MinLifeTime: 1
+        MaxLifeTime: 1.79999995
+        MinSize: .699999988
+        MaxSize: 1.5
+        ParticleEmitter: {fileID: 1500042}
+      RingParameters:
+        StartSize: 1
+        MinLifeTime: .400000006
+        MaxLifeTime: .400000006
+        ParticleEmitter: {fileID: 1500004}
+      SmokeParameters:
+        ParticleCount: 5
+        MinLifeTime: 1
+        MaxLifeTime: 1.5
+        MinSize: 1
+        MaxSize: 2
+        ParticleEmitter: {fileID: 1500044}
+      SparkParameters:
+        ParticleCount: 30
+        MinLifeTime: 1
+        MaxLifeTime: 1.5
+        MinSize: .0500000007
+        MaxSize: .100000001
+        Speed: 2
+        ParticleEmitter: {fileID: 1500046}
+      TrailParameters:
+        ParticleCount: 10
+        MinLifeTime: .600000024
+        MaxLifeTime: 1
+        MinSize: .5
+        MaxSize: 1
+        Speed: 4
+        ParticleEmitter: {fileID: 1500048}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: 1.20000005
+      ParticleMaxSize: 1.79999995
+      ParticleCount: 5
+      ParticleMinLiveTime: .600000024
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: .300000012
+      ParticleMaxSize: .300000012
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 0}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .150000006
+        ParticleMaxSize: .200000003
+        ParticleCount: 8
+        ParticleMinSpeed: 4
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.79999995
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .300000012
+        ParticleMaxSize: .5
+        ParticleCount: 8
+        ParticleMinSpeed: 3
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 12
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 15
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: 1.20000005
+          ParticleMaxSize: 1.5
+          ParticleCount: 30
+          ParticleMinSpeed: 4
+          ParticleMaxSpeed: 6
+          ParticleMinLiveTime: .5
+          ParticleMaxLiveTime: .800000012
+          ParticleMinZVelocity: 5
+          ParticleMaxZVelocity: 8
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400009
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400010
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 3
+        MinLifeTime: .300000012
+        MaxLifeTime: .400000006
+        MinSize: 1
+        MaxSize: 3
+        ParticleEmitter: {fileID: 1500040}
+      DustParameters:
+        ParticleCount: 10
+        MinStartPositionSize: .100000001
+        MaxStartPositionSize: 3
+        MinLifeTime: 1
+        MaxLifeTime: 1.79999995
+        MinSize: .699999988
+        MaxSize: 1.5
+        ParticleEmitter: {fileID: 1500042}
+      RingParameters:
+        StartSize: 1
+        MinLifeTime: .400000006
+        MaxLifeTime: .400000006
+        ParticleEmitter: {fileID: 1500004}
+      SmokeParameters:
+        ParticleCount: 5
+        MinLifeTime: 1
+        MaxLifeTime: 1.5
+        MinSize: 1
+        MaxSize: 2
+        ParticleEmitter: {fileID: 1500044}
+      SparkParameters:
+        ParticleCount: 30
+        MinLifeTime: 1
+        MaxLifeTime: 1.5
+        MinSize: .0500000007
+        MaxSize: .100000001
+        Speed: 2
+        ParticleEmitter: {fileID: 1500046}
+      TrailParameters:
+        ParticleCount: 10
+        MinLifeTime: .600000024
+        MaxLifeTime: 1
+        MinSize: .5
+        MaxSize: 1
+        Speed: 4
+        ParticleEmitter: {fileID: 1500048}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: .600000024
+      ParticleMaxSize: 1
+      ParticleCount: 10
+      ParticleMinLiveTime: .600000024
+      ParticleMaxLiveTime: .600000024
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 2
+      ParticleMaxSize: 2
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 0}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .200000003
+        ParticleMaxSize: .300000012
+        ParticleCount: 10
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 10
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.60000002
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .300000012
+        ParticleMaxSize: .5
+        ParticleCount: 6
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 10
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 12
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 15
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: 1.20000005
+          ParticleMaxSize: 1.5
+          ParticleCount: 30
+          ParticleMinSpeed: 4
+          ParticleMaxSpeed: 6
+          ParticleMinLiveTime: .5
+          ParticleMaxLiveTime: .800000012
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400011
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: .899999976
+      ParticleMaxSize: .800000012
+      ParticleCount: 5
+      ParticleMinLiveTime: .800000012
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .150000006
+        ParticleCount: 4
+        ParticleMinSpeed: 4
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .300000012
+        ParticleCount: 5
+        ParticleMinSpeed: 2
+        ParticleMaxSpeed: 5
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 10
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 12
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: .800000012
+          ParticleMaxSize: 1
+          ParticleCount: 15
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .300000012
+          ParticleMaxLiveTime: .400000006
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400013
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400014
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: .5
+      ParticleMaxSize: 1
+      ParticleCount: 2
+      ParticleMinLiveTime: .300000012
+      ParticleMaxLiveTime: .5
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 6
+        ParticleMinSpeed: 2
+        ParticleMaxSpeed: 4
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.79999995
+        ParticleMinZVelocity: 2
+        ParticleMaxZVelocity: 4
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .200000003
+        ParticleMaxSize: .300000012
+        ParticleCount: 6
+        ParticleMinSpeed: 3
+        ParticleMaxSpeed: 5
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 2
+        ParticleMaxZVelocity: 4
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 12
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 15
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: .800000012
+          ParticleMaxSize: 1
+          ParticleCount: 18
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400015
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400016
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: .600000024
+      ParticleMaxSize: .800000012
+      ParticleCount: 5
+      ParticleMinLiveTime: .600000024
+      ParticleMaxLiveTime: .800000012
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .150000006
+        ParticleCount: 4
+        ParticleMinSpeed: 4
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .300000012
+        ParticleCount: 5
+        ParticleMinSpeed: 2
+        ParticleMaxSpeed: 5
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 10
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 12
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 1
+          ParticleMaxSize: 1
+          ParticleCount: 15
+          ParticleMinSpeed: 5
+          ParticleMaxSpeed: 10
+          ParticleMinLiveTime: .600000024
+          ParticleMaxLiveTime: 1.79999995
+          ParticleMinZVelocity: 5
+          ParticleMaxZVelocity: 8
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: .5
+          ParticleMaxSize: .800000012
+          ParticleCount: 15
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .300000012
+          ParticleMaxLiveTime: .400000006
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400017
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400018
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: 1.20000005
+      ParticleMaxSize: 1.79999995
+      ParticleCount: 5
+      ParticleMinLiveTime: .600000024
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: .5
+      ParticleMaxSize: .5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 0}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 6
+        ParticleMinSpeed: 4
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.79999995
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .200000003
+        ParticleMaxSize: .300000012
+        ParticleCount: 6
+        ParticleMinSpeed: 3
+        ParticleMaxSpeed: 5
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 12
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 15
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .5
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: .800000012
+          ParticleMaxSize: 1
+          ParticleCount: 18
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400019
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400020
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 3
+        MinLifeTime: .300000012
+        MaxLifeTime: .400000006
+        MinSize: 5
+        MaxSize: 8
+        ParticleEmitter: {fileID: 1500040}
+      DustParameters:
+        ParticleCount: 15
+        MinStartPositionSize: .100000001
+        MaxStartPositionSize: 3
+        MinLifeTime: 1
+        MaxLifeTime: 1.79999995
+        MinSize: 3
+        MaxSize: 4.5
+        ParticleEmitter: {fileID: 1500042}
+      RingParameters:
+        StartSize: 1.5
+        MinLifeTime: .5
+        MaxLifeTime: .5
+        ParticleEmitter: {fileID: 1500004}
+      SmokeParameters:
+        ParticleCount: 10
+        MinLifeTime: 1
+        MaxLifeTime: 1.5
+        MinSize: 3
+        MaxSize: 5
+        ParticleEmitter: {fileID: 1500044}
+      SparkParameters:
+        ParticleCount: 40
+        MinLifeTime: 1
+        MaxLifeTime: 1.5
+        MinSize: .100000001
+        MaxSize: .100000001
+        Speed: 4
+        ParticleEmitter: {fileID: 1500046}
+      TrailParameters:
+        ParticleCount: 30
+        MinLifeTime: .600000024
+        MaxLifeTime: .800000012
+        MinSize: .800000012
+        MaxSize: 1.20000005
+        Speed: 8
+        ParticleEmitter: {fileID: 1500048}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: .600000024
+      ParticleMaxSize: .800000012
+      ParticleCount: 5
+      ParticleMinLiveTime: .600000024
+      ParticleMaxLiveTime: .800000012
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .150000006
+        ParticleCount: 4
+        ParticleMinSpeed: 4
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .300000012
+        ParticleCount: 5
+        ParticleMinSpeed: 2
+        ParticleMaxSpeed: 5
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 5
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 12
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .5
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: .5
+          ParticleMaxSize: .800000012
+          ParticleCount: 15
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .300000012
+          ParticleMaxLiveTime: .400000006
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400021
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400022
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 491ebaa037e6c764dafb8ae765b0a54c, type: 1}
+  m_Name: 
+  _allWeaponData: []
+  _pickupParticleEmitter: {fileID: 1500050}
+--- !u!1002 &11400023
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400024
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: .5
+      ParticleMaxSize: 1
+      ParticleCount: 2
+      ParticleMinLiveTime: .300000012
+      ParticleMaxLiveTime: .5
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 6
+        ParticleMinSpeed: 2
+        ParticleMaxSpeed: 4
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: 1.79999995
+        ParticleMinZVelocity: 2
+        ParticleMaxZVelocity: 4
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .200000003
+        ParticleMaxSize: .300000012
+        ParticleCount: 6
+        ParticleMinSpeed: 3
+        ParticleMaxSpeed: 5
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 2
+        ParticleMaxZVelocity: 4
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 12
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 15
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: .800000012
+          ParticleMaxSize: 1
+          ParticleCount: 18
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400025
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400026
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: 1
+      ParticleMaxSize: 1.20000005
+      ParticleCount: 3
+      ParticleMinLiveTime: .800000012
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .200000003
+        ParticleMaxSize: .25
+        ParticleCount: 4
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 10
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .300000012
+        ParticleMaxSize: .349999994
+        ParticleCount: 5
+        ParticleMinSpeed: 3
+        ParticleMaxSpeed: 6
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 5
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 12
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: 1.20000005
+          ParticleMaxSize: 1.5
+          ParticleCount: 15
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400027
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400028
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 3
+        MinLifeTime: .300000012
+        MaxLifeTime: .400000006
+        MinSize: 1
+        MaxSize: 2
+        ParticleEmitter: {fileID: 1500000}
+      DustParameters:
+        ParticleCount: 10
+        MinStartPositionSize: .100000001
+        MaxStartPositionSize: 3
+        MinLifeTime: .800000012
+        MaxLifeTime: 1
+        MinSize: 1
+        MaxSize: 2
+        ParticleEmitter: {fileID: 1500002}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 10
+        MinLifeTime: .5
+        MaxLifeTime: .800000012
+        MinSize: 1
+        MaxSize: 1.5
+        ParticleEmitter: {fileID: 1500006}
+      SparkParameters:
+        ParticleCount: 20
+        MinLifeTime: .800000012
+        MaxLifeTime: 1
+        MinSize: .0399999991
+        MaxSize: .0399999991
+        Speed: 4
+        ParticleEmitter: {fileID: 1500008}
+      TrailParameters:
+        ParticleCount: 20
+        MinLifeTime: .300000012
+        MaxLifeTime: .5
+        MinSize: .400000006
+        MaxSize: .600000024
+        Speed: 8
+        ParticleEmitter: {fileID: 1500010}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: 1.5
+      ParticleMaxSize: 2
+      ParticleCount: 5
+      ParticleMinLiveTime: .600000024
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: .300000012
+      ParticleMaxSize: .300000012
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 0}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .150000006
+        ParticleMaxSize: .200000003
+        ParticleCount: 10
+        ParticleMinSpeed: 4
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .600000024
+        ParticleMaxLiveTime: .800000012
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .25
+        ParticleMaxSize: .349999994
+        ParticleCount: 6
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 8
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 12
+        ParticleMinSpeed: 6
+        ParticleMaxSpeed: 15
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: 6
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: 1
+          ParticleMaxSize: 1.29999995
+          ParticleCount: 18
+          ParticleMinSpeed: 1.5
+          ParticleMaxSpeed: 2.5
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 0}
+    UseTrailrendererForTrail: 0
+--- !u!1002 &11400029
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!114 &11400030
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 1}
+  m_Name: 
+  _weaponImpactEffectConfiguration:
+    ExplosionParameterSet:
+      BlastParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      DustParameters:
+        ParticleCount: 0
+        MinStartPositionSize: 0
+        MaxStartPositionSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      RingParameters:
+        StartSize: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        ParticleEmitter: {fileID: 0}
+      SmokeParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        ParticleEmitter: {fileID: 0}
+      SparkParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+      TrailParameters:
+        ParticleCount: 0
+        MinLifeTime: 0
+        MaxLifeTime: 0
+        MinSize: 0
+        MaxSize: 0
+        Speed: 0
+        ParticleEmitter: {fileID: 0}
+    FireParticleConfigurationForInstantHit:
+      ParticleMinSize: 1
+      ParticleMaxSize: 1.20000005
+      ParticleCount: 3
+      ParticleMinLiveTime: .800000012
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500012}
+    TrailParticleConfigurationForInstantHit:
+      ParticleMinSize: 5
+      ParticleMaxSize: 5
+      ParticleMinLiveTime: 1
+      ParticleMaxLiveTime: 1
+      ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+      ParticleEmitter: {fileID: 1500054}
+    SurfaceParameterSet:
+      WoodEffect:
+        ParticleMinSize: .200000003
+        ParticleMaxSize: .25
+        ParticleCount: 4
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 10
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500034}
+      WaterCircleEffect:
+        ParticleMinSize: 1.5
+        ParticleMaxSize: 2
+        ParticleCount: 7
+        ParticleMinLiveTime: 1
+        ParticleMaxLiveTime: 1.20000005
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500030}
+      WaterExtraSplashEffect:
+        ParticleMinSize: .800000012
+        ParticleMaxSize: 1.20000005
+        ParticleCount: 10
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .600000024
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500036}
+      StoneEffect:
+        ParticleMinSize: .300000012
+        ParticleMaxSize: .349999994
+        ParticleCount: 5
+        ParticleMinSpeed: 3
+        ParticleMaxSpeed: 6
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500026}
+      MetalEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .150000006
+        ParticleCount: 5
+        ParticleMinSpeed: 5
+        ParticleMaxSpeed: 12
+        ParticleMinLiveTime: .100000001
+        ParticleMaxLiveTime: .400000006
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500016}
+      GrassEffect:
+        ParticleMinSize: .100000001
+        ParticleMaxSize: .600000024
+        ParticleCount: 2
+        ParticleMinSpeed: .5
+        ParticleMaxSpeed: 2
+        ParticleMinLiveTime: .800000012
+        ParticleMaxLiveTime: 1.20000005
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500014}
+      SandEffect:
+        ParticleMinSize: .0500000007
+        ParticleMaxSize: .0500000007
+        ParticleCount: 8
+        ParticleMinSpeed: .200000003
+        ParticleMaxSpeed: 1
+        ParticleMinLiveTime: .5
+        ParticleMaxLiveTime: .5
+        ParticleMinZVelocity: 4
+        ParticleMaxZVelocity: 6
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500052}
+      Splat:
+        ParticleMinSize: 3
+        ParticleMaxSize: 3
+        ParticleCount: 1
+        ParticleMinSpeed: 0
+        ParticleMaxSpeed: 0
+        ParticleMinLiveTime: .200000003
+        ParticleMaxLiveTime: .349999994
+        ParticleMinZVelocity: 0
+        ParticleMaxZVelocity: 0
+        ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+        ParticleEmitter: {fileID: 1500022}
+      Paint:
+        PaintOrange:
+          ParticleMinSize: 0
+          ParticleMaxSize: 0
+          ParticleCount: 0
+          ParticleMinSpeed: 0
+          ParticleMaxSpeed: 0
+          ParticleMinLiveTime: 0
+          ParticleMaxLiveTime: 0
+          ParticleMinZVelocity: 0
+          ParticleMaxZVelocity: 0
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+        PaintGreen:
+          ParticleMinSize: 1.20000005
+          ParticleMaxSize: 1.5
+          ParticleCount: 15
+          ParticleMinSpeed: 1
+          ParticleMaxSpeed: 2
+          ParticleMinLiveTime: .400000006
+          ParticleMaxLiveTime: .5
+          ParticleMinZVelocity: 1.79999995
+          ParticleMaxZVelocity: 2
+          ParticleColor: {r: 0, g: 0, b: 0, a: 0}
+          ParticleEmitter: {fileID: 0}
+    TrailrendererTrailPrefab: {fileID: 11400000, guid: fd34ac0f1a06e0f48b9e5c5e17120c25,
+      type: 2}
+    UseTrailrendererForTrail: 1
+--- !u!1002 &11400031
+EditorExtensionImpl:
+  serializedVersion: 6
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 100040}
+  m_IsPrefabParent: 1
+  m_IsExploded: 1
+--- !u!1002 &100100001
+EditorExtensionImpl:
+  serializedVersion: 6

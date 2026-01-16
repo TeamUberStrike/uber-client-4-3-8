@@ -26,34 +26,66 @@ public class FixMissingParticleMaterials : MonoBehaviour
         Material heatWaveMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Artwork/WeaponEffects/HeatWave/HeatDistort_3.0.mat"); 
         Material explosionMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Artwork/QuickItems/FPXRobExplosion/Materials/Explosion_rob.psd.mat");
 
+        // NEW: Imported Materials from 4.7
+        Material woodMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Imported/ParticleMaterials/WoodSplintersParticle.mat");
+        Material stoneMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Imported/ParticleMaterials/TinyStonesParticle.mat");
+        Material woodDecal = AssetDatabase.LoadAssetAtPath<Material>("Assets/Imported/ParticleMaterials/BulletDecalWood.mat"); // Might need a quad?
+
         foreach (var r in renderers)
         {
-            if (r.sharedMaterial != null && r.sharedMaterial.name != "Default-Material") continue; // Skip if already has a valid material
+            // If it's already "Smoke2", we might want to upgrade it if it's named "Wood"
+            bool isFallback = r.sharedMaterial != null && r.sharedMaterial.name == "Smoke2";
+            if (r.sharedMaterial != null && r.sharedMaterial.name != "Default-Material" && !isFallback) continue; 
 
             string name = r.gameObject.name.ToLower();
             Material target = null;
 
             if (name.Contains("spawnparticles")) target = spawnMat;
+            
+            // SPECIFIC SURFACE TYPES
+            else if (name.Contains("wood")) target = woodMat;
+            else if (name.Contains("stone") || name.Contains("concrete")) target = stoneMat;
+            else if (name.Contains("metal")) target = stoneMat; // Fallback to stone/sparks?
+            else if (name.Contains("splat")) target = stoneMat; // Generic dust?
+
             else if (name.Contains("smoke")) target = smokeMat;
             else if (name.Contains("fire") || name.Contains("flame")) target = flameMat;
             else if (name.Contains("watercircle") || name.Contains("ripples")) target = waterCircleMat;
-            else if (name.Contains("waterdrops") || name.Contains("splash")) target = waterDropsMat;
+            else if (name.Contains("waterdrops") || name.Contains("splash") || name.Contains("water")) target = waterDropsMat;
             else if (name.Contains("heatwave")) target = heatWaveMat;
             else if (name.Contains("explosionblast") || name.Contains("blast")) target = explosionMat;
             else if (name.Contains("spark") || name.Contains("flash")) target = flameMat; 
             else if (name.Contains("dust") || name.Contains("debris")) target = smokeMat;
             
+            // FORCE LAYER 0 (Default) for visibility
+            r.gameObject.layer = 0;
+
             if (target != null)
             {
                 r.sharedMaterial = target;
+                
+                // Ensure Shader is visible (Alpha Blended for decals, Additive for fire)
+                if(target.shader.name != "Mobile/Particles/Alpha Blended" && target.shader.name != "Mobile/Particles/Additive" && target.shader.name != "Particles/Alpha Blended")
+                {
+                     // Decide based on type
+                     if(name.Contains("wood") || name.Contains("stone") || name.Contains("splat"))
+                        target.shader = Shader.Find("Mobile/Particles/Alpha Blended");
+                     else
+                        target.shader = Shader.Find("Mobile/Particles/Additive");
+                }
+                
                 EditorUtility.SetDirty(r);
-                Debug.Log($"[FIXED] Assigned '{target.name}' to '{r.gameObject.name}'");
+                EditorUtility.SetDirty(target);
+                Debug.Log($"[FIXED] Assigned '{target.name}' to '{r.gameObject.name}' (Layer 0, Shader Fixed)");
             }
             else
             {
-                r.sharedMaterial = smokeMat;
-                 EditorUtility.SetDirty(r);
-                Debug.Log($"[FALLBACK] Assigned Smoke2 to unknown particle '{r.gameObject.name}'");
+                if(r.sharedMaterial == null || r.sharedMaterial.name == "Default-Material") 
+                {
+                    r.sharedMaterial = smokeMat;
+                    EditorUtility.SetDirty(r);
+                    Debug.Log($"[FALLBACK] Assigned Smoke2 to unknown particle '{r.gameObject.name}'");
+                }
             }
         }
     }

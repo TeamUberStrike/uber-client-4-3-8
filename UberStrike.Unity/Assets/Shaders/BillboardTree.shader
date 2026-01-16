@@ -90,5 +90,5 @@ Shader "Hidden/TerrainEngine/BillboardTree" {
 		}
 	} 
 		
-	Fallback Off
+	Fallback "Diffuse"
 }

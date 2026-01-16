@@ -9,10 +9,17 @@ public class TempleTeleporter : SecretDoor
     {
         _audios = GetComponents<AudioSource>();
 
-        var emission = _particles.emission;
-        emission.enabled = false;
-        foreach(Renderer r in _visuals)
-            r.enabled = false;
+        if (_particles != null)
+        {
+            var emission = _particles.emission;
+            emission.enabled = false;
+        }
+
+        if (_visuals != null)
+        {
+            foreach (Renderer r in _visuals)
+                r.enabled = false;
+        }
 
         _doorID = transform.position.GetHashCode();
     }
@@ -33,8 +40,11 @@ public class TempleTeleporter : SecretDoor
         {
             foreach (AudioSource s in _audios) s.Stop();
 
-            var emission = _particles.emission;
-            emission.enabled = false;
+            if (_particles != null)
+            {
+                var emission = _particles.emission;
+                emission.enabled = false;
+            }
             foreach (Renderer r in _visuals)
                 r.enabled = false;
 
@@ -76,7 +86,7 @@ public class TempleTeleporter : SecretDoor
 
         if (_particles != null)
         {
-            _particles.Stop(); // This line was added based on the user's instruction, but it might conflict with the original intent of enabling emission.
+            _particles.Stop(); 
             var emission = _particles.emission;
             emission.enabled = true;
         }

@@ -64,7 +64,13 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
     {
         if (Exists)
         {
+            if(!Instance._allConfigurations.ContainsKey(effectType)) {
+                 Debug.LogError($"[PEC] Missing Config for: {effectType}");
+                 return;
+            }
+
             ParticleCobfigurationPerWeapon effect = Instance._allConfigurations[effectType];
+            // Debug.Log($"[PEC] Hit: {effectType} on Surface: {surface} at {hitPoint}");
 
             if (effect != null)
             {
@@ -75,6 +81,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                     case SurfaceEffectType.WoodEffect:
                         if (CheckVisibility(hitPoint))
                         {
+                            Debug.Log("[PEC] Emitting Wood");
                             ParticleEmissionSystem.HitMaterialParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.WoodEffect);
                             ParticleEmissionSystem.FireParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.FireParticleConfigurationForInstantHit);
                         }
@@ -83,6 +90,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                     case SurfaceEffectType.StoneEffect:
                         if (CheckVisibility(hitPoint))
                         {
+                            Debug.Log("[PEC] Emitting Stone");
                             ParticleEmissionSystem.HitMaterialParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.StoneEffect);
                             ParticleEmissionSystem.FireParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.FireParticleConfigurationForInstantHit);
                         }
@@ -91,6 +99,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                     case SurfaceEffectType.MetalEffect:
                         if (CheckVisibility(hitPoint))
                         {
+                            Debug.Log("[PEC] Emitting Metal");
                             ParticleEmissionSystem.HitMaterialParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.MetalEffect);
                             ParticleEmissionSystem.FireParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.FireParticleConfigurationForInstantHit);
                         }
@@ -122,6 +131,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                     case SurfaceEffectType.Splat:
                         if (CheckVisibility(hitPoint))
                         {
+                            // Debug.Log("[PEC] Emitting Splat!");
                             ParticleEmissionSystem.HitMaterialRotatingParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.Splat);
                         }
                         break;
@@ -129,6 +139,9 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                     case SurfaceEffectType.Default:
                         if (CheckVisibility(hitPoint))
                         {
+                            // Default surfaces (terrain, untagged objects) - use stone-like effect
+                            Debug.Log("[PEC] Emitting Default (Stone-like)");
+                            ParticleEmissionSystem.HitMaterialParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.StoneEffect);
                             ParticleEmissionSystem.FireParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.FireParticleConfigurationForInstantHit);
                         }
                         break;
@@ -136,7 +149,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
             }
             else
             {
-                //Debug.Log("No effect type specified for " + effect);
+                Debug.Log("No effect type specified for " + effect);
             }
         }
         else
