@@ -1,394 +1,750 @@
 fileFormatVersion: 2
 guid: acee588881acabc4590a51b8d5f81469
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: DoorGear1
-    4300002: DoorGear2
-    4300004: DoorGear3
-    4300006: DoorGear4
-    4300008: DoorGear5
-    4300010: DoorGear6
-    4300012: DoorGear7
-    4300014: DoorGear8
-    4300016: DoorGear9
-    4300018: DoorGear10
-    4300020: Wheel
-    4300022: DoorLeft
-    4300024: DoorFrame
-    4300026: DoorRight
-    4300028: pSphere3
-    4300030: polySurface1738
-    4300032: pSphere4
-    4300034: polySurface1739
-    4300036: SignLight
-    4300038: Gear1
-    4300040: Gear2
-    4300042: Gear3
-    4300044: Gear4
-    4300046: Gear5
-    4300048: Gear6
-    4300050: Gear7
-    4300052: Gear8
-    4300054: Gear9
-    4300056: Gear10
-    4300058: Railing
-    4300060: LightBase
-    4300062: Lights
-    4300064: LED
-    4300066: LEDBase
-    4300068: Inside2
-    4300070: TunnelWall
-    4300072: TunnelCeiling
-    4300074: Inside3
-    4300076: Ground1
-    4300078: Ground2
-    4300080: GroundEnd
-    4300082: Outside1
-    4300084: Connecter
-    4300086: Outside2
-    4300088: TunnelShelf
-    4300090: LightsAnimated
-    4300092: Border
-    4300094: Pipes
-    4300096: Connecter1
-    4300098: DoorFrames2
-    4300100: DoorPlate2
-    4300102: DoorLocks2
-    4300104: DoorLeft2
-    4300106: DoorRight2
-    4300108: Pipes
-    4300110: ShopWall
-    4300112: Outside
-    4300114: Wall
-    4300116: Lights
-    4300118: Net
-    4300120: Ceiling
-    4300122: GroundLayer1
-    4300124: GroundLayer2
-    4300126: WallRidge1
-    4300128: WallRidge2
-    4300130: ShootingAreaWall
-    4300132: DoorFrames
-    4300134: Shelf
-    4300136: LightBase
-    4300138: DoorPlate
-    4300140: ShopTable
-    4300142: DoorLocks
-    4300144: DoorRight1
-    4300146: DoorLeft1
-    4300148: Cameras
-    4300150: Room
-    4300152: Frames
-    4300154: Glass
-    4300156: GunReal
-    4300158: Guns
-    4300160: Light
-    4300162: LightBase
-    4300164: Desk
-    4300166: Frame
-    4300168: DoorBirail
-    4300170: Door
-    4300172: Pillar
-    4300174: Net
-    4300176: Base
-    4300178: Ceiling
-    4300180: ShootingAreaBox
-    4300182: Ground
-    4300184: Platform
-    4300186: SprtLights
-    4300188: Wall
-    4300190: Fence
-    4300192: WindowsFrame
-    4300194: Room
-    4300196: Glass
-    4300198: Window
-    4300200: Pipes
-    4300202: TunnelGround
-    4300204: LightBase
-    4300206: TunnelOutside
-    4300208: TunnelConnecter
-    4300210: TunnelLightBase
-    4300212: TunnelCeilig
-    4300214: TunnelWall
-    4300216: Lights
-    4300218: Covers
-    4300220: Outside
-    4300222: Inside
-    4300224: Ceiling
-    4300226: WallEdge
-    4300228: MiddlePillar
-    4300230: MiddleGround
-    4300232: MiddlePlatform
-    4300234: TunnelLights
-    4300236: Ground
-    4300238: DoorWall
-    4300240: WindowFrame
-    4300242: DoorFrames
-    4300244: Ladders
-    4300246: SpotLights
-    4300248: SpotLightBase
-    4300250: BasePiller
-    4300252: Windows
-    4300254: DoorRight4
-    4300256: DoorLeft4
-    4300258: DoorRight5
-    4300260: DoorLeft5
-    4300262: DoorFrames1
-    4300264: DoorPlate1
-    4300266: DoorLocks1
-    4300268: Connecter
-    4300270: DoorLeft6
-    4300272: DoorRight6
-    7400000: Take 001 //// AirlockDoor
-    7400002: DoorOpen //// AirlockDoor
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: DoorGear1
+  - first:
+      43: 4300002
+    second: DoorGear2
+  - first:
+      43: 4300004
+    second: DoorGear3
+  - first:
+      43: 4300006
+    second: DoorGear4
+  - first:
+      43: 4300008
+    second: DoorGear5
+  - first:
+      43: 4300010
+    second: DoorGear6
+  - first:
+      43: 4300012
+    second: DoorGear7
+  - first:
+      43: 4300014
+    second: DoorGear8
+  - first:
+      43: 4300016
+    second: DoorGear9
+  - first:
+      43: 4300018
+    second: DoorGear10
+  - first:
+      43: 4300020
+    second: Wheel
+  - first:
+      43: 4300022
+    second: DoorLeft
+  - first:
+      43: 4300024
+    second: DoorFrame
+  - first:
+      43: 4300026
+    second: DoorRight
+  - first:
+      43: 4300028
+    second: pSphere3
+  - first:
+      43: 4300030
+    second: polySurface1738
+  - first:
+      43: 4300032
+    second: pSphere4
+  - first:
+      43: 4300034
+    second: polySurface1739
+  - first:
+      43: 4300036
+    second: SignLight
+  - first:
+      43: 4300038
+    second: Gear1
+  - first:
+      43: 4300040
+    second: Gear2
+  - first:
+      43: 4300042
+    second: Gear3
+  - first:
+      43: 4300044
+    second: Gear4
+  - first:
+      43: 4300046
+    second: Gear5
+  - first:
+      43: 4300048
+    second: Gear6
+  - first:
+      43: 4300050
+    second: Gear7
+  - first:
+      43: 4300052
+    second: Gear8
+  - first:
+      43: 4300054
+    second: Gear9
+  - first:
+      43: 4300056
+    second: Gear10
+  - first:
+      43: 4300058
+    second: Railing
+  - first:
+      43: 4300060
+    second: LightBase
+  - first:
+      43: 4300062
+    second: Lights
+  - first:
+      43: 4300064
+    second: LED
+  - first:
+      43: 4300066
+    second: LEDBase
+  - first:
+      43: 4300068
+    second: Inside2
+  - first:
+      43: 4300070
+    second: TunnelWall
+  - first:
+      43: 4300072
+    second: TunnelCeiling
+  - first:
+      43: 4300074
+    second: Inside3
+  - first:
+      43: 4300076
+    second: Ground1
+  - first:
+      43: 4300078
+    second: Ground2
+  - first:
+      43: 4300080
+    second: GroundEnd
+  - first:
+      43: 4300082
+    second: Outside1
+  - first:
+      43: 4300084
+    second: Connecter
+  - first:
+      43: 4300086
+    second: Outside2
+  - first:
+      43: 4300088
+    second: TunnelShelf
+  - first:
+      43: 4300090
+    second: LightsAnimated
+  - first:
+      43: 4300092
+    second: Border
+  - first:
+      43: 4300094
+    second: Pipes
+  - first:
+      43: 4300096
+    second: Connecter1
+  - first:
+      43: 4300098
+    second: DoorFrames2
+  - first:
+      43: 4300100
+    second: DoorPlate2
+  - first:
+      43: 4300102
+    second: DoorLocks2
+  - first:
+      43: 4300104
+    second: DoorLeft2
+  - first:
+      43: 4300106
+    second: DoorRight2
+  - first:
+      43: 4300108
+    second: Pipes
+  - first:
+      43: 4300110
+    second: ShopWall
+  - first:
+      43: 4300112
+    second: Outside
+  - first:
+      43: 4300114
+    second: Wall
+  - first:
+      43: 4300116
+    second: Lights
+  - first:
+      43: 4300118
+    second: Net
+  - first:
+      43: 4300120
+    second: Ceiling
+  - first:
+      43: 4300122
+    second: GroundLayer1
+  - first:
+      43: 4300124
+    second: GroundLayer2
+  - first:
+      43: 4300126
+    second: WallRidge1
+  - first:
+      43: 4300128
+    second: WallRidge2
+  - first:
+      43: 4300130
+    second: ShootingAreaWall
+  - first:
+      43: 4300132
+    second: DoorFrames
+  - first:
+      43: 4300134
+    second: Shelf
+  - first:
+      43: 4300136
+    second: LightBase
+  - first:
+      43: 4300138
+    second: DoorPlate
+  - first:
+      43: 4300140
+    second: ShopTable
+  - first:
+      43: 4300142
+    second: DoorLocks
+  - first:
+      43: 4300144
+    second: DoorRight1
+  - first:
+      43: 4300146
+    second: DoorLeft1
+  - first:
+      43: 4300148
+    second: Cameras
+  - first:
+      43: 4300150
+    second: Room
+  - first:
+      43: 4300152
+    second: Frames
+  - first:
+      43: 4300154
+    second: Glass
+  - first:
+      43: 4300156
+    second: GunReal
+  - first:
+      43: 4300158
+    second: Guns
+  - first:
+      43: 4300160
+    second: Light
+  - first:
+      43: 4300162
+    second: LightBase
+  - first:
+      43: 4300164
+    second: Desk
+  - first:
+      43: 4300166
+    second: Frame
+  - first:
+      43: 4300168
+    second: DoorBirail
+  - first:
+      43: 4300170
+    second: Door
+  - first:
+      43: 4300172
+    second: Pillar
+  - first:
+      43: 4300174
+    second: Net
+  - first:
+      43: 4300176
+    second: Base
+  - first:
+      43: 4300178
+    second: Ceiling
+  - first:
+      43: 4300180
+    second: ShootingAreaBox
+  - first:
+      43: 4300182
+    second: Ground
+  - first:
+      43: 4300184
+    second: Platform
+  - first:
+      43: 4300186
+    second: SprtLights
+  - first:
+      43: 4300188
+    second: Wall
+  - first:
+      43: 4300190
+    second: Fence
+  - first:
+      43: 4300192
+    second: WindowsFrame
+  - first:
+      43: 4300194
+    second: Room
+  - first:
+      43: 4300196
+    second: Glass
+  - first:
+      43: 4300198
+    second: Window
+  - first:
+      43: 4300200
+    second: Pipes
+  - first:
+      43: 4300202
+    second: TunnelGround
+  - first:
+      43: 4300204
+    second: LightBase
+  - first:
+      43: 4300206
+    second: TunnelOutside
+  - first:
+      43: 4300208
+    second: TunnelConnecter
+  - first:
+      43: 4300210
+    second: TunnelLightBase
+  - first:
+      43: 4300212
+    second: TunnelCeilig
+  - first:
+      43: 4300214
+    second: TunnelWall
+  - first:
+      43: 4300216
+    second: Lights
+  - first:
+      43: 4300218
+    second: Covers
+  - first:
+      43: 4300220
+    second: Outside
+  - first:
+      43: 4300222
+    second: Inside
+  - first:
+      43: 4300224
+    second: Ceiling
+  - first:
+      43: 4300226
+    second: WallEdge
+  - first:
+      43: 4300228
+    second: MiddlePillar
+  - first:
+      43: 4300230
+    second: MiddleGround
+  - first:
+      43: 4300232
+    second: MiddlePlatform
+  - first:
+      43: 4300234
+    second: TunnelLights
+  - first:
+      43: 4300236
+    second: Ground
+  - first:
+      43: 4300238
+    second: DoorWall
+  - first:
+      43: 4300240
+    second: WindowFrame
+  - first:
+      43: 4300242
+    second: DoorFrames
+  - first:
+      43: 4300244
+    second: Ladders
+  - first:
+      43: 4300246
+    second: SpotLights
+  - first:
+      43: 4300248
+    second: SpotLightBase
+  - first:
+      43: 4300250
+    second: BasePiller
+  - first:
+      43: 4300252
+    second: Windows
+  - first:
+      43: 4300254
+    second: DoorRight4
+  - first:
+      43: 4300256
+    second: DoorLeft4
+  - first:
+      43: 4300258
+    second: DoorRight5
+  - first:
+      43: 4300260
+    second: DoorLeft5
+  - first:
+      43: 4300262
+    second: DoorFrames1
+  - first:
+      43: 4300264
+    second: DoorPlate1
+  - first:
+      43: 4300266
+    second: DoorLocks1
+  - first:
+      43: 4300268
+    second: Connecter
+  - first:
+      43: 4300270
+    second: DoorLeft6
+  - first:
+      43: 4300272
+    second: DoorRight6
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      74: 7400002
+    second: DoorOpen
+  - first:
+      1: 100030
+    second: //RootNode
+  - first:
+      4: 400030
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100008
+    second: DoorFrame
+  - first:
+      4: 400008
+    second: DoorFrame
+  - first:
+      33: 3300006
+    second: DoorFrame
+  - first:
+      23: 2300006
+    second: DoorFrame
+  - first:
+      1: 100002
+    second: DoorGears
+  - first:
+      4: 400002
+    second: DoorGears
+  - first:
+      1: 100006
+    second: DoorLeft
+  - first:
+      4: 400006
+    second: DoorLeft
+  - first:
+      33: 3300002
+    second: DoorLeft
+  - first:
+      23: 2300002
+    second: DoorLeft
+  - first:
+      1: 100020
+    second: DoorRight
+  - first:
+      4: 400020
+    second: DoorRight
+  - first:
+      33: 3300018
+    second: DoorRight
+  - first:
+      23: 2300018
+    second: DoorRight
+  - first:
+      1: 100000
+    second: Gear1
+  - first:
+      4: 400000
+    second: Gear1
+  - first:
+      33: 3300000
+    second: Gear1
+  - first:
+      23: 2300000
+    second: Gear1
+  - first:
+      1: 100010
+    second: Gear10
+  - first:
+      4: 400010
+    second: Gear10
+  - first:
+      33: 3300008
+    second: Gear10
+  - first:
+      23: 2300008
+    second: Gear10
+  - first:
+      1: 100024
+    second: Gear2
+  - first:
+      4: 400024
+    second: Gear2
+  - first:
+      33: 3300022
+    second: Gear2
+  - first:
+      23: 2300022
+    second: Gear2
+  - first:
+      1: 100022
+    second: Gear3
+  - first:
+      4: 400022
+    second: Gear3
+  - first:
+      33: 3300020
+    second: Gear3
+  - first:
+      23: 2300020
+    second: Gear3
+  - first:
+      1: 100014
+    second: Gear4
+  - first:
+      4: 400014
+    second: Gear4
+  - first:
+      33: 3300012
+    second: Gear4
+  - first:
+      23: 2300012
+    second: Gear4
+  - first:
+      1: 100016
+    second: Gear5
+  - first:
+      4: 400016
+    second: Gear5
+  - first:
+      33: 3300014
+    second: Gear5
+  - first:
+      23: 2300014
+    second: Gear5
+  - first:
+      1: 100018
+    second: Gear6
+  - first:
+      4: 400018
+    second: Gear6
+  - first:
+      33: 3300016
+    second: Gear6
+  - first:
+      23: 2300016
+    second: Gear6
+  - first:
+      1: 100028
+    second: Gear7
+  - first:
+      4: 400028
+    second: Gear7
+  - first:
+      33: 3300026
+    second: Gear7
+  - first:
+      23: 2300026
+    second: Gear7
+  - first:
+      1: 100012
+    second: Gear8
+  - first:
+      4: 400012
+    second: Gear8
+  - first:
+      33: 3300010
+    second: Gear8
+  - first:
+      23: 2300010
+    second: Gear8
+  - first:
+      1: 100026
+    second: Gear9
+  - first:
+      4: 400026
+    second: Gear9
+  - first:
+      33: 3300024
+    second: Gear9
+  - first:
+      23: 2300024
+    second: Gear9
+  - first:
+      1: 100040
+    second: SignLight
+  - first:
+      4: 400040
+    second: SignLight
+  - first:
+      33: 3300028
+    second: SignLight
+  - first:
+      23: 2300028
+    second: SignLight
+  - first:
+      1: 100004
+    second: Wheel
+  - first:
+      4: 400004
+    second: Wheel
+  - first:
+      33: 3300004
+    second: Wheel
+  - first:
+      23: 2300004
+    second: Wheel
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 3
+    legacyGenerateAnimations: 3
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
-    - name: DoorOpen
+    - serializedVersion: 16
+      name: DoorOpen
+      takeName: 
+      internalID: 0
       firstFrame: 0
       lastFrame: 260
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 111
-        second: 605fa900
-    DoorFrame:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    DoorGears:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-    DoorLeft:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    DoorRight:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    Gear1:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    Gear10:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    Gear2:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    Gear3:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    Gear4:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    Gear5:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    Gear6:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    Gear7:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    Gear8:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    Gear9:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    SignLight:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-    Wheel:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
