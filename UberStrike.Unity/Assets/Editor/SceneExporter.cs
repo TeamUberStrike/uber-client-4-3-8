@@ -269,7 +269,7 @@ public class SceneExporter
         PrepareBuildFolder(WindowsStandaloneFolder);
         BuildSplashPlayer(WindowsStandaloneFolder, BuildTarget.StandaloneWindows);
         BuildMainScene(WindowsStandaloneFolder, BuildTarget.StandaloneWindows);
-        if (buildMaps) BuildMapScenes(WindowsStandaloneFolder, BuildTarget.StandaloneWindows);
+        if (buildMaps) BuildMapScenes(WindowsStandaloneFolder, BuildTarget.StandaloneWindows, false);
     }
 
     #endregion
