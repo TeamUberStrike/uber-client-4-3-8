@@ -11,11 +11,19 @@ Properties {
 }
 
 SubShader {
-	Tags { "Queue"="Transparent+100" "RenderType"="Opaque" }
+	Tags { "Queue"="Overlay" "RenderType"="Overlay" }
 
-	GrabPass { }
+	Fog { Mode Off }
+	Cull Off
+
+	GrabPass {
+		Name "BASE"
+		Tags { "LightMode" = "Always" }
+	}
 
 	Pass {
+		Name "BASE"
+		Tags { "LightMode" = "Always" }
 		CGPROGRAM
 		#pragma vertex vert
 		#pragma fragment frag

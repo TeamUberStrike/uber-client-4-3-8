@@ -9,10 +9,16 @@ public class TempleTeleporter : SecretDoor
     {
         _audios = GetComponents<AudioSource>();
 
-        var emission = _particles.emission;
-        emission.enabled = false;
-        foreach(Renderer r in _visuals)
-            r.enabled = false;
+        if (_particles != null)
+        {
+            var emission = _particles.emission;
+            emission.enabled = false;
+        }
+        if (_visuals != null)
+        {
+            foreach(Renderer r in _visuals)
+                r.enabled = false;
+        }
 
         _doorID = transform.position.GetHashCode();
     }
@@ -33,10 +39,16 @@ public class TempleTeleporter : SecretDoor
         {
             foreach (AudioSource s in _audios) s.Stop();
 
-            var emission = _particles.emission;
-            emission.enabled = false;
-            foreach (Renderer r in _visuals)
-                r.enabled = false;
+            if (_particles != null)
+            {
+                var emission = _particles.emission;
+                emission.enabled = false;
+            }
+            if (_visuals != null)
+            {
+                foreach (Renderer r in _visuals)
+                    r.enabled = false;
+            }
 
             enabled = false;
         }
@@ -74,10 +86,16 @@ public class TempleTeleporter : SecretDoor
     {
         enabled = true;
 
-        var emission = _particles.emission;
-        emission.enabled = true;
-        foreach (Renderer r in _visuals)
-            r.enabled = true;
+        if (_particles != null)
+        {
+            var emission = _particles.emission;
+            emission.enabled = true;
+        }
+        if (_visuals != null)
+        {
+            foreach (Renderer r in _visuals)
+                r.enabled = true;
+        }
 
         _timeOut = Time.time + _activationTime;
 

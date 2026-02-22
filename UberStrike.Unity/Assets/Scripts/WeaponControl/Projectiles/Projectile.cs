@@ -114,7 +114,10 @@ public abstract class Projectile : MonoBehaviour, IProjectile
         ExplosionManager.Instance.ShowExplosionEffect(point, normal, tag, ExplosionEffect);
 
         if (_showHeatwave)
+        {
             ParticleEffectController.ShowHeatwaveEffect(transform.position);
+            ExplosionManager.Instance.ShowHeatWave(point);
+        }
 
         if (_explosionEffect)
         {

@@ -22,11 +22,11 @@ public class DebugConsoleManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Application.isEditor)
-        {
-            UpdatePages(MemberAccessLevel.Admin);
-        }
-        else
+        // Always initialize with Admin pages immediately so Ctrl+Alt+D works right away.
+        // In builds, LoginEvent will override with the correct access level once auth completes.
+        UpdatePages(MemberAccessLevel.Admin);
+
+        if (!Application.isEditor)
         {
             CmuneEventHandler.AddListener<LoginEvent>((ev) => UpdatePages(ev.AccessLevel));
         }
@@ -47,7 +47,8 @@ public class DebugConsoleManager : MonoBehaviour
 
     private void OnGUI()
     {
-        if (ApplicationDataManager.BuildType != BuildType.Prod)
+        // Only show error overlay in the Editor — errors still go to player_log_file.txt
+        if (Application.isEditor && ApplicationDataManager.BuildType != BuildType.Prod)
         {
             for (int i = 0; i < _exceptions.Count; i++)
             {

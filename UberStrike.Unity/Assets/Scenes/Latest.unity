@@ -4877,8 +4877,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a879ed8a47374d4429ca12b1eeae4214, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   _weaponImpactEffectConfiguration:
     ExplosionParameterSet:
       BlastParameters:

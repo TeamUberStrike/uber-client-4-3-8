@@ -49,9 +49,16 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
 
     public static void ShowHeatwaveEffect(Vector3 pos)
     {
+        // Balanced: original was size=1/life=1 but invisible in linear pipeline.
+        // size=3/life=1.2 gives visible concentrated distortion without flooding the screen.
+        ShowHeatwaveEffect(pos, 3f, 1.2f);
+    }
+
+    public static void ShowHeatwaveEffect(Vector3 pos, float size, float life)
+    {
         if (Exists && Instance._heatWave)
         {
-            Instance._heatWave.Emit(pos, Vector3.zero, 1, 1, Color.white);
+            ParticleEmissionSystem.EmitSafe(Instance._heatWave, pos, Vector3.zero, size, life, Color.white);
         }
     }
 

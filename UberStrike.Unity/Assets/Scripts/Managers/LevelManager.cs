@@ -234,15 +234,24 @@ public class LevelManager : Singleton<LevelManager>
                 string fileToLoad = string.Empty;
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-                if (System.IO.File.Exists(ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.FileName))
+                // Try scene-name-based filename first (matches BuildMapScenes output with enableLevelHashing=false)
+                string standaloneSceneFile = ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.SceneName + ".unity3d";
+                string standaloneMapFile = ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.FileName;
+                if (System.IO.File.Exists(standaloneSceneFile))
                 {
-                    Debug.LogError("Map found:" + ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.FileName);
-                    fileToLoad = ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.FileName;
+                    Debug.Log("Map found (scene name): " + standaloneSceneFile);
+                    fileToLoad = standaloneSceneFile;
+                    loader = new WWW("file://" + fileToLoad);
+                }
+                else if (System.IO.File.Exists(standaloneMapFile))
+                {
+                    Debug.Log("Map found (Map-XX): " + standaloneMapFile);
+                    fileToLoad = standaloneMapFile;
                     loader = new WWW("file://" + fileToLoad);
                 }
                 else
                 {
-                    Debug.LogWarning("Map NOT found:" + ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.FileName);
+                    Debug.LogWarning("Map NOT found locally: " + standaloneSceneFile + " or " + standaloneMapFile);
                     fileToLoad = ApplicationDataManager.BaseMapsURL + MapToLoad.FileName;
                     loader = WWW.LoadFromCacheOrDownload(fileToLoad, 1);
                 }
