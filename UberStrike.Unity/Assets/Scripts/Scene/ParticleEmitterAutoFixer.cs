@@ -114,6 +114,7 @@ public static class ParticleEmitterAutoFixer
         new[] { "PaintGreen",    "2",   "1",  "4","4","4", "0","2","0",     "-5",   "180","180","255","180","10", "0.25" },
         new[] { "PaintBlue",     "2",   "1",  "4","4","4", "0","2","0",     "-5",   "180","180","255","180","10", "0.25" },
         new[] { "PaintRed",      "2",   "1",  "4","4","4", "0","2","0",     "-5",   "180","180","255","180","10", "0.25" },
+        // Original compiled values — no tweaks. Same shader as surface impacts handles the rest.
         new[] { "ExplosionBlast","-0.8","1",  "2","2","1", "0","0.5","0",   "0",    "10","180","255","180","10","1000" },
         new[] { "ExplosionDust", "0",   "1",  "1","1","1", "0","0.5","0",   "0.52", "10","180","255","180","10","1000" },
         new[] { "ExplosionRing","50",   "1",  "1","1","1", "4","0.5","0",   "0",    "255","204","153","0","10","1000" },
@@ -231,38 +232,41 @@ public static class ParticleEmitterAutoFixer
                   string.Join(", ", psMap.Keys));
 
         // Step 2: Build material name -> Material map
+        // PRIORITY: Resources/ParticleMaterials/ materials are hand-corrected (correct textures,
+        // shaders, tints). Scene materials may have migration-corrupted textures (e.g., Trail
+        // scene mat has SplatterTrail texture instead of trace.jpg). Load Resources FIRST,
+        // then fall back to scene materials for anything not in Resources.
         var matMap = new Dictionary<string, Material>();
+        int resourceLoaded = 0;
+        foreach (var entry in MaterialMapping)
+        {
+            string matName = entry[1];
+            if (matMap.ContainsKey(matName)) continue;
+            Material loaded = Resources.Load<Material>("ParticleMaterials/" + matName);
+            if (loaded != null)
+            {
+                matMap[matName] = loaded;
+                resourceLoaded++;
+                Debug.Log("[ParticleAutoFixer] Loaded material from Resources: " + matName);
+            }
+        }
+        if (resourceLoaded > 0)
+            Debug.Log("[ParticleAutoFixer] Loaded " + resourceLoaded + " materials from Resources/ParticleMaterials/");
+
+        // Step 2b: Fallback — scene materials for anything not found in Resources
         foreach (var mat in Resources.FindObjectsOfTypeAll<Material>())
         {
             if (mat == null || string.IsNullOrEmpty(mat.name)) continue;
             if (!matMap.ContainsKey(mat.name))
                 matMap[mat.name] = mat;
         }
-
-        // Step 2b: Fallback — load corrected materials from Resources folder
-        // FindObjectsOfTypeAll won't find materials that aren't referenced by any loaded scene object.
-        // Our corrected .mat files in Assets/Resources/ParticleMaterials/ are always loadable.
-        int resourceLoaded = 0;
+        // Final check — warn about any materials still missing
         foreach (var entry in MaterialMapping)
         {
             string matName = entry[1];
             if (!matMap.ContainsKey(matName))
-            {
-                Material loaded = Resources.Load<Material>("ParticleMaterials/" + matName);
-                if (loaded != null)
-                {
-                    matMap[matName] = loaded;
-                    resourceLoaded++;
-                    Debug.Log("[ParticleAutoFixer] Loaded material from Resources: " + matName);
-                }
-                else
-                {
-                    Debug.LogWarning("[ParticleAutoFixer] Material NOT FOUND anywhere: " + matName);
-                }
-            }
+                Debug.LogWarning("[ParticleAutoFixer] Material NOT FOUND anywhere: " + matName);
         }
-        if (resourceLoaded > 0)
-            Debug.Log("[ParticleAutoFixer] Loaded " + resourceLoaded + " materials from Resources/ParticleMaterials/");
 
         // Step 3: Cache legacy shaders
         var shaderCache = new Shader[ShaderNames.Length];
@@ -631,12 +635,12 @@ public static class ParticleEmitterAutoFixer
                         " _BumpAmt=" + bumpAmt +
                         " renderQueue=" + hwMat.renderQueue);
 
-                    // Strong boost: original _BumpAmt=24.6 is too weak in linear pipeline.
-                    // 64 gives strong concentrated distortion while keeping particle size small.
-                    if (bumpAmt < 64f && hwMat.HasProperty("_BumpAmt"))
+                    // Original _BumpAmt=24.6 — restore original distortion strength.
+                    // Was boosted to 64 based on false "linear pipeline" assumption.
+                    if (hwMat.HasProperty("_BumpAmt"))
                     {
-                        hwRend.material.SetFloat("_BumpAmt", 64f);
-                        Debug.Log("[ParticleAutoFixer] HeatWave _BumpAmt boosted: " + bumpAmt + " -> 64");
+                        hwRend.material.SetFloat("_BumpAmt", 24.6f);
+                        Debug.Log("[ParticleAutoFixer] HeatWave _BumpAmt set to original: " + bumpAmt + " -> 24.6");
                     }
                 }
             }
@@ -658,56 +662,116 @@ public static class ParticleEmitterAutoFixer
                   "\n  ParticleSystems found: " + psMap.Count +
                   "\n  Weapon-specific PS: " + weaponPsMap.Count);
 
-        // Step 0D: Swap explosion materials to Legacy Clean (Blend One OneMinusSrcColor).
-        // The self-saturating blend mode is CRITICAL for correct explosion visuals:
-        //   framebuffer = src + dst * (1 - src)
-        // Overlapping particles converge smoothly toward white, hiding individual sprite
-        // edges and giving the characteristic soft/round glow of the original 3.5 explosions.
-        // Blend SrcAlpha One (Projectile Additive) was tried but stacks linearly — makes
-        // the center overbright, shows sharp sprite sheet edges, and kills dust/spark layers.
+        // Step 0D: Cannon explosion fix — match original 3.5.5 fixed-function rendering.
         //
-        // _TintColor controls brightness for the linear pipeline. The original gamma pipeline
-        // used 2.0x (no _TintColor). In linear with sRGBTexture=0, gamma-encoded texture
-        // values appear brighter, so we use _TintColor=(0.5,0.5,0.5,0.5) for 1.0x brightness.
-        // Use psr.material (auto-instance) to avoid affecting shared materials
-        // (e.g., Spark is shared between Metal surface hits and ExplosionSpark).
-        Shader cleanShader = Shader.Find("Particles/Additive (Soft) Legacy Clean");
-        if (cleanShader != null)
+        // Root cause: the project is gamma (m_ActiveColorSpace=0), same as 3.5.5.
+        // The ONLY difference is the CG shader has edge fix + alpha fold that the
+        // original fixed-function shader did NOT have. EXPLOSION_MODE skips them.
+        //
+        // Original 3.5.5 formula: output = 2.0 * _TintColor * texel (no vertex color effect)
+        // With startColor=white and COL disabled, vertex color = _TintColor, so:
+        //   col = 2.0 * _TintColor * texel — identical to original.
+        //
+        // Original .mat tint values (from serialized prefab .mat files):
+        //   Blast:  (0.5, 0.5, 0.5, 0.5)    → effective 1.0x brightness
+        //   Dust:   (0.5, 0.5, 0.5, 0.5)    → effective 1.0x brightness
+        //   Ring:   (0.5, 0.5, 0.5, 0.32)   → effective 1.0x (alpha ignored in original)
+        //   Smoke:  (0.623, 0.623, 0.623, 0.502) → effective 1.246x brightness
+        //   Spark:  (0.5, 0.5, 0.5, 0.5)    → effective 1.0x brightness
+        //   Trail:  (1.0, 0.453, 0.0, 0.502) → orange/golden tone, effective 2.0x red
         {
-            int shaderSwaps = 0;
-            string[] explosionPSNames = { "ExplosionBlast", "ExplosionDust", "ExplosionSmoke",
-                "ExplosionSpark", "ExplosionRing", "ExplosionTrail" };
-            foreach (string psName in explosionPSNames)
+            // Tints tuned for 1:1 match with 3.5.5 frame captures (session 4).
+            // Modern ParticleSystemRenderer renders particles more prominently than legacy,
+            // so tints need to be lower than original .mat values to match visual output.
+            //
+            // Blast: 0.5 — peak flash matches well at this level.
+            // Dust:  0.3 — reduced to match fast fade in 3.5.5 (barely visible after blast).
+            // Ring:  0.03 — essentially invisible. In 3.5.5 it was never perceptible.
+            // Smoke: 0.35 — reduced to match fast clearing in 3.5.5.
+            // Spark: 0.5 — dark streaks against blast look correct.
+            // Trail: (0.4, 0.2, 0.0) — subtle golden, not bright orange. 3.5.5 trails were faint.
+            // Tuned via frame-by-frame comparison with 3.5.5 (session 4, round 7).
+            // Modern renderer shows individual particles more prominently than legacy,
+            // so Spark/Trail must be very dim — visible only as dark contrast during
+            // the bright blast flash, invisible on their own against dark backgrounds.
+            // Tuned via frame-by-frame comparison with 3.5.5 (session 4, round 8).
+            // Dust/Smoke create the warm ground-level haze that makes explosions
+            // feel "embedded" in the floor. Too low = floating point of light.
+            // Spark/Trail must stay very dim — only visible as dark contrast during blast.
+            // Round 9 tuning. Dust/Smoke now at full size (no 0.5x) so they create
+            // the wide warm ground haze seen in 3.5.5. Tints reduced to compensate.
+            // Spark bumped up — visible as dark streaks during blast, fades after.
+            // Ring very dim — never a defined circle shape in 3.5.5.
+            // Round 10. Dust/Smoke at full size (no 0.5x) — need very low tints to
+            // create a subtle warm haze, NOT a dense white cloud.
+            // Spark/Trail bumped up — the flying particles scattered across the screen
+            // need to be visible like in 3.5.5 frame 7.
+            // Round 16: R15 blast/smoke too big, sparks too dim.
+            // Blast tint 0.8 (slightly reduced from 0.85 since particle is bigger at 1.25x).
+            // Spark/Trail back to session 4 values — need visible dark streaks during blast.
+            // Smoke reduced from 0.55 to 0.45.
+            // R18: Blast tint lowered — R17's 0.9 + bigger 1.6x + EdgeMul 1.0 was too opaque.
+            // Larger-but-dimmer particle creates the wide translucent golden halo like 3.5.5.
+            var explosionTints = new System.Collections.Generic.Dictionary<string, Color> {
+                { "ExplosionBlast",  new Color(0.65f,  0.65f,  0.65f, 0.5f) },
+                { "ExplosionDust",   new Color(0.3f,   0.3f,   0.3f,  0.5f) },
+                { "ExplosionRing",   new Color(0.2f,   0.2f,   0.2f,  0.32f) },  // R21: raised from 0.06 — shockwave ring needs more opacity
+                { "ExplosionSmoke",  new Color(0.35f,  0.35f,  0.35f, 0.502f) },
+                { "ExplosionSpark",  new Color(0.12f,  0.12f,  0.12f, 0.5f) },
+                { "ExplosionTrail",  new Color(0.06f,  0.03f,  0.0f,  0.502f) },
+            };
+
+            int setup = 0;
+            foreach (var kvp in explosionTints)
             {
                 ParticleSystem targetPS;
-                if (psMap.TryGetValue(psName, out targetPS))
+                if (psMap.TryGetValue(kvp.Key, out targetPS))
                 {
+                    // Disable ColorOverLifetime/ColorBySpeed — original fixed-function ignored them
+                    var col = targetPS.colorOverLifetime;
+                    col.enabled = false;
+
+                    var cbs = targetPS.colorBySpeed;
+                    cbs.enabled = false;
+
+                    // Force startColor white — neutralizes vertex color so only _TintColor matters
+                    var main = targetPS.main;
+                    main.startColor = new Color(1f, 1f, 1f, 1f);
+
+                    // Scale sizeGrow for radius→diameter correction.
+                    // R15: Blast at 1.0x (full shrink rate) — bigger particle needs faster shrink
+                    // to match 3.5.5's punchy flash. Smoke/Spark/Trail stay at 0.5x.
+                    var grow = targetPS.GetComponent<LegacySizeGrow>();
+                    if (grow != null)
+                    {
+                        float growScale = 1.0f; // default: no change (Dust, Blast)
+                        if (kvp.Key == "ExplosionRing") growScale = 0.2f;
+                        else if (kvp.Key == "ExplosionSmoke" ||
+                                 kvp.Key == "ExplosionSpark" || kvp.Key == "ExplosionTrail")
+                            growScale = 0.5f;
+                        grow.sizeGrow *= growScale;
+                    }
+
                     var psr = targetPS.GetComponent<ParticleSystemRenderer>();
+
+                    // Set tints and enable EXPLOSION_MODE (skips edge fix + alpha fold)
                     if (psr != null && psr.sharedMaterial != null)
                     {
-                        // Use .material to auto-create instance (won't affect shared materials)
                         Material matInstance = psr.material;
-                        string oldShader = matInstance.shader.name;
-                        matInstance.shader = cleanShader;
-                        // Override _TintColor for linear pipeline brightness compensation.
-                        // Step 4 set (1,1,1,0.5) for 2x brightness (correct for original gamma
-                        // pipeline). In linear with sRGBTexture=0, gamma-encoded values appear
-                        // brighter after display gamma. 0.7x (via 0.35 * 2.0) balances brightness
-                        // with the new alpha modulation in the shader (col.rgb *= vertex.a).
-                        matInstance.SetColor("_TintColor", new Color(0.35f, 0.35f, 0.35f, 0.5f));
-                        shaderSwaps++;
-                        Debug.Log("[ParticleAutoFixer] Explosion shader fix: " + psName +
-                            " mat=" + matInstance.name +
-                            " was \"" + oldShader + "\" -> Legacy Clean (OneMinusSrcColor, 1x tint)");
+                        matInstance.SetColor("_TintColor", kvp.Value);
+                        matInstance.EnableKeyword("EXPLOSION_MODE");
+                        // Soft edge cleanup multiplier — tunable per session.
+                        // 2.0 = original (kills starburst edges), 1.0 = no cleanup (may show quad edges).
+                        // R17: 1.0 — let soft edges through for wider golden glow halo like 3.5.5.
+                        matInstance.SetFloat("_EdgeMul", 1.0f);
                     }
+
+                    setup++;
                 }
             }
-            Debug.Log("[ParticleAutoFixer] Explosion shader fix: " + shaderSwaps +
-                " materials swapped to Legacy Clean");
-        }
-        else
-        {
-            Debug.LogWarning("[ParticleAutoFixer] Clean shader not found: Particles/Additive (Soft) Legacy Clean");
+
+            Debug.Log("[ParticleAutoFixer] Step 0D: " + setup +
+                " explosions (EXPLOSION_MODE, original .mat tints, COL disabled, white startColor)");
         }
 
         // Step 7: Pink materials cleanup — disable renderers on ALL unfixed particle systems
@@ -828,6 +892,10 @@ public static class ParticleEmitterAutoFixer
         {
             ParticleRotationGuard.Create(allStretched.ToArray());
         }
+
+        // Post-fix verification: delayed snapshot of all particle properties to detect
+        // scene deserialization overwrites in standalone builds. Logs mismatches after 60 frames.
+        ParticleBuildVerifier.Create(psMap, shaderCache);
     }
 
     static Color ParseColor(string rgba)
@@ -973,8 +1041,12 @@ public static class ParticleEmitterAutoFixer
             }
         }
 
+        // Parameter scale-down removed: with the correct type 2 shader (same as surface
+        // impacts), original prefab values + HDR clamp should produce correct explosions.
+
         return totalFixed;
     }
+
 
     static int WirePC(ParticleConfiguration c, Dictionary<string, ParticleSystem> m, string n)
     {
@@ -1862,3 +1934,306 @@ public class ParticleRotationGuard : MonoBehaviour
         _framesRemaining--;
     }
 }
+
+/// <summary>
+/// Delayed diagnostic that runs ~1 second after ParticleEmitterAutoFixer completes.
+/// Snapshots ALL critical particle properties and logs mismatches to detect scene
+/// deserialization overwrites that only happen in standalone builds (not Editor).
+///
+/// Check Player.log for "[BuildVerifier]" lines after running a standalone build.
+/// Any MISMATCH lines indicate properties that were overwritten after the fixer ran.
+/// </summary>
+public class ParticleBuildVerifier : MonoBehaviour
+{
+    private Dictionary<string, ParticleSystem> _psMap;
+    private Shader[] _expectedShaders;
+    private int _framesRemaining = 60; // ~1 second at 60fps
+    private bool _verified = false;
+
+    public static void Create(Dictionary<string, ParticleSystem> psMap, Shader[] shaderCache)
+    {
+        var go = new GameObject("ParticleBuildVerifier");
+        Object.DontDestroyOnLoad(go);
+        var v = go.AddComponent<ParticleBuildVerifier>();
+        v._psMap = new Dictionary<string, ParticleSystem>(psMap);
+        v._expectedShaders = shaderCache;
+        Debug.Log("[BuildVerifier] Created — will verify particle state in 60 frames");
+    }
+
+    void LateUpdate()
+    {
+        if (_verified) return;
+
+        if (_framesRemaining > 0)
+        {
+            _framesRemaining--;
+            return;
+        }
+
+        _verified = true;
+        RunVerification();
+        Destroy(gameObject);
+    }
+
+    void RunVerification()
+    {
+        Debug.Log("[BuildVerifier] ========== POST-FIX VERIFICATION (60 frames after fix) ==========");
+        Debug.Log("[BuildVerifier] QualityLevel=" + QualitySettings.GetQualityLevel() +
+            " (trails need >0) | Time=" + Time.time + "s");
+
+        int mismatches = 0;
+
+        // Expected material->shader type mapping (from ParticleEmitterAutoFixer.MaterialMapping)
+        var expectedShaderType = new Dictionary<string, int>
+        {
+            {"Wood", 0}, {"Stone", 0}, {"Grass", 0}, {"Sand", 0}, {"Splat", 0},
+            {"WaterExtra", 0}, {"WaterDrops", 0}, {"PaintOrange", 0}, {"PaintGreen", 0},
+            {"PaintBlue", 0}, {"PaintRed", 0},
+            {"Trail", 1}, {"PlayerStar", 1}, {"WaterCircle", 1},
+            {"Metal", 2}, {"Fire", 2},
+            {"ExplosionBlast", 2}, {"ExplosionDust", 2}, {"ExplosionRing", 2},
+            {"ExplosionSmoke", 2}, {"ExplosionSpark", 2}, {"ExplosionTrail", 2},
+            {"HeatWave", 4},
+        };
+
+        // Expected render modes (from AnimatorData legacyStretchMode)
+        var expectedRenderMode = new Dictionary<string, ParticleSystemRenderMode>
+        {
+            {"Metal", ParticleSystemRenderMode.Stretch},
+            {"Trail", ParticleSystemRenderMode.Stretch},
+            {"ExplosionSpark", ParticleSystemRenderMode.Stretch},
+            {"ExplosionTrail", ParticleSystemRenderMode.Stretch},
+            {"WaterCircle", ParticleSystemRenderMode.HorizontalBillboard},
+            {"WaterExtra", ParticleSystemRenderMode.VerticalBillboard},
+        };
+
+        // Expected materials (from MaterialMapping)
+        var expectedMaterial = new Dictionary<string, string>
+        {
+            {"Wood", "WoodAnimated"}, {"Stone", "Stone"}, {"Grass", "Grass"},
+            {"Sand", "Sand"}, {"Splat", "Sand"}, {"WaterExtra", "WaterExtraSplat"},
+            {"WaterDrops", "WaterDrops"}, {"PaintOrange", "PaintOrange"},
+            {"PaintGreen", "PaintGreen"}, {"PaintBlue", "PaintGreen"},
+            {"PaintRed", "PaintRed"}, {"Trail", "Trail"},
+            {"PlayerStar", "BloodCross"}, {"WaterCircle", "WaterCircle"},
+            {"Metal", "Spark"}, {"Fire", "Fire2Smoke"},
+            {"ExplosionBlast", "Blast"}, {"ExplosionDust", "Dust"},
+            {"ExplosionRing", "Ring"}, {"ExplosionSmoke", "Smoke"},
+            {"ExplosionSpark", "Spark"}, {"ExplosionTrail", "TrailExplosion"},
+            {"HeatWave", "HeatWave"},
+        };
+
+        string[] shaderNames =
+        {
+            "Legacy Shaders/Particles/Alpha Blended",
+            "Legacy Shaders/Particles/Additive",
+            "Particles/Additive (Soft) Legacy",
+            "Legacy Shaders/Particles/Additive (Soft)",
+            "HeatDistort_3.0",
+            "Cmune/Projectile Additive"
+        };
+
+        foreach (var kvp in _psMap)
+        {
+            string name = kvp.Key;
+            ParticleSystem ps = kvp.Value;
+            if (ps == null)
+            {
+                Debug.LogError("[BuildVerifier] MISMATCH: " + name + " — ParticleSystem is NULL (destroyed?)");
+                mismatches++;
+                continue;
+            }
+
+            var main = ps.main;
+            var rend = ps.GetComponent<ParticleSystemRenderer>();
+            if (rend == null)
+            {
+                Debug.LogError("[BuildVerifier] MISMATCH: " + name + " — no ParticleSystemRenderer");
+                mismatches++;
+                continue;
+            }
+
+            // Check material name
+            string actualMat = rend.sharedMaterial != null ? rend.sharedMaterial.name : "NULL";
+            if (expectedMaterial.TryGetValue(name, out string expMat))
+            {
+                // Material instance names get " (Instance)" suffix — strip it
+                string cleanMat = actualMat.Replace(" (Instance)", "");
+                if (cleanMat != expMat)
+                {
+                    Debug.LogError("[BuildVerifier] MISMATCH: " + name +
+                        " material=" + actualMat + " expected=" + expMat);
+                    mismatches++;
+                }
+            }
+
+            // Check shader
+            string actualShader = rend.sharedMaterial != null && rend.sharedMaterial.shader != null
+                ? rend.sharedMaterial.shader.name : "NULL";
+            if (expectedShaderType.TryGetValue(name, out int shaderIdx) && shaderIdx < shaderNames.Length)
+            {
+                if (actualShader != shaderNames[shaderIdx])
+                {
+                    Debug.LogError("[BuildVerifier] MISMATCH: " + name +
+                        " shader=" + actualShader + " expected=" + shaderNames[shaderIdx]);
+                    mismatches++;
+                }
+            }
+
+            // Check EXPLOSION_MODE keyword on explosion material instances
+            if (name.StartsWith("Explosion") && rend.sharedMaterial != null)
+            {
+                bool hasExpMode = rend.sharedMaterial.IsKeywordEnabled("EXPLOSION_MODE");
+                float edgeMul = rend.sharedMaterial.HasProperty("_EdgeMul")
+                    ? rend.sharedMaterial.GetFloat("_EdgeMul") : -1f;
+                Color tint = rend.sharedMaterial.HasProperty("_TintColor")
+                    ? rend.sharedMaterial.GetColor("_TintColor") : Color.clear;
+                Debug.Log("[BuildVerifier] " + name + " EXPLOSION_MODE=" + hasExpMode +
+                    " _EdgeMul=" + edgeMul.ToString("F1") +
+                    " _TintColor=" + tint);
+                if (!hasExpMode)
+                {
+                    Debug.LogError("[BuildVerifier] MISMATCH: " + name +
+                        " EXPLOSION_MODE=false (should be true — will render with edge fix + alpha fold)");
+                    mismatches++;
+                }
+            }
+
+            // Check texture name for bullet Trail (must be trace, not SplatterTrail)
+            if (name == "Trail")
+            {
+                string trailTex = rend.sharedMaterial != null && rend.sharedMaterial.mainTexture != null
+                    ? rend.sharedMaterial.mainTexture.name : "NULL";
+                if (trailTex != "trace")
+                {
+                    Debug.LogError("[BuildVerifier] MISMATCH: Trail tex=" + trailTex +
+                        " expected=trace (thin bright line). Wrong texture = fat horizontal bullet trails.");
+                    mismatches++;
+                }
+            }
+
+            // Check render mode
+            if (expectedRenderMode.TryGetValue(name, out ParticleSystemRenderMode expMode))
+            {
+                if (rend.renderMode != expMode)
+                {
+                    Debug.LogError("[BuildVerifier] MISMATCH: " + name +
+                        " renderMode=" + rend.renderMode + " expected=" + expMode);
+                    mismatches++;
+                }
+            }
+
+            // Check startRotation (should be 0 for all particles)
+            float rot = main.startRotation.constant;
+            if (Mathf.Abs(rot) > 0.001f)
+            {
+                Debug.LogError("[BuildVerifier] MISMATCH: " + name +
+                    " startRotation=" + rot.ToString("F4") + " expected=0");
+                mismatches++;
+            }
+
+            // Check startColor is white (critical for emission visibility)
+            Color sc = main.startColor.color;
+            if (sc.r < 0.99f || sc.g < 0.99f || sc.b < 0.99f)
+            {
+                Debug.LogError("[BuildVerifier] MISMATCH: " + name +
+                    " startColor=" + sc + " expected=white");
+                mismatches++;
+            }
+
+            // Check shape is disabled (prevents 1m position offset)
+            if (ps.shape.enabled)
+            {
+                Debug.LogError("[BuildVerifier] MISMATCH: " + name +
+                    " shape.enabled=true expected=false");
+                mismatches++;
+            }
+
+            // Check emission disabled (we use manual Emit)
+            if (ps.emission.enabled)
+            {
+                Debug.LogWarning("[BuildVerifier] NOTE: " + name + " emission.enabled=true (may be intentional)");
+            }
+
+            // Check GO is active
+            if (!ps.gameObject.activeInHierarchy)
+            {
+                Debug.LogWarning("[BuildVerifier] NOTE: " + name +
+                    " gameObject is INACTIVE — particles won't render");
+            }
+
+            // Check renderer is enabled
+            if (!rend.enabled)
+            {
+                Debug.LogWarning("[BuildVerifier] NOTE: " + name +
+                    " renderer is DISABLED — particles won't render");
+            }
+
+            // Log full state for every PS (useful for diffing Editor vs Build logs)
+            string texName = rend.sharedMaterial != null && rend.sharedMaterial.mainTexture != null
+                ? rend.sharedMaterial.mainTexture.name : "NULL";
+            Debug.Log("[BuildVerifier] " + name +
+                " OK mat=" + actualMat +
+                " shader=" + actualShader +
+                " tex=" + texName +
+                " render=" + rend.renderMode +
+                " rot=" + rot.ToString("F3") +
+                " color=" + sc +
+                " active=" + ps.gameObject.activeInHierarchy +
+                " playing=" + ps.isPlaying +
+                " shape=" + ps.shape.enabled +
+                " scene=" + ps.gameObject.scene.name);
+        }
+
+        // Also verify SpawnParticles (pickup effect) — separate from psMap
+        var spawnPS = FindSpawnParticles();
+        if (spawnPS != null)
+        {
+            var spRend = spawnPS.GetComponent<ParticleSystemRenderer>();
+            var spMain = spawnPS.main;
+            string spMat = spRend != null && spRend.sharedMaterial != null ? spRend.sharedMaterial.name : "NULL";
+            string spShader = spRend != null && spRend.sharedMaterial != null && spRend.sharedMaterial.shader != null
+                ? spRend.sharedMaterial.shader.name : "NULL";
+            float spMinSize = spMain.startSize.constantMin;
+            float spMaxSize = spMain.startSize.constantMax;
+
+            Debug.Log("[BuildVerifier] SpawnParticles mat=" + spMat +
+                " shader=" + spShader +
+                " size=" + spMinSize + "-" + spMaxSize +
+                " life=" + spMain.startLifetime.constantMin + "-" + spMain.startLifetime.constantMax +
+                " active=" + spawnPS.gameObject.activeInHierarchy +
+                " rendEnabled=" + (spRend != null && spRend.enabled) +
+                " renderMode=" + (spRend != null ? spRend.renderMode.ToString() : "N/A"));
+
+            // Verify SpawnParticlesFixer values were applied
+            if (Mathf.Abs(spMinSize - 0.05f) > 0.01f || Mathf.Abs(spMaxSize - 0.15f) > 0.01f)
+            {
+                Debug.LogError("[BuildVerifier] MISMATCH: SpawnParticles startSize=" +
+                    spMinSize + "-" + spMaxSize + " expected=0.05-0.15 (SpawnParticlesFixer may not have run)");
+                mismatches++;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[BuildVerifier] SpawnParticles not found");
+        }
+
+        Debug.Log("[BuildVerifier] ========== RESULT: " + mismatches + " MISMATCHES ==========");
+        if (mismatches == 0)
+            Debug.Log("[BuildVerifier] All particle properties match expected values after 60-frame delay.");
+        else
+            Debug.LogError("[BuildVerifier] " + mismatches + " properties were overwritten by scene deserialization!");
+    }
+
+    static ParticleSystem FindSpawnParticles()
+    {
+        foreach (var ps in Resources.FindObjectsOfTypeAll<ParticleSystem>())
+        {
+            if (ps != null && ps.gameObject != null && ps.gameObject.name == "SpawnParticles"
+                && !string.IsNullOrEmpty(ps.gameObject.scene.name))
+                return ps;
+        }
+        return null;
+    }
+}
+

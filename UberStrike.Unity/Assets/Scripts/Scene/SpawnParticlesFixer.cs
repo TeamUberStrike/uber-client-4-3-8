@@ -19,9 +19,38 @@ using UnityEngine;
 /// </summary>
 public static class SpawnParticlesFixer
 {
+    static bool _hasRun;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetStatics()
+    {
+        _hasRun = false;
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Init()
     {
+        // Register for scene loads so we retry if SpawnParticles isn't available yet.
+        // In standalone builds, the ParticleEffectController hierarchy (which contains
+        // SpawnParticles) may not be loaded when AfterSceneLoad first fires.
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+        TryRun();
+    }
+
+    static void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        if (!_hasRun)
+        {
+            Debug.Log("[SpawnParticlesFixer] Scene loaded: " + scene.name + " — attempting fix");
+            TryRun();
+        }
+    }
+
+    static void TryRun()
+    {
+        if (_hasRun) return;
+
         // SpawnParticles is a child of the ParticleEffectController hierarchy in Latest scene.
         // It's on layer 12 with tag "Weapon".
         var all = Resources.FindObjectsOfTypeAll<ParticleSystem>();
@@ -29,11 +58,16 @@ public static class SpawnParticlesFixer
         {
             if (ps == null || ps.gameObject == null) continue;
             if (ps.gameObject.name != "SpawnParticles") continue;
+            // Prefer scene instances over prefab assets
+            if (string.IsNullOrEmpty(ps.gameObject.scene.name)) continue;
 
             FixParticleSystem(ps);
-            Debug.Log("[SpawnParticlesFixer] Fixed SpawnParticles pickup effect");
+            _hasRun = true;
+            Debug.Log("[SpawnParticlesFixer] Fixed SpawnParticles pickup effect (scene=" + ps.gameObject.scene.name + ")");
             return;
         }
+
+        Debug.LogWarning("[SpawnParticlesFixer] SpawnParticles not found yet, will retry on next scene load");
     }
 
     static void FixParticleSystem(ParticleSystem ps)

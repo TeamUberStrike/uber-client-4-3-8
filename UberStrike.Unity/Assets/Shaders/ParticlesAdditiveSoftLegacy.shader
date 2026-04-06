@@ -1,19 +1,20 @@
 // Custom shader matching Unity 3.5's fixed-function "Particles/Additive (Soft)" behavior.
 // BLEND: One OneMinusSrcColor (alpha NOT used in blending equation itself).
 //
-// Original 3.5 formula: output = texture * _TintColor * vertexColor * 2 (DOUBLE combiner)
-// Alpha had NO effect on RGB output — Blend One OneMinusSrcColor ignores alpha entirely.
-// ColorOverLifetime alpha still animates for bookkeeping but doesn't dim particles.
+// Two paths:
+//   Default:        2.0 * color * texel, edge fix, alpha fold, HDR clamp (surface impacts)
+//   EXPLOSION_MODE: 2.0 * color * texel, HDR clamp only (cannon explosions)
 //
-// We add a gentle edge fix (saturate * 4) to kill PSD import artifacts at texture borders
-// (bright RGB at near-zero alpha) without clipping the soft smoke gradients that
-// make fire/smoke particles look wispy. The original had no edge fix but also had
-// no PSD import issues (Unity 3.5 gamma-space textures).
+// The original 3.5.5 fixed-function was: output = 2.0 * _TintColor * texel
+// with NO edge fix and NO alpha fold. Surface impacts are small enough that the
+// extra operations don't matter, but cannon explosions (large, overlapping) need
+// the clean path to match the original visual.
 
 Shader "Particles/Additive (Soft) Legacy" {
     Properties {
-        _TintColor ("Tint Color", Color) = (0.5, 0.5, 0.5, 0.5)
+        [Gamma] _TintColor ("Tint Color", Color) = (0.5, 0.5, 0.5, 0.5)
         _MainTex ("Particle Texture", 2D) = "white" {}
+        _EdgeMul ("Edge Cleanup Multiplier", Range(0.5, 4.0)) = 2.0
     }
 
     Category {
@@ -30,12 +31,14 @@ Shader "Particles/Additive (Soft) Legacy" {
                 #pragma target 2.0
                 #pragma multi_compile_particles
                 #pragma multi_compile_fog
+                #pragma multi_compile _ EXPLOSION_MODE
 
                 #include "UnityCG.cginc"
 
                 sampler2D _MainTex;
                 float4 _MainTex_ST;
                 fixed4 _TintColor;
+                half _EdgeMul;
 
                 struct appdata_t {
                     float4 vertex : POSITION;
@@ -66,30 +69,20 @@ Shader "Particles/Additive (Soft) Legacy" {
 
                 fixed4 frag (v2f i) : SV_Target
                 {
-                    // 2.0x multiplier matches Unity 3.5 fixed-function DOUBLE keyword.
-                    // Original: output = texture * _TintColor * vertexColor * 2
                     fixed4 texel = tex2D(_MainTex, i.texcoord);
                     fixed4 col = 2.0f * i.color * texel;
-
-                    // Gentle edge fix: kill PSD import artifacts (alpha < 25%)
-                    // without clipping soft smoke/fire gradients.
-                    // Original had no edge fix but 3.5 textures had no PSD artifacts.
-                    col.rgb *= saturate(texel.a * 4.0);
-
-                    // Vertex alpha fade: folds ColorOverLifetime alpha into brightness.
-                    // Original 3.5 Additive (Soft) did NOT fold alpha into RGB — alpha
-                    // was ignored by Blend One OneMinusSrcColor. But without this fold,
-                    // particles pop in/out at full brightness with no fade transition.
-                    // Use a gentle fold (saturate * 2) to keep smooth fade while
-                    // staying closer to the original constant-brightness behavior.
-                    col.rgb *= saturate(i.color.a * 2.0);
-
-                    // Clamp to 1.0: original gamma pipeline clamped before blending.
-                    // In linear pipeline, 2x can push values above 1.0 into HDR,
-                    // making particles overbright vs the original. This restores the
-                    // gamma-pipeline capping behavior.
+                #if defined(EXPLOSION_MODE)
+                    // Soft edge cleanup: hide transparent quad edges without
+                    // affecting visible particle shape. The original 3.5.5
+                    // fixed-function didn't need this because the legacy
+                    // ParticleRenderer handled edge blending differently.
+                    // _EdgeMul tunable: 2.0=current, 1.5/1.0=preserves more starburst edges
+                    col.rgb *= saturate(texel.a * _EdgeMul);
+                #else
+                    col.rgb *= saturate(texel.a * 4.0);      // edge fix (surface impacts)
+                    col.rgb *= saturate(i.color.a * 2.0);     // alpha fold (surface impacts)
+                #endif
                     col.rgb = min(col.rgb, 1.0);
-
                     UNITY_APPLY_FOG_COLOR(i.fogCoord, col, fixed4(0,0,0,0));
                     return col;
                 }

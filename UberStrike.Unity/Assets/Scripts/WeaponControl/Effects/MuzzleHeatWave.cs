@@ -30,10 +30,9 @@ public class MuzzleHeatWave : BaseWeaponEffect
         if (_renderer == null)
             Debug.LogWarning("[MuzzleHeatWave] No Renderer on " + gameObject.name);
 
-        // Override prefab defaults for visibility in linear pipeline.
-        // Original prefab: _maxSize=0.25, _duration=0.25.
-        _maxSize = 0.75f;
-        _duration = 0.35f;
+        // Original prefab values from 3.5.5.
+        _maxSize = 0.25f;
+        _duration = 0.25f;
 
         // Replace Y-up Plane mesh with Z-facing quad.
         // Migration replaced the original mesh with Unity's default Y-up Plane.

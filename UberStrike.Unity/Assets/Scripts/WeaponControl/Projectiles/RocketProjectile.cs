@@ -34,8 +34,10 @@ public class RocketProjectile : Projectile
 
             if (_smokeRenderer)
             {
-                var main = _smokeRenderer.main;
-                main.startColor = _smokeColor;
+                // 3.5.5 set material _TintColor, not ParticleSystem startColor
+                var r = _smokeRenderer.GetComponent<ParticleSystemRenderer>();
+                if (r != null && r.material != null)
+                    r.material.SetColor("_TintColor", _smokeColor);
             }
         }
     }
@@ -78,8 +80,22 @@ public class RocketProjectile : Projectile
 
     private void FixMissingSmoke()
     {
+        // Only standard cannon missiles have trail smoke in 3.5.5.
+        // Enigma Cannon, Enigma Cannon Dragon, Lovewalking Gun do NOT.
+        string missileName = gameObject.name.Replace("(Clone)", "").Trim();
+        bool hasTrailSmoke = missileName == "CNMissile" ||
+                             missileName == "CN_Painzerfaust_Missile" ||
+                             missileName == "CN_ForceCannonPlus_Missile" ||
+                             missileName == "CN_ForceCannon_Missile";
+        if (!hasTrailSmoke)
+            return;
+
         Transform smokeChild = transform.Find("MissileSmoke");
         if (smokeChild == null) return;
+
+        // Move to Default layer — original layer 12 (GloballyLit_DynamicReflectRefract)
+        // may not be in the main camera's culling mask in Unity 2022.
+        smokeChild.gameObject.layer = 0;
 
         ParticleSystem ps = smokeChild.GetComponent<ParticleSystem>();
         if (ps == null)
@@ -100,22 +116,32 @@ public class RocketProjectile : Projectile
             main.loop = true;
             main.playOnAwake = true;
             main.startLifetime = new ParticleSystem.MinMaxCurve(1.8f, 2.2f);
-            main.startSize = new ParticleSystem.MinMaxCurve(0.8f, 1.2f);
-            main.startSpeed = 1.0f; // localVelocity Z=1 (forward along missile)
-            main.startColor = _smokeColor;
+            main.startSize = new ParticleSystem.MinMaxCurve(0.4f, 0.6f);  // smaller trail smoke
+            main.startSpeed = 0f; // no initial speed — velocity set via VelocityOverLifetime
+            main.startColor = Color.white;  // color controlled by material _TintColor like 3.5.5
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.maxParticles = 100;
             main.startRotation = new ParticleSystem.MinMaxCurve(0f, 6.283f);
 
             var emission = ps.emission;
             emission.enabled = true;
-            emission.rateOverTime = _smokeAmount * 15;
+            emission.rateOverTime = _smokeAmount * 15;  // original rate
 
             // Ellipsoid shape (0.1, 0.1, 0.05)
             var shape = ps.shape;
             shape.enabled = true;
             shape.shapeType = ParticleSystemShapeType.Sphere;
             shape.radius = 0.1f;
+
+            // Original 3.5.5 localVelocity=(0,0,1) but MissileSmoke has 180° X rotation,
+            // so Z+ in local space = BACKWARD toward the player. This creates the
+            // "smoke floating in your face" effect at the muzzle.
+            var vel = ps.velocityOverLifetime;
+            vel.enabled = true;
+            vel.space = ParticleSystemSimulationSpace.Local;
+            vel.x = 0f;
+            vel.y = 0f;
+            vel.z = 1f;  // backward in MissileSmoke's rotated local space
 
             // Original had sizeGrow=0 — no size change over lifetime
 
@@ -160,22 +186,25 @@ public class RocketProjectile : Projectile
             {
                 renderer.renderMode = ParticleSystemRenderMode.Billboard;
                 renderer.sortMode = ParticleSystemSortMode.Distance;
-                renderer.maxParticleSize = 0.25f;
+                renderer.maxParticleSize = 0.25f;  // original value
 
+                // Original 3.5.5 used Alpha Blended shader (NOT Additive).
+                // Force Alpha Blended — create material with correct shader and texture.
+                Shader abShader = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
+                if (abShader == null) abShader = Shader.Find("Particles/Alpha Blended");
                 Material smokeMat = Resources.Load<Material>("ParticleMaterials/MissileSmoke");
-                if (smokeMat != null)
+                if (smokeMat != null && abShader != null)
                 {
-                    renderer.material = smokeMat;
+                    renderer.material = new Material(abShader);
+                    renderer.material.mainTexture = smokeMat.mainTexture;
+                    renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0.1f));
                 }
-                else
+                else if (abShader != null)
                 {
-                    Shader shader = Shader.Find("Legacy Shaders/Particles/Additive (Soft)");
-                    if (shader != null)
-                    {
-                        renderer.material = new Material(shader);
-                        renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0.196f));
-                    }
+                    renderer.material = new Material(abShader);
+                    renderer.material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0.1f));
                 }
+                Debug.Log("[MissileSmokeFix] Material=" + (renderer.material != null ? renderer.material.name + " shader=" + renderer.material.shader.name : "NULL"));
             }
 
             ps.Play();

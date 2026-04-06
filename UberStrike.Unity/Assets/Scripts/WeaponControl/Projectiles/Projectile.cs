@@ -115,7 +115,9 @@ public abstract class Projectile : MonoBehaviour, IProjectile
 
         if (_showHeatwave)
         {
-            ParticleEffectController.ShowHeatwaveEffect(transform.position);
+            // Larger particle HeatWave — only Enigma Cannon has _showHeatwave=1.
+            // Original ShowHeatwaveEffect uses size=1, life=1 which is barely visible in 2022.
+            ParticleEffectController.ShowHeatwaveEffect(transform.position, 3f, 1.5f);
             ExplosionManager.Instance.ShowHeatWave(point);
         }
 
@@ -130,6 +132,22 @@ public abstract class Projectile : MonoBehaviour, IProjectile
         if (!IsProjectileExploded)
         {
             IsProjectileExploded = true;
+
+            // Detach smoke trail so particles linger after missile is destroyed.
+            // In Unity 3.5.5, legacy particles persisted after emitter destruction.
+            // Modern ParticleSystem destroys all particles when the GameObject is destroyed.
+            Transform smoke = transform.Find("MissileSmoke");
+            if (smoke != null)
+            {
+                var ps = smoke.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    smoke.SetParent(null);
+                    ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                    GameObject.Destroy(smoke.gameObject, ps.main.startLifetime.constantMax + 0.5f);
+                }
+            }
+
             gameObject.SetActiveRecursively(false);
             GameObject.Destroy(gameObject);
         }

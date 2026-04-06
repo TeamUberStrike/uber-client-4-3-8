@@ -233,7 +233,7 @@ public class LevelManager : Singleton<LevelManager>
                 WWW loader;
                 string fileToLoad = string.Empty;
 
-#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX
                 // Try scene-name-based filename first (matches BuildMapScenes output with enableLevelHashing=false)
                 string standaloneSceneFile = ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.SceneName + ".unity3d";
                 string standaloneMapFile = ApplicationDataManager.BaseStandaloneMapsURL + MapToLoad.FileName;

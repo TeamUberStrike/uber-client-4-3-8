@@ -28,7 +28,23 @@ public static class ParticleEmissionSystem
         var ep = new ParticleSystem.EmitParams();
         ep.position = position;
         ep.velocity = velocity;
-        ep.startSize = DebugLargeParticles ? size * 10f : size;
+        // Legacy ParticleRenderer used size as radius, modern ParticleSystemRenderer
+        // uses diameter. Per-particle scale factors tuned via frame capture comparison.
+        // Round 13: Spark/Trail reduced from 0.5x to 0.35x — the stretched streaks were
+        // too prominent post-blast ("expanding electricity" pattern). Smaller = invisible faster.
+        float finalSize = DebugLargeParticles ? size * 10f : size;
+        string pName = ps.gameObject.name;
+        bool isEnigma = ps.transform.parent != null && ps.transform.parent.name == "CNEnigmaCannon";
+
+        if (pName == "ExplosionBlast")
+            finalSize *= isEnigma ? 0.85f : 1.2f;  // Enigma: visible nova but not dominant.
+        else if (pName == "ExplosionSmoke")
+            finalSize *= isEnigma ? 1.2f : 0.7f;   // Enigma: spreading spray with fade. Regular: subtle.
+        else if (pName == "ExplosionRing")
+            finalSize *= 0.5f;
+        else if (pName == "ExplosionSpark" || pName == "ExplosionTrail")
+            finalSize *= 0.45f;
+        ep.startSize = finalSize;
         ep.startLifetime = lifetime;
         ep.startColor = color;
         ps.Emit(ep, 1);

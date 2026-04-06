@@ -19,9 +19,10 @@ public class ExplosionManager : Singleton<ExplosionManager>
             if (cam != null)
             {
                 HeatWave hw = GameObject.Instantiate(HeatWavePrefab, point, cam.transform.rotation);
-                // Balanced: original 0.05/0.25/64 was invisible in linear pipeline.
-                // 0.5 scale = 5m diameter, 1s duration, 96 distortion — strong concentrated effect.
-                hw.InitExplosion(0.5f, 1.0f, 96f);
+                // Enigma Cannon HeatWave — only Enigma Cannon has _showHeatwave=1.
+                // Distortion cranked to 128 (shader max) because GrabPass refraction
+                // is weaker in Unity 2022 than 3.5.5's fixed-function equivalent.
+                hw.InitExplosion(5.0f, 0.8f, 128f);
                 // Move to layer 0 so main camera renders it (GrabPass works on main camera).
                 // Weapon camera GrabPass doesn't work in Unity 2022.
                 hw.gameObject.layer = 0;
