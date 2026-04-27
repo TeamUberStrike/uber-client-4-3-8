@@ -1,11 +1,16 @@
 ﻿using Cmune.Util;
+using UberStrike.Core.Types;
+using UberStrike.DataCenter.Common.Entities;
 using UberStrike.Realtime.Common;
 using UnityEngine;
 
 public class QuickItemController : Singleton<QuickItemController>
 {
     private BaseQuickItem[] _quickItems;
+    private InventoryItem[] _inventoryItems;
     private const float CooldownTime = 0.5f;
+    private const float SpringGrenadeCooldown = 2f;
+    private const int SpringGrenadeCooldownMs = 2000;
     private bool _isEnabled;
 
     public bool IsEnabled
@@ -37,26 +42,45 @@ public class QuickItemController : Singleton<QuickItemController>
                 QuickItem quickItem = inventoryItem.Item as QuickItem;
                 _quickItems[i] = quickItem.Instantiate();
                 _quickItems[i].transform.parent = GameState.LocalPlayer.WeaponAttachPoint;
+                _inventoryItems[i] = inventoryItem;
 
                 //configure quick item
                 if (_quickItems[i] != null)
                 {
+                    // Config overrides are now applied at QuickItem construction time
+                    // so shop tooltips see them too — nothing to do here.
+
                     // item is a consumable when recharge time <= 0
                     if (_quickItems[i].Configuration.RechargeTime <= 0)
                     {
                         int index = i;
+                        var capturedItem = inventoryItem;
+                        var capturedBehaviour = _quickItems[index];
                         _quickItems[i].Behaviour.OnActivated += () =>
                         {
-                            UseConsumableItem(inventoryItem);
+                            UseConsumableItem(capturedItem);
+                            Restriction.DecreaseUse(index);
+                            NextCooldownFinishTime = Time.time + GetCooldownFor(capturedBehaviour);
+                        };
+
+                        int stock = ResolveStock(_quickItems[i], inventoryItem);
+                        Restriction.InitializeSlot(i, _quickItems[i], stock);
+                    }
+                    else
+                    {
+                        // Rechargeable items (HealthBot / AmmoBot Charged). Wire the same
+                        // Restriction pipeline so per-life caps work; without this the
+                        // "charged" variants would be unlimited while alive.
+                        int index = i;
+                        _quickItems[i].Behaviour.OnActivated += () =>
+                        {
                             Restriction.DecreaseUse(index);
                             NextCooldownFinishTime = Time.time + CooldownTime;
                         };
 
-                        Restriction.InitializeSlot(i, _quickItems[i], inventoryItem.AmountRemaining);
-                    }
-                    else
-                    {
-                        _quickItems[i].Behaviour.CurrentAmount = _quickItems[i].Configuration.AmountRemaining;
+                        int stock = ResolveStock(_quickItems[i], inventoryItem);
+                        Restriction.InitializeSlot(i, _quickItems[i], stock);
+                        _quickItems[i].Behaviour.CurrentAmount = stock;
                     }
                     _quickItems[i].Behaviour.FocusKey = GetFocusKey(slot);
 
@@ -159,11 +183,132 @@ public class QuickItemController : Singleton<QuickItemController>
     private QuickItemController()
     {
         _quickItems = new BaseQuickItem[LoadoutManager.QuickSlots.Length];
+        _inventoryItems = new InventoryItem[LoadoutManager.QuickSlots.Length];
         Restriction = new QuickItemRestriction();
 
         QuickItemEventListener.Instance.Initialize();
         CmuneEventHandler.AddListener<OnSetPlayerTeamEvent>((ev) => UpdateHudSlot(ev.TeamId));
         CmuneEventHandler.AddListener<InputChangeEvent>(OnInputChanged);
+        // Per-life-capped items (HealthBot/AmmoBot Charged at UsesPerLife=1) need
+        // their counter reset on respawn. Restriction.RenewLifeUses hooks the data
+        // layer; syncing Behaviour.CurrentAmount brings the HUD back in sync.
+        CmuneEventHandler.AddListener<OnPlayerRespawnEvent>(OnLocalPlayerRespawn);
+    }
+
+    private void OnLocalPlayerRespawn(OnPlayerRespawnEvent ev)
+    {
+        Restriction.RenewLifeUses();
+        for (int i = 0; i < _quickItems.Length; i++)
+        {
+            var qi = _quickItems[i];
+            var inv = _inventoryItems[i];
+            if (qi == null || inv == null) continue;
+            int stock = ResolveStock(qi, inv);
+            qi.Behaviour.CurrentAmount = stock;
+            WeaponsHud.Instance.SetQuickItemCurrentAmount(i, stock);
+        }
+    }
+
+    internal static void ApplyItemRuleOverrides(QuickItemConfiguration cfg)
+    {
+        if (cfg == null) return;
+        switch (cfg.BehaviourType)
+        {
+            case QuickItemLogic.SpringGrenade:
+                SetUsesPerLife(cfg, 99);
+                SetCoolDownTime(cfg, SpringGrenadeCooldownMs);
+                var sg = cfg as SpringGrenadeConfiguration;
+                if (sg != null) sg.LifeTime = 15;
+                break;
+            case QuickItemLogic.ExplosiveGrenade:
+                SetUsesPerLife(cfg, 99);
+                cfg.AmountRemaining = 100;
+                break;
+            case QuickItemLogic.HealthPack:
+            case QuickItemLogic.AmmoPack:
+                // Description: 1 use per life — applied to both basic + charged variants.
+                SetUsesPerLife(cfg, 1);
+                cfg.AmountRemaining = 1;
+                break;
+        }
+    }
+
+    // UsesPerLife / CoolDownTime live on the external UberStrikeItemQuickView DTO
+    // (UberStrike.UnitySdk.dll). Whether they expose public setters is implementation-
+    // dependent, so use reflection: try the property setter first, fall back to the
+    // private backing field (compiler-generated autoprop name or common _fieldName).
+    private static void SetUsesPerLife(QuickItemConfiguration cfg, int value)
+    {
+        SetBackingValue(cfg, "UsesPerLife", "_usesPerLife", value);
+    }
+
+    private static void SetCoolDownTime(QuickItemConfiguration cfg, int valueMs)
+    {
+        SetBackingValue(cfg, "CoolDownTime", "_coolDownTime", valueMs);
+    }
+
+    private static void SetBackingValue(object target, string propName, string fieldName, object value)
+    {
+        if (target == null) return;
+        var type = target.GetType();
+        while (type != null)
+        {
+            var prop = type.GetProperty(propName,
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.Instance);
+            if (prop != null && prop.CanWrite)
+            {
+                prop.SetValue(target, value, null);
+                return;
+            }
+            var field = type.GetField(fieldName,
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?? type.GetField("<" + propName + ">k__BackingField",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (field != null)
+            {
+                field.SetValue(target, value);
+                return;
+            }
+            type = type.BaseType;
+        }
+        Debug.LogWarning("[QuickItemController] Couldn't set " + propName + " on " + target.GetType().Name);
+    }
+
+    private static int ResolveStock(BaseQuickItem item, InventoryItem inv)
+    {
+        var cfg = item.Configuration;
+        switch (cfg.BehaviourType)
+        {
+            case QuickItemLogic.SpringGrenade:
+                // Shop sells Spring Grenades in packs: "Spring Grenades: 1" / ": 3" / ": 8".
+                // Pack size = last integer in the item name. Dev server returns
+                // AmountRemaining=0 for equipped items so we can't trust it.
+                return ParsePackSize(inv.Item.Name, defaultStock: 1);
+            case QuickItemLogic.ExplosiveGrenade:
+                return 100;
+            case QuickItemLogic.HealthPack:
+            case QuickItemLogic.AmmoPack:
+                return 1;
+            default:
+                return inv.AmountRemaining > 0 ? inv.AmountRemaining : 99;
+        }
+    }
+
+    private static int ParsePackSize(string itemName, int defaultStock)
+    {
+        if (string.IsNullOrEmpty(itemName)) return defaultStock;
+        var m = System.Text.RegularExpressions.Regex.Match(itemName, @"(\d+)\s*$");
+        int n;
+        if (m.Success && int.TryParse(m.Groups[1].Value, out n) && n > 0) return n;
+        return defaultStock;
+    }
+
+    private static float GetCooldownFor(BaseQuickItem item)
+    {
+        return item.Configuration.BehaviourType == QuickItemLogic.SpringGrenade
+            ? SpringGrenadeCooldown
+            : CooldownTime;
     }
 
     private void OnInputChanged(InputChangeEvent ev)
@@ -287,6 +432,7 @@ public class QuickItemController : Singleton<QuickItemController>
                 GameObject.Destroy(_quickItems[i].gameObject);
                 _quickItems[i] = null;
             }
+            _inventoryItems[i] = null;
         }
     }
 

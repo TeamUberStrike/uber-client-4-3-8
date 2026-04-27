@@ -60,6 +60,12 @@ public class TempleTeleporter : SecretDoor
         {
             _timeOut = 0;
 
+            // 2-second screen-space diffusion fade on teleport — matches UB6's
+            // SecretDoor → SecretTemple transition. Also plays while the player
+            // falls through the air since TempleTeleporter is the trigger for
+            // both directions on the Temple map.
+            TempleTeleportFade.Instance.Fade();
+
             GameState.LocalPlayer.SpawnPlayerAt(_spawnpoint.position, _spawnpoint.rotation);
         }
     }

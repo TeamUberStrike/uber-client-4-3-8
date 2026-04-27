@@ -38,4 +38,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelSpaceportAlpha.unity
     guid: 2ae40c2256977b64cb7ec0dca72f23b5
+  - enabled: 1
+    path: Assets/Scenes/LevelAqualabResearchHub.unity
+    guid: da7d8a67d86e0854fb97804a8a2d0de4
+  - enabled: 1
+    path: Assets/Scenes/LevelSuperPRISMReactor.unity
+    guid: 3a563b2288167e948a936f9c589251d5
   m_configObjects: {}

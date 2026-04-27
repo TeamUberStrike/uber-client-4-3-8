@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 4bb2487a2f80c4b5ca5d6a8dfe811575, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: e7b63ad188ddeb74194634361f748a72, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -20650,7 +20650,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ambientLight: {r: 0.26119405, g: 0.22805749, b: 0.22805749, a: 0}
-  skyBox: {fileID: 2100000, guid: 4bb2487a2f80c4b5ca5d6a8dfe811575, type: 2}
+  skyBox: {fileID: 2100000, guid: e7b63ad188ddeb74194634361f748a72, type: 2}
   fogStart: 10
   fogEnd: 250
   fogColor:
@@ -29257,7 +29257,7 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5

@@ -1153,6 +1153,15 @@ public static class BeastLightmapLoader
         { "LevelTempleOfTheRaven", 0.261f },   // was reduced to 0.147 → too dark
     };
 
+    // Per-map target intensity for the scene's primary directional light, overriding
+    // the default "zero it out" behaviour in AdjustSceneLights. Needed for maps whose
+    // baked lightmaps expect a live directional complement. Unity 3.5 reference values.
+    // Dict miss → fall through to the default zeroing behaviour for that map.
+    static readonly Dictionary<string, float> DirectionalLightTargetIntensity = new Dictionary<string, float>
+    {
+        { "LevelTempleOfTheRaven", 0.5f },     // 3.5 reference had warm directional at 0.5
+    };
+
 
     // =====================================================================
     // RUNTIME
@@ -1185,6 +1194,38 @@ public static class BeastLightmapLoader
         if (!scene.name.StartsWith("Level"))
             return;
 
+        Restore(scene);
+    }
+
+    /// <summary>
+    /// Re-entry hook for <see cref="MapConfiguration.SetEnabled"/> (true).
+    /// Unity 2022 keeps additively-loaded scenes alive across
+    /// SetCurrentSpace transitions — `SceneManager.sceneLoaded` fires only
+    /// on the first load, so <see cref="OnSceneLoaded"/> goes dark on map
+    /// re-entry and `LightmapSettings.lightmaps` keeps whatever the lobby
+    /// or previous map left behind. Temple renderers' lightmapIndex=0/1
+    /// then resolve to the wrong textures → flat-lit re-entry.
+    /// MapConfiguration.SetEnabled(true) fires on every activation
+    /// (proven via logs 2026-04-24), so we hook there. Idempotent with
+    /// OnSceneLoaded on first entry; lobby and non-Level scenes bypass.
+    /// </summary>
+    public static void RestoreByName(string sceneName)
+    {
+        if (string.IsNullOrEmpty(sceneName)) return;
+        // Non-Level* scenes (e.g. SuperPRISMReactor) use Unity's native
+        // lightmap auto-discovery and handle re-entry themselves.
+        if (!sceneName.StartsWith("Level")) return;
+        // Lobby re-entry is already handled by BeastLobbyLightmapGuard —
+        // don't race it from here.
+        if (sceneName == "LevelSpaceship") return;
+
+        var scene = SceneManager.GetSceneByName(sceneName);
+        if (!scene.IsValid() || !scene.isLoaded)
+        {
+            Debug.LogWarning($"[BeastLightmapLoader] RestoreByName: scene '{sceneName}' " +
+                             "not found or not loaded; skipping re-entry restore.");
+            return;
+        }
         Restore(scene);
     }
 
@@ -1269,6 +1310,8 @@ public static class BeastLightmapLoader
 
     static IEnumerator DelayedAssign(string sceneName, Scene capturedScene, LightmapData[] cachedLightmaps)
     {
+        LogLightingSnapshot(sceneName, "PRE-DELAY");
+
         for (int i = 0; i < AssignDelayFrames; i++)
             yield return null;
 
@@ -1310,9 +1353,74 @@ public static class BeastLightmapLoader
 
         AdjustSceneLights(sceneName);
 
+        // Snapshot after the full AdjustSceneLights pass — this is the steady
+        // state the player sees for the rest of the map session.
+        LogLightingSnapshot(sceneName, "POST-ADJUST");
+
         // Restore previous active scene to avoid side effects
         if (previousActive.IsValid() && previousActive.isLoaded && previousActive != capturedScene)
             SceneManager.SetActiveScene(previousActive);
+
+        // Spawn a per-frame guard that keeps LightmapSettings.lightmaps pinned
+        // to the array we just loaded from Resources.
+        //
+        // Diagnosed 2026-04-21: on map re-entry, Unity's additive scene load
+        // auto-unions the Level*.unity scene's YAML-baked lightmap references
+        // into LightmapSettings.lightmaps, growing the array (Temple: 2 → 7
+        // entries). The new entries share asset names with ours (LightmapFar-0
+        // through LightmapFar-6) but are DIFFERENT texture assets — the
+        // scene's baked data was stripped/blanked during the Unity 2022 port,
+        // so those scene-side references resolve to stripped textures.
+        // Renderers' lightmapIndex=0/1 stays in bounds, but the textures at
+        // those slots flip from our valid Resources-loaded ones to the
+        // scene's stripped ones. Rendering goes flat-lit even though every
+        // other piece of state (ambient, skybox, HDR decode, directional
+        // lights, renderer indices/scaleOffsets) is correct.
+        //
+        // Re-assigning LightmapSettings.lightmaps once after DelayedAssign
+        // isn't enough — the auto-union happens AFTER our assignment. The
+        // guard re-asserts every frame; the check is a cheap array-length
+        // compare. Guard self-destructs when the player leaves the map
+        // (detected via GameState.CurrentSpace.name change).
+        if (cachedLightmaps != null && cachedLightmaps.Length > 0)
+        {
+            var guardGO = new GameObject("BeastMapLightmapGuard_" + sceneName);
+            guardGO.hideFlags = HideFlags.HideAndDontSave;
+            var guard = guardGO.AddComponent<BeastMapLightmapGuard>();
+            guard.mapSceneName = sceneName;
+            guard.expectedLightmaps = cachedLightmaps;
+        }
+    }
+
+    // Condensed lighting state dump used by the re-entry-flash diagnostic.
+    // Prints ambient, all directional lights with intensity + owning scene,
+    // and count of non-directional lights. Tag distinguishes call sites.
+    static void LogLightingSnapshot(string sceneName, string tag)
+    {
+        int dirCount = 0, otherCount = 0;
+        float maxDirIntensity = 0f;
+        var sb = new System.Text.StringBuilder(256);
+        sb.Append("[BeastLightmapLoader] FLASH-DIAG ").Append(sceneName).Append(' ').Append(tag)
+          .Append(" ambient=").Append(RenderSettings.ambientLight).Append(" intensity=")
+          .Append(RenderSettings.ambientIntensity.ToString("F3")).Append(" mode=")
+          .Append(RenderSettings.ambientMode);
+        foreach (var light in Object.FindObjectsOfType<Light>())
+        {
+            if (light == null) continue;
+            if (light.type == LightType.Directional)
+            {
+                dirCount++;
+                if (light.intensity > maxDirIntensity) maxDirIntensity = light.intensity;
+                sb.Append(" | dir '").Append(light.gameObject.name)
+                  .Append("' scene=").Append(light.gameObject.scene.name)
+                  .Append(" I=").Append(light.intensity.ToString("F3"))
+                  .Append(" enabled=").Append(light.enabled);
+            }
+            else otherCount++;
+        }
+        sb.Append(" | dirCount=").Append(dirCount).Append(" maxDirI=")
+          .Append(maxDirIntensity.ToString("F3")).Append(" otherLights=").Append(otherCount);
+        Debug.Log(sb.ToString());
     }
 
     /// <summary>
@@ -1473,11 +1581,21 @@ public static class BeastLightmapLoader
             }
 
             float oldIntensity = light.intensity;
+            float targetIntensity;
+            bool hasOverride = DirectionalLightTargetIntensity.TryGetValue(sceneName, out targetIntensity);
             light.shadows = LightShadows.None;
-            light.intensity = 0f;
+            light.intensity = hasOverride ? targetIntensity : 0f;
 
-            Debug.Log($"[BeastLightmapLoader] {sceneName}: Disabled directional light '{light.gameObject.name}' " +
-                      $"in scene '{lightScene}' (was intensity={oldIntensity:F2})");
+            if (hasOverride)
+            {
+                Debug.Log($"[BeastLightmapLoader] {sceneName}: Preserved directional light '{light.gameObject.name}' " +
+                          $"in scene '{lightScene}' at intensity={targetIntensity:F2} (was {oldIntensity:F2})");
+            }
+            else
+            {
+                Debug.Log($"[BeastLightmapLoader] {sceneName}: Disabled directional light '{light.gameObject.name}' " +
+                          $"in scene '{lightScene}' (was intensity={oldIntensity:F2})");
+            }
             adjusted++;
         }
         if (adjusted > 0)
@@ -1691,6 +1809,23 @@ public class BeastLobbyLightmapGuard : MonoBehaviour
     {
         if (BeastLightmapLoader.lobbyLightmaps == null) return;
 
+        // Kill any lingering BeastMapLightmapGuard BEFORE restoring the lobby
+        // array. Map guards watch for Length drift and slam LightmapSettings
+        // back to the map's N-entry array; without this clear they overwrite
+        // the lobby's 7-entry restoration and render garbage on GroundLayer1.
+        //
+        // Must use the static `current` pointer (or Resources.FindObjectsOfTypeAll)
+        // — plain FindObjectsOfType skips objects with HideFlags.HideAndDontSave,
+        // which our guard GameObject has, so it silently returned 0 hits in the
+        // 2026-04-21 trace.
+        var straggler = BeastMapLightmapGuard.current;
+        if (straggler != null)
+        {
+            Debug.Log($"[BeastLobbyLightmapGuard] Destroying lingering map guard for '{straggler.mapSceneName}' before lobby restore.");
+            Destroy(straggler.gameObject);
+            BeastMapLightmapGuard.current = null;
+        }
+
         LightmapSettings.lightmapsMode = LightmapsMode.NonDirectional;
         LightmapSettings.lightmaps = BeastLightmapLoader.lobbyLightmaps;
 
@@ -1731,5 +1866,132 @@ public class BeastLobbyLightmapGuard : MonoBehaviour
 
         Debug.Log($"[BeastLightmapLoader] Restored lobby lightmaps ({BeastLightmapLoader.lobbyLightmaps.Length} textures), " +
                   $"{restored} directional light(s), ambient=0.246 flat");
+    }
+}
+
+/// <summary>
+/// Per-frame watchdog that pins LightmapSettings.lightmaps to the
+/// Resources-loaded array for a specific map. Addresses the re-entry
+/// regression diagnosed 2026-04-21 via TempleRuntimeCapture diff:
+/// Unity's additive-scene-load auto-unions the scene's YAML-baked lightmap
+/// references into LightmapSettings.lightmaps on map re-entry (observed:
+/// Temple grew from 2 → 7 entries), replacing our valid Resources textures
+/// with the scene's stripped/blank textures that share the same asset
+/// names. Rendering goes flat-lit even though every other lighting state
+/// field is correct.
+///
+/// The guard checks LightmapSettings.lightmaps.Length once per frame. If it
+/// doesn't match the expected length, it reassigns. Self-destructs when
+/// GameState reports the player is no longer on this map.
+/// </summary>
+public class BeastMapLightmapGuard : MonoBehaviour
+{
+    // At-most-one-alive registry. SceneManager.sceneUnloaded proved unreliable
+    // in UberStrike's additive-scene model — Temple stays loaded when the user
+    // returns to lobby, so the Temple guard never dies and later fights the
+    // next map's guard (Temple 2 ↔ LostParadise2 4 ping-pong, 900+ reasserts
+    // observed 2026-04-21). When a new guard spawns it evicts the previous one.
+    internal static BeastMapLightmapGuard current;
+
+    public string mapSceneName;
+    public LightmapData[] expectedLightmaps;
+    int reassertCount = 0;
+
+    void Awake()
+    {
+        if (current != null && current != this)
+        {
+            Debug.Log($"[BeastMapLightmapGuard] Evicting previous guard for '{current.mapSceneName}' " +
+                      $"(new guard for '{mapSceneName}' spawning).");
+            Destroy(current.gameObject);
+        }
+        current = this;
+    }
+
+    void Start()
+    {
+        Debug.Log($"[BeastMapLightmapGuard] Spawned for {mapSceneName}, " +
+                  $"expected lightmap count={expectedLightmaps.Length}, " +
+                  $"current={LightmapSettings.lightmaps?.Length ?? 0}");
+    }
+
+    void OnDestroy()
+    {
+        if (current == this) current = null;
+    }
+
+    void LateUpdate()
+    {
+        // Length-only check. Unity's `LightmapSettings.lightmaps` getter
+        // always returns a fresh copy of the internal array, so reference
+        // equality would always fail and we'd reassert every frame. Array
+        // length is the signal we actually care about — the re-entry
+        // regression grows the array (e.g. Temple 2 → 7) and that's the
+        // symptom we want to squash.
+        //
+        // No lobby bail-out here. Earlier version had a reference-equality
+        // check against BeastLightmapLoader.lobbyLightmaps that self-destructed
+        // the guard if `lightmaps[0].lightmapColor == lobby[0].lightmapColor`.
+        // Unity's auto-union on Temple re-entry pulls in scene-side texture
+        // references that sometimes share instances with the lobby array
+        // (same `LightmapFar-0` asset loaded once and referenced twice), so
+        // the check fired FALSE POSITIVE and killed the guard mid-map — flat-
+        // lit re-entry regression returned. The primary destruction path
+        // (BeastLobbyLightmapGuard.RestoreLobbyLightmaps destroying
+        // BeastMapLightmapGuard.current explicitly) is sufficient on its own.
+        var currentArr = LightmapSettings.lightmaps;
+        int currentLength = currentArr != null ? currentArr.Length : 0;
+
+        // Primary signal: array length drift. Catches the observed "2 → 7"
+        // auto-union on Temple re-entry.
+        if (currentLength != expectedLightmaps.Length)
+        {
+            LightmapSettings.lightmaps = expectedLightmaps;
+            reassertCount++;
+            if (reassertCount == 1 || reassertCount % 60 == 0)
+                Debug.Log($"[BeastMapLightmapGuard] {mapSceneName}: re-asserted lightmaps " +
+                          $"(LENGTH drift: was {currentLength}, now {expectedLightmaps.Length}, " +
+                          $"total reasserts={reassertCount})");
+            return;
+        }
+
+        // β 2026-04-24: secondary content check. If Unity shuffles the array
+        // to the expected length but replaces slot textures with different
+        // Texture2D references (e.g., another map's LightmapFar-0), the
+        // length check passes silently and re-entry is flat-lit. Diagnose
+        // whether this is the 2026-04-22 regression signature. Reference
+        // equality on `lightmapColor` works here — each map's
+        // LightmapFar-*.exr is a distinct asset at its own GUID, so Unity
+        // loads distinct Texture2D instances and divergent slots are
+        // observable via `!=`. (This differs from the old lobby bail-out
+        // false-positive: that checked against LOBBY lightmaps for
+        // SELF-DESTRUCT; this checks against OWN expected for REASSERT.)
+        int firstMismatchSlot = -1;
+        for (int i = 0; i < currentLength; i++)
+        {
+            var cur = currentArr[i]?.lightmapColor;
+            var exp = expectedLightmaps[i]?.lightmapColor;
+            if (cur != exp)
+            {
+                firstMismatchSlot = i;
+                break;
+            }
+        }
+
+        if (firstMismatchSlot >= 0)
+        {
+            var badTex = currentArr[firstMismatchSlot]?.lightmapColor;
+            var goodTex = expectedLightmaps[firstMismatchSlot]?.lightmapColor;
+            LightmapSettings.lightmaps = expectedLightmaps;
+            reassertCount++;
+            if (reassertCount == 1 || reassertCount % 60 == 0)
+                Debug.Log($"[BeastMapLightmapGuard] {mapSceneName}: re-asserted lightmaps " +
+                          $"(CONTENT drift at slot {firstMismatchSlot}: " +
+                          $"was '{(badTex != null ? badTex.name : "null")}' " +
+                          $"(id={(badTex != null ? badTex.GetInstanceID() : 0)}), " +
+                          $"expected '{(goodTex != null ? goodTex.name : "null")}' " +
+                          $"(id={(goodTex != null ? goodTex.GetInstanceID() : 0)}), " +
+                          $"total reasserts={reassertCount})");
+        }
     }
 }

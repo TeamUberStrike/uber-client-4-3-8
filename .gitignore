@@ -1,2 +1,38 @@
 .vscode/
 .vs/
+
+# Claude Code local settings
+.claude/
+
+# Local editor tooling (not part of the game)
+Assets/Editor/UberStrikeCopilot/
+
+# Debug/diagnostic outputs
+UberStrike.Unity/particle_diagnostic.txt
+UberStrike.Unity/pink_scan_f12.txt
+
+# Debug capture tools (hardcoded local paths)
+UberStrike.Unity/Assets/Scripts/Scene/ExplosionCapture2022.cs
+UberStrike.Unity/Assets/Scripts/Scene/ExplosionCapture2022.cs.meta
+
+# Maintainer-only runtime analyzers + scene capture (kept locally, not shipped)
+UberStrike.Unity/Assets/Scripts/Analyzers/
+UberStrike.Unity/Assets/Scripts/Analyzers.meta
+UberStrike.Unity/Assets/Scripts/TempleRuntimeCapture.cs
+UberStrike.Unity/Assets/Scripts/TempleRuntimeCapture.cs.meta
+UberStrike.Unity/Assets/Editor/LightmapDictAuditor.cs
+UberStrike.Unity/Assets/Editor/LightmapDictAuditor.cs.meta
+
+# Analyzer / audit run artifacts
+UberStrike.Unity/*Analyzer_Log.csv
+UberStrike.Unity/LightmapDictAudit_*.txt
+
+# Comparison screenshots
+Current Maps screenshots vs original/
+
+# Work backups from particle sessions
+_particle_work_backup/
+_particle_work_backup_2026-02-18/
+
+# Outdated migration tracker
+MIGRATION_MAP.md

@@ -185,6 +185,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         yield return ApplicationWebServiceClient.GetMaps(ApplicationDataManager.VersionShort, UberStrike.Core.Types.LocaleType.en_US, mapType,
             (callback) =>
             {
+                OfflineBypass.InjectLocalMaps(callback);
                 mapsLoadedSuccessfully = LevelManager.Instance.InitializeMapsToLoad(callback);
             },
             (ex) =>

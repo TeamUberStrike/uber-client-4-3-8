@@ -27,6 +27,10 @@ public class QuickItem : IUnityItem
             //secondly copy over properties from the DB
             ItemConfigurationUtil.CopyProperties(Configuration, itemView);
 
+            // Apply per-type gameplay rules (UsesPerLife, cooldown, lifetime, capacity)
+            // up here so shop tooltips + match HUD read the same overridden values.
+            QuickItemController.ApplyItemRuleOverrides(Configuration);
+
             Icon = _prefab.GetCustomIcon(Configuration);
         }
         else

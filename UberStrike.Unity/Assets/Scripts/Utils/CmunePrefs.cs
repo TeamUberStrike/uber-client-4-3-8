@@ -47,6 +47,10 @@ public static class CmunePrefs
         Options_VideoHardcoreMode = 124,
         Options_VideoScreenRes = 125,
         Options_VideoIsFullscreen = 126,
+        Options_VideoFOV = 127,
+        Options_VideoShowFps = 128,
+        Options_VideoPostProcessing = 129,
+        Options_VideoPostProcessingStrength = 130,
 
         Keymap_None = 300,
         Keymap_HorizontalLook = 301,

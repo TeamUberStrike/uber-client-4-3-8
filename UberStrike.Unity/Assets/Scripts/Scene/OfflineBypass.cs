@@ -87,6 +87,53 @@ public static class OfflineBypass
         };
     }
 
+    // Adds maps that exist locally as built scenes but aren't served by the
+    // dev web service (ws-dev.uberforever.eu). Called by AuthenticationManager
+    // after GetMaps completes so they appear alongside the server roster.
+    public static void InjectLocalMaps(List<MapView> maps)
+    {
+        if (maps == null) return;
+        // MapId MUST match MapConfiguration._mapId serialized in the scene,
+        // otherwise LevelManager.AddLoadedMap can't pair the loaded scene with
+        // the clicked map entry and GameLoader hangs on load.
+        TryInject(maps, 22,  "AqualabResearchHub", "LevelAqualabResearchHub");
+        TryInject(maps, 100, "SuperPRISMReactor",  "LevelSuperPRISMReactor");
+    }
+
+    private static void TryInject(List<MapView> maps, int mapId, string displayName, string sceneName)
+    {
+        if (maps.Exists(m => m.SceneName == sceneName)) return;
+        if (maps.Exists(m => m.MapId == mapId)) return;
+        maps.Add(BuildMap(mapId, displayName, sceneName));
+    }
+
+    private static MapView BuildMap(int mapId, string displayName, string sceneName)
+    {
+        var defaults = new MapSettings
+        {
+            KillsMin = 10, KillsMax = 200, KillsCurrent = 50,
+            PlayersMin = 2, PlayersMax = 16, PlayersCurrent = 8,
+            TimeMin = 5, TimeMax = 30, TimeCurrent = 10,
+        };
+        return new MapView
+        {
+            MapId = mapId,
+            DisplayName = displayName,
+            Description = displayName,
+            SceneName = sceneName,
+            FileName = string.Format("Map-{0:00}.unity3d", mapId),
+            IsBlueBox = false,
+            SupportedGameModes = 7,
+            MaxPlayers = 16,
+            Settings = new Dictionary<GameModeType, MapSettings>
+            {
+                { GameModeType.DeathMatch, defaults },
+                { GameModeType.TeamDeathMatch, defaults },
+                { GameModeType.EliminationMode, defaults },
+            },
+        };
+    }
+
     private static List<MapView> CreateMapList()
     {
         // All 10 bundled maps (standalone build loads from Map-XX.unity3d asset bundles)
@@ -102,6 +149,8 @@ public static class OfflineBypass
             CreateMap(8,  "SuperPRISMReactor",    "LevelSuperPRISMReactor"),
             CreateMap(9,  "TempleOfTheRaven",     "LevelTempleOfTheRaven"),
             CreateMap(10, "CuberSpace",           "LevelCuberSpace"),
+            CreateMap(11, "MonkeyIsland",         "LevelMonkeyIsland"),
+            CreateMap(12, "CuberStrike",          "LevelCuberStrike"),
         };
     }
 
