@@ -10,15 +10,7 @@ public class UberstrikeMap
     {
         View = view;
         IsEnabled = true;
-
-        // Prefer bundled preview under Assets/Resources/MapIcons/; fall back to the
-        // remote URL (dead content server → "N/A" label) only if nothing is bundled.
-        // Strip apostrophes so "LevelGideon'sTower" resolves "LevelGideonsTower".
-        string key = (View.SceneName ?? string.Empty).Replace("'", string.Empty);
-        Texture2D local = Resources.Load<Texture2D>("MapIcons/" + key);
-        Icon = local != null
-            ? new DynamicTexture(local)
-            : new DynamicTexture(ApplicationDataManager.BaseImageURL + "MapIcons/" + View.SceneName + ".jpg");
+        Icon = new DynamicTexture(ApplicationDataManager.BaseImageURL + "MapIcons/" + View.SceneName + ".jpg");
     }
 
     public bool IsEnabled { get; set; }

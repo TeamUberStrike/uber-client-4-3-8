@@ -14796,7 +14796,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1001 &27511260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14900,8 +14900,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &28718522
 GameObject:
   m_ObjectHideFlags: 0
@@ -15169,8 +15169,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &194181384
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15418,8 +15418,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &244997552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15580,8 +15580,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &271495750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15685,8 +15685,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &356663733
 GameObject:
   m_ObjectHideFlags: 0
@@ -15733,8 +15733,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &360464241
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15892,7 +15892,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1 &391414947
 GameObject:
   m_ObjectHideFlags: 0
@@ -15939,8 +15939,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!4 &410538088 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400004, guid: 13e72004a6eae70468f95254bcb3c739,
@@ -16084,8 +16084,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &422530618
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16508,8 +16508,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!4 &454087832 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400004, guid: 13e72004a6eae70468f95254bcb3c739,
@@ -16562,8 +16562,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &482695729
 GameObject:
   m_ObjectHideFlags: 0
@@ -16610,8 +16610,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &493136276 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100018, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -16724,8 +16724,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!4 &527793395 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 5c820515b71b22847accda158486bcfd,
@@ -16779,7 +16779,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1 &579283483 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100036, guid: f686289222aff4e229700a3783b107ec,
@@ -16886,8 +16886,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &683149515
 GameObject:
   m_ObjectHideFlags: 0
@@ -17327,8 +17327,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &854644132 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100058, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -17483,8 +17483,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &992685050 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100070, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -18055,8 +18055,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1061253268
 GameObject:
   m_ObjectHideFlags: 0
@@ -18103,8 +18103,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1061371652 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100086, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -18595,7 +18595,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1001 &1188648447
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19528,8 +19528,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1220176880
 GameObject:
   m_ObjectHideFlags: 0
@@ -19576,8 +19576,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1230865149
 GameObject:
   m_ObjectHideFlags: 0
@@ -19625,7 +19625,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1 &1233453181
 GameObject:
   m_ObjectHideFlags: 0
@@ -19756,8 +19756,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1282101812
 GameObject:
   m_ObjectHideFlags: 0
@@ -19805,7 +19805,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!4 &1304049924 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: c012381398409c949981e5567ec77764,
@@ -19864,8 +19864,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1368496331 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100092, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -20014,7 +20014,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1 &1425471595 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100032, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -20491,8 +20491,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &1632671925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20599,7 +20599,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!4 &1663408772 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400004, guid: 13e72004a6eae70468f95254bcb3c739,
@@ -20652,8 +20652,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!4 &1673667328 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400004, guid: 43980eaa8cb26fc4f94ece513aa5afec,
@@ -21353,7 +21353,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1 &1761804656 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100002, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -21440,8 +21440,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1795894862
 GameObject:
   m_ObjectHideFlags: 0
@@ -21488,8 +21488,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!4 &1799191368 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400006, guid: 3895ed9816145164daab23fe226bff13,
@@ -21776,7 +21776,7 @@ MonoBehaviour:
   DrawGizmos: 1
   Radius: 1
   TeamPoint: 0
-  GameMode: 101
+  GameMode: 0
 --- !u!1 &1886727771
 GameObject:
   m_ObjectHideFlags: 0
@@ -21823,8 +21823,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1905565376
 GameObject:
   m_ObjectHideFlags: 0
@@ -21871,8 +21871,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &1910090925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22098,8 +22098,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &1984832602 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100076, guid: 91a2dcf450057fa4eac2bc23cde7fad0,
@@ -22268,8 +22268,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &2071956905
 GameObject:
   m_ObjectHideFlags: 0
@@ -22316,8 +22316,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 106
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &2082404102
 GameObject:
   m_ObjectHideFlags: 0
@@ -22364,8 +22364,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 2
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1001 &2083713421
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22617,8 +22617,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &2132732845
 GameObject:
   m_ObjectHideFlags: 0
@@ -22665,8 +22665,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawGizmos: 1
   Radius: 1
-  TeamPoint: 1
-  GameMode: 100
+  TeamPoint: 0
+  GameMode: 0
 --- !u!1 &2140267507 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100012, guid: 91a2dcf450057fa4eac2bc23cde7fad0,

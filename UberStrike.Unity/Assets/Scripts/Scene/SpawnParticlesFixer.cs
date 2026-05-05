@@ -10,12 +10,24 @@ using UnityEngine;
 /// - Emission shape/velocity may be wrong (original: flat disk + upward + random spread)
 /// - Render mode may have changed from Billboard
 ///
-/// Original values extracted from git commit d11b013b (Unity 3.5.5 scene data):
-///   EllipsoidParticleEmitter &209: minSize=0.05, maxSize=0.15, minEnergy=0.1, maxEnergy=3
-///     localVelocity=(0,1,0), rndVelocity=(2,2,2), m_Ellipsoid=(0.5,0,0.5), OneShot=1
-///   ParticleAnimator &180: colorAnimation = alpha 0->50%->50%->35%->0% (ABGR packed)
-///   ParticleRenderer &239: maxParticleSize=0.25, StretchParticles=0 (Billboard)
+/// Original values re-extracted from Desktop/uber-client-4-3-8 Latest.unity:
+///   EllipsoidParticleEmitter &209:
+///     minSize=0.05, maxSize=0.15, minEnergy=0.1, maxEnergy=3
+///     localVelocity=(0,1,0), rndVelocity=(2,2,2)
+///     m_Ellipsoid=(0.5,0,0.5), m_OneShot=1, m_MinEmitterRange=1
+///   ParticleAnimator &180:
+///     damping=0.1   <- the "tucked" knob: per-frame velocity *= 0.9
+///     force=(0,1,0), rndForce=(4,4,4), sizeGrow=0.1
+///     colorAnimation = alpha 0->50%->50%->35%->0% (ABGR packed)
+///   ParticleRenderer &239:
+///     maxParticleSize=0.25, StretchParticles=0 (Billboard)
 ///   Material: SpawnParticles.mat (Particles/Alpha Blended, _TintColor white 50% alpha)
+///
+/// Why earlier passes regressed: header was incomplete — only the
+/// EllipsoidParticleEmitter values were copied, not the ParticleAnimator's
+/// damping/force/rndForce. Without damping, rndVelocity 2 m/s travels 6m in
+/// 3s — clearly NOT "tucked". With damping 0.1 per-frame at 60fps, velocity
+/// decays to ~0 inside 1s, total travel ~0.3m (the "tucked" look).
 /// </summary>
 public static class SpawnParticlesFixer
 {
@@ -78,8 +90,11 @@ public static class SpawnParticlesFixer
         main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.15f);
         // Original: minEnergy=0.1, maxEnergy=3 (was migrated to 0.5-1.0)
         main.startLifetime = new ParticleSystem.MinMaxCurve(0.1f, 3f);
-        // Velocity from shape direction * startSpeed (approximates rndVelocity +-2)
-        main.startSpeed = new ParticleSystem.MinMaxCurve(1f, 3f);
+        // 3.5 EllipsoidParticleEmitter has no startSpeed concept — initial velocity
+        // comes entirely from localVelocity + rndVelocity, set in velocityOverLifetime
+        // below. Leaving startSpeed > 0 made particles get an additional radial push
+        // along the shape direction, on top of the rnd velocity, doubling the spread.
+        main.startSpeed = new ParticleSystem.MinMaxCurve(0f);
         main.simulationSpace = ParticleSystemSimulationSpace.World;
         main.startColor = Color.white;
         main.gravityModifier = 0f;
@@ -88,22 +103,31 @@ public static class SpawnParticlesFixer
         main.startRotation3D = false;
         main.startRotation = 0f;
 
-        // --- Shape module: flat disk emission (original Ellipsoid 0.5, 0, 0.5) ---
-        // Original spawned particles in a horizontal disk, then gave them upward + random velocity.
-        // Modern equivalent: Hemisphere shape (upward-biased direction) with flattened Y scale.
+        // --- Shape module: flat XZ plane emission (original Ellipsoid 0.5, 0, 0.5) ---
+        // m_Ellipsoid=(0.5, 0, 0.5) is a flat 1x0x1 plane in XZ — particles spawn
+        // anywhere within that plane at Y=0. Hemisphere (used previously) is a 3D
+        // dome with Y > 0, which gave particles a head-start in the vertical
+        // direction and visibly widened the cluster. Box with scale (1, 0, 1)
+        // matches the original flat-plane spawn exactly.
         var shape = ps.shape;
         shape.enabled = true;
-        shape.shapeType = ParticleSystemShapeType.Hemisphere;
-        shape.radius = 0.5f;
+        shape.shapeType = ParticleSystemShapeType.Box;
+        shape.scale = new Vector3(1f, 0f, 1f);
 
-        // --- Velocity over lifetime: constant upward bias (original localVelocity 0,1,0) ---
-        // Original had localVelocity=(0,1,0) applied to ALL particles.
-        // VelocityOverLifetime adds this as a constant velocity component.
+        // --- Velocity over lifetime: localVelocity(0,1,0) + rndVelocity(±2,±2,±2) ---
+        // In Unity 2022, MinMaxCurve(min, max) creates a Random-Between-Two-Constants
+        // curve where each particle picks a single value at spawn — that matches the
+        // 3.5 ParticleEmitter rndVelocity semantics (random initial velocity, fixed
+        // for the particle's lifetime, not continuously varying).
+        // Y range = localVelocity.y ± rndVelocity.y = 1 ± 2 = (-1, 3).
+        // Previous code set y=1 as a single constant — every particle got the same
+        // upward bias with no random component, and the missing rnd was masked by
+        // an over-tuned hemisphere + startSpeed combo on the spawn side.
         var vel = ps.velocityOverLifetime;
         vel.enabled = true;
-        vel.x = 0f;
-        vel.y = 1f;
-        vel.z = 0f;
+        vel.x = new ParticleSystem.MinMaxCurve(-2f, 2f);
+        vel.y = new ParticleSystem.MinMaxCurve(-1f, 3f);
+        vel.z = new ParticleSystem.MinMaxCurve(-2f, 2f);
         vel.space = ParticleSystemSimulationSpace.World;
 
         // --- Disable emission module (we use ps.Emit(count) from ShowPickUpEffect) ---
@@ -117,6 +141,32 @@ public static class SpawnParticlesFixer
             renderer.renderMode = ParticleSystemRenderMode.Billboard;
             renderer.maxParticleSize = 0.25f;
         }
+
+        // --- Limit Velocity over Lifetime: replicate ParticleAnimator damping=0.1 ---
+        // 3.5 damping: per-frame velocity *= (1 - damping). Unity 2022's
+        // limitVelocityOverLifetime.dampen is documented as the same per-frame
+        // fraction. Setting limit=0 means "any velocity over zero gets damped" —
+        // i.e. all of it. This is the single most important parameter for the
+        // "tucked" pickup look: without it, rndVelocity 2 m/s × lifetime 3s = 6m
+        // spread; with it, total travel collapses to ~0.3m as velocity decays.
+        var lim = ps.limitVelocityOverLifetime;
+        lim.enabled = true;
+        lim.limit = new ParticleSystem.MinMaxCurve(0f);
+        lim.dampen = 0.2f;
+        lim.separateAxes = false;
+
+        // --- Force over Lifetime: replicate ParticleAnimator force=(0,1,0) ---
+        // 1 m/s² constant upward acceleration. Combined with damping=0.1, this
+        // produces a steady-state upward drift of ~0.15 m/s — the gentle rise
+        // visible in the original. rndForce(4,4,4) is per-frame random in 3.5;
+        // skipped for now (Unity 2022 MinMaxCurve random would be per-particle
+        // not per-frame, semantically different — would need Noise module).
+        var force = ps.forceOverLifetime;
+        force.enabled = true;
+        force.x = new ParticleSystem.MinMaxCurve(0f);
+        force.y = new ParticleSystem.MinMaxCurve(1f);
+        force.z = new ParticleSystem.MinMaxCurve(0f);
+        force.space = ParticleSystemSimulationSpace.World;
 
         // --- Disable unnecessary modules ---
         var noise = ps.noise; noise.enabled = false;

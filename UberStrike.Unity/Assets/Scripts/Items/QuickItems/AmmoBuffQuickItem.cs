@@ -96,11 +96,20 @@ public class AmmoBuffQuickItem : BaseQuickItem
 
         private void SendAmmoIncrease()
         {
-            // Dev server returns PointsGain=1 for the charged AmmoBot, which made
-            // activating the item give you a single bullet. Description says the
-            // bot fills your current weapon to max capacity — fire the
-            // AmmoAddMaxEvent with 100% regardless of server config.
-            CmuneEventHandler.Route(new AmmoAddMaxEvent() { Percent = 100 });
+            switch (_item._config.AmmoIncrease)
+            {
+                case IncreaseStyle.Absolute:
+                    CmuneEventHandler.Route(new AddAmmoIncreaseEvent() { Amount = _item._config.PointsGain });
+                    break;
+                case IncreaseStyle.PercentFromMax:
+                    CmuneEventHandler.Route(new AmmoAddMaxEvent() { Percent = _item._config.PointsGain });
+                    break;
+                case IncreaseStyle.PercentFromStart:
+                    CmuneEventHandler.Route(new AmmoAddStartEvent() { Percent = _item._config.PointsGain });
+                    break;
+                default:
+                    throw new System.NotImplementedException("SendAmmoIncrease for type: " + _item._config.AmmoIncrease);
+            }
         }
     }
 }

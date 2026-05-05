@@ -112,9 +112,6 @@ public class HomePageGUI : MonoBehaviour
 
     private void DrawWeeklySpecial()
     {
-        if (ItemPromotionManager.Instance.WeeklySpecial == null)
-            return;
-
         float textureHeight = PromoTextureAspect * PromotionWidth;
         float height = 28 + textureHeight + 58;
         Rect rect = new Rect(Screen.width - PromotionWidth, GlobalUIRibbon.Instance.GetHeight() + (Screen.height - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
