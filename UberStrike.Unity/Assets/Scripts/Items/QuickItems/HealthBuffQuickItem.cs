@@ -119,16 +119,23 @@ public class HealthBuffQuickItem : BaseQuickItem
 
         private void SendHealthIncrease()
         {
-            // Dev server returns PointsGain=1 for the charged HealthBot, so the
-            // original config-driven path added a single HP. Description says the
-            // bot refills you to 100 if you're below — do NOT overheal past 100
-            // (max HP is 200 but that buffer is for armor/pickups, not this bot).
-            int currentHp = GameState.LocalCharacter != null ? GameState.LocalCharacter.Health : 100;
-            int delta = Mathf.Max(0, 100 - currentHp);
-            if (delta > 0)
+            int points = 0;
+            switch (_item._config.HealthIncrease)
             {
-                CmuneEventHandler.Route(new HealthIncreaseEvent() { Health = delta });
+                case IncreaseStyle.Absolute:
+                    points = _item._config.PointsGain;
+                    break;
+                case IncreaseStyle.PercentFromMax:
+                    points = Mathf.RoundToInt(200 * Mathf.Clamp01(_item._config.PointsGain / 100f));
+                    break;
+                case IncreaseStyle.PercentFromStart:
+                    points = Mathf.RoundToInt(100 * Mathf.Clamp01(_item._config.PointsGain / 100f));
+                    break;
+                default:
+                    throw new System.NotImplementedException("SendHealthIncrease for type: " + _item._config.HealthIncrease);
             }
+
+            CmuneEventHandler.Route(new HealthIncreaseEvent() { Health = points });
         }
     }
 }

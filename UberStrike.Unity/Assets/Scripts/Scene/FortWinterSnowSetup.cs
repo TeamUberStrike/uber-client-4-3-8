@@ -1,71 +1,87 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Restores Fort Winter's snow particle system at runtime.
+/// Per-scene setup for Fort Winter's snow particle system.
 ///
-/// The Unity 3.5.5 → 2022 migration stripped the legacy particle system ("Snow")
-/// from the scene. This script recreates it using the modern ParticleSystem API.
+/// The Unity 3.5.5 → 2022 migration stripped the legacy "Snow" particle system
+/// from the scene. This script recreates it using the modern ParticleSystem API
+/// each time LevelFortWinter is the active map, with parameters sourced from the
+/// UberStrike 4.3.8 original scene data (identical to 4.8).
 ///
-/// Parameters sourced from UberStrike 4.3.8 original scene data (identical to 4.8).
+/// Drives the snow lifecycle from GameState.CurrentSpace.MapId rather than from
+/// SceneManager.sceneLoaded — Unity 2022 maps are loaded additively and never
+/// unloaded between visits, so sceneLoaded only fires on the first visit per
+/// scene container. Polling GameState matches how BeastLightmapLoader detects
+/// "the player is currently playing this map" and works correctly across
+/// lobby → map → lobby → same-map cycles.
 ///
-/// NOTE: UberStrike 4.3.8 did NOT have pickup prefabs (HP/AP/Ammo) on Fort Winter.
-/// Those were added in later versions (4.7/4.8). Only snow restoration is needed.
+/// NOTE: UberStrike 4.3.8 did NOT have pickup prefabs (HP/AP/Ammo) on Fort Winter
+/// — those were added in later versions (4.7/4.8). Only the snow setup is needed.
 /// </summary>
-public static class FortWinterRestorer
+public static class FortWinterSnowSetup
 {
-    const string SceneName = "LevelFortWinter";
-    static GameObject snowInstance;
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void Init()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void Bootstrap()
     {
-        OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
+        var host = new GameObject("FortWinterSnowController");
+        Object.DontDestroyOnLoad(host);
+        host.AddComponent<FortWinterSnowController>();
     }
+}
 
-    static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+/// <summary>
+/// Persistent controller MB that owns the snow lifecycle for Fort Winter.
+/// Polls GameState.CurrentSpace.MapId at 10 Hz:
+///   MapId == 5 (Fort Winter) and snow missing → spawn
+///   MapId != 5 and snow present              → destroy immediately
+/// Idempotent across all entry/exit transitions; no SceneManager.sceneLoaded
+/// dependency.
+///
+/// 10 Hz keeps the perceived spawn/destroy latency under ~0.1s without
+/// burdening the frame budget — the per-tick work is a few field accesses
+/// and an int compare, much cheaper than the snow particle simulation
+/// already running each frame.
+/// </summary>
+public class FortWinterSnowController : MonoBehaviour
+{
+    private const int FortWinterMapId = 5;
+    private const float CheckInterval = 0.1f;
+
+    private GameObject _snow;
+    private float _timer;
+
+    private void Update()
     {
-        if (scene.name == SceneName)
+        _timer += Time.deltaTime;
+        if (_timer < CheckInterval) return;
+        _timer = 0f;
+
+        if (!GameState.Exists) return;
+
+        bool onFortWinter = GameState.HasCurrentSpace
+                         && GameState.CurrentSpace != null
+                         && GameState.CurrentSpace.MapId == FortWinterMapId;
+
+        if (onFortWinter && _snow == null)
         {
-            SpawnSnow();
+            _snow = SpawnSnow();
+            Debug.Log("[FortWinterSetup] Snow created at " + _snow.transform.position);
         }
-        else
+        else if (!onFortWinter && _snow != null)
         {
-            // Any other scene loaded — destroy snow if it exists
-            ClearSnow();
+            // No grace period — destroy immediately. The previous 3-second
+            // grace caused a brief snow flash on the lobby HUD when leaving FW.
+            Object.Destroy(_snow);
+            _snow = null;
+            Debug.Log("[FortWinterSetup] Snow destroyed (left Fort Winter)");
         }
     }
 
-    static void OnSceneUnloaded(Scene scene)
+    private static GameObject SpawnSnow()
     {
-        if (scene.name == SceneName)
-            ClearSnow();
-    }
-
-    public static void ClearSnow()
-    {
-        if (snowInstance != null)
-        {
-            Object.Destroy(snowInstance);
-            snowInstance = null;
-            Debug.Log("[FortWinterRestorer] Snow destroyed");
-        }
-    }
-
-    static void SpawnSnow()
-    {
-        if (snowInstance != null) return;
-
         var snowGO = new GameObject("Snow_restored");
-        snowInstance = snowGO;
         snowGO.transform.position = new Vector3(13.809407f, 37.749527f, -0.5827613f);
         snowGO.transform.rotation = Quaternion.identity;
-
-        // Self-destruct: polls every second to check if Fort Winter is still loaded.
-        // This catches the lobby transition where no sceneLoaded/sceneUnloaded fires.
-        snowGO.AddComponent<FortWinterSnowGuard>();
 
         var ps = snowGO.AddComponent<ParticleSystem>();
         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -153,17 +169,17 @@ public static class FortWinterRestorer
         renderer.material = CreateSnowMaterial();
 
         ps.Play();
-        Debug.Log("[FortWinterRestorer] Snow created at " + snowGO.transform.position);
+        return snowGO;
     }
 
-    static Material CreateSnowMaterial()
+    private static Material CreateSnowMaterial()
     {
         var shader = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
         if (shader == null)
             shader = Shader.Find("Particles/Alpha Blended");
         if (shader == null)
         {
-            Debug.LogWarning("[FortWinterRestorer] Alpha Blended shader not found");
+            Debug.LogWarning("[FortWinterSetup] Alpha Blended shader not found");
             return null;
         }
 
@@ -173,7 +189,7 @@ public static class FortWinterRestorer
         return mat;
     }
 
-    static Texture2D CreateSoftCircleTexture()
+    private static Texture2D CreateSoftCircleTexture()
     {
         const int size = 32;
         var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
@@ -194,52 +210,5 @@ public static class FortWinterRestorer
         tex.wrapMode = TextureWrapMode.Clamp;
         tex.filterMode = FilterMode.Bilinear;
         return tex;
-    }
-}
-
-/// <summary>
-/// Self-destruct guard: destroys the snow GameObject when player leaves Fort Winter.
-/// Uses GameState.CurrentSpace instead of scene checks because maps are loaded additively
-/// and never unloaded — SceneManager.GetSceneByName("LevelFortWinter").isLoaded always
-/// returns true, and sceneLoaded/sceneUnloaded never fire for lobby transitions.
-/// </summary>
-public class FortWinterSnowGuard : MonoBehaviour
-{
-    float checkInterval = 1f;
-    float timer;
-    float gracePeriod = 3f;
-
-    void Update()
-    {
-        // Grace period: allow GameState to initialize on first map load
-        if (gracePeriod > 0f)
-        {
-            gracePeriod -= Time.deltaTime;
-            return;
-        }
-
-        timer += Time.deltaTime;
-        if (timer < checkInterval) return;
-        timer = 0f;
-
-        // GameState tracks which map is active via SetCurrentSpace().
-        // When player leaves Fort Winter (to lobby or another map), CurrentSpace changes.
-        if (!GameState.Exists) return;
-        if (!GameState.HasCurrentSpace) return;
-
-        var space = GameState.CurrentSpace;
-        if (space == null || space.gameObject == null) return;
-
-        // Check by MapId (5 = Fort Winter) or GameObject name.
-        // Cannot use space.gameObject.scene.name because MapConfiguration objects
-        // live in the persistent "Latest" scene, not in their Level scenes.
-        if (space.MapId != 5)
-        {
-            Debug.Log("[FortWinterRestorer] Guard: Left Fort Winter (now on " +
-                      space.name + " MapId=" + space.MapId + "), destroying snow");
-            FortWinterRestorer.ClearSnow();
-            if (gameObject != null)
-                Destroy(gameObject);
-        }
     }
 }

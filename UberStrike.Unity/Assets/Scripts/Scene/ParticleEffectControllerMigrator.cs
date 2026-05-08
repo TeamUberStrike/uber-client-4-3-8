@@ -23,7 +23,18 @@ using System.Reflection;
 /// 7. SIZE GROWTH: Additive per-frame sizeGrow via LegacySizeGrow component (exact legacy match)
 /// 8. FORCE OVER LIFETIME: Restore gravity and forces from ParticleAnimator
 /// </summary>
-public static class ParticleEmitterAutoFixer
+// Restores weapon impact / explosion particle parameters that the Unity 3.5.5 →
+// 2022 migration auto-converter dropped (EllipsoidParticleEmitter +
+// ParticleAnimator + ParticleRenderer were stripped, replaced with default-
+// configured ParticleSystem + ParticleSystemRenderer). The data tables hold
+// values extracted from the compiled UberStrike 4.3.8 game data — applied at
+// startup so the runtime ParticleEffectController hierarchy renders identically
+// to the legacy build.
+//
+// Entry point: ParticleEffectControllerMigrator.Migrate(this) is called from
+// ParticleEffectController.Awake() once the [SerializeField] _allWeaponData /
+// _pickupParticleEmitter / _heatWave references are deserialised.
+public static class ParticleEffectControllerMigrator
 {
     static bool _hasRun;
 
@@ -136,49 +147,29 @@ public static class ParticleEmitterAutoFixer
 
     public static bool IsKnownParticle(string name) { return KnownParticleNames.Contains(name); }
 
+    // SubsystemRegistration runs before any scene MonoBehaviour Awake — clear
+    // the one-shot guard so domain reload (Editor) or re-launch picks up a
+    // clean state. ParticleEffectController.Awake then calls Migrate(this).
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetStatics()
     {
         _hasRun = false;
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void Init()
-    {
-        // Register for ALL scene loads — the controller may not exist in the first scene
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
-        // Also try immediately in case Latest is the initial scene
-        TryRun();
-    }
-
-    static void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
-    {
-        if (!_hasRun)
-        {
-            Debug.Log("[ParticleAutoFixer] Scene loaded: " + scene.name + " — attempting fix");
-            TryRun();
-        }
-    }
-
-    static void TryRun()
+    // One-shot per session. Idempotent: re-entry exits early.
+    public static void Migrate(ParticleEffectController controller)
     {
         if (_hasRun) return;
-
-        var controller = Object.FindObjectOfType<ParticleEffectController>();
-        if (controller == null)
-        {
-            Debug.LogWarning("[ParticleAutoFixer] ParticleEffectController not found yet, will retry on next scene load");
-            return;
-        }
+        if (controller == null) return;
         _hasRun = true;
+
         Run(controller);
     }
 
     static void Run(ParticleEffectController controller)
     {
-        Debug.Log("[ParticleAutoFixer] ========== STARTING ==========");
-        Debug.Log("[ParticleAutoFixer] Controller found on: " + controller.gameObject.name +
+        Debug.Log("[ParticleMigrator] ========== STARTING ==========");
+        Debug.Log("[ParticleMigrator] Controller found on: " + controller.gameObject.name +
             " scene=" + controller.gameObject.scene.name +
             " active=" + controller.gameObject.activeInHierarchy);
 
@@ -200,7 +191,7 @@ public static class ParticleEmitterAutoFixer
             if (!psMap.ContainsKey(name))
             {
                 psMap[name] = ps;
-                Debug.Log("[ParticleAutoFixer] PS found: " + name +
+                Debug.Log("[ParticleMigrator] PS found: " + name +
                     " scene=\"" + sceneName + "\"" +
                     " id=" + ps.GetInstanceID() +
                     (isSceneInstance ? " [SCENE]" : " [ASSET]"));
@@ -210,7 +201,7 @@ public static class ParticleEmitterAutoFixer
                 // Replace asset/prefab with scene instance — only scene instances are rendered
                 var oldPS = psMap[name];
                 psMap[name] = ps;
-                Debug.Log("[ParticleAutoFixer] PS REPLACED: " + name +
+                Debug.Log("[ParticleMigrator] PS REPLACED: " + name +
                     " was ASSET id=" + oldPS.GetInstanceID() +
                     " -> now SCENE=\"" + sceneName + "\" id=" + ps.GetInstanceID());
             }
@@ -220,15 +211,15 @@ public static class ParticleEmitterAutoFixer
             }
         }
         if (prefabSkipped > 0)
-            Debug.Log("[ParticleAutoFixer] Skipped " + prefabSkipped + " duplicate PS (assets or extra scene copies)");
+            Debug.Log("[ParticleMigrator] Skipped " + prefabSkipped + " duplicate PS (assets or extra scene copies)");
 
         if (psMap.Count == 0)
         {
-            Debug.LogWarning("[ParticleAutoFixer] No impact particle systems found");
+            Debug.LogWarning("[ParticleMigrator] No impact particle systems found");
             return;
         }
 
-        Debug.Log("[ParticleAutoFixer] Found " + psMap.Count + " particle systems: " +
+        Debug.Log("[ParticleMigrator] Found " + psMap.Count + " particle systems: " +
                   string.Join(", ", psMap.Keys));
 
         // Step 2: Build material name -> Material map
@@ -247,11 +238,11 @@ public static class ParticleEmitterAutoFixer
             {
                 matMap[matName] = loaded;
                 resourceLoaded++;
-                Debug.Log("[ParticleAutoFixer] Loaded material from Resources: " + matName);
+                Debug.Log("[ParticleMigrator] Loaded material from Resources: " + matName);
             }
         }
         if (resourceLoaded > 0)
-            Debug.Log("[ParticleAutoFixer] Loaded " + resourceLoaded + " materials from Resources/ParticleMaterials/");
+            Debug.Log("[ParticleMigrator] Loaded " + resourceLoaded + " materials from Resources/ParticleMaterials/");
 
         // Step 2b: Fallback — scene materials for anything not found in Resources
         foreach (var mat in Resources.FindObjectsOfTypeAll<Material>())
@@ -265,7 +256,7 @@ public static class ParticleEmitterAutoFixer
         {
             string matName = entry[1];
             if (!matMap.ContainsKey(matName))
-                Debug.LogWarning("[ParticleAutoFixer] Material NOT FOUND anywhere: " + matName);
+                Debug.LogWarning("[ParticleMigrator] Material NOT FOUND anywhere: " + matName);
         }
 
         // Step 3: Cache legacy shaders
@@ -285,7 +276,7 @@ public static class ParticleEmitterAutoFixer
             if (shaderCache[i] == null && i < shaderFallbacks.Length)
                 shaderCache[i] = Shader.Find(shaderFallbacks[i]);
             if (shaderCache[i] == null)
-                Debug.LogError("[ParticleAutoFixer] Shader NOT FOUND: " + ShaderNames[i]);
+                Debug.LogError("[ParticleMigrator] Shader NOT FOUND: " + ShaderNames[i]);
         }
 
         // Step 4: Fix materials, shaders, _TintColor
@@ -464,7 +455,7 @@ public static class ParticleEmitterAutoFixer
                 // Debug log for Stretched particles (Trail, Metal, sparks) to verify fix in builds
                 if (legacyStretch == 3)
                 {
-                    Debug.Log("[ParticleAutoFixer] STRETCH '" + goName + "': renderMode=" + renderer.renderMode
+                    Debug.Log("[ParticleMigrator] STRETCH '" + goName + "': renderMode=" + renderer.renderMode
                         + " lengthScale=" + renderer.lengthScale + " velocityScale=" + renderer.velocityScale
                         + " maxPS=" + renderer.maxParticleSize
                         + " startRotation=" + ps.main.startRotation.constant
@@ -604,11 +595,11 @@ public static class ParticleEmitterAutoFixer
                 if (currentVal == null)
                 {
                     heatWaveField.SetValue(controller, heatWavePS);
-                    Debug.Log("[ParticleAutoFixer] Wired _heatWave → HeatWave PS (id=" + heatWavePS.GetInstanceID() + ")");
+                    Debug.Log("[ParticleMigrator] Wired _heatWave → HeatWave PS (id=" + heatWavePS.GetInstanceID() + ")");
                 }
                 else
                 {
-                    Debug.Log("[ParticleAutoFixer] _heatWave already set (id=" + currentVal.GetInstanceID() + ")");
+                    Debug.Log("[ParticleMigrator] _heatWave already set (id=" + currentVal.GetInstanceID() + ")");
                 }
             }
 
@@ -629,7 +620,7 @@ public static class ParticleEmitterAutoFixer
                         bumpSize = bumpTex != null ? " " + bumpTex.width + "x" + bumpTex.height : "";
                     }
                     float bumpAmt = hwMat.HasProperty("_BumpAmt") ? hwMat.GetFloat("_BumpAmt") : -1;
-                    Debug.Log("[ParticleAutoFixer] HeatWave mat=" + hwMat.name +
+                    Debug.Log("[ParticleMigrator] HeatWave mat=" + hwMat.name +
                         " shader=" + (hwMat.shader != null ? hwMat.shader.name : "NULL") +
                         " _BumpMap=" + bumpName + bumpSize +
                         " _BumpAmt=" + bumpAmt +
@@ -640,7 +631,7 @@ public static class ParticleEmitterAutoFixer
                     if (hwMat.HasProperty("_BumpAmt"))
                     {
                         hwRend.material.SetFloat("_BumpAmt", 24.6f);
-                        Debug.Log("[ParticleAutoFixer] HeatWave _BumpAmt set to original: " + bumpAmt + " -> 24.6");
+                        Debug.Log("[ParticleMigrator] HeatWave _BumpAmt set to original: " + bumpAmt + " -> 24.6");
                     }
                 }
             }
@@ -653,7 +644,7 @@ public static class ParticleEmitterAutoFixer
         CreateDebugHandler();
 
         // Summary log
-        Debug.Log("[ParticleAutoFixer] === SUMMARY ===" +
+        Debug.Log("[ParticleMigrator] === SUMMARY ===" +
                   "\n  Refs wired: " + refsFixed +
                   "\n  Materials fixed: " + matsFixed +
                   "\n  Shaders fixed: " + shadersFixed +
@@ -770,7 +761,7 @@ public static class ParticleEmitterAutoFixer
                 }
             }
 
-            Debug.Log("[ParticleAutoFixer] Step 0D: " + setup +
+            Debug.Log("[ParticleMigrator] Step 0D: " + setup +
                 " explosions (EXPLOSION_MODE, original .mat tints, COL disabled, white startColor)");
         }
 
@@ -808,14 +799,14 @@ public static class ParticleEmitterAutoFixer
                 if (ps2.isPlaying) ps2.Stop();
 
                 pinkDisabled++;
-                Debug.LogWarning("[ParticleAutoFixer] PINK CLEANUP: Disabled " +
+                Debug.LogWarning("[ParticleMigrator] PINK CLEANUP: Disabled " +
                     ps2.gameObject.name + " (mat=" + matName2 + " shader=" + shaderName +
                     " parent=" + (ps2.transform.parent != null ? ps2.transform.parent.name : "none") +
                     " scene=" + ps2.gameObject.scene.name + ")");
             }
         }
         if (pinkDisabled > 0)
-            Debug.Log("[ParticleAutoFixer] Pink cleanup: disabled " + pinkDisabled + " broken particle renderers");
+            Debug.Log("[ParticleMigrator] Pink cleanup: disabled " + pinkDisabled + " broken particle renderers");
 
         // Per-particle diagnostic — focus on rendering-critical settings
         foreach (var entry in MaterialMapping)
@@ -823,7 +814,7 @@ public static class ParticleEmitterAutoFixer
             string goName = entry[0];
             if (!psMap.TryGetValue(goName, out ParticleSystem ps)) continue;
             var rend = ps.GetComponent<ParticleSystemRenderer>();
-            if (rend == null) { Debug.LogWarning("[ParticleAutoFixer] " + goName + " HAS NO RENDERER!"); continue; }
+            if (rend == null) { Debug.LogWarning("[ParticleMigrator] " + goName + " HAS NO RENDERER!"); continue; }
 
             var grow = ps.gameObject.GetComponent<LegacySizeGrow>();
             string growInfo = grow != null ? " sizeGrow=" + grow.sizeGrow : "";
@@ -845,7 +836,7 @@ public static class ParticleEmitterAutoFixer
             string scaleInfo = " localScale=" + localScale.ToString("F2") + " worldScale=" + lossyScale.ToString("F2");
 
             string psScene = ps.gameObject.scene.name;
-            Debug.Log("[ParticleAutoFixer] " + goName +
+            Debug.Log("[ParticleMigrator] " + goName +
                 " scene=\"" + psScene + "\"" +
                 " id=" + ps.GetInstanceID() +
                 " active=" + ps.gameObject.activeInHierarchy +
@@ -874,7 +865,7 @@ public static class ParticleEmitterAutoFixer
             ep.startLifetime = 3f;
             ep.startColor = new Color32(255, 255, 255, 255);
             testPS.Emit(ep, 1);
-            Debug.Log("[ParticleAutoFixer] POST-FIX TEST: Emitted 1 white particle from Stone, count=" + testPS.particleCount);
+            Debug.Log("[ParticleMigrator] POST-FIX TEST: Emitted 1 white particle from Stone, count=" + testPS.particleCount);
         }
 
         // CRITICAL: In standalone builds, asset bundle scene data may re-apply serialized
@@ -923,25 +914,25 @@ public static class ParticleEmitterAutoFixer
             BindingFlags.NonPublic | BindingFlags.Instance);
         if (dataField == null)
         {
-            Debug.LogError("[ParticleAutoFixer] Cannot find _allWeaponData field");
+            Debug.LogError("[ParticleMigrator] Cannot find _allWeaponData field");
             return 0;
         }
 
         System.Array allData = dataField.GetValue(controller) as System.Array;
         if (allData == null || allData.Length == 0)
         {
-            Debug.LogError("[ParticleAutoFixer] _allWeaponData is null or empty (length=" +
+            Debug.LogError("[ParticleMigrator] _allWeaponData is null or empty (length=" +
                 (allData != null ? allData.Length.ToString() : "null") + ")");
             return 0;
         }
 
-        Debug.Log("[ParticleAutoFixer] _allWeaponData has " + allData.Length + " entries");
+        Debug.Log("[ParticleMigrator] _allWeaponData has " + allData.Length + " entries");
 
         FieldInfo impactField = typeof(ParticleCobfigurationPerWeapon).GetField(
             "_weaponImpactEffectConfiguration", BindingFlags.NonPublic | BindingFlags.Instance);
         if (impactField == null)
         {
-            Debug.LogError("[ParticleAutoFixer] Cannot find _weaponImpactEffectConfiguration field");
+            Debug.LogError("[ParticleMigrator] Cannot find _weaponImpactEffectConfiguration field");
             return 0;
         }
 
@@ -949,21 +940,21 @@ public static class ParticleEmitterAutoFixer
         foreach (object configObj in allData)
         {
             configIndex++;
-            if (configObj == null) { Debug.LogWarning("[ParticleAutoFixer] Config entry " + configIndex + " is NULL"); continue; }
+            if (configObj == null) { Debug.LogWarning("[ParticleMigrator] Config entry " + configIndex + " is NULL"); continue; }
 
             FieldInfo cfgField = configObj.GetType().GetField("Configuration");
-            if (cfgField == null) { Debug.LogWarning("[ParticleAutoFixer] Config " + configIndex + " has no Configuration field"); continue; }
+            if (cfgField == null) { Debug.LogWarning("[ParticleMigrator] Config " + configIndex + " has no Configuration field"); continue; }
 
             var perWeapon = cfgField.GetValue(configObj) as ParticleCobfigurationPerWeapon;
-            if (perWeapon == null) { Debug.LogWarning("[ParticleAutoFixer] Config " + configIndex + " Configuration is null"); continue; }
+            if (perWeapon == null) { Debug.LogWarning("[ParticleMigrator] Config " + configIndex + " Configuration is null"); continue; }
 
             var impact = impactField.GetValue(perWeapon) as WeaponImpactEffectConfiguration;
-            if (impact == null) { Debug.LogWarning("[ParticleAutoFixer] Config " + configIndex + " impact is null"); continue; }
+            if (impact == null) { Debug.LogWarning("[ParticleMigrator] Config " + configIndex + " impact is null"); continue; }
 
             // Log type for tracing
             FieldInfo typeField = configObj.GetType().GetField("Type");
             string typeStr = typeField != null ? typeField.GetValue(configObj).ToString() : "?";
-            Debug.Log("[ParticleAutoFixer] Wiring config " + configIndex + " Type=" + typeStr +
+            Debug.Log("[ParticleMigrator] Wiring config " + configIndex + " Type=" + typeStr +
                 " surface=" + (impact.SurfaceParameterSet != null) +
                 " fire=" + (impact.FireParticleConfigurationForInstantHit != null) +
                 " explosion=" + (impact.ExplosionParameterSet != null));
@@ -1037,7 +1028,7 @@ public static class ParticleEmitterAutoFixer
                 { exp2.TrailParameters.ParticleEmitter = wps; rewired++; }
 
                 totalFixed += rewired;
-                Debug.Log("[ParticleAutoFixer] WEAPON OVERRIDE: " + typeStr2 + " -> " + prefix + " (" + rewired + " explosion refs rewired)");
+                Debug.Log("[ParticleMigrator] WEAPON OVERRIDE: " + typeStr2 + " -> " + prefix + " (" + rewired + " explosion refs rewired)");
             }
         }
 
@@ -1197,7 +1188,7 @@ public static class ParticleEmitterAutoFixer
                 var parentGO = new GameObject(parentName);
                 parentGO.transform.SetParent(controllerRoot, false);
                 parent = parentGO.transform;
-                Debug.Log("[ParticleAutoFixer] Created weapon parent GO: " + parentName);
+                Debug.Log("[ParticleMigrator] Created weapon parent GO: " + parentName);
             }
 
             Transform child = parent.Find(childName);
@@ -1208,7 +1199,7 @@ public static class ParticleEmitterAutoFixer
                 var childGO = new GameObject(childName);
                 childGO.transform.SetParent(parent, false);
                 child = childGO.transform;
-                Debug.Log("[ParticleAutoFixer] Created weapon child GO: " + parentName + "/" + childName);
+                Debug.Log("[ParticleMigrator] Created weapon child GO: " + parentName + "/" + childName);
             }
 
             // Add ParticleSystem if missing (migration stripped EllipsoidParticleEmitter without replacement)
@@ -1264,7 +1255,7 @@ public static class ParticleEmitterAutoFixer
                 if (mat != null)
                 {
                     matMap[matName] = mat;
-                    Debug.Log("[ParticleAutoFixer] Weapon: loaded material from Resources: " + matName);
+                    Debug.Log("[ParticleMigrator] Weapon: loaded material from Resources: " + matName);
                 }
             }
 
@@ -1283,20 +1274,20 @@ public static class ParticleEmitterAutoFixer
             else
             {
                 rend.enabled = false; // no material — hide to prevent gray squares
-                Debug.LogWarning("[ParticleAutoFixer] Weapon mat not found: " + matName + " — renderer disabled");
+                Debug.LogWarning("[ParticleMigrator] Weapon mat not found: " + matName + " — renderer disabled");
             }
 
             if (!ps.isPlaying) ps.Play();
 
             string key = parentName + "/" + childName;
             weaponPs[key] = ps;
-            Debug.Log("[ParticleAutoFixer] Weapon PS: " + key +
+            Debug.Log("[ParticleMigrator] Weapon PS: " + key +
                 " mat=" + (mat != null ? mat.name : "NULL") +
                 " shader=" + (mat != null && mat.shader != null ? mat.shader.name : "NULL") +
                 " id=" + ps.GetInstanceID());
         }
 
-        Debug.Log("[ParticleAutoFixer] Weapon children: " + weaponPs.Count + " PS created");
+        Debug.Log("[ParticleMigrator] Weapon children: " + weaponPs.Count + " PS created");
         return weaponPs;
     }
 
@@ -1586,7 +1577,7 @@ public class ParticleDebugController : MonoBehaviour
         foreach (var ps in allPS)
         {
             if (ps == null || ps.gameObject == null) continue;
-            if (!ParticleEmitterAutoFixer.IsKnownParticle(ps.gameObject.name)) continue;
+            if (!ParticleEffectControllerMigrator.IsKnownParticle(ps.gameObject.name)) continue;
             // Only count scene instances, not prefab assets
             if (string.IsNullOrEmpty(ps.gameObject.scene.name)) continue;
             counts[ps.gameObject.name] = ps.particleCount;
@@ -1634,7 +1625,7 @@ public class ParticleDebugController : MonoBehaviour
         {
             if (ps == null || ps.gameObject == null) continue;
             string name = ps.gameObject.name;
-            if (!ParticleEmitterAutoFixer.IsKnownParticle(name)) continue;
+            if (!ParticleEffectControllerMigrator.IsKnownParticle(name)) continue;
             if (string.IsNullOrEmpty(ps.gameObject.scene.name)) continue;
 
             // --- SET EXTREME COLOR: solid RED ---
@@ -1709,7 +1700,7 @@ public class ParticleDebugController : MonoBehaviour
         foreach (var ps in allPS)
         {
             if (ps == null || ps.gameObject == null) continue;
-            if (!ParticleEmitterAutoFixer.IsKnownParticle(ps.gameObject.name)) continue;
+            if (!ParticleEffectControllerMigrator.IsKnownParticle(ps.gameObject.name)) continue;
             var rend = ps.GetComponent<ParticleSystemRenderer>();
             string sceneName = ps.gameObject.scene.name;
             bool isScene = !string.IsNullOrEmpty(sceneName);
@@ -1865,7 +1856,7 @@ public class LegacySizeGrow : MonoBehaviour
 }
 
 /// <summary>
-/// Runs for several frames after ParticleEmitterAutoFixer to guard against standalone build
+/// Runs for several frames after ParticleEffectControllerMigrator to guard against standalone build
 /// asset bundle deserialization overwriting startRotation on Stretched particles.
 /// In builds, scene data from .unity3d bundles may re-apply serialized values after sceneLoaded,
 /// restoring the migration's random startRotation that causes trails to render as horizontal lines.
@@ -1936,7 +1927,7 @@ public class ParticleRotationGuard : MonoBehaviour
 }
 
 /// <summary>
-/// Delayed diagnostic that runs ~1 second after ParticleEmitterAutoFixer completes.
+/// Delayed diagnostic that runs ~1 second after ParticleEffectControllerMigrator completes.
 /// Snapshots ALL critical particle properties and logs mismatches to detect scene
 /// deserialization overwrites that only happen in standalone builds (not Editor).
 ///
@@ -1983,7 +1974,7 @@ public class ParticleBuildVerifier : MonoBehaviour
 
         int mismatches = 0;
 
-        // Expected material->shader type mapping (from ParticleEmitterAutoFixer.MaterialMapping)
+        // Expected material->shader type mapping (from ParticleEffectControllerMigrator.MaterialMapping)
         var expectedShaderType = new Dictionary<string, int>
         {
             {"Wood", 0}, {"Stone", 0}, {"Grass", 0}, {"Sand", 0}, {"Splat", 0},
@@ -2205,11 +2196,11 @@ public class ParticleBuildVerifier : MonoBehaviour
                 " rendEnabled=" + (spRend != null && spRend.enabled) +
                 " renderMode=" + (spRend != null ? spRend.renderMode.ToString() : "N/A"));
 
-            // Verify SpawnParticlesFixer values were applied
+            // Verify ParticleEffectController.ConfigurePickupParticles values were applied
             if (Mathf.Abs(spMinSize - 0.05f) > 0.01f || Mathf.Abs(spMaxSize - 0.15f) > 0.01f)
             {
                 Debug.LogError("[BuildVerifier] MISMATCH: SpawnParticles startSize=" +
-                    spMinSize + "-" + spMaxSize + " expected=0.05-0.15 (SpawnParticlesFixer may not have run)");
+                    spMinSize + "-" + spMaxSize + " expected=0.05-0.15 (ParticleEffectController.ConfigurePickupParticles may not have run)");
                 mismatches++;
             }
         }

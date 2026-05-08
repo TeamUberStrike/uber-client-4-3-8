@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Runtime fix-ups that only apply when LevelTempleOfTheRaven is loaded:
+// Per-scene setup that only applies when LevelTempleOfTheRaven is loaded:
 //
 // 1. Skybox: the ported scene's m_SkyboxMaterial reference is stale in the
 //    AssetBundle-loaded path, so the Temple sky doesn't actually appear at
-//    runtime even though the scene file references the right material. We
-//    reassign RenderSettings.skybox from Resources so the bundle-build state
-//    doesn't matter.
+//    runtime even though the scene file references the right material. Reassign
+//    RenderSettings.skybox from Resources so the bundle-build state doesn't
+//    matter.
 //
 // 2. MeshCollider trigger warning: `StaticContent/WaterEnvironment/Tile` has a
 //    non-convex MeshCollider with isTrigger=true, which Unity 5+ rejects and
@@ -16,8 +16,8 @@ using UnityEngine.SceneManagement;
 //    (BoxCollider) script is the actual trigger for water traversal, the
 //    WaterPlane itself just needs blocking/none collision.
 //
-// Kept in one script so future Temple-only runtime tweaks have an obvious home.
-public class TempleOfTheRavenFixer : MonoBehaviour
+// One script so future Temple-only setup hooks have an obvious home.
+public static class TempleOfTheRavenSceneSetup
 {
     private const string SceneName = "LevelTempleOfTheRaven";
     private const string SkyboxResourcePath = "TempleOfTheRaven/SkyboxV2";
@@ -88,7 +88,7 @@ public class TempleOfTheRavenFixer : MonoBehaviour
 
         if (mat == null)
         {
-            Debug.LogWarning("[TempleFixer] Could not locate SkyboxV2 material — sky will use previous/default.");
+            Debug.LogWarning("[TempleSceneSetup] Could not locate SkyboxV2 material — sky will use previous/default.");
             return;
         }
 
@@ -96,7 +96,7 @@ public class TempleOfTheRavenFixer : MonoBehaviour
         // `RenderSettings.skybox == mat` which was expected to return true on
         // re-entry (Resources.Load caches the asset, so the reference should
         // be stable). In practice that check was still failing on re-entry
-        // (log: `[TempleFixer] Skybox applied: SkyboxV2` on EVERY Temple
+        // (log: `[TempleSceneSetup] Skybox applied: SkyboxV2` on EVERY Temple
         // entry, including repeated ones), which means something is mutating
         // RenderSettings.skybox between visits — likely Unity restoring the
         // scene's baked RenderSettings during additive load.
@@ -115,13 +115,13 @@ public class TempleOfTheRavenFixer : MonoBehaviour
         // (cosmetic, and only briefly wrong during the short transition).
         if (_skyboxAppliedOnce)
         {
-            Debug.Log("[TempleFixer] Skybox already applied in this session — skipped (anti-GI-reset guard).");
+            Debug.Log("[TempleSceneSetup] Skybox already applied in this session — skipped (anti-GI-reset guard).");
             return;
         }
 
         RenderSettings.skybox = mat;
         _skyboxAppliedOnce = true;
-        Debug.Log("[TempleFixer] Skybox applied: " + mat.name);
+        Debug.Log("[TempleSceneSetup] Skybox applied: " + mat.name);
     }
 
     private static bool _skyboxAppliedOnce;
