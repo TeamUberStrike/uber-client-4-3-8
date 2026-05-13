@@ -269,7 +269,7 @@ public class SceneExporter
         PrepareBuildFolder(WindowsStandaloneFolder);
         BuildSplashPlayer(WindowsStandaloneFolder, BuildTarget.StandaloneWindows);
         BuildMainScene(WindowsStandaloneFolder, BuildTarget.StandaloneWindows);
-        if (buildMaps) BuildMapScenes(WindowsStandaloneFolder, BuildTarget.StandaloneWindows);
+        if (buildMaps) BuildMapScenes(WindowsStandaloneFolder, BuildTarget.StandaloneWindows, false);
     }
 
     #endregion
@@ -486,7 +486,7 @@ public class SceneExporter
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.AllowDebugging);
+        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);

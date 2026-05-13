@@ -17,6 +17,7 @@ public class AutoMonoBehaviour<T> : MonoBehaviour where T : class
                 if (_parent == null)
                     _parent = new GameObject("AutoMonoBehaviours");
                 //_parent.hideFlags = HideFlags.DontSave;// HideFlags.HideAndDontSave;
+                UnityEngine.Object.DontDestroyOnLoad(_parent);
             }
             return _parent;
         }

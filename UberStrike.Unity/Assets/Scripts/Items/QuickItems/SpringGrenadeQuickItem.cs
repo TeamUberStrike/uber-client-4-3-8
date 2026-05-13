@@ -108,6 +108,16 @@ public class SpringGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
         //Debug.LogError("Throw " + position);
 
         var instance = GameObject.Instantiate(this) as SpringGrenadeQuickItem;
+
+        // QuickItem.Instantiate builds the template with SetActiveRecursively(false) then
+        // only re-activates the root. Clones inherit that (invisible children, no collider).
+        // Reactivate the whole hierarchy and wake the Rigidbody so Velocity actually applies.
+        instance.gameObject.SetActive(true);
+        for (int i = 0; i < instance.gameObject.transform.childCount; i++)
+            instance.gameObject.transform.GetChild(i).gameObject.SetActive(true);
+        if (instance.GetComponent<Rigidbody>())
+            instance.GetComponent<Rigidbody>().isKinematic = false;
+
         instance.Position = position;
         instance.Velocity = velocity;
 
@@ -296,6 +306,132 @@ public class SpringGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
                 var emission = behaviour.DeployedEffect.emission;
                 emission.enabled = true;
             }
+            else
+            {
+                // Legacy EllipsoidParticleEmitter was stripped during the Unity 2022 port, so
+                // prefab's _deployedEffect is null. Author a modern ring-style ParticleSystem
+                // sized slightly larger than the grenade mesh (mesh ~0.5u → ring radius 0.7u).
+                BuildFallbackDeployedEffect(behaviour);
+            }
+        }
+
+        private static void BuildFallbackDeployedEffect(SpringGrenadeQuickItem behaviour)
+        {
+            // Stacked rings rising floor-by-floor: particles spawn on a small horizontal
+            // circle at the grenade and travel straight up, rendered as horizontal
+            // billboards so each one reads as a flat ring-floor. High emission rate packs
+            // adjacent floors tight so they mesh into a continuous tower.
+            var anchor = new GameObject("DeployedEffect");
+            anchor.transform.SetParent(behaviour.transform, false);
+            anchor.transform.localPosition = Vector3.zero;
+            anchor.layer = behaviour.gameObject.layer;
+
+            Material mat = Resources.Load<Material>("JumpPadParticles");
+            Gradient fadeInOut = BuildJumpPadFadeGradient();
+
+            // Reference look: ~3 concurrent particles, building from bottom up — each
+            // particle starts small (V-glyph at the grenade) and grows into a bigger
+            // ring as it rises. Size raised further; upSpeed halved so the three
+            // floors sit tight (≈0.22 u spacing) instead of spaced with air gaps.
+            BuildStackedRingLayer(anchor.transform, "Particle System",
+                startSize: 2.5f, rate: 2.3f,
+                upSpeed: 0.5f, lifetime: 1.3f, maxParticles: 8,
+                renderMode: ParticleSystemRenderMode.HorizontalBillboard, maxParticleSize: 1f,
+                material: mat, colorGradient: fadeInOut, growOverLife: true);
+
+            behaviour._deployedEffect = anchor.GetComponentInChildren<ParticleSystem>();
+        }
+
+        private static Gradient BuildJumpPadFadeGradient()
+        {
+            var g = new Gradient();
+            g.SetKeys(
+                new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] {
+                    new GradientAlphaKey(0.04f, 0f),
+                    new GradientAlphaKey(0.71f, 0.25f),
+                    new GradientAlphaKey(1f,    0.5f),
+                    new GradientAlphaKey(0.71f, 0.75f),
+                    new GradientAlphaKey(0.04f, 1f)
+                });
+            return g;
+        }
+
+        private static void BuildStackedRingLayer(Transform parent, string name,
+            float startSize, float rate,
+            float upSpeed, float lifetime, int maxParticles,
+            ParticleSystemRenderMode renderMode, float maxParticleSize,
+            Material material, Gradient colorGradient,
+            bool shrinkOverLife = false, bool growOverLife = false)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            // Mirror the pad's 0.121 lift: puts the first floor a hair above the
+            // grenade body instead of intersecting it.
+            go.transform.localPosition = new Vector3(0f, 0.121f, 0f);
+
+            var ps = go.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.loop = true;
+            main.prewarm = true;
+            main.playOnAwake = true;
+            main.startLifetime = lifetime;
+            main.startSpeed = 0f;
+            main.startSize = startSize;
+            main.startColor = Color.white;
+            main.maxParticles = maxParticles;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.gravityModifier = 0f;
+
+            var emission = ps.emission;
+            emission.enabled = true;
+            emission.rateOverTime = rate;
+
+            // Disabled shape = point emission at the GameObject origin → every floor
+            // lands on the same central axis, identical to the jump pad setup.
+            var shape = ps.shape;
+            shape.enabled = false;
+
+            var velocity = ps.velocityOverLifetime;
+            velocity.enabled = true;
+            velocity.space = ParticleSystemSimulationSpace.World;
+            velocity.x = 0f;
+            velocity.y = upSpeed;
+            velocity.z = 0f;
+
+            var colorOverLifetime = ps.colorOverLifetime;
+            colorOverLifetime.enabled = true;
+            colorOverLifetime.color = colorGradient;
+
+            if (shrinkOverLife || growOverLife)
+            {
+                var sizeOverLifetime = ps.sizeOverLifetime;
+                sizeOverLifetime.enabled = true;
+                var curve = new AnimationCurve();
+                if (growOverLife)
+                {
+                    curve.AddKey(0f, 0.25f);  // emit: small V glyph at the grenade
+                    curve.AddKey(1f, 1.6f);   // end: oversized top ring (60% above startSize)
+                }
+                else
+                {
+                    curve.AddKey(0f, 1f);     // emit: full size (big ring)
+                    curve.AddKey(1f, 0.25f);  // end: small V glyph
+                }
+                sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, curve);
+            }
+
+            var renderer = go.GetComponent<ParticleSystemRenderer>();
+            renderer.renderMode = renderMode;
+            renderer.maxParticleSize = maxParticleSize;
+            if (material != null) renderer.material = material;
+
+            // Pre-roll one full lifetime so particles are already in steady state the
+            // frame the grenade deploys — no "naked" grenade while the system ramps up.
+            // prewarm alone proved unreliable with world-space simulation; Simulate +
+            // Play is the established pattern for cold-start elimination.
+            ps.Simulate(lifetime, true, true);
+            ps.Play();
         }
 
         public void OnExit()

@@ -168,6 +168,11 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
             MainCamera = camera;
             ReparentCamera(camera, transform);
 
+            // Apply user-selected FOV from Options → Video
+            float userFov = ApplicationDataManager.ApplicationOptions.VideoFOV;
+            if (userFov >= ApplicationOptions.VideoFOVMin && userFov <= ApplicationOptions.VideoFOVMax)
+                camera.fieldOfView = userFov;
+
             _zoomData.TargetFOV = camera.fieldOfView;
             _transform.position = position;
             _transform.rotation = rotation;
@@ -369,6 +374,11 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
         }
 
         if (!_isZoomedIn) return;
+
+        // Zoom-out should return to the user's preferred FOV, not the hardcoded default.
+        float userFov = ApplicationDataManager.ApplicationOptions.VideoFOV;
+        if (userFov >= ApplicationOptions.VideoFOVMin && userFov <= ApplicationOptions.VideoFOVMax)
+            fov = userFov;
 
         _zoomData.Speed = speed;
         _zoomData.TargetFOV = fov;
@@ -744,7 +754,8 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
         {
             if (Instance.MainCamera)
             {
-                TargetFOV = 60;
+                float userFov = ApplicationDataManager.ApplicationOptions.VideoFOV;
+                TargetFOV = (userFov >= ApplicationOptions.VideoFOVMin && userFov <= ApplicationOptions.VideoFOVMax) ? userFov : 60f;
                 Instance.MainCamera.fieldOfView = TargetFOV;
             }
         }
