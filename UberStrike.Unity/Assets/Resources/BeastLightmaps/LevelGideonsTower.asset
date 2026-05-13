@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e70e3631016d949a4b57fedea9fb7c, type: 3}
+  m_Name: LevelGideonsTower
+  m_EditorClassIdentifier: 
+  lightmaps:
+  - {fileID: 2800000, guid: 8dee62b89b9362248b7263469e437be3, type: 3}
+  - {fileID: 2800000, guid: 55ca98c262220cf408d21a873c5b37f8, type: 3}
+  - {fileID: 2800000, guid: 31aaa9549bd0fd84d857a383e95240ee, type: 3}
+  - {fileID: 2800000, guid: 5fc22031cf18b2e47be0bd53f28d7840, type: 3}
+  - {fileID: 2800000, guid: 6ac40dbbb8111d54cb783968a0b466c2, type: 3}
+  - {fileID: 2800000, guid: 296c35fdc67b480489c982f23d368aeb, type: 3}
+  - {fileID: 2800000, guid: 6c4aa204699968749b5ee080e5a8fe98, type: 3}
+  - {fileID: 2800000, guid: b5fd63332e8652c4481f443c446e7d08, type: 3}

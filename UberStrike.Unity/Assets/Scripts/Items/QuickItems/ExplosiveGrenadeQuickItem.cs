@@ -82,6 +82,15 @@ public class ExplosiveGrenadeQuickItem : BaseQuickItem, IGrenadeProjectile
     public IGrenadeProjectile Throw(Vector3 position, Vector3 velocity)
     {
         var instance = GameObject.Instantiate(this) as ExplosiveGrenadeQuickItem;
+
+        // Template is SetActiveRecursively(false)+root-only-active — reactivate the clone's
+        // full hierarchy so the visual/collider children come alive and physics can apply.
+        instance.gameObject.SetActive(true);
+        for (int i = 0; i < instance.transform.childCount; i++)
+            instance.transform.GetChild(i).gameObject.SetActive(true);
+        if (instance.GetComponent<Rigidbody>())
+            instance.GetComponent<Rigidbody>().isKinematic = false;
+
         instance.Position = position;
         instance.Velocity = velocity;
         instance.GetComponent<Collider>().material.bounciness = _config.Bounciness;

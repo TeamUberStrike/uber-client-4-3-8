@@ -805,7 +805,14 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         get
         {
-            int msPerFrame = Mathf.RoundToInt(Time.smoothDeltaTime * 1000);
+            // smoothDeltaTime is 0 on the very first frame and occasionally when
+            // Unity resets it — rounding to int ms then dividing was throwing
+            // DivideByZero hundreds of times per frame, each caught by the
+            // DebugConsole error-report path. That was the real source of the
+            // shop FPS drop: not the filter loop, the flood of logging.
+            float delta = Time.smoothDeltaTime;
+            if (delta <= 0f) return "--";
+            int msPerFrame = Mathf.Max(1, Mathf.RoundToInt(delta * 1000));
             return string.Format("{0} ({1}ms)", 1000 / msPerFrame, msPerFrame);
         }
     }

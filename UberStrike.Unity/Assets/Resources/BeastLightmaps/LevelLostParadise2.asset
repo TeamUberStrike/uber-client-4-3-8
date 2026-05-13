@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e70e3631016d949a4b57fedea9fb7c, type: 3}
+  m_Name: LevelLostParadise2
+  m_EditorClassIdentifier: 
+  lightmaps:
+  - {fileID: 2800000, guid: bbf24ba37ccee28408855c3d5e16327f, type: 3}
+  - {fileID: 2800000, guid: 240d7d394afcfb94084735cf117d7420, type: 3}
+  - {fileID: 2800000, guid: c99687417b553f741a38860319d826c6, type: 3}
+  - {fileID: 2800000, guid: 6960cd3a36ff2ea4995a5f4e4d77788c, type: 3}

@@ -36,6 +36,19 @@ public class ApplicationOptions
     public float CameraFovMax = 65;
     public float CameraFovMin = 5;
 
+    // Field of View — user-adjustable main camera FOV (Options → Video)
+    public const float VideoFOVMin = 60f;
+    public const float VideoFOVMax = 110f;
+    public float VideoFOV = 75f;
+
+    // In-match FPS counter overlay + post-processing (Options → Video).
+    // PostProcessing now has a 0-100 strength slider — 0 is off, 100 is full.
+    // The old bool is kept for back-compat with stored prefs; `VideoPostProcessing`
+    // is derived from `VideoPostProcessingStrength > 0`.
+    public bool VideoShowFps = false;
+    public int VideoPostProcessingStrength = 0; // default OFF — don't alter project look until user opts in
+    public bool VideoPostProcessing { get { return VideoPostProcessingStrength > 0; } set { VideoPostProcessingStrength = value ? 60 : 0; } }
+
     // Audio
     public bool AudioEnabled = true;
     public float AudioEffectsVolume = 0.7f;
@@ -77,6 +90,12 @@ public class ApplicationOptions
 
         IsFullscreen = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoIsFullscreen, true);
         ScreenResolution = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoScreenRes, ScreenResolutionManager.CurrentResolutionIndex);
+
+        VideoFOV = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV), VideoFOVMin, VideoFOVMax);
+        VideoShowFps = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoShowFps, VideoShowFps);
+        VideoPostProcessingStrength = Mathf.Clamp(
+            CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoPostProcessingStrength, VideoPostProcessingStrength),
+            0, 100);
 
         // Input
         InputXMouseSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputXMouseSensitivity, 3.0f), 1.0f, 10.0f);
@@ -120,6 +139,9 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoMotionBlur, VideoMotionBlur);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoScreenRes, ScreenResolution);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoIsFullscreen, IsFullscreen);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoShowFps, VideoShowFps);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoPostProcessingStrength, VideoPostProcessingStrength);
 
         // Input
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputXMouseSensitivity, InputXMouseSensitivity);

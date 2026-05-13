@@ -23,6 +23,7 @@ public class OptionsPanelGUI : PanelGuiBase
     int _vsync = 0;
     int _antiAliasing = 0;
     int _waterQuality = 0;
+    float _fov = 75f;
 
     private Rect _rect;
 
@@ -278,6 +279,7 @@ public class OptionsPanelGUI : PanelGuiBase
 
         _waterQuality = ApplicationDataManager.ApplicationOptions.VideoWaterMode;
         _vsync = QualitySettings.vSyncCount;
+        _fov = ApplicationDataManager.ApplicationOptions.VideoFOV;
     }
 
     public static bool HorizontalScrollbar(Rect rect, string title, ref float value, float min, float max)
@@ -303,6 +305,65 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
         return value != v;
+    }
+
+    // Checkbox matching the Steam reference: a dark bordered square that fills
+    // UberStrike blue with a white "✓" when checked, followed by a label. Uses
+    // GUI.DrawTexture so the visual doesn't depend on BlueStonez skin textures
+    // that render as a near-invisible empty box in our project's build.
+    private static readonly Color _toggleBorder = new Color(0.10f, 0.12f, 0.14f, 1f);
+    private static readonly Color _toggleFillOn = new Color(0.22f, 0.64f, 0.92f, 1f); // UberStrike blue
+    private static readonly Color _toggleFillOff = new Color(0.17f, 0.18f, 0.20f, 1f); // empty-state body
+
+    private static Texture2D _whitePixel;
+    private static Texture2D GetWhitePixel()
+    {
+        if (_whitePixel == null)
+        {
+            _whitePixel = new Texture2D(1, 1);
+            _whitePixel.SetPixel(0, 0, Color.white);
+            _whitePixel.Apply();
+            _whitePixel.hideFlags = HideFlags.HideAndDontSave;
+        }
+        return _whitePixel;
+    }
+
+    public static bool DrawCustomToggle(Rect rect, bool value, string label)
+    {
+        float boxSize = 16f;
+        float boxY = rect.y + (rect.height - boxSize) * 0.5f;
+        Rect box = new Rect(rect.x, boxY, boxSize, boxSize);
+        Rect inner = new Rect(box.x + 1, box.y + 1, box.width - 2, box.height - 2);
+
+        var tex = GetWhitePixel();
+        var prev = GUI.color;
+
+        GUI.color = _toggleBorder;
+        GUI.DrawTexture(box, tex);
+        GUI.color = value ? _toggleFillOn : _toggleFillOff;
+        GUI.DrawTexture(inner, tex);
+
+        if (value)
+        {
+            GUI.color = Color.white;
+            var old = GUI.skin.label.fontStyle;
+            GUI.skin.label.fontStyle = FontStyle.Bold;
+            GUI.Label(new Rect(box.x - 1, box.y - 2, boxSize + 2, boxSize + 2), "\u2713");
+            GUI.skin.label.fontStyle = old;
+        }
+
+        GUI.color = prev;
+
+        // Label next to the box
+        Rect labelRect = new Rect(rect.x + boxSize + 8, rect.y, rect.width - boxSize - 8, rect.height);
+        GUI.Label(labelRect, label, BlueStonez.label_interparkbold_11pt_left);
+
+        // Clickable area: full row.
+        if (GUI.Button(rect, GUIContent.none, GUIStyle.none))
+        {
+            return !value;
+        }
+        return value;
     }
 
     private void DoVideoGroup()
@@ -365,6 +426,39 @@ public class OptionsPanelGUI : PanelGuiBase
                 ApplicationDataManager.ApplicationOptions.VideoWaterMode = _waterQuality;
                 SetCurrentQuality(qualitySet.Length - 1);
             }
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 210, width, 30), "Field of View:", ref _fov, ApplicationOptions.VideoFOVMin, ApplicationOptions.VideoFOVMax))
+            {
+                ApplicationDataManager.ApplicationOptions.VideoFOV = _fov;
+                if (LevelCamera.Exists && LevelCamera.Instance.MainCamera != null)
+                    LevelCamera.Instance.MainCamera.fieldOfView = _fov;
+            }
+
+            // Post-Processing is a 0-100 strength slider (instead of a plain toggle).
+            // Different maps need different intensities: 0 disables entirely, 100
+            // is full vibrance/bloom/vignette. Uses the same HorizontalScrollbar
+            // helper as FOV/Target Framerate/Texture Quality so the style matches
+            // the rest of the Video tab exactly.
+            int prevStrength = ApplicationDataManager.ApplicationOptions.VideoPostProcessingStrength;
+            float strength = prevStrength;
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 240, width, 30), "Post Processing:", ref strength, 0f, 100f))
+            {
+                ApplicationDataManager.ApplicationOptions.VideoPostProcessingStrength = Mathf.RoundToInt(strength);
+                if (RenderSettingsController.Instance != null)
+                    RenderSettingsController.Instance.EnableImageEffects();
+                ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
+            }
+
+            // Show FPS stays as a checkbox — it's binary, no reason to slider it.
+            bool prevShowFps = ApplicationDataManager.ApplicationOptions.VideoShowFps;
+            ApplicationDataManager.ApplicationOptions.VideoShowFps = DrawCustomToggle(
+                new Rect(GroupMarginX + 4, 272, 200, 24),
+                ApplicationDataManager.ApplicationOptions.VideoShowFps,
+                "Show FPS");
+
+            if (prevShowFps != ApplicationDataManager.ApplicationOptions.VideoShowFps)
+            {
+                ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
+            }
 
             //// EFFECTS
             //DrawGroupControl(new Rect(GroupMarginX, 230, width, 45), LocalizedStrings.Effects, BlueStonez.label_group_interparkbold_18pt);
@@ -383,7 +477,7 @@ public class OptionsPanelGUI : PanelGuiBase
             //    }
             //}
             //GUI.EndGroup();
-            int resolutionY = 240;
+            int resolutionY = 298;  // room for two 20px toggles at y=243/268
 
             //RESOLUTIONS (standalone)
             if (Application.platform != RuntimePlatform.WebGLPlayer || showResolutions)
