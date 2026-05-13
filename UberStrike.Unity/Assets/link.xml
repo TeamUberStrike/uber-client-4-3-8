@@ -1,0 +1,52 @@
+<linker>
+  <!--
+    link.xml — IL2CPP managed-code preservation rules for the UberStrike mobile build.
+
+    Reasoning:
+      * ProjectSettings.asset has `stripEngineCode: 1` and `managedStrippingLevel` of 1 (Low)
+        across all build platforms. The Unity linker walks roots (scenes, build settings,
+        [Preserve] attributes, link.xml) and prunes anything else.
+      * UberStrike runtime patterns that the linker CANNOT see through:
+          1. `Singleton<T>` and `RenderSettingsController` use
+             `GetConstructor(BindingFlags.NonPublic)` to invoke private constructors on
+             concrete subclass types. The linker sees `T` only as a generic parameter,
+             not as the 35+ concrete subclasses (BackgroundMusicPlayer, ChatManager,
+             AmmoHud, etc.). Cmune's 4.3.10.1 iOS build relied on the same pattern.
+          2. Prime31 StoreKit / Etcetera native plugins invoke managed callbacks via
+             `UnitySendMessage("StoreKitManager", "productPurchased", json)` —
+             dispatched by GameObject name + method-name string, invisible to the linker.
+          3. Photon / UberStrike.UnitySdk perform serialization via reflection.
+
+    First-cut scope:
+      * Preserve all of Assembly-CSharp ("preserve all" — broad but safe). Stripping
+        savings on this assembly are modest compared to engine code stripping, which
+        remains active.
+      * Preserve UberStrike.UnitySdk and ExitGames.Client.Photon types referenced via
+        reflection by network serialization.
+      * Tighten by switching from `preserve="all"` to enumerated `<type>` rules once a
+        green IL2CPP build verifies which symbols are actually needed.
+  -->
+
+  <assembly fullname="Assembly-CSharp" preserve="all" />
+
+  <!-- Photon transport — held alive by string-based event registration -->
+  <assembly fullname="Photon3Unity3D" preserve="all" />
+
+  <!-- UberStrike SDK assembly — reflection-based view serialization -->
+  <assembly fullname="UberStrike.UnitySdk" preserve="all" />
+
+  <!--
+    Prime31 native plugins:
+      P31RestKit handles HTTP callbacks via UnitySendMessage. Preserve fully until the
+      green-build pass confirms which entry points are reached.
+  -->
+  <assembly fullname="P31RestKit" preserve="all" />
+
+  <!-- System.Core: LINQ extension methods are referenced from generic instantiations
+       across UberStrike. Without this, IL2CPP may drop Enumerable.Select<int,bool>
+       etc. specializations that are referenced only via lambdas. -->
+  <assembly fullname="System.Core">
+    <type fullname="System.Linq.Enumerable" preserve="all" />
+  </assembly>
+
+</linker>

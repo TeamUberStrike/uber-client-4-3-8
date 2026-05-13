@@ -916,8 +916,14 @@ PlayerSettings:
   scriptingDefineSymbols: {}
   additionalCompilerArguments: {}
   platformArchitecture: {}
-  scriptingBackend: {}
-  il2cppCompilerConfiguration: {}
+  scriptingBackend:
+    Android: 1
+    Standalone: 1
+    iPhone: 1
+  il2cppCompilerConfiguration:
+    Android: 1
+    Standalone: 1
+    iPhone: 1
   il2cppCodeGeneration: {}
   managedStrippingLevel:
     EmbeddedLinux: 1
