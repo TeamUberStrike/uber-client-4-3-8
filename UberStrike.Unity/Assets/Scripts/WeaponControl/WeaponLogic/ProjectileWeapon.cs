@@ -124,7 +124,10 @@ public class ProjectileWeapon : BaseWeaponLogic
                 //Let projectile know it's ID
                 projectile.gameObject.tag = "Prop";
                 projectile.ExplosionEffect = ExplosionType;
-                projectile.TimeOut = _decorator.MissileTimeOut;
+				if(_decorator.MissileTimeOut > 0)
+				{
+                	projectile.TimeOut = _decorator.MissileTimeOut;
+				}
                 projectile.SetExplosionSound(_decorator.ExplosionSound);
 
                 projectile.transform.position = ray.origin + MinProjectileDistance * ray.direction;
