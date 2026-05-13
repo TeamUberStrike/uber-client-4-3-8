@@ -23,7 +23,7 @@ public class DebugGraphics : IDebugPage
         GUILayout.Label("supportsShadowsD: " + SystemInfo.supportsShadows);
         GUILayout.Label("supportsVertexPrograms: " + SystemInfo.supportsVertexPrograms);
         QualitySettings.pixelLightCount = CmuneGUI.HorizontalScrollbar("pixelLightCount: ", QualitySettings.pixelLightCount, 0, 10);
-        QualitySettings.masterTextureLimit = CmuneGUI.HorizontalScrollbar("masterTextureLimit: ", QualitySettings.masterTextureLimit, 0, 20);
+        QualitySettings.globalTextureMipmapLimit = CmuneGUI.HorizontalScrollbar("masterTextureLimit: ", QualitySettings.globalTextureMipmapLimit, 0, 20);
         QualitySettings.maxQueuedFrames = CmuneGUI.HorizontalScrollbar("maxQueuedFrames: ", QualitySettings.maxQueuedFrames, 0, 10);
         QualitySettings.maximumLODLevel = CmuneGUI.HorizontalScrollbar("maximumLODLevel: ", QualitySettings.maximumLODLevel, 0, 7);
         QualitySettings.vSyncCount = CmuneGUI.HorizontalScrollbar("vSyncCount: ", QualitySettings.vSyncCount, 0, 2);

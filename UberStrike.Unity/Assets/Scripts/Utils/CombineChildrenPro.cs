@@ -33,7 +33,7 @@ public class CombineChildrenPro : MonoBehaviour
         for (int i = 0; i < childGOMeshFilters.Length; i++)
         {
             MeshFilter meshFilter = (MeshFilter)childGOMeshFilters[i];
-            Renderer curRenderer = childGOMeshFilters[i].renderer;
+            Renderer curRenderer = childGOMeshFilters[i].GetComponent<Renderer>();
             MeshCombineUtilityPro.MeshInstance instance = new MeshCombineUtilityPro.MeshInstance();
             instance.mesh = meshFilter.sharedMesh;
 
@@ -77,8 +77,8 @@ public class CombineChildrenPro : MonoBehaviour
 
                 filter = GetComponent<MeshFilter>();
                 filter.mesh = MeshCombineUtilityPro.Combine(instances, generateTriangleStrips, copyTangents, copyVertexColors, copyUV2Coordinates, copyNormals);
-                renderer.material = (Material)dictionaryEntry.Key;
-                renderer.enabled = true;
+                GetComponent<Renderer>().material = (Material)dictionaryEntry.Key;
+                GetComponent<Renderer>().enabled = true;
             }
             else
             {
@@ -91,7 +91,7 @@ public class CombineChildrenPro : MonoBehaviour
                 go.transform.localPosition = Vector3.zero;
                 go.AddComponent<MeshFilter>();
                 go.AddComponent<MeshRenderer>();
-                go.renderer.material = (Material)dictionaryEntry.Key;
+                go.GetComponent<Renderer>().material = (Material)dictionaryEntry.Key;
                 filter = go.GetComponent<MeshFilter>();
                 filter.mesh = MeshCombineUtilityPro.Combine(instances, generateTriangleStrips, copyTangents, copyVertexColors, copyUV2Coordinates, copyNormals);
             }

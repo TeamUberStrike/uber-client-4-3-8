@@ -8,11 +8,11 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
     [SerializeField]
     private ParticleConfiguration[] _allWeaponData;
     [SerializeField]
-    private ParticleEmitter _pickupParticleEmitter;
+    private ParticleSystem _pickupParticleEmitter;
     [SerializeField]
     private HeatWave _heatWavePrefab;
     [SerializeField]
-    private ParticleEmitter _heatWave;
+    private ParticleSystem _heatWave;
 
     private Dictionary<ParticleConfigurationType, ParticleCobfigurationPerWeapon> _allConfigurations;
 
@@ -35,6 +35,135 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
         }
 
         ExplosionManager.Instance.HeatWavePrefab = _heatWavePrefab;
+
+        if (_pickupParticleEmitter != null)
+            ConfigurePickupParticles(_pickupParticleEmitter);
+
+        ParticleEffectControllerMigrator.Migrate(this);
+    }
+
+    // The Unity 3.5.5 → 2022 migration auto-converted the pickup effect's
+    // EllipsoidParticleEmitter + ParticleAnimator + ParticleRenderer to a
+    // ParticleSystem with default settings, losing the size/lifetime curves,
+    // ParticleAnimator damping/force, and the alpha-fade colorAnimation. Apply
+    // the original values from the 3.5.5 reference at startup so the pickup
+    // sparkle matches the legacy "tucked" look (1:1 confirmed).
+    //
+    // Source values (Desktop/uber-client-4-3-8 Latest.unity):
+    //   EllipsoidParticleEmitter &209: minSize=0.05, maxSize=0.15,
+    //     minEnergy=0.1, maxEnergy=3, localVelocity=(0,1,0), rndVelocity=(2,2,2),
+    //     m_Ellipsoid=(0.5,0,0.5), m_OneShot=1, m_MinEmitterRange=1
+    //   ParticleAnimator &180: damping=0.1 (per-frame velocity *= 0.9),
+    //     force=(0,1,0), rndForce=(4,4,4), sizeGrow=0.1,
+    //     colorAnimation alpha 0 → 50% → 50% → 35% → 0
+    //   ParticleRenderer &239: maxParticleSize=0.25, StretchParticles=0 (Billboard)
+    //
+    // The single most important parameter is limitVelocityOverLifetime.dampen
+    // (0.2). Without it, rndVelocity 2 m/s × lifetime 3s = 6m spread; with it,
+    // total travel collapses to ~0.3m as velocity decays.
+    private static void ConfigurePickupParticles(ParticleSystem ps)
+    {
+        var main = ps.main;
+        main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.15f);
+        main.startLifetime = new ParticleSystem.MinMaxCurve(0.1f, 3f);
+        // 3.5 EllipsoidParticleEmitter has no startSpeed concept — initial
+        // velocity comes entirely from localVelocity + rndVelocity, set in
+        // velocityOverLifetime below. A non-zero startSpeed would add a radial
+        // push along the shape direction on top of the rnd velocity, doubling
+        // the spread.
+        main.startSpeed = new ParticleSystem.MinMaxCurve(0f);
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.startColor = Color.white;
+        main.gravityModifier = 0f;
+        main.maxParticles = 200;
+        main.startRotation3D = false;
+        main.startRotation = 0f;
+
+        // m_Ellipsoid=(0.5, 0, 0.5) is a flat 1×0×1 plane in XZ — particles
+        // spawn anywhere within that plane at Y=0. Hemisphere (used previously)
+        // is a 3D dome with Y > 0 that gave particles a vertical head-start
+        // and visibly widened the cluster. Box scale (1, 0, 1) matches the
+        // original flat-plane spawn exactly.
+        var shape = ps.shape;
+        shape.enabled = true;
+        shape.shapeType = ParticleSystemShapeType.Box;
+        shape.scale = new Vector3(1f, 0f, 1f);
+
+        // localVelocity(0,1,0) + rndVelocity(±2,±2,±2). MinMaxCurve(min, max)
+        // is Random-Between-Two-Constants — each particle picks a single value
+        // at spawn, fixed for its lifetime, matching 3.5 ParticleEmitter
+        // rndVelocity semantics.
+        var vel = ps.velocityOverLifetime;
+        vel.enabled = true;
+        vel.x = new ParticleSystem.MinMaxCurve(-2f, 2f);
+        vel.y = new ParticleSystem.MinMaxCurve(-1f, 3f);
+        vel.z = new ParticleSystem.MinMaxCurve(-2f, 2f);
+        vel.space = ParticleSystemSimulationSpace.World;
+
+        // Emission disabled — ShowPickUpEffect calls Emit(count) on demand.
+        var emission = ps.emission;
+        emission.enabled = false;
+
+        var renderer = ps.GetComponent<ParticleSystemRenderer>();
+        if (renderer != null)
+        {
+            renderer.renderMode = ParticleSystemRenderMode.Billboard;
+            renderer.maxParticleSize = 0.25f;
+        }
+
+        // Replicates 3.5 ParticleAnimator damping=0.1. limit=0 + dampen=0.2
+        // means "any velocity over zero gets damped" — i.e. all of it.
+        var lim = ps.limitVelocityOverLifetime;
+        lim.enabled = true;
+        lim.limit = new ParticleSystem.MinMaxCurve(0f);
+        lim.dampen = 0.2f;
+        lim.separateAxes = false;
+
+        // ParticleAnimator force=(0,1,0): 1 m/s² constant upward acceleration.
+        // Combined with the limit/dampen above, produces a steady-state upward
+        // drift of ~0.15 m/s — the gentle rise visible in the original.
+        // 3.5's rndForce(4,4,4) was per-frame random; skipped because Unity
+        // 2022 MinMaxCurve random is per-particle (different semantics).
+        var force = ps.forceOverLifetime;
+        force.enabled = true;
+        force.x = new ParticleSystem.MinMaxCurve(0f);
+        force.y = new ParticleSystem.MinMaxCurve(1f);
+        force.z = new ParticleSystem.MinMaxCurve(0f);
+        force.space = ParticleSystemSimulationSpace.World;
+
+        var noise = ps.noise; noise.enabled = false;
+        var rotOL = ps.rotationOverLifetime; rotOL.enabled = false;
+        var rotBS = ps.rotationBySpeed; rotBS.enabled = false;
+        var szOL = ps.sizeOverLifetime; szOL.enabled = false;
+        var szBS = ps.sizeBySpeed; szBS.enabled = false;
+        var colBS = ps.colorBySpeed; colBS.enabled = false;
+        var extF = ps.externalForces; extF.enabled = false;
+        var inhV = ps.inheritVelocity; inhV.enabled = false;
+        var tsa = ps.textureSheetAnimation; tsa.enabled = false;
+
+        // ParticleAnimator colorAnimation (5-key, ABGR packed):
+        //   [0] 0x00FFFFFF -> alpha=0     (start: invisible)
+        //   [1] 0x80FFFFFF -> alpha=0.502 (fade in to ~50%)
+        //   [2] 0x80FFFFFF -> alpha=0.502 (hold ~50%)
+        //   [3] 0x59FFFFFF -> alpha=0.349 (fade down to ~35%)
+        //   [4] 0x00FFFFFF -> alpha=0     (end: invisible)
+        var col = ps.colorOverLifetime;
+        col.enabled = true;
+        var gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[] {
+                new GradientColorKey(Color.white, 0f),
+                new GradientColorKey(Color.white, 1f)
+            },
+            new GradientAlphaKey[] {
+                new GradientAlphaKey(0f, 0f),
+                new GradientAlphaKey(0.502f, 0.25f),
+                new GradientAlphaKey(0.502f, 0.50f),
+                new GradientAlphaKey(0.349f, 0.75f),
+                new GradientAlphaKey(0f, 1f)
+            }
+        );
+        col.color = new ParticleSystem.MinMaxGradient(gradient);
     }
 
 
@@ -49,9 +178,15 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
 
     public static void ShowHeatwaveEffect(Vector3 pos)
     {
+        // Original 3.5.5 values.
+        ShowHeatwaveEffect(pos, 1f, 1f);
+    }
+
+    public static void ShowHeatwaveEffect(Vector3 pos, float size, float life)
+    {
         if (Exists && Instance._heatWave)
         {
-            Instance._heatWave.Emit(pos, Vector3.zero, 1, 1, Color.white);
+            ParticleEmissionSystem.EmitSafe(Instance._heatWave, pos, Vector3.zero, size, life, Color.white);
         }
     }
 
@@ -388,7 +523,7 @@ public class ParticleConfiguration
     public float ParticleMinZVelocity;
     public float ParticleMaxZVelocity;
     public Color ParticleColor;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -400,7 +535,7 @@ public class FireParticleConfiguration
     public float ParticleMinLiveTime;
     public float ParticleMaxLiveTime;
     public Color ParticleColor;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -411,7 +546,7 @@ public class TrailParticleConfiguration
     public float ParticleMinLiveTime;
     public float ParticleMaxLiveTime;
     public Color ParticleColor;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -422,7 +557,7 @@ public class ExplosionBaseParameters
     public float MaxLifeTime;
     public float MinSize;
     public float MaxSize;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -435,7 +570,7 @@ public class ExplosionDustParameters
     public float MaxLifeTime;
     public float MinSize;
     public float MaxSize;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -444,7 +579,7 @@ public class ExplosionRingParameters
     public float StartSize;
     public float MinLifeTime;
     public float MaxLifeTime;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]
@@ -456,7 +591,7 @@ public class ExplosionSphericParameters
     public float MinSize;
     public float MaxSize;
     public float Speed;
-    public ParticleEmitter ParticleEmitter;
+    public ParticleSystem ParticleEmitter;
 }
 
 [System.Serializable]

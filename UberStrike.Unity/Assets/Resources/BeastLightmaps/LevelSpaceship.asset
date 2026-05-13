@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e70e3631016d949a4b57fedea9fb7c, type: 3}
+  m_Name: LevelSpaceship
+  m_EditorClassIdentifier:
+  lightmaps:
+  - {fileID: 2800000, guid: f557630c259a7d54ca1ae081e9f45e79, type: 3}
+  - {fileID: 2800000, guid: bead20f20af17f0439ac3da10d3a3a5d, type: 3}
+  - {fileID: 2800000, guid: 8e220a5cce24ff44199d988707763339, type: 3}
+  - {fileID: 2800000, guid: eeaf537227b777a45b0a0274470ec553, type: 3}
+  - {fileID: 2800000, guid: b12bfaaee5a1eaf4ab84009b2d339f48, type: 3}
+  - {fileID: 2800000, guid: ff093eb9d8bfa0d4b8b33bb3b9638150, type: 3}
+  - {fileID: 2800000, guid: 6dc9ed9f734be5540a45de9bec718a80, type: 3}

@@ -1,750 +1,868 @@
 fileFormatVersion: 2
 guid: 3358bd39d50c23f4398314f69c506f54
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: RockLarge1
-    4300002: RockLarge2
-    4300004: RockLarge3
-    4300006: RockLarge4
-    4300008: RockLarge5
-    4300010: RockLarge6
-    4300012: RockLarge7
-    4300014: RockLarge8
-    4300016: RockLarge9
-    4300018: RockLarge10
-    4300020: CocoTreesLeaves1
-    4300022: CocoTreesTrunk1
-    4300024: CocoTreesTrunk2
-    4300026: CocoTreesLeaves2
-    4300028: CocoTreesLeaves3
-    4300030: CocoTreesTrunk3
-    4300032: GrassGroup
-    4300034: GrassGroup1
-    4300036: GrassGroup2
-    4300038: GrassGroup3
-    4300040: PalmTreesLeaves1
-    4300042: PalmTreesTrunk1
-    4300044: PalmTreesLeaves2
-    4300046: PalmTreesTrunk2
-    4300048: CerimanLeaves1
-    4300050: CerimanStalks1
-    4300052: CerimanLeaves2
-    4300054: CerimanStalks2
-    4300056: LeafyPlants3
-    4300058: LeafyPlants2
-    4300060: LeafyPlants1
-    4300062: Terrain_Outer
-    4300064: Terrain_Main
-    4300066: TwinPeaks
-    4300068: SniperTower1
-    4300070: SniperTower2
-    4300072: PlaneBroken
-    4300074: RuinsTemple
-    4300076: TwinPeaksBridge1
-    4300078: TwinPeaksBridge2
-    4300080: Ivy_TwinPeaks
-    4300082: Ivy_Ruins
-    4300084: RuinsPillars
-    4300086: HelicopterBody
-    4300088: HelicopterWindow
-    4300090: CabanaHut1
-    4300092: CabanaHutRoof1
-    4300094: CabanaHut2
-    4300096: CabanaHutRoof2
-    4300098: CabanaHut3
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: RockLarge1
+  - first:
+      43: 4300002
+    second: RockLarge2
+  - first:
+      43: 4300004
+    second: RockLarge3
+  - first:
+      43: 4300006
+    second: RockLarge4
+  - first:
+      43: 4300008
+    second: RockLarge5
+  - first:
+      43: 4300010
+    second: RockLarge6
+  - first:
+      43: 4300012
+    second: RockLarge7
+  - first:
+      43: 4300014
+    second: RockLarge8
+  - first:
+      43: 4300016
+    second: RockLarge9
+  - first:
+      43: 4300018
+    second: RockLarge10
+  - first:
+      43: 4300020
+    second: CocoTreesLeaves1
+  - first:
+      43: 4300022
+    second: CocoTreesTrunk1
+  - first:
+      43: 4300024
+    second: CocoTreesTrunk2
+  - first:
+      43: 4300026
+    second: CocoTreesLeaves2
+  - first:
+      43: 4300028
+    second: CocoTreesLeaves3
+  - first:
+      43: 4300030
+    second: CocoTreesTrunk3
+  - first:
+      43: 4300032
+    second: GrassGroup
+  - first:
+      43: 4300034
+    second: GrassGroup1
+  - first:
+      43: 4300036
+    second: GrassGroup2
+  - first:
+      43: 4300038
+    second: GrassGroup3
+  - first:
+      43: 4300040
+    second: PalmTreesLeaves1
+  - first:
+      43: 4300042
+    second: PalmTreesTrunk1
+  - first:
+      43: 4300044
+    second: PalmTreesLeaves2
+  - first:
+      43: 4300046
+    second: PalmTreesTrunk2
+  - first:
+      43: 4300048
+    second: CerimanLeaves1
+  - first:
+      43: 4300050
+    second: CerimanStalks1
+  - first:
+      43: 4300052
+    second: CerimanLeaves2
+  - first:
+      43: 4300054
+    second: CerimanStalks2
+  - first:
+      43: 4300056
+    second: LeafyPlants3
+  - first:
+      43: 4300058
+    second: LeafyPlants2
+  - first:
+      43: 4300060
+    second: LeafyPlants1
+  - first:
+      43: 4300062
+    second: Terrain_Outer
+  - first:
+      43: 4300064
+    second: Terrain_Main
+  - first:
+      43: 4300066
+    second: TwinPeaks
+  - first:
+      43: 4300068
+    second: SniperTower1
+  - first:
+      43: 4300070
+    second: SniperTower2
+  - first:
+      43: 4300072
+    second: PlaneBroken
+  - first:
+      43: 4300074
+    second: RuinsTemple
+  - first:
+      43: 4300076
+    second: TwinPeaksBridge1
+  - first:
+      43: 4300078
+    second: TwinPeaksBridge2
+  - first:
+      43: 4300080
+    second: Ivy_TwinPeaks
+  - first:
+      43: 4300082
+    second: Ivy_Ruins
+  - first:
+      43: 4300084
+    second: RuinsPillars
+  - first:
+      43: 4300086
+    second: HelicopterBody
+  - first:
+      43: 4300088
+    second: HelicopterWindow
+  - first:
+      43: 4300090
+    second: CabanaHut1
+  - first:
+      43: 4300092
+    second: CabanaHutRoof1
+  - first:
+      43: 4300094
+    second: CabanaHut2
+  - first:
+      43: 4300096
+    second: CabanaHutRoof2
+  - first:
+      43: 4300098
+    second: CabanaHut3
+  - first:
+      1: 100078
+    second: //RootNode
+  - first:
+      4: 400078
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100034
+    second: CabanaHut1
+  - first:
+      4: 400034
+    second: CabanaHut1
+  - first:
+      33: 3300030
+    second: CabanaHut1
+  - first:
+      23: 2300030
+    second: CabanaHut1
+  - first:
+      1: 100076
+    second: CabanaHut2
+  - first:
+      4: 400076
+    second: CabanaHut2
+  - first:
+      33: 3300068
+    second: CabanaHut2
+  - first:
+      23: 2300068
+    second: CabanaHut2
+  - first:
+      1: 100016
+    second: CabanaHut3
+  - first:
+      4: 400016
+    second: CabanaHut3
+  - first:
+      33: 3300016
+    second: CabanaHut3
+  - first:
+      23: 2300016
+    second: CabanaHut3
+  - first:
+      1: 100044
+    second: CerimanLeaves1
+  - first:
+      4: 400044
+    second: CerimanLeaves1
+  - first:
+      33: 3300040
+    second: CerimanLeaves1
+  - first:
+      23: 2300040
+    second: CerimanLeaves1
+  - first:
+      1: 100068
+    second: CerimanLeaves2
+  - first:
+      4: 400068
+    second: CerimanLeaves2
+  - first:
+      33: 3300060
+    second: CerimanLeaves2
+  - first:
+      23: 2300060
+    second: CerimanLeaves2
+  - first:
+      1: 100062
+    second: CerimanStalks1
+  - first:
+      4: 400062
+    second: CerimanStalks1
+  - first:
+      33: 3300054
+    second: CerimanStalks1
+  - first:
+      23: 2300054
+    second: CerimanStalks1
+  - first:
+      1: 100050
+    second: CerimanStalks2
+  - first:
+      4: 400050
+    second: CerimanStalks2
+  - first:
+      33: 3300046
+    second: CerimanStalks2
+  - first:
+      23: 2300046
+    second: CerimanStalks2
+  - first:
+      1: 100012
+    second: CocoTreesLeaves1
+  - first:
+      4: 400012
+    second: CocoTreesLeaves1
+  - first:
+      33: 3300012
+    second: CocoTreesLeaves1
+  - first:
+      23: 2300012
+    second: CocoTreesLeaves1
+  - first:
+      1: 100014
+    second: CocoTreesLeaves2
+  - first:
+      4: 400014
+    second: CocoTreesLeaves2
+  - first:
+      33: 3300014
+    second: CocoTreesLeaves2
+  - first:
+      23: 2300014
+    second: CocoTreesLeaves2
+  - first:
+      1: 100010
+    second: CocoTreesLeaves3
+  - first:
+      4: 400010
+    second: CocoTreesLeaves3
+  - first:
+      33: 3300010
+    second: CocoTreesLeaves3
+  - first:
+      23: 2300010
+    second: CocoTreesLeaves3
+  - first:
+      1: 100026
+    second: CocoTreesTrunk1
+  - first:
+      4: 400026
+    second: CocoTreesTrunk1
+  - first:
+      33: 3300026
+    second: CocoTreesTrunk1
+  - first:
+      23: 2300026
+    second: CocoTreesTrunk1
+  - first:
+      1: 100084
+    second: CocoTreesTrunk2
+  - first:
+      4: 400084
+    second: CocoTreesTrunk2
+  - first:
+      33: 3300074
+    second: CocoTreesTrunk2
+  - first:
+      23: 2300074
+    second: CocoTreesTrunk2
+  - first:
+      1: 100074
+    second: CocoTreesTrunk3
+  - first:
+      4: 400074
+    second: CocoTreesTrunk3
+  - first:
+      33: 3300066
+    second: CocoTreesTrunk3
+  - first:
+      23: 2300066
+    second: CocoTreesTrunk3
+  - first:
+      1: 100024
+    second: GrassGroup
+  - first:
+      4: 400024
+    second: GrassGroup
+  - first:
+      33: 3300024
+    second: GrassGroup
+  - first:
+      23: 2300024
+    second: GrassGroup
+  - first:
+      1: 100088
+    second: GrassGroup1
+  - first:
+      4: 400088
+    second: GrassGroup1
+  - first:
+      33: 3300078
+    second: GrassGroup1
+  - first:
+      23: 2300078
+    second: GrassGroup1
+  - first:
+      1: 100082
+    second: GrassGroup2
+  - first:
+      4: 400082
+    second: GrassGroup2
+  - first:
+      33: 3300072
+    second: GrassGroup2
+  - first:
+      23: 2300072
+    second: GrassGroup2
+  - first:
+      1: 100100
+    second: GrassGroup3
+  - first:
+      4: 400100
+    second: GrassGroup3
+  - first:
+      33: 3300090
+    second: GrassGroup3
+  - first:
+      23: 2300090
+    second: GrassGroup3
+  - first:
+      1: 100096
+    second: HelicopterBody
+  - first:
+      4: 400096
+    second: HelicopterBody
+  - first:
+      33: 3300086
+    second: HelicopterBody
+  - first:
+      23: 2300086
+    second: HelicopterBody
+  - first:
+      1: 100000
+    second: HelicopterWindow
+  - first:
+      4: 400000
+    second: HelicopterWindow
+  - first:
+      33: 3300000
+    second: HelicopterWindow
+  - first:
+      23: 2300000
+    second: HelicopterWindow
+  - first:
+      1: 100090
+    second: Ivy_Ruins
+  - first:
+      4: 400090
+    second: Ivy_Ruins
+  - first:
+      33: 3300080
+    second: Ivy_Ruins
+  - first:
+      23: 2300080
+    second: Ivy_Ruins
+  - first:
+      1: 100070
+    second: Ivy_TwinPeaks
+  - first:
+      4: 400070
+    second: Ivy_TwinPeaks
+  - first:
+      33: 3300062
+    second: Ivy_TwinPeaks
+  - first:
+      23: 2300062
+    second: Ivy_TwinPeaks
+  - first:
+      1: 100038
+    second: LeafyPlants1
+  - first:
+      4: 400038
+    second: LeafyPlants1
+  - first:
+      33: 3300034
+    second: LeafyPlants1
+  - first:
+      23: 2300034
+    second: LeafyPlants1
+  - first:
+      1: 100066
+    second: LeafyPlants2
+  - first:
+      4: 400066
+    second: LeafyPlants2
+  - first:
+      33: 3300058
+    second: LeafyPlants2
+  - first:
+      23: 2300058
+    second: LeafyPlants2
+  - first:
+      1: 100102
+    second: LeafyPlants3
+  - first:
+      4: 400102
+    second: LeafyPlants3
+  - first:
+      33: 3300092
+    second: LeafyPlants3
+  - first:
+      23: 2300092
+    second: LeafyPlants3
+  - first:
+      1: 100002
+    second: PalmTreesLeaves1
+  - first:
+      4: 400002
+    second: PalmTreesLeaves1
+  - first:
+      33: 3300002
+    second: PalmTreesLeaves1
+  - first:
+      23: 2300002
+    second: PalmTreesLeaves1
+  - first:
+      1: 100008
+    second: PalmTreesLeaves2
+  - first:
+      4: 400008
+    second: PalmTreesLeaves2
+  - first:
+      33: 3300008
+    second: PalmTreesLeaves2
+  - first:
+      23: 2300008
+    second: PalmTreesLeaves2
+  - first:
+      1: 100094
+    second: PalmTreesTrunk1
+  - first:
+      4: 400094
+    second: PalmTreesTrunk1
+  - first:
+      33: 3300084
+    second: PalmTreesTrunk1
+  - first:
+      23: 2300084
+    second: PalmTreesTrunk1
+  - first:
+      1: 100022
+    second: PalmTreesTrunk2
+  - first:
+      4: 400022
+    second: PalmTreesTrunk2
+  - first:
+      33: 3300022
+    second: PalmTreesTrunk2
+  - first:
+      23: 2300022
+    second: PalmTreesTrunk2
+  - first:
+      1: 100046
+    second: PlaneBroken
+  - first:
+      4: 400046
+    second: PlaneBroken
+  - first:
+      33: 3300042
+    second: PlaneBroken
+  - first:
+      23: 2300042
+    second: PlaneBroken
+  - first:
+      1: 100056
+    second: Props
+  - first:
+      4: 400056
+    second: Props
+  - first:
+      1: 100030
+    second: RockLarge1
+  - first:
+      4: 400030
+    second: RockLarge1
+  - first:
+      33: 3300028
+    second: RockLarge1
+  - first:
+      23: 2300028
+    second: RockLarge1
+  - first:
+      1: 100086
+    second: RockLarge10
+  - first:
+      4: 400086
+    second: RockLarge10
+  - first:
+      33: 3300076
+    second: RockLarge10
+  - first:
+      23: 2300076
+    second: RockLarge10
+  - first:
+      1: 100060
+    second: RockLarge2
+  - first:
+      4: 400060
+    second: RockLarge2
+  - first:
+      33: 3300052
+    second: RockLarge2
+  - first:
+      23: 2300052
+    second: RockLarge2
+  - first:
+      1: 100064
+    second: RockLarge3
+  - first:
+      4: 400064
+    second: RockLarge3
+  - first:
+      33: 3300056
+    second: RockLarge3
+  - first:
+      23: 2300056
+    second: RockLarge3
+  - first:
+      1: 100036
+    second: RockLarge4
+  - first:
+      4: 400036
+    second: RockLarge4
+  - first:
+      33: 3300032
+    second: RockLarge4
+  - first:
+      23: 2300032
+    second: RockLarge4
+  - first:
+      1: 100104
+    second: RockLarge5
+  - first:
+      4: 400104
+    second: RockLarge5
+  - first:
+      33: 3300094
+    second: RockLarge5
+  - first:
+      23: 2300094
+    second: RockLarge5
+  - first:
+      1: 100020
+    second: RockLarge6
+  - first:
+      4: 400020
+    second: RockLarge6
+  - first:
+      33: 3300020
+    second: RockLarge6
+  - first:
+      23: 2300020
+    second: RockLarge6
+  - first:
+      1: 100042
+    second: RockLarge7
+  - first:
+      4: 400042
+    second: RockLarge7
+  - first:
+      33: 3300038
+    second: RockLarge7
+  - first:
+      23: 2300038
+    second: RockLarge7
+  - first:
+      1: 100072
+    second: RockLarge8
+  - first:
+      4: 400072
+    second: RockLarge8
+  - first:
+      33: 3300064
+    second: RockLarge8
+  - first:
+      23: 2300064
+    second: RockLarge8
+  - first:
+      1: 100048
+    second: RockLarge9
+  - first:
+      4: 400048
+    second: RockLarge9
+  - first:
+      33: 3300044
+    second: RockLarge9
+  - first:
+      23: 2300044
+    second: RockLarge9
+  - first:
+      1: 100028
+    second: Rocks
+  - first:
+      4: 400028
+    second: Rocks
+  - first:
+      1: 100054
+    second: RuinsPillars
+  - first:
+      4: 400054
+    second: RuinsPillars
+  - first:
+      33: 3300048
+    second: RuinsPillars
+  - first:
+      23: 2300048
+    second: RuinsPillars
+  - first:
+      1: 100106
+    second: RuinsTemple
+  - first:
+      4: 400106
+    second: RuinsTemple
+  - first:
+      33: 3300096
+    second: RuinsTemple
+  - first:
+      23: 2300096
+    second: RuinsTemple
+  - first:
+      1: 100080
+    second: SniperTower1
+  - first:
+      4: 400080
+    second: SniperTower1
+  - first:
+      33: 3300070
+    second: SniperTower1
+  - first:
+      23: 2300070
+    second: SniperTower1
+  - first:
+      1: 100098
+    second: SniperTower2
+  - first:
+      4: 400098
+    second: SniperTower2
+  - first:
+      33: 3300088
+    second: SniperTower2
+  - first:
+      23: 2300088
+    second: SniperTower2
+  - first:
+      1: 100032
+    second: Terrain
+  - first:
+      4: 400032
+    second: Terrain
+  - first:
+      1: 100092
+    second: Terrain_Main
+  - first:
+      4: 400092
+    second: Terrain_Main
+  - first:
+      33: 3300082
+    second: Terrain_Main
+  - first:
+      23: 2300082
+    second: Terrain_Main
+  - first:
+      1: 100040
+    second: Terrain_Outer
+  - first:
+      4: 400040
+    second: Terrain_Outer
+  - first:
+      33: 3300036
+    second: Terrain_Outer
+  - first:
+      23: 2300036
+    second: Terrain_Outer
+  - first:
+      1: 100052
+    second: TreesAndPlants
+  - first:
+      4: 400052
+    second: TreesAndPlants
+  - first:
+      1: 100058
+    second: TwinPeaks
+  - first:
+      4: 400058
+    second: TwinPeaks
+  - first:
+      33: 3300050
+    second: TwinPeaks
+  - first:
+      23: 2300050
+    second: TwinPeaks
+  - first:
+      1: 100006
+    second: TwinPeaksBridge1
+  - first:
+      4: 400006
+    second: TwinPeaksBridge1
+  - first:
+      33: 3300006
+    second: TwinPeaksBridge1
+  - first:
+      23: 2300006
+    second: TwinPeaksBridge1
+  - first:
+      1: 100004
+    second: TwinPeaksBridge2
+  - first:
+      4: 400004
+    second: TwinPeaksBridge2
+  - first:
+      33: 3300004
+    second: TwinPeaksBridge2
+  - first:
+      23: 2300004
+    second: TwinPeaksBridge2
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 0
+    legacyGenerateAnimations: 0
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
     tangentImportMode: 2
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: ee860100
-      data:
-        first: 4
-        second: ce1a0600
-      data:
-        first: 111
-        second: 605fa900
-    CabanaHut1:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
-    CabanaHut2:
-      data:
-        first: 1
-        second: ec860100
-      data:
-        first: 4
-        second: cc1a0600
-      data:
-        first: 23
-        second: a4182300
-      data:
-        first: 33
-        second: e45a3200
-    CabanaHut3:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    CerimanLeaves1:
-      data:
-        first: 1
-        second: cc860100
-      data:
-        first: 4
-        second: ac1a0600
-      data:
-        first: 23
-        second: 88182300
-      data:
-        first: 33
-        second: c85a3200
-    CerimanLeaves2:
-      data:
-        first: 1
-        second: e4860100
-      data:
-        first: 4
-        second: c41a0600
-      data:
-        first: 23
-        second: 9c182300
-      data:
-        first: 33
-        second: dc5a3200
-    CerimanStalks1:
-      data:
-        first: 1
-        second: de860100
-      data:
-        first: 4
-        second: be1a0600
-      data:
-        first: 23
-        second: 96182300
-      data:
-        first: 33
-        second: d65a3200
-    CerimanStalks2:
-      data:
-        first: 1
-        second: d2860100
-      data:
-        first: 4
-        second: b21a0600
-      data:
-        first: 23
-        second: 8e182300
-      data:
-        first: 33
-        second: ce5a3200
-    CocoTreesLeaves1:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    CocoTreesLeaves2:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    CocoTreesLeaves3:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    CocoTreesTrunk1:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    CocoTreesTrunk2:
-      data:
-        first: 1
-        second: f4860100
-      data:
-        first: 4
-        second: d41a0600
-      data:
-        first: 23
-        second: aa182300
-      data:
-        first: 33
-        second: ea5a3200
-    CocoTreesTrunk3:
-      data:
-        first: 1
-        second: ea860100
-      data:
-        first: 4
-        second: ca1a0600
-      data:
-        first: 23
-        second: a2182300
-      data:
-        first: 33
-        second: e25a3200
-    GrassGroup:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    GrassGroup1:
-      data:
-        first: 1
-        second: f8860100
-      data:
-        first: 4
-        second: d81a0600
-      data:
-        first: 23
-        second: ae182300
-      data:
-        first: 33
-        second: ee5a3200
-    GrassGroup2:
-      data:
-        first: 1
-        second: f2860100
-      data:
-        first: 4
-        second: d21a0600
-      data:
-        first: 23
-        second: a8182300
-      data:
-        first: 33
-        second: e85a3200
-    GrassGroup3:
-      data:
-        first: 1
-        second: 04870100
-      data:
-        first: 4
-        second: e41a0600
-      data:
-        first: 23
-        second: ba182300
-      data:
-        first: 33
-        second: fa5a3200
-    HelicopterBody:
-      data:
-        first: 1
-        second: 00870100
-      data:
-        first: 4
-        second: e01a0600
-      data:
-        first: 23
-        second: b6182300
-      data:
-        first: 33
-        second: f65a3200
-    HelicopterWindow:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    Ivy_Ruins:
-      data:
-        first: 1
-        second: fa860100
-      data:
-        first: 4
-        second: da1a0600
-      data:
-        first: 23
-        second: b0182300
-      data:
-        first: 33
-        second: f05a3200
-    Ivy_TwinPeaks:
-      data:
-        first: 1
-        second: e6860100
-      data:
-        first: 4
-        second: c61a0600
-      data:
-        first: 23
-        second: 9e182300
-      data:
-        first: 33
-        second: de5a3200
-    LeafyPlants1:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-      data:
-        first: 23
-        second: 82182300
-      data:
-        first: 33
-        second: c25a3200
-    LeafyPlants2:
-      data:
-        first: 1
-        second: e2860100
-      data:
-        first: 4
-        second: c21a0600
-      data:
-        first: 23
-        second: 9a182300
-      data:
-        first: 33
-        second: da5a3200
-    LeafyPlants3:
-      data:
-        first: 1
-        second: 06870100
-      data:
-        first: 4
-        second: e61a0600
-      data:
-        first: 23
-        second: bc182300
-      data:
-        first: 33
-        second: fc5a3200
-    PalmTreesLeaves1:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    PalmTreesLeaves2:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    PalmTreesTrunk1:
-      data:
-        first: 1
-        second: fe860100
-      data:
-        first: 4
-        second: de1a0600
-      data:
-        first: 23
-        second: b4182300
-      data:
-        first: 33
-        second: f45a3200
-    PalmTreesTrunk2:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    PlaneBroken:
-      data:
-        first: 1
-        second: ce860100
-      data:
-        first: 4
-        second: ae1a0600
-      data:
-        first: 23
-        second: 8a182300
-      data:
-        first: 33
-        second: ca5a3200
-    Props:
-      data:
-        first: 1
-        second: d8860100
-      data:
-        first: 4
-        second: b81a0600
-    RockLarge1:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-    RockLarge10:
-      data:
-        first: 1
-        second: f6860100
-      data:
-        first: 4
-        second: d61a0600
-      data:
-        first: 23
-        second: ac182300
-      data:
-        first: 33
-        second: ec5a3200
-    RockLarge2:
-      data:
-        first: 1
-        second: dc860100
-      data:
-        first: 4
-        second: bc1a0600
-      data:
-        first: 23
-        second: 94182300
-      data:
-        first: 33
-        second: d45a3200
-    RockLarge3:
-      data:
-        first: 1
-        second: e0860100
-      data:
-        first: 4
-        second: c01a0600
-      data:
-        first: 23
-        second: 98182300
-      data:
-        first: 33
-        second: d85a3200
-    RockLarge4:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-      data:
-        first: 23
-        second: 80182300
-      data:
-        first: 33
-        second: c05a3200
-    RockLarge5:
-      data:
-        first: 1
-        second: 08870100
-      data:
-        first: 4
-        second: e81a0600
-      data:
-        first: 23
-        second: be182300
-      data:
-        first: 33
-        second: fe5a3200
-    RockLarge6:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    RockLarge7:
-      data:
-        first: 1
-        second: ca860100
-      data:
-        first: 4
-        second: aa1a0600
-      data:
-        first: 23
-        second: 86182300
-      data:
-        first: 33
-        second: c65a3200
-    RockLarge8:
-      data:
-        first: 1
-        second: e8860100
-      data:
-        first: 4
-        second: c81a0600
-      data:
-        first: 23
-        second: a0182300
-      data:
-        first: 33
-        second: e05a3200
-    RockLarge9:
-      data:
-        first: 1
-        second: d0860100
-      data:
-        first: 4
-        second: b01a0600
-      data:
-        first: 23
-        second: 8c182300
-      data:
-        first: 33
-        second: cc5a3200
-    Rocks:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-    RuinsPillars:
-      data:
-        first: 1
-        second: d6860100
-      data:
-        first: 4
-        second: b61a0600
-      data:
-        first: 23
-        second: 90182300
-      data:
-        first: 33
-        second: d05a3200
-    RuinsTemple:
-      data:
-        first: 1
-        second: 0a870100
-      data:
-        first: 4
-        second: ea1a0600
-      data:
-        first: 23
-        second: c0182300
-      data:
-        first: 33
-        second: 005b3200
-    SniperTower1:
-      data:
-        first: 1
-        second: f0860100
-      data:
-        first: 4
-        second: d01a0600
-      data:
-        first: 23
-        second: a6182300
-      data:
-        first: 33
-        second: e65a3200
-    SniperTower2:
-      data:
-        first: 1
-        second: 02870100
-      data:
-        first: 4
-        second: e21a0600
-      data:
-        first: 23
-        second: b8182300
-      data:
-        first: 33
-        second: f85a3200
-    Terrain:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-    Terrain_Main:
-      data:
-        first: 1
-        second: fc860100
-      data:
-        first: 4
-        second: dc1a0600
-      data:
-        first: 23
-        second: b2182300
-      data:
-        first: 33
-        second: f25a3200
-    Terrain_Outer:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 84182300
-      data:
-        first: 33
-        second: c45a3200
-    TreesAndPlants:
-      data:
-        first: 1
-        second: d4860100
-      data:
-        first: 4
-        second: b41a0600
-    TwinPeaks:
-      data:
-        first: 1
-        second: da860100
-      data:
-        first: 4
-        second: ba1a0600
-      data:
-        first: 23
-        second: 92182300
-      data:
-        first: 33
-        second: d25a3200
-    TwinPeaksBridge1:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    TwinPeaksBridge2:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

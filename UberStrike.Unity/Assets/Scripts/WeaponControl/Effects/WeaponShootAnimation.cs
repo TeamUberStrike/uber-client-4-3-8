@@ -29,7 +29,7 @@ public class WeaponShootAnimation : BaseWeaponEffect
     {
         if (_shootAnimation && _shootAnimation.clip)
         {
-            gameObject.SampleAnimation(_shootAnimation.clip, 0);
+            _shootAnimation.clip.SampleAnimation(gameObject, 0);
             _shootAnimation.Stop();
         }
     }

@@ -61,7 +61,7 @@ public class DoorBehaviour : MonoBehaviour
     {
         switch (_state)
         {
-            case DoorState.Closed: _state = DoorState.Opening; _currentTime = 0; if (audio) audio.Play(); break;
+            case DoorState.Closed: _state = DoorState.Opening; _currentTime = 0; if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Play(); break;
             case DoorState.Closing: _state = DoorState.Opening; _currentTime = _maxTime - _currentTime; break;
             case DoorState.Open: _timeToClose = Time.time + 2; break;
             case DoorState.Opening: break;
@@ -83,7 +83,7 @@ public class DoorBehaviour : MonoBehaviour
         _state = DoorState.Closing;
         _currentTime = 0;
 
-        if (audio) audio.Play();
+        if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Play();
     }
 
     void Update()
@@ -107,7 +107,7 @@ public class DoorBehaviour : MonoBehaviour
                 _state = DoorState.Open;
                 _timeToClose = Time.time + 2;
 
-                if (audio) audio.Stop();
+                if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Stop();
             }
         }
         else if (_state == DoorState.Open)
@@ -118,7 +118,7 @@ public class DoorBehaviour : MonoBehaviour
                 _state = DoorState.Closing;
                 _currentTime = 0;
 
-                if (audio) audio.Play();
+                if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Play();
             }
         }
         else if (_state == DoorState.Closing)
@@ -134,7 +134,7 @@ public class DoorBehaviour : MonoBehaviour
             if (_currentTime >= openTime)
             {
                 _state = DoorState.Closed;
-                if (audio) audio.Stop();
+                if (GetComponent<AudioSource>()) GetComponent<AudioSource>().Stop();
             }
         }
     }

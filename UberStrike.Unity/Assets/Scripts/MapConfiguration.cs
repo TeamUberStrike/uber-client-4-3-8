@@ -89,5 +89,17 @@ public class MapConfiguration : MonoBehaviour
         gameObject.active = enabled;
         _staticContentParent.gameObject.SetActiveRecursively(enabled);
         _camera.gameObject.SetActiveRecursively(enabled);
+
+        // Unity 2022 additive-re-entry fix (2026-04-24): scenes loaded
+        // additively are kept alive across map transitions, so
+        // SceneManager.sceneLoaded never re-fires on re-entry and
+        // BeastLightmapLoader.OnSceneLoaded goes dark — LightmapSettings
+        // stays pinned to the previous map's/lobby's array. Re-trigger
+        // the Beast pipeline manually on every activation. No-op for
+        // lobby ("LevelSpaceship") and non-Level scenes (e.g. SPR).
+        if (enabled)
+        {
+            BeastLightmapLoader.RestoreByName(gameObject.name);
+        }
     }
 }

@@ -105,14 +105,15 @@ public class AudioTools
         long compressedLength = GetCompressedFileSize(file.assetPath);
 
         FileInfo info = new FileInfo(file.assetPath);
+        var sampleSettings = file.defaultSampleSettings;
         builder.Append(info.Name).Append(',');
         builder.Append((info.Length / KBytes).ToString("F1")).Append(',');
         builder.Append((compressedLength / KBytes).ToString("F1")).Append(',');
         builder.Append((1 - (compressedLength / (double)info.Length)).ToString("P0")).Append(',');
-        builder.Append(file.compressionBitrate).Append(',');
-        builder.Append(file.format == AudioImporterFormat.Compressed ? "OGG" : info.Extension).Append(',');
+        builder.Append((sampleSettings.quality * 100).ToString("F0")).Append(','); // Show quality instead of bitrate
+        builder.Append(sampleSettings.compressionFormat == AudioCompressionFormat.Vorbis ? "OGG" : info.Extension).Append(',');
         builder.Append(file.threeD ? "3D" : "2D").Append(',');
-        builder.Append(file.loadType).Append(',');
+        builder.Append(sampleSettings.loadType).Append(',');
         builder.Append(file.forceToMono ? "x" : "").Append(',');
         builder.Append(file.loopable ? "x" : "").Append(',');
         if (sceneUsage.ContainsKey(file.assetPath))

@@ -118,7 +118,7 @@ public class BaseGameProp : MonoBehaviour, IShootable
     {
         get
         {
-            if (_rigidbody == null) _rigidbody = rigidbody;
+            if (_rigidbody == null) _rigidbody = GetComponent<Rigidbody>();
             return _rigidbody;
         }
     }

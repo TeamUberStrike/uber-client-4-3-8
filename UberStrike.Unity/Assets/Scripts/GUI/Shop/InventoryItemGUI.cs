@@ -85,23 +85,51 @@ public class InventoryItemGUI : BaseItemGUI
         }
     }
 
+    // Cache for DrawDaysRemaining: the formatted string and its colour/timer-icon
+    // state only change when AmountRemaining / DaysRemaining / IsPermanent change,
+    // but the original code reformatted on every OnGUI pass (2-4×/frame × every
+    // visible item). Perf impact on the Inventory tab was tangible.
+    private int _cachedAmountRemaining = int.MinValue;
+    private int _cachedDaysRemaining = int.MinValue;
+    private bool _cachedIsPermanent;
+    private string _cachedDaysText = string.Empty;
+    private Color _cachedDaysColor = Color.white;
+    private bool _cachedDrawTimerIcon;
+
     public void DrawDaysRemaining(Rect rect)
     {
-        bool drawTimerIcon = true;
+        if (_cachedAmountRemaining != InventoryItem.AmountRemaining ||
+            _cachedDaysRemaining != InventoryItem.DaysRemaining ||
+            _cachedIsPermanent != InventoryItem.IsPermanent)
+        {
+            RebuildDaysRemainingCache();
+        }
 
+        if (_cachedDrawTimerIcon)
+        {
+            GUI.DrawTexture(new Rect(rect.x, rect.y, 16, 16), UberstrikeIcons.ItemExpiration);
+        }
+
+        GUI.color = _cachedDaysColor;
+        GUI.Label(new Rect(rect.x + (_cachedDrawTimerIcon ? 20 : 0), rect.y + 3, rect.width - 20, 16), _cachedDaysText, BlueStonez.label_interparkmed_11pt_left);
+        GUI.color = Color.white;
+    }
+
+    private void RebuildDaysRemainingCache()
+    {
+        _cachedAmountRemaining = InventoryItem.AmountRemaining;
+        _cachedDaysRemaining = InventoryItem.DaysRemaining;
+        _cachedIsPermanent = InventoryItem.IsPermanent;
+
+        bool drawTimerIcon = true;
         Color remainingColor = Color.white;
-        string remaingDays = string.Empty;
+        string remaingDays;
 
         if (InventoryItem.AmountRemaining >= 0)
         {
-            if (InventoryItem.AmountRemaining == 1)
-            {
-                remaingDays = InventoryItem.AmountRemaining + " use remaining";
-            }
-            else
-            {
-                remaingDays = InventoryItem.AmountRemaining + " uses remaining";
-            }
+            remaingDays = InventoryItem.AmountRemaining == 1
+                ? InventoryItem.AmountRemaining + " use remaining"
+                : InventoryItem.AmountRemaining + " uses remaining";
             drawTimerIcon = false;
         }
         else if (InventoryItem.IsPermanent)
@@ -110,36 +138,26 @@ public class InventoryItemGUI : BaseItemGUI
         }
         else if (InventoryItem.DaysRemaining > 1 && InventoryItem.DaysRemaining < 5)
         {
-            // Less than 5 days remaining
             remainingColor = ColorScheme.UberStrikeYellow;
             remaingDays = string.Format("{0} {1}{2}", InventoryItem.DaysRemaining.ToString(), LocalizedStrings.Day, InventoryItem.DaysRemaining == 1 ? string.Empty : "s");
         }
         else if (InventoryItem.DaysRemaining == 1)
         {
-            // Last Day
             remainingColor = ColorScheme.UberStrikeYellow;
             remaingDays = LocalizedStrings.LastDay;
         }
         else if (InventoryItem.DaysRemaining <= 0)
         {
-            // Expired
             remainingColor = ColorScheme.UberStrikeRed;
             remaingDays = LocalizedStrings.Expired;
         }
         else
         {
-            // 5 or more days remaining
             remaingDays = string.Format("{0} {1}{2}", InventoryItem.DaysRemaining.ToString(), LocalizedStrings.Day, InventoryItem.DaysRemaining == 1 ? string.Empty : "s");
         }
 
-        if (drawTimerIcon)
-        {
-            GUI.DrawTexture(new Rect(rect.x, rect.y, 16, 16), UberstrikeIcons.ItemExpiration);
-        }
-
-        // Days Remaining Label
-        GUI.color = remainingColor;
-        GUI.Label(new Rect(rect.x + (drawTimerIcon ? 20 : 0), rect.y + 3, rect.width - 20, 16), remaingDays, BlueStonez.label_interparkmed_11pt_left);
-        GUI.color = Color.white;
+        _cachedDaysText = remaingDays;
+        _cachedDaysColor = remainingColor;
+        _cachedDrawTimerIcon = drawTimerIcon;
     }
 }

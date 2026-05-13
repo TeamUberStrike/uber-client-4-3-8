@@ -10,9 +10,9 @@ public class LevelBoundary : MonoBehaviour
 
     private void Awake()
     {
-        if (renderer) renderer.enabled = false;
+        if (GetComponent<Renderer>()) GetComponent<Renderer>().enabled = false;
 
-        StartCoroutine(StartCheckingPlayerInBounds(collider));
+        StartCoroutine(StartCheckingPlayerInBounds(GetComponent<Collider>()));
     }
 
     private void OnDisable()

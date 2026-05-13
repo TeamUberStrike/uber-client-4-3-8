@@ -19,7 +19,7 @@ public class TutorialAirlockNPC : MonoBehaviour
     {
         AnimationState walk;
 
-        walk = animation[AnimationIndex.TutorialGuideWalk.ToString()];
+        walk = GetComponent<Animation>()[AnimationIndex.TutorialGuideWalk.ToString()];
 
         walk.enabled = true;
         walk.weight = 1;
@@ -36,10 +36,10 @@ public class TutorialAirlockNPC : MonoBehaviour
             {
                 _state = State.Talking;
 
-                animation.Stop(AnimationIndex.heavyGunUpDown.ToString());
+                GetComponent<Animation>().Stop(AnimationIndex.heavyGunUpDown.ToString());
 
-                animation.Blend(AnimationIndex.TutorialGuideWalk.ToString(), 0);
-                animation.Blend(AnimationIndex.TutorialGuideAirlock.ToString(), 1);
+                GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideWalk.ToString(), 0);
+                GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideAirlock.ToString(), 1);
 
                 StartCoroutine(StartIdleAnimation());
             }
@@ -54,8 +54,8 @@ public class TutorialAirlockNPC : MonoBehaviour
     {
         yield return new WaitForSeconds(130 / 25f);
 
-        animation.Blend(AnimationIndex.TutorialGuideAirlock.ToString(), 0);
-        animation.Blend(AnimationIndex.TutorialGuideIdle.ToString(), 1);
+        GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideAirlock.ToString(), 0);
+        GetComponent<Animation>().Blend(AnimationIndex.TutorialGuideIdle.ToString(), 1);
     }
 
     public void SetFinalPosition(Vector3 pos)

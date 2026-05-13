@@ -66,7 +66,7 @@ public class SplineController : MonoBehaviour
     void Awake()
     {
         mSplineInterp = GetComponent<SplineInterpolator>();
-        Profiler.enabled = true;
+        UnityEngine.Profiling.Profiler.enabled = true;
     }
 
     IEnumerator Start()
@@ -152,7 +152,7 @@ public class SplineController : MonoBehaviour
         mTransforms = GetTransforms();
         if (mTransforms.Length > 0)
         {
-            Profiler.BeginSample("FollowSpline");
+            UnityEngine.Profiling.Profiler.BeginSample("FollowSpline");
             if (LerpInitialPos)
             {
                 /* The target will move smoothly from current position */
@@ -161,7 +161,7 @@ public class SplineController : MonoBehaviour
 
             SetupSplineInterpolator(mSplineInterp, mTransforms);
             mSplineInterp.StartInterpolation(Target, null, true, WrapMode);
-            Profiler.EndSample();
+            UnityEngine.Profiling.Profiler.EndSample();
         }
     }
 

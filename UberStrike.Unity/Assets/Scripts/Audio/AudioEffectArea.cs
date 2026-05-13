@@ -12,7 +12,7 @@ public class AudioEffectArea : MonoBehaviour
 
     void Awake()
     {
-        collider.isTrigger = true;
+        GetComponent<Collider>().isTrigger = true;
 
         if (indoorEnvironment != null)
             indoorEnvironment.active = true;

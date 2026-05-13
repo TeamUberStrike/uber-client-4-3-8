@@ -27,7 +27,7 @@ public class DebugPlayerManager : IDebugPage
             v1 = GUILayout.BeginScrollView(v1, GUILayout.MinHeight(200));
             {
                 GUILayout.BeginHorizontal();
-                foreach (CharacterInfo p in GameState.CurrentGame.Players.Values)
+                foreach (UberStrike.Realtime.Common.CharacterInfo p in GameState.CurrentGame.Players.Values)
                 {
                     GUILayout.BeginVertical();
                     GUILayout.Label(string.Format("{0} {1}/{2} {3} ", p.PlayerName, p.ActorId, p.Cmid, p.IsLoggedIn));

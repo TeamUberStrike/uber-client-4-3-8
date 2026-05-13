@@ -231,7 +231,7 @@ public class PregameLoadoutPageGUI : PageGUI
         LoadoutSlotType loadoutSlotType, GUIStyle guiStyle)
     {
         bool result = false;
-        int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Native);
+        int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Passive);
 
         switch (Event.current.GetTypeForControl(id))
         {

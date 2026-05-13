@@ -78,8 +78,8 @@ public class AvatarBuilder : Singleton<AvatarBuilder>
             CmuneDebug.LogError("No Avatar Prefab found for AvatarType {0}", PlayerDataManager.Instance.LocalPlayerAvatarType);
         }
 
-        decorator.renderer.receiveShadows = true;
-        decorator.renderer.castShadows = true;
+        decorator.GetComponent<Renderer>().receiveShadows = true;
+        decorator.GetComponent<Renderer>().castShadows = true;
         decorator.HudInformation.DistanceCap = 100;
         decorator.HudInformation.SetAvatarLabel(PlayerDataManager.NameSecure);
 

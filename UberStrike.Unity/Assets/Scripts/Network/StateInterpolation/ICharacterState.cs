@@ -5,7 +5,7 @@ using UnityEngine;
 
 public interface ICharacterState
 {
-    CharacterInfo Info { get; }
+    UberStrike.Realtime.Common.CharacterInfo Info { get; }
     Vector3 LastPosition { get; }
 
     void RecieveDeltaUpdate(SyncObject delta);

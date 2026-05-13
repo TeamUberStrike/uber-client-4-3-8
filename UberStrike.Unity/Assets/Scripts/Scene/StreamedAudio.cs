@@ -8,11 +8,11 @@ class StreamedAudio : MonoBehaviour
 
     private void OnEnable()
     {
-        StreamedAudioPlayer.Instance.PlayMusic(audio, _clipName);
+        StreamedAudioPlayer.Instance.PlayMusic(GetComponent<AudioSource>(), _clipName);
     }
 
     private void OnDisable()
     {
-        StreamedAudioPlayer.Instance.StopMusic(audio);
+        StreamedAudioPlayer.Instance.StopMusic(GetComponent<AudioSource>());
     }
 }

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "BitmapFont/Outline" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -53,7 +55,7 @@ Shader "BitmapFont/Outline" {
 			v2f vert (appdata_base v)
 			{
 				v2f o;
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos (v.vertex);
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				return o;
 			}
@@ -68,7 +70,7 @@ Shader "BitmapFont/Outline" {
 				float shadowAlpha = smoothstep(_ShadowAlphaMin, _ShadowAlphaMax, shadowtexel.w);
 				float4 shadow = _ShadowColor * shadowAlpha;
 
-				return mix(shadow, _Color, alpha);
+				return lerp(shadow, _Color, alpha);
 				//return _Color * base.a;
 			}
 

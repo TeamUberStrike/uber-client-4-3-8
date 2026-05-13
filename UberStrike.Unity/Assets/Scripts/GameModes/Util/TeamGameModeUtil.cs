@@ -34,7 +34,7 @@ static class TeamGameModeUtil
     }
 
     public static void OnPlayerChangeTeam(TeamDeathMatchGameMode gameMode, int playerId,
-        CharacterInfo playerInfo, TeamID targetTeamID)
+        UberStrike.Realtime.Common.CharacterInfo playerInfo, TeamID targetTeamID)
     {
         string teamName = targetTeamID == TeamID.BLUE ? LocalizedStrings.Blue : LocalizedStrings.Red;
         EventStreamHud.Instance.AddEventText(playerInfo.PlayerName, playerInfo.TeamID, string.Format(LocalizedStrings.ChangingToTeamN, teamName));

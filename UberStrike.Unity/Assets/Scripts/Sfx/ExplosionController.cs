@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ExplosionController
+public class ExplosionController:MonoBehaviour
 {
     public void EmitBlast(Vector3 hitPoint, Vector3 hitNormal, ExplosionBaseParameters parameters)
     {
@@ -14,7 +14,7 @@ public class ExplosionController
             {
                 size = Random.Range(parameters.MinSize, parameters.MaxSize);
                 energy = Random.Range(parameters.MinLifeTime, parameters.MaxLifeTime);
-                parameters.ParticleEmitter.Emit(hitPoint, velocity, size, energy, Color.red);
+                ParticleEmissionSystem.EmitSafe(parameters.ParticleEmitter, hitPoint, velocity, size, energy, Color.white);
             }
         }
     }
@@ -32,7 +32,7 @@ public class ExplosionController
                 hitPoint = hitPoint + Random.insideUnitSphere * Random.Range(parameters.MinStartPositionSize, parameters.MinStartPositionSize);
                 size = Random.Range(parameters.MinSize, parameters.MaxSize);
                 energy = Random.Range(parameters.MinLifeTime, parameters.MaxLifeTime);
-                parameters.ParticleEmitter.Emit(hitPoint, velocity, size, energy, Color.red);
+                ParticleEmissionSystem.EmitSafe(parameters.ParticleEmitter, hitPoint, velocity, size, energy, Color.white);
             }
         }
     }
@@ -46,7 +46,7 @@ public class ExplosionController
         energy = Random.Range(parameters.MinLifeTime, parameters.MaxLifeTime);
         if (parameters.ParticleEmitter != null)
         {
-            parameters.ParticleEmitter.Emit(hitPoint, velocity, size, energy, Color.red);
+            ParticleEmissionSystem.EmitSafe(parameters.ParticleEmitter, hitPoint, velocity, size, energy, Color.white);
         }
     }
 
@@ -67,7 +67,7 @@ public class ExplosionController
                 energy = Random.Range(parameters.MinLifeTime, parameters.MaxLifeTime);
                 velocity = Random.insideUnitSphere * 0.3f;
                 //velocity = rotation * velocity;
-                parameters.ParticleEmitter.Emit(hitPoint, velocity, size, energy, Color.red);
+                ParticleEmissionSystem.EmitSafe(parameters.ParticleEmitter, hitPoint, velocity, size, energy, Color.white);
             }
         }
     }
@@ -84,7 +84,7 @@ public class ExplosionController
                 size = Random.Range(parameters.MinSize, parameters.MaxSize);
                 energy = Random.Range(parameters.MinLifeTime, parameters.MaxLifeTime);
                 velocity = Random.insideUnitSphere * parameters.Speed;
-                parameters.ParticleEmitter.Emit(hitPoint, velocity, size, energy, Color.red);
+                ParticleEmissionSystem.EmitSafe(parameters.ParticleEmitter, hitPoint, velocity, size, energy, Color.white);
             }
         }
     }
@@ -101,7 +101,7 @@ public class ExplosionController
                 size = Random.Range(parameters.MinSize, parameters.MaxSize);
                 energy = Random.Range(parameters.MinLifeTime, parameters.MaxLifeTime);
                 velocity = Random.insideUnitSphere * parameters.Speed;
-                parameters.ParticleEmitter.Emit(hitPoint, velocity, size, energy, Color.red);
+                ParticleEmissionSystem.EmitSafe(parameters.ParticleEmitter, hitPoint, velocity, size, energy, Color.white);
             }
         }
     }

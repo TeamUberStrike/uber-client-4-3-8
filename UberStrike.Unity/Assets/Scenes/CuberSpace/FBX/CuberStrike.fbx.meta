@@ -1,272 +1,358 @@
 fileFormatVersion: 2
 guid: 6466ac258282f804b875dbd2b85466a5
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: polySurface1485
-    4300002: polySurface1486
-    4300004: polySurface1487
-    4300006: polySurface1488
-    4300008: polySurface1489
-    4300010: polySurface1490
-    4300012: polySurface1491
-    4300014: polySurface1492
-    4300016: polySurface1493
-    4300018: polySurface1494
-    4300020: polySurface1495
-    4300022: polySurface1496
-    4300024: polySurface1497
-    4300026: polySurface1498
-    4300028: polySurface1499
-    4300030: polySurface1500
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: polySurface1485
+  - first:
+      43: 4300002
+    second: polySurface1486
+  - first:
+      43: 4300004
+    second: polySurface1487
+  - first:
+      43: 4300006
+    second: polySurface1488
+  - first:
+      43: 4300008
+    second: polySurface1489
+  - first:
+      43: 4300010
+    second: polySurface1490
+  - first:
+      43: 4300012
+    second: polySurface1491
+  - first:
+      43: 4300014
+    second: polySurface1492
+  - first:
+      43: 4300016
+    second: polySurface1493
+  - first:
+      43: 4300018
+    second: polySurface1494
+  - first:
+      43: 4300020
+    second: polySurface1495
+  - first:
+      43: 4300022
+    second: polySurface1496
+  - first:
+      43: 4300024
+    second: polySurface1497
+  - first:
+      43: 4300026
+    second: polySurface1498
+  - first:
+      43: 4300028
+    second: polySurface1499
+  - first:
+      43: 4300030
+    second: polySurface1500
+  - first:
+      1: 100008
+    second: //RootNode
+  - first:
+      4: 400008
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100032
+    second: polySurface1485
+  - first:
+      4: 400032
+    second: polySurface1485
+  - first:
+      33: 3300030
+    second: polySurface1485
+  - first:
+      23: 2300030
+    second: polySurface1485
+  - first:
+      1: 100030
+    second: polySurface1486
+  - first:
+      4: 400030
+    second: polySurface1486
+  - first:
+      33: 3300028
+    second: polySurface1486
+  - first:
+      23: 2300028
+    second: polySurface1486
+  - first:
+      1: 100028
+    second: polySurface1487
+  - first:
+      4: 400028
+    second: polySurface1487
+  - first:
+      33: 3300026
+    second: polySurface1487
+  - first:
+      23: 2300026
+    second: polySurface1487
+  - first:
+      1: 100026
+    second: polySurface1488
+  - first:
+      4: 400026
+    second: polySurface1488
+  - first:
+      33: 3300024
+    second: polySurface1488
+  - first:
+      23: 2300024
+    second: polySurface1488
+  - first:
+      1: 100024
+    second: polySurface1489
+  - first:
+      4: 400024
+    second: polySurface1489
+  - first:
+      33: 3300022
+    second: polySurface1489
+  - first:
+      23: 2300022
+    second: polySurface1489
+  - first:
+      1: 100022
+    second: polySurface1490
+  - first:
+      4: 400022
+    second: polySurface1490
+  - first:
+      33: 3300020
+    second: polySurface1490
+  - first:
+      23: 2300020
+    second: polySurface1490
+  - first:
+      1: 100020
+    second: polySurface1491
+  - first:
+      4: 400020
+    second: polySurface1491
+  - first:
+      33: 3300018
+    second: polySurface1491
+  - first:
+      23: 2300018
+    second: polySurface1491
+  - first:
+      1: 100018
+    second: polySurface1492
+  - first:
+      4: 400018
+    second: polySurface1492
+  - first:
+      33: 3300016
+    second: polySurface1492
+  - first:
+      23: 2300016
+    second: polySurface1492
+  - first:
+      1: 100012
+    second: polySurface1493
+  - first:
+      4: 400012
+    second: polySurface1493
+  - first:
+      33: 3300010
+    second: polySurface1493
+  - first:
+      23: 2300010
+    second: polySurface1493
+  - first:
+      1: 100014
+    second: polySurface1494
+  - first:
+      4: 400014
+    second: polySurface1494
+  - first:
+      33: 3300012
+    second: polySurface1494
+  - first:
+      23: 2300012
+    second: polySurface1494
+  - first:
+      1: 100016
+    second: polySurface1495
+  - first:
+      4: 400016
+    second: polySurface1495
+  - first:
+      33: 3300014
+    second: polySurface1495
+  - first:
+      23: 2300014
+    second: polySurface1495
+  - first:
+      1: 100006
+    second: polySurface1496
+  - first:
+      4: 400006
+    second: polySurface1496
+  - first:
+      33: 3300006
+    second: polySurface1496
+  - first:
+      23: 2300006
+    second: polySurface1496
+  - first:
+      1: 100004
+    second: polySurface1497
+  - first:
+      4: 400004
+    second: polySurface1497
+  - first:
+      33: 3300004
+    second: polySurface1497
+  - first:
+      23: 2300004
+    second: polySurface1497
+  - first:
+      1: 100010
+    second: polySurface1498
+  - first:
+      4: 400010
+    second: polySurface1498
+  - first:
+      33: 3300008
+    second: polySurface1498
+  - first:
+      23: 2300008
+    second: polySurface1498
+  - first:
+      1: 100002
+    second: polySurface1499
+  - first:
+      4: 400002
+    second: polySurface1499
+  - first:
+      33: 3300002
+    second: polySurface1499
+  - first:
+      23: 2300002
+    second: polySurface1499
+  - first:
+      1: 100000
+    second: polySurface1500
+  - first:
+      4: 400000
+    second: polySurface1500
+  - first:
+      33: 3300000
+    second: polySurface1500
+  - first:
+      23: 2300000
+    second: polySurface1500
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 0
+    legacyGenerateAnimations: 0
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 3
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 1
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 111
-        second: 605fa900
-    polySurface1485:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
-    polySurface1486:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-    polySurface1487:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    polySurface1488:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    polySurface1489:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    polySurface1490:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    polySurface1491:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    polySurface1492:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    polySurface1493:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    polySurface1494:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    polySurface1495:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    polySurface1496:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    polySurface1497:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
-    polySurface1498:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    polySurface1499:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    polySurface1500:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

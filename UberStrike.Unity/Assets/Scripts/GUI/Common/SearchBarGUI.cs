@@ -39,8 +39,19 @@ class SearchBarGUI
 
     public bool CheckIfPassFilter(string text)
     {
-        return !IsSearching || text.ToLower().Contains(FilterText.ToLower());
+        if (!IsSearching) return true;
+        // Cache the lowercased filter — was allocating two strings per call when
+        // driven by the shop's per-item/per-frame filter loop.
+        if (!string.Equals(_lowerFilterSource, FilterText))
+        {
+            _lowerFilterSource = FilterText;
+            _lowerFilter = FilterText == null ? string.Empty : FilterText.ToLower();
+        }
+        if (text == null) return false;
+        return text.ToLower().Contains(_lowerFilter);
     }
 
     private string _guiName;
+    private string _lowerFilterSource;
+    private string _lowerFilter;
 }

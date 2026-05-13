@@ -25,7 +25,7 @@ public class SilhouetteOutlined : ImageEffectBase
             if (!_shaderCamera)
             {
                 _shaderCamera = new GameObject("ShaderCamera", typeof(Camera));
-                _shaderCamera.camera.enabled = false;
+                _shaderCamera.GetComponent<Camera>().enabled = false;
                 _shaderCamera.hideFlags = HideFlags.HideAndDontSave;
             }
             return _shaderCamera;
@@ -52,16 +52,16 @@ public class SilhouetteOutlined : ImageEffectBase
 
         CleanRenderTextures();
 
-        Camera cam = ShaderCamera.camera;
-        cam.CopyFrom(camera);
+        Camera cam = ShaderCamera.GetComponent<Camera>();
+        cam.CopyFrom(GetComponent<Camera>());
         cam.backgroundColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         cam.clearFlags = CameraClearFlags.SolidColor;
 
-        _maskTexture = RenderTexture.GetTemporary((int)camera.pixelWidth, (int)camera.pixelHeight, 16);
+        _maskTexture = RenderTexture.GetTemporary((int)GetComponent<Camera>().pixelWidth, (int)GetComponent<Camera>().pixelHeight, 16);
         cam.targetTexture = _maskTexture;
         cam.RenderWithShader(objectMaskShader, "Outline");
 
-        UpdateGlowTextureSize(camera.pixelWidth, camera.pixelHeight);
+        UpdateGlowTextureSize(GetComponent<Camera>().pixelWidth, GetComponent<Camera>().pixelHeight);
         _glowTexture = RenderTexture.GetTemporary(_glowTexWidth, _glowTexHeight, 16);
         cam.targetTexture = _glowTexture;
         cam.RenderWithShader(generateGlowTextureShader, "Outline");

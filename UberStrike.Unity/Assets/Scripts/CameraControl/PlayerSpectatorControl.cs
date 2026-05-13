@@ -69,7 +69,7 @@ public class PlayerSpectatorControl : Singleton<PlayerSpectatorControl>
         {
             if (GameState.HasCurrentGame && GameState.CurrentGame.Players.Count > 0)
             {
-                CharacterInfo[] players = GameState.CurrentGame.Players.ValueArray();
+                UberStrike.Realtime.Common.CharacterInfo[] players = GameState.CurrentGame.Players.ValueArray();
                 _currentFollowIndex = (_currentFollowIndex + 1) % players.Length;
 
                 int nextIndex = _currentFollowIndex;
@@ -110,7 +110,7 @@ public class PlayerSpectatorControl : Singleton<PlayerSpectatorControl>
         {
             if (GameState.HasCurrentGame && GameState.CurrentGame.Players.Count > 0)
             {
-                List<CharacterInfo> players = new List<CharacterInfo>(GameState.CurrentGame.Players.Values);
+                List<UberStrike.Realtime.Common.CharacterInfo> players = new List<UberStrike.Realtime.Common.CharacterInfo>(GameState.CurrentGame.Players.Values);
 
                 _currentFollowIndex = (_currentFollowIndex + players.Count - 1) % players.Count;
 

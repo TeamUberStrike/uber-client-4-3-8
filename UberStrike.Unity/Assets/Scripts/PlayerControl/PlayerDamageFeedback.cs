@@ -11,7 +11,7 @@ public class PlayerDamageFeedback : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        damageSplat = renderer.material;
+        damageSplat = GetComponent<Renderer>().material;
     }
 
     public void RandomizeDamageFeedbackcolor()

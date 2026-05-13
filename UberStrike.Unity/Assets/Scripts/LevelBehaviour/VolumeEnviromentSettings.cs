@@ -7,7 +7,7 @@ public class VolumeEnviromentSettings : MonoBehaviour
 
     private void Awake()
     {
-        collider.isTrigger = true;
+        GetComponent<Collider>().isTrigger = true;
     }
 
     private void OnTriggerEnter(Collider collider)
@@ -15,7 +15,7 @@ public class VolumeEnviromentSettings : MonoBehaviour
         if (collider.tag == "Player")
         {
             //set to custom values
-            GameState.LocalPlayer.MoveController.SetEnviroment(Settings, this.collider.bounds);
+            GameState.LocalPlayer.MoveController.SetEnviroment(Settings, this.GetComponent<Collider>().bounds);
 
             if (Settings.Type == EnviromentSettings.TYPE.WATER)
             {

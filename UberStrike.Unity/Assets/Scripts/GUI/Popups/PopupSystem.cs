@@ -22,7 +22,7 @@ public class PopupSystem : AutoMonoBehaviour<PopupSystem>
             GUI.depth = (int)_lastLockDepth;
             popup.OnGUI();
 
-            if (Event.current.type == EventType.layout)
+            if (Event.current.type == EventType.Layout)
             {
                 GuiLockController.EnableLock(_lastLockDepth);
             }
@@ -33,7 +33,7 @@ public class PopupSystem : AutoMonoBehaviour<PopupSystem>
 
     private void ReleaseOldLock()
     {
-        if (Event.current.type == EventType.layout)
+        if (Event.current.type == EventType.Layout)
         {
             if (_popups.Count > 0)
             {

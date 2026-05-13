@@ -43,7 +43,7 @@ public static class ScreenResolutionManager
         set
         {
             // If we go into windowed mode, make sure we are one minus native resolution (bottom of the game off the screen)
-            if (!Application.isWebPlayer && value == false && IsHighestResolution)
+            if (Application.platform != RuntimePlatform.WebGLPlayer && value == false && IsHighestResolution)
             {
                 SetTwoMinusMaxResolution();
             }
@@ -81,9 +81,26 @@ public static class ScreenResolutionManager
 
     static ScreenResolutionManager()
     {
+        // Unity 2022's Screen.resolutions returns one entry per unique
+        // (width, height, refreshRate) combo. On monitors that expose
+        // multiple refresh rates (60/74/144 Hz, etc.) this produces
+        // many duplicates at the same width×height — issue #46 in the
+        // public repo: "up to 9 same" 1920×1080 entries, only one
+        // clickable, wrong one occasionally toggled. Unity 3.5.5
+        // effectively had one rate per mode so no dedupe was needed.
+        // Dedupe by (width, height); keep the first (highest refresh
+        // rate on Windows, because Screen.resolutions is sorted
+        // ascending by size then descending by refresh rate at same
+        // size — the first occurrence is the one the user will feel
+        // is "correct" when Screen.SetResolution picks a refresh rate
+        // Unity defaults to max available anyway).
+        HashSet<long> seen = new HashSet<long>();
         foreach (Resolution resolution in Screen.resolutions)
         {
-            if (resolution.width > 800) resolutions.Add(resolution);
+            if (resolution.width <= 800) continue;
+            long key = ((long)resolution.width << 32) | (uint)resolution.height;
+            if (!seen.Add(key)) continue;
+            resolutions.Add(resolution);
         }
 
         if (resolutions.Count == 0)
@@ -98,7 +115,7 @@ public static class ScreenResolutionManager
 
         int newResIndex = Mathf.Clamp(index, 0, max);
 
-        if (!Application.isWebPlayer && newResIndex == max && !fullscreen)
+        if (Application.platform != RuntimePlatform.WebGLPlayer && newResIndex == max && !fullscreen)
             fullscreen = true;
 
         if (newResIndex >= 0 && newResIndex < resolutions.Count)
@@ -115,7 +132,7 @@ public static class ScreenResolutionManager
     /// </summary>
     public static void SetTwoMinusMaxResolution()
     {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             Debug.LogError("SetOneMinusMaxResolution() should only be called from the desktop client");
             return;

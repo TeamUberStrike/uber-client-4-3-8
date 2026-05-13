@@ -1,348 +1,448 @@
 fileFormatVersion: 2
 guid: f26ccd56c7cae644887ffb8443f63f8f
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: SpotLightFog0
-    4300002: SpotLightFog1
-    4300004: SpotLightFog2
-    4300006: SpotLightFog3
-    4300008: SpotLightFog4
-    4300010: SpotLightFog5
-    4300012: SpotLightFog6
-    4300014: SpotLightFog7
-    4300016: SpotLightFog8
-    4300018: SpotLightFog9
-    4300020: SpotLightFog10
-    4300022: SpotLightFog11
-    4300024: LightFog3
-    4300026: LightFog2
-    4300028: LightFog1
-    4300030: LightFog5
-    4300032: LightFog6
-    4300034: LightFog7
-    4300036: SpotLightFog12
-    4300038: SpotLightFog13
-    4300040: SpotLightFog14
-    4300042: SpotLightFog15
-    4300044: SpotLightFog16
-    4300046: LightFog8
-    4300048: LightFog9
-    100100000: DataTemplate __Singleton__
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: SpotLightFog0
+  - first:
+      43: 4300002
+    second: SpotLightFog1
+  - first:
+      43: 4300004
+    second: SpotLightFog2
+  - first:
+      43: 4300006
+    second: SpotLightFog3
+  - first:
+      43: 4300008
+    second: SpotLightFog4
+  - first:
+      43: 4300010
+    second: SpotLightFog5
+  - first:
+      43: 4300012
+    second: SpotLightFog6
+  - first:
+      43: 4300014
+    second: SpotLightFog7
+  - first:
+      43: 4300016
+    second: SpotLightFog8
+  - first:
+      43: 4300018
+    second: SpotLightFog9
+  - first:
+      43: 4300020
+    second: SpotLightFog10
+  - first:
+      43: 4300022
+    second: SpotLightFog11
+  - first:
+      43: 4300024
+    second: LightFog3
+  - first:
+      43: 4300026
+    second: LightFog2
+  - first:
+      43: 4300028
+    second: LightFog1
+  - first:
+      43: 4300030
+    second: LightFog5
+  - first:
+      43: 4300032
+    second: LightFog6
+  - first:
+      43: 4300034
+    second: LightFog7
+  - first:
+      43: 4300036
+    second: SpotLightFog12
+  - first:
+      43: 4300038
+    second: SpotLightFog13
+  - first:
+      43: 4300040
+    second: SpotLightFog14
+  - first:
+      43: 4300042
+    second: SpotLightFog15
+  - first:
+      43: 4300044
+    second: SpotLightFog16
+  - first:
+      43: 4300046
+    second: LightFog8
+  - first:
+      43: 4300048
+    second: LightFog9
+  - first:
+      1001: 100100000
+    second: DataTemplate __Singleton__
+  - first:
+      1: 100024
+    second: //RootNode
+  - first:
+      4: 400024
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100008
+    second: LightFog
+  - first:
+      4: 400008
+    second: LightFog
+  - first:
+      1: 100026
+    second: LightFog1
+  - first:
+      4: 400026
+    second: LightFog1
+  - first:
+      33: 3300022
+    second: LightFog1
+  - first:
+      23: 2300022
+    second: LightFog1
+  - first:
+      1: 100028
+    second: LightFog2
+  - first:
+      4: 400028
+    second: LightFog2
+  - first:
+      33: 3300024
+    second: LightFog2
+  - first:
+      23: 2300024
+    second: LightFog2
+  - first:
+      1: 100020
+    second: LightFog3
+  - first:
+      4: 400020
+    second: LightFog3
+  - first:
+      33: 3300018
+    second: LightFog3
+  - first:
+      23: 2300018
+    second: LightFog3
+  - first:
+      1: 100018
+    second: LightFog5
+  - first:
+      4: 400018
+    second: LightFog5
+  - first:
+      33: 3300016
+    second: LightFog5
+  - first:
+      23: 2300016
+    second: LightFog5
+  - first:
+      1: 100022
+    second: LightFog6
+  - first:
+      4: 400022
+    second: LightFog6
+  - first:
+      33: 3300020
+    second: LightFog6
+  - first:
+      23: 2300020
+    second: LightFog6
+  - first:
+      1: 100030
+    second: LightFog7
+  - first:
+      4: 400030
+    second: LightFog7
+  - first:
+      33: 3300026
+    second: LightFog7
+  - first:
+      23: 2300026
+    second: LightFog7
+  - first:
+      1: 100002
+    second: LightFog8
+  - first:
+      4: 400002
+    second: LightFog8
+  - first:
+      33: 3300002
+    second: LightFog8
+  - first:
+      23: 2300002
+    second: LightFog8
+  - first:
+      1: 100000
+    second: LightFog9
+  - first:
+      4: 400000
+    second: LightFog9
+  - first:
+      33: 3300000
+    second: LightFog9
+  - first:
+      23: 2300000
+    second: LightFog9
+  - first:
+      1: 100044
+    second: SpotLightFog
+  - first:
+      4: 400044
+    second: SpotLightFog
+  - first:
+      1: 100042
+    second: SpotLightFog0
+  - first:
+      4: 400042
+    second: SpotLightFog0
+  - first:
+      33: 3300038
+    second: SpotLightFog0
+  - first:
+      23: 2300038
+    second: SpotLightFog0
+  - first:
+      1: 100016
+    second: SpotLightFog11
+  - first:
+      4: 400016
+    second: SpotLightFog11
+  - first:
+      33: 3300014
+    second: SpotLightFog11
+  - first:
+      23: 2300014
+    second: SpotLightFog11
+  - first:
+      1: 100014
+    second: SpotLightFog12
+  - first:
+      4: 400014
+    second: SpotLightFog12
+  - first:
+      33: 3300012
+    second: SpotLightFog12
+  - first:
+      23: 2300012
+    second: SpotLightFog12
+  - first:
+      1: 100012
+    second: SpotLightFog13
+  - first:
+      4: 400012
+    second: SpotLightFog13
+  - first:
+      33: 3300010
+    second: SpotLightFog13
+  - first:
+      23: 2300010
+    second: SpotLightFog13
+  - first:
+      1: 100010
+    second: SpotLightFog14
+  - first:
+      4: 400010
+    second: SpotLightFog14
+  - first:
+      33: 3300008
+    second: SpotLightFog14
+  - first:
+      23: 2300008
+    second: SpotLightFog14
+  - first:
+      1: 100006
+    second: SpotLightFog15
+  - first:
+      4: 400006
+    second: SpotLightFog15
+  - first:
+      33: 3300006
+    second: SpotLightFog15
+  - first:
+      23: 2300006
+    second: SpotLightFog15
+  - first:
+      1: 100004
+    second: SpotLightFog16
+  - first:
+      4: 400004
+    second: SpotLightFog16
+  - first:
+      33: 3300004
+    second: SpotLightFog16
+  - first:
+      23: 2300004
+    second: SpotLightFog16
+  - first:
+      1: 100040
+    second: SpotLightFog5
+  - first:
+      4: 400040
+    second: SpotLightFog5
+  - first:
+      33: 3300036
+    second: SpotLightFog5
+  - first:
+      23: 2300036
+    second: SpotLightFog5
+  - first:
+      1: 100038
+    second: SpotLightFog6
+  - first:
+      4: 400038
+    second: SpotLightFog6
+  - first:
+      33: 3300034
+    second: SpotLightFog6
+  - first:
+      23: 2300034
+    second: SpotLightFog6
+  - first:
+      1: 100036
+    second: SpotLightFog7
+  - first:
+      4: 400036
+    second: SpotLightFog7
+  - first:
+      33: 3300032
+    second: SpotLightFog7
+  - first:
+      23: 2300032
+    second: SpotLightFog7
+  - first:
+      1: 100034
+    second: SpotLightFog8
+  - first:
+      4: 400034
+    second: SpotLightFog8
+  - first:
+      33: 3300030
+    second: SpotLightFog8
+  - first:
+      23: 2300030
+    second: SpotLightFog8
+  - first:
+      1: 100032
+    second: SpotLightFog9
+  - first:
+      4: 400032
+    second: SpotLightFog9
+  - first:
+      33: 3300028
+    second: SpotLightFog9
+  - first:
+      23: 2300028
+    second: SpotLightFog9
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 0
+    legacyGenerateAnimations: 0
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 111
-        second: 605fa900
-    LightFog:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-    LightFog1:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    LightFog2:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    LightFog3:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    LightFog5:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    LightFog6:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    LightFog7:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    LightFog8:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    LightFog9:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    SpotLightFog:
-      data:
-        first: 1
-        second: cc860100
-      data:
-        first: 4
-        second: ac1a0600
-    SpotLightFog0:
-      data:
-        first: 1
-        second: ca860100
-      data:
-        first: 4
-        second: aa1a0600
-      data:
-        first: 23
-        second: 86182300
-      data:
-        first: 33
-        second: c65a3200
-    SpotLightFog11:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    SpotLightFog12:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    SpotLightFog13:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    SpotLightFog14:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    SpotLightFog15:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    SpotLightFog16:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
-    SpotLightFog5:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 84182300
-      data:
-        first: 33
-        second: c45a3200
-    SpotLightFog6:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-      data:
-        first: 23
-        second: 82182300
-      data:
-        first: 33
-        second: c25a3200
-    SpotLightFog7:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-      data:
-        first: 23
-        second: 80182300
-      data:
-        first: 33
-        second: c05a3200
-    SpotLightFog8:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
-    SpotLightFog9:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
