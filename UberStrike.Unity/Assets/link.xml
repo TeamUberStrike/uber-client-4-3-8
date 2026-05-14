@@ -17,6 +17,20 @@
              dispatched by GameObject name + method-name string, invisible to the linker.
           3. Photon / UberStrike.UnitySdk perform serialization via reflection.
 
+    AOT (IL2CPP) note — runtime generic construction:
+      The mobile JIT/AOT audit (2026-05-13/14) decompiled all three plugin DLLs.
+      The ONLY genuine AOT-fragile site is Photon3Unity3D's
+      `Protocol.DeserializeDictionary`, which does
+        `typeof(Dictionary<,>).MakeGenericType(k, v)` + `Activator.CreateInstance`
+      over value-type keys/values returned by `Protocol.GetTypeOfCode`. link.xml
+      preservation alone does NOT fix this — IL2CPP must have *generated* each
+      `Dictionary<K,V>` instantiation at compile time. That is handled by
+      `Assets/Scripts/AOT/PhotonAotHints.cs` (statically references every value-type
+      combo), which lives inside Assembly-CSharp and is covered by the rule below.
+      P31RestKit's `MakeGenericMethod` sites (`toClass<T>`/`toList<T>`) are DEAD CODE
+      in this project — grep finds zero `[P31DeserializeableField]` usages across
+      `Assets/` — so they need no AOT hint; the preserve rule below is belt-and-braces.
+
     First-cut scope:
       * Preserve all of Assembly-CSharp ("preserve all" — broad but safe). Stripping
         savings on this assembly are modest compared to engine code stripping, which
@@ -37,8 +51,11 @@
 
   <!--
     Prime31 native plugins:
-      P31RestKit handles HTTP callbacks via UnitySendMessage. Preserve fully until the
-      green-build pass confirms which entry points are reached.
+      P31RestKit handles HTTP callbacks via UnitySendMessage. Its reflection-based
+      `P31DeserializationExtensions.toClass<T>/toList<T>` (the `MakeGenericMethod`
+      sites) are dead code here — no `[P31DeserializeableField]` attributes exist in
+      `Assets/`. Preserve fully anyway until the green-build pass confirms which entry
+      points are reached; the assembly is only 16 KB.
   -->
   <assembly fullname="P31RestKit" preserve="all" />
 
