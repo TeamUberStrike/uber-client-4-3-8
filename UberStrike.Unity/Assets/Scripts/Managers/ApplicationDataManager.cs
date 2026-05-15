@@ -98,6 +98,11 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     }
 
 #if UNITY_ANDROID
+    // ChannelType is IPad (the iOS channel), not Android, on purpose: the dev
+    // server's per-(version, channel) gate has the iOS channel whitelisted for
+    // 4.3.8 but not Android, so an Android-channel client gets IsEnabled=false
+    // ("version out of date"). Per HaZard, the Android build reports the iOS
+    // channel. IPad is still treated as mobile everywhere channel is switched on.
     private string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
                                     <UberStrike>
                                     <Application
@@ -106,7 +111,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                                         Version=""4.3.8""
                                         WebServiceBaseUrl=""https://ws-dev.uberforever.eu/""
                                         ContentBaseUrl=""http://client-dev.uberforever.eu/""
-                                        ChannelType=""Android"" />
+                                        ChannelType=""IPad"" />
                                     </UberStrike>";
 
 #endif
