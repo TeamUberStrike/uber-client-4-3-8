@@ -43,6 +43,8 @@ public class SceneExporter
         { 7, "LevelSkyGarden" },
         { 8, "LevelCuberStrike" },
         { 10, "LevelSpaceportAlpha" },
+        { 11, "LevelAqualabResearchHub" },
+        { 12, "LevelSuperPRISMReactor" },
      };
 
     #region Mac App Store
