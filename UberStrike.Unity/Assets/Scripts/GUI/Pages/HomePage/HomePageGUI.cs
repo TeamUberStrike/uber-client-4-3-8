@@ -50,7 +50,7 @@ public class HomePageGUI : MonoBehaviour
         {
             GUI.enabled = !PanelManager.IsAnyPanelOpen;
 
-            DrawWeeklySpecial();
+            //DrawWeeklySpecial();
 
             int buttonCount = (Application.platform != RuntimePlatform.WebGLPlayer) ? 4 : 3;
             int buttonSpacing = 59 + 8;

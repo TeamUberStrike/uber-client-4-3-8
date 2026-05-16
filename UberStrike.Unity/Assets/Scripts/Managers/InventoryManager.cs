@@ -320,7 +320,12 @@ public class InventoryManager : Singleton<InventoryManager>
         var inventory = new List<InventoryItem>();
         foreach (var item in _inventoryItems.Values)
         {
-            bool expiredItems = item.DaysRemaining <= 0 && (item.Item.ItemView.Prices?.Count ?? 0) > 0;
+            if (item == null) { Debug.LogWarning("[InventoryManager] GetAllItems: inventory entry is null"); continue; }
+            if (item.Item == null) { Debug.LogWarning(string.Format("[InventoryManager] GetAllItems: item.Item is null | IsPermanent={0} ExpirationDate={1}", item.IsPermanent, item.ExpirationDate)); continue; }
+            if (item.Item.ItemView == null) { Debug.LogWarning(string.Format("[InventoryManager] GetAllItems: ItemView is null | itemId={0} itemType={1} IsPermanent={2}", item.Item.ItemId, item.Item.ItemType, item.IsPermanent)); continue; }
+            if (item.Item.ItemView.Prices == null) { Debug.LogWarning(string.Format("[InventoryManager] GetAllItems: Prices is null | itemId={0} name={1}", item.Item.ItemId, item.Item.ItemView.Name)); continue; }
+
+            bool expiredItems = item.DaysRemaining <= 0 && item.Item.ItemView.Prices.Count > 0;
 
             if (item.DaysRemaining > 0 || item.IsPermanent || expiredItems)
             {
