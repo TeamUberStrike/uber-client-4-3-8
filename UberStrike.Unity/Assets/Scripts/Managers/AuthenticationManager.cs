@@ -177,7 +177,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         _progress.ManualProgress = 0.4f;
 
         bool mapsLoadedSuccessfully = true;
-        MapType mapType = MapType.StandardDefinition;
+        MapType mapType = MapType.HighDefinition;
         switch (ApplicationDataManager.Channel)
         {
             case ChannelType.MacAppStore:

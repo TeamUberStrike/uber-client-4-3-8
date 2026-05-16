@@ -51,6 +51,10 @@ public class TextureLoader : Singleton<TextureLoader>
 
     private IEnumerator DownloadTexture(string url, Texture2D texture)
     {
+        // Upgrade http to https to avoid "Insecure connection not allowed" on modern Unity
+        if (url.StartsWith("http://"))
+            url = "https://" + url.Substring(7);
+
         using (WWW www = new WWW(url))
         {
             _state[texture.GetInstanceID()] = 0;

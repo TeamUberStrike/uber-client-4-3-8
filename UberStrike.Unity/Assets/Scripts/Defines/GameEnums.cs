@@ -1,6 +1,7 @@
 ﻿
 using UberStrike.Realtime.Common;
 using Cmune.Realtime.Common;
+using UberStrike.Core.Types;
 
 public enum GameMode
 {

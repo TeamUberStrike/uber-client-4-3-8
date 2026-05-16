@@ -7,25 +7,38 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/SplashMobile.unity
+    guid: 8b589b7ba103fc043b6f6e1b72a7454d
   - enabled: 1
     path: Assets/Scenes/Latest.unity
+    guid: e7fa92f4927d24d6d975a73d60060229
   - enabled: 1
     path: Assets/Scenes/LevelSpaceship.unity
-  - enabled: 0
+    guid: f48a6bddc8f617e41ad04e1bb72a3da3
+  - enabled: 1
     path: Assets/Scenes/LevelTempleOfTheRaven.unity
-  - enabled: 0
+    guid: 7b49bc54d3404f647a60845ac82619e3
+  - enabled: 1
     path: Assets/Scenes/LevelTheWarehouse.unity
-  - enabled: 0
+    guid: 51c17210b6009b8499ea55169cef2523
+  - enabled: 1
     path: Assets/Scenes/LevelCuberStrike.unity
-  - enabled: 0
+    guid: 3d7c56fc83a47d646b2c5be944d4dcee
+  - enabled: 1
     path: Assets/Scenes/LevelFortWinter.unity
-  - enabled: 0
+    guid: b743b7dc35f4d47409ee759ecb5ee2fc
+  - enabled: 1
     path: Assets/Scenes/LevelGideonsTower.unity
-  - enabled: 0
+    guid: cec6e21b624f6fa48b73cae36d07c240
+  - enabled: 1
     path: Assets/Scenes/LevelLostParadise2.unity
-  - enabled: 0
+    guid: d9c98209fcff22d4b9bdd4f6f58419f3
+  - enabled: 1
     path: Assets/Scenes/LevelMonkeyIsland.unity
-  - enabled: 0
+    guid: 47a7ddcd8aec72e45a0b2e5f5d1afcbc
+  - enabled: 1
     path: Assets/Scenes/LevelSkyGarden.unity
-  - enabled: 0
+    guid: 40912a8f759f31e43bd18b578e7ed01b
+  - enabled: 1
     path: Assets/Scenes/LevelSpaceportAlpha.unity
+    guid: 2ae40c2256977b64cb7ec0dca72f23b5
+  m_configObjects: {}
