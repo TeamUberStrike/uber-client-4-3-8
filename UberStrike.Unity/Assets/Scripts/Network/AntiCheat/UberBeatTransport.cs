@@ -31,7 +31,9 @@ internal static class UberBeatTransport
         PhotonClient client;
         try { client = CommConnectionManager.Client; }
         catch { return false; }
-        var listener = client?.PeerListener;
+        if (client == null) return false;
+
+        var listener = client.PeerListener;
         if (listener == null || !listener.IsConnectedToServer) return false;
 
         object peer = ResolvePeer(listener);

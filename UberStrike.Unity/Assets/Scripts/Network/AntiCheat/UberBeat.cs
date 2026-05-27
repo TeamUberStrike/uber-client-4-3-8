@@ -26,6 +26,9 @@ public class UberBeat : MonoBehaviour
     private string _pendingReport;
     private string _pendingDetection;
     private bool _hwidSent;
+    private string _cachedHwid;
+    private float _nextHwidRetryAt;
+    private bool _firstReportLogged;
     private readonly object _lock = new object();
     private Thread _sweepThread;
     private volatile bool _stop;
@@ -53,6 +56,7 @@ public class UberBeat : MonoBehaviour
         _stop = false;
         _sweepThread = new Thread(SweepLoop) { IsBackground = true, Name = "UberBeat" };
         _sweepThread.Start();
+        Debug.Log("[UberBeat] Boot — sweep thread started, waiting for Comm to send HWID + REPORT");
     }
 
     private void OnDisable()
@@ -63,26 +67,36 @@ public class UberBeat : MonoBehaviour
 
     private void Update()
     {
-        // HWID dispatch — once per connected session.
-        if (!_hwidSent)
+        // HWID dispatch — built ONCE per session, then retry the send every 0.5s
+        // until Comm is connected. Rebuilding the HWID per frame is what dropped FPS
+        // (~5-15 ms/frame for NetworkInterface enum + WMI reflection).
+        if (!_hwidSent && Time.unscaledTime >= _nextHwidRetryAt)
         {
-            string hwid;
+            if (_cachedHwid == null)
+            {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-            try
-            {
-                hwid = UberBeatScanner.BuildHwid() + "|UNITY:" + SystemInfo.deviceUniqueIdentifier;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning("[UberBeat] HWID build failed: " + ex.Message);
-                hwid = "BIOS:UNKNOWN|MOTHERBOARD:UNKNOWN|HDD:UNKNOWN|MAC:0.0.0.0|UNITY:" + SystemInfo.deviceUniqueIdentifier;
-            }
+                try
+                {
+                    _cachedHwid = UberBeatScanner.BuildHwid() + "|UNITY:" + SystemInfo.deviceUniqueIdentifier;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning("[UberBeat] HWID build failed: " + ex.Message);
+                    _cachedHwid = "BIOS:UNKNOWN|MOTHERBOARD:UNKNOWN|HDD:UNKNOWN|MAC:0.0.0.0|UNITY:" + SystemInfo.deviceUniqueIdentifier;
+                }
 #else
-            hwid = "UNITY:" + SystemInfo.deviceUniqueIdentifier;
+                _cachedHwid = "UNITY:" + SystemInfo.deviceUniqueIdentifier;
 #endif
-            if (UberBeatTransport.TrySendString(UberBeatTransport.OpUberBeatAuthenticate, hwid))
+            }
+
+            if (UberBeatTransport.TrySendString(UberBeatTransport.OpUberBeatAuthenticate, _cachedHwid))
             {
                 _hwidSent = true;
+                Debug.Log("[UberBeat] HWID sent (op-28), len=" + _cachedHwid.Length);
+            }
+            else
+            {
+                _nextHwidRetryAt = Time.unscaledTime + 0.5f;
             }
         }
 
@@ -99,7 +113,12 @@ public class UberBeat : MonoBehaviour
         }
         if (report != null)
         {
-            UberBeatTransport.TrySendString(UberBeatTransport.OpUberBeatReport, "REPORT:" + report);
+            if (UberBeatTransport.TrySendString(UberBeatTransport.OpUberBeatReport, "REPORT:" + report)
+                && !_firstReportLogged)
+            {
+                _firstReportLogged = true;
+                Debug.Log("[UberBeat] First REPORT sent (op-29), len=" + report.Length);
+            }
         }
     }
 
