@@ -123,7 +123,11 @@ public class SignupPanelGUI : PanelGuiBase
                 GUI.enabled = _enableGUI;
 
 #if !UNITY_EDITOR
-                if (ApplicationDataManager.IsMobile)
+                // Soft-keyboard path only where one exists; desktop WebGL reports
+                // the IPad channel (IsMobile true) but has no TouchScreenKeyboard,
+                // so fall through to real GUI.TextFields there. See LoginPanelGUI.
+                if (ApplicationDataManager.IsMobile && TouchScreenKeyboard.isSupported
+                    && Application.platform != RuntimePlatform.WebGLPlayer)
                 {
                     if (GUI.Button(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField)) {
                         _emailKeyboard = TouchScreenKeyboard.Open(_emailAddress, TouchScreenKeyboardType.EmailAddress, false, false, false, false);

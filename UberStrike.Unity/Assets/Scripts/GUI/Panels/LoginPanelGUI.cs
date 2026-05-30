@@ -138,7 +138,15 @@ public class LoginPanelGUI : PanelGuiBase
             GUI.contentColor = Color.white;
         }
 #if !UNITY_EDITOR
-        if (ApplicationDataManager.IsMobile)
+        // The on screen TouchScreenKeyboard path is for real touch devices only.
+        // Our dev/version gate makes the client report the IPad channel (so
+        // IsMobile is true) even on WebGL, so we explicitly exclude WebGL here.
+        // On WebGL, Unity's GUI.TextField manages its own hidden HTML input
+        // element (and brings up the soft keyboard on mobile browsers), so WebGL
+        // always takes the TextField branch below, which is what keeps the fields
+        // clickable and typeable.
+        if (ApplicationDataManager.IsMobile && TouchScreenKeyboard.isSupported
+            && Application.platform != RuntimePlatform.WebGLPlayer)
         {
             if (GUI.Button(new Rect(8, 64, 220, 24), new GUIContent(_emailAddress), BlueStonez.textField))
             {
