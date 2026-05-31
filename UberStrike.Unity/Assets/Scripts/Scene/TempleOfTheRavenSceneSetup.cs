@@ -38,7 +38,17 @@ public static class TempleOfTheRavenSceneSetup
     {
         if (!scene.IsValid() || scene.name != SceneName) return;
 
-        ApplySkybox();
+        // Temple of the Raven (MapId 4) IS a mobile-supported map, so this
+        // method also runs on mobile. The two steps below must be split by
+        // platform — they are NOT the same kind of work:
+        //   ApplySkybox()                      -> PC-only custom cubemap skybox
+        //       (a visual; mobile uses the cheaper default/mobile sky shader).
+        //   FixNonConvexTriggerMeshColliders() -> gameplay correctness; MUST run
+        //       on BOTH platforms or Temple's triggers break on phones.
+        // WARNING: do not collapse these back into one unconditional block —
+        // coupling a PC-only visual to a gameplay fix was the original bug.
+        if (!ApplicationDataManager.IsMobile)
+            ApplySkybox();
         FixNonConvexTriggerMeshColliders(scene);
     }
 
