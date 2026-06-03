@@ -238,6 +238,14 @@ public class LevelManager : Singleton<LevelManager>
             {
                 yield return Application.LoadLevelAdditiveAsync(MapToLoad.SceneName);
             }
+            else if (ApplicationDataManager.IsMobile)
+            {
+                // Mobile/iOS bakes every map scene into the build (SceneExporter.BuildiOS), so load
+                // the baked scene directly. Without this branch the player falls to the CDN asset-bundle
+                // download below, which hangs forever -> "StartLoadingMap ... timeout: True" (infinite
+                // loading bar). Forward-ported from mobile-il2cpp.
+                yield return Application.LoadLevelAdditiveAsync(MapToLoad.SceneName);
+            }
             else
             {
                 WWW loader;
