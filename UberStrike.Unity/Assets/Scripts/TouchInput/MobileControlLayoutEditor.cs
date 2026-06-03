@@ -24,8 +24,18 @@ public class MobileControlLayoutEditor : MonoBehaviour
         _pixel = Texture2D.whiteTexture;
     }
 
+    private bool _autoOpened;
+
     private void Update()
     {
+        // In the Editor standalone preview, open the layout editor automatically so the draggable
+        // controls are visible the moment Play starts (no button to find).
+        if (MobileControlLayout.PreviewStandalone && !_autoOpened)
+        {
+            MobileControlLayout.EditMode = true;
+            _autoOpened = true;
+        }
+
         // Freeze look/move while editing so dragging never leaks into gameplay.
         if (MobileControlLayout.EditMode)
         {
@@ -36,7 +46,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!TouchInput.Exists) return;
+        // Active with a live TouchInput (in a match), in the Editor standalone preview, or whenever
+        // edit mode was opened explicitly (e.g. the Options menu "Customize On-Screen Controls" button).
+        if (!TouchInput.Exists && !MobileControlLayout.PreviewStandalone && !MobileControlLayout.EditMode) return;
 
         if (!MobileControlLayout.EditMode)
         {
@@ -49,8 +61,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void DrawOpenButton()
     {
-        // Entry point: a small button shown during a match. (Can also be opened from Options later.)
-        if (!GameState.HasCurrentGame) return;
+        // Entry point: shown during a match, or in the Editor standalone layout preview.
+        if (!GameState.HasCurrentGame && !MobileControlLayout.PreviewStandalone) return;
 
         float w = 160, h = 32;
         Rect r = new Rect((Screen.width - w) * 0.5f, 6, w, h);
@@ -64,7 +76,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void DrawEditor()
     {
-        List<TouchInput.LayoutHandle> handles = TouchInput.Instance.GetLayoutHandles();
+        // Live handles from the running control set, or synthesized handles for the no-match preview.
+        List<TouchInput.LayoutHandle> handles = TouchInput.Exists
+            ? TouchInput.Instance.GetLayoutHandles()
+            : BuildStandaloneHandles();
 
         // Dim the world behind the editor.
         Color prev = GUI.color;
@@ -72,9 +87,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _pixel);
         GUI.color = prev;
 
-        // Reserve a bottom toolbar; drags that start here are ignored (let buttons/slider work).
-        float barH = 96;
-        _toolbarRect = new Rect(0, Screen.height - barH, Screen.width, barH);
+        // Reserve a slim TOP toolbar (kept off the bottom row where fire/jump/crouch live); drags
+        // that start inside it are ignored so its buttons/slider work.
+        float barH = 76;
+        _toolbarRect = new Rect(0, 0, Screen.width, barH);
 
         // Draw each control + its outline + label.
         foreach (TouchInput.LayoutHandle hd in handles)
@@ -128,11 +144,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
                 if (_dragging && !string.IsNullOrEmpty(_selectedId))
                 {
                     Vector2 center = mouse - _dragOffset;
-                    center.x = Mathf.Clamp(center.x, 0, Screen.width);
-                    center.y = Mathf.Clamp(center.y, 0, Screen.height - 96);
+                    center.x = Mathf.Clamp(center.x, 24, Screen.width - 24);
+                    center.y = Mathf.Clamp(center.y, _toolbarRect.height + 24, Screen.height - 24);
                     float scale = GetScale(handles, _selectedId);
                     MobileControlLayout.SetPixels(_selectedId, center, scale);
-                    TouchInput.Instance.ApplyLayout();
+                    if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
                     e.Use();
                 }
                 break;
@@ -153,7 +169,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         GUI.DrawTexture(_toolbarRect, _pixel);
         GUI.color = Color.white;
 
-        GUILayout.BeginArea(new Rect(8, _toolbarRect.y + 6, Screen.width - 16, 90));
+        GUILayout.BeginArea(new Rect(8, _toolbarRect.y + 6, Screen.width - 16, _toolbarRect.height - 12));
 
         GUILayout.BeginHorizontal();
         GUILayout.Label(string.IsNullOrEmpty(_selectedId)
@@ -163,7 +179,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         if (GUILayout.Button("Reset All", GUILayout.Width(110), GUILayout.Height(30)))
         {
             MobileControlLayout.ResetAll();
-            TouchInput.Instance.ApplyLayout();
+            if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
             _selectedId = null;
         }
         if (GUILayout.Button("Done", GUILayout.Width(90), GUILayout.Height(30)))
@@ -182,7 +198,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             if (!Mathf.Approximately(next, cur))
             {
                 MobileControlLayout.SetScale(_selectedId, next);
-                TouchInput.Instance.ApplyLayout();
+                if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
             }
             GUILayout.Label(cur.ToString("N2"), GUILayout.Width(50));
         }
@@ -203,6 +219,61 @@ public class MobileControlLayoutEditor : MonoBehaviour
         foreach (TouchInput.LayoutHandle h in handles)
             if (h.Id == id) return h.DisplayName;
         return id;
+    }
+
+    // The full set of customizable control ids (matches TouchInput's layout key map + weapon changer).
+    private static readonly string[] StandaloneIds =
+    {
+        "fire", "secondaryFire", "multiSecondaryFire", "jump", "crouch", "menu", "chat", "score", "weaponChanger",
+    };
+
+    // Builds editable handles WITHOUT a live TouchInput (no-match preview): each control is placed
+    // at its saved (or default) layout, with the icon pulled straight from MobileIcons.
+    private static List<TouchInput.LayoutHandle> BuildStandaloneHandles()
+    {
+        var list = new List<TouchInput.LayoutHandle>();
+        foreach (string id in StandaloneIds)
+        {
+            Texture icon = IconFor(id);
+            MobileControlLayout.Placement p = MobileControlLayout.GetOrDefault(id, TouchInput.DefaultGuiCenter(id), 1f);
+            Vector2 c = MobileControlLayout.ToPixels(p);
+
+            float iw = (icon != null) ? icon.width : 64f;
+            float ih = (icon != null) ? icon.height : 64f;
+            float bw = iw * p.Scale;
+            float bh = ih * p.Scale;
+
+            list.Add(new TouchInput.LayoutHandle
+            {
+                Id = id,
+                DisplayName = TouchInput.DisplayNameFor(id),
+                Boundary = new Rect(c.x - bw / 2f, c.y - bh / 2f, bw, bh),
+                Icon = icon,
+                Scale = p.Scale,
+            });
+        }
+        return list;
+    }
+
+    private static Texture IconFor(string id)
+    {
+        switch (id)
+        {
+            case "fire": return MobileIcons.FireIcon;
+            case "secondaryFire":
+            case "multiSecondaryFire": return MobileIcons.SecondFireIcon;
+            case "jump": return MobileIcons.JumpIcon;
+            case "crouch": return MobileIcons.CrouchIcon;
+            case "menu": return MobileIcons.MenuIcon;
+            case "chat": return MobileIcons.ChatIcon;
+            case "score": return MobileIcons.ScoreboardIcon;
+            case "weaponChanger":
+            {
+                Texture2D[] w = MobileIcons.WeaponIcons;
+                return (w != null && w.Length > 0) ? w[w.Length - 1] : null;
+            }
+            default: return null;
+        }
     }
 
     private void DrawOutline(Rect r, Color color, float thickness)

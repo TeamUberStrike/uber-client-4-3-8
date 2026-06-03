@@ -27,6 +27,10 @@ public static class MobileControlLayout
     // True while the in-game layout editor is open (read by TouchController to suspend live input).
     public static bool EditMode;
 
+    // True when the editor should run a no-match standalone layout preview (Editor force-preview,
+    // no live TouchInput / game). Set by MobileControlsBootstrap; read by MobileControlLayoutEditor.
+    public static bool PreviewStandalone;
+
     private static Dictionary<string, Placement> _map;
 
     private static void EnsureLoaded()

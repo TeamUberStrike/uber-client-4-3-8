@@ -257,7 +257,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         new KeyValuePair<string, TouchKeyType>("score", TouchKeyType.Score),
     };
 
-    private static string DisplayNameFor(string id)
+    public static string DisplayNameFor(string id)
     {
         switch (id)
         {
@@ -271,6 +271,29 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "score": return "Scores";
             case "weaponChanger": return "Weapons";
             default: return id;
+        }
+    }
+
+    // Single source of truth for the default GUI-space center of each customizable control, as a
+    // fraction of the screen so it spreads cleanly on any aspect/resolution (right-hand action
+    // cluster, top-left system buttons, top-right weapon changer; the movement joystick owns the
+    // bottom-left region and is not in this set). Used by both SetupRects() (live game) and the
+    // standalone layout preview, so the two always match.
+    public static Vector2 DefaultGuiCenter(string id)
+    {
+        float w = Screen.width, h = Screen.height;
+        switch (id)
+        {
+            case "menu":               return new Vector2(w * 0.045f, h * 0.12f);
+            case "chat":               return new Vector2(w * 0.045f, h * 0.26f);
+            case "score":              return new Vector2(w * 0.045f, h * 0.40f);
+            case "weaponChanger":      return new Vector2(w * 0.90f,  h * 0.13f);
+            case "multiSecondaryFire": return new Vector2(w * 0.78f,  h * 0.52f);
+            case "secondaryFire":      return new Vector2(w * 0.93f,  h * 0.52f);
+            case "jump":               return new Vector2(w * 0.70f,  h * 0.82f);
+            case "fire":               return new Vector2(w * 0.86f,  h * 0.80f);
+            case "crouch":             return new Vector2(w * 0.96f,  h * 0.82f);
+            default:                   return new Vector2(w * 0.5f,   h * 0.5f);
         }
     }
 
@@ -412,22 +435,24 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         _joystickRect = new Rect(0, Screen.height / 2, _screenLeftRect.width, Screen.height / 2);
 
-        _backButtonPos = new Vector2(30, 200);
-        _chatPos = new Vector2(30, 260);
-        _scoreButtonPos = new Vector2(30, 320);
+        // Default positions for the customizable controls come from DefaultGuiCenter (single source
+        // of truth, shared with the layout preview). ApplyLayout() then overrides with any saved layout.
+        _backButtonPos = DefaultGuiCenter("menu");
+        _chatPos = DefaultGuiCenter("chat");
+        _scoreButtonPos = DefaultGuiCenter("score");
 
-        _nextWeaponPos = new Vector2(Screen.width - 95, 105);
-        _secondFireMultiPos = new Vector2(Screen.width - 60, 440);
+        _nextWeaponPos = DefaultGuiCenter("weaponChanger");
+        _secondFireMultiPos = DefaultGuiCenter("multiSecondaryFire");
         _scopeSwipeRect = new Rect(Screen.width - MobileIcons.SniperSwipeIcon.width - 24,
             Screen.height - 274 - MobileIcons.SniperSwipeIcon.height,
             MobileIcons.SniperSwipeIcon.width,
             MobileIcons.SniperSwipeIcon.height);
 
         // single finger
-        _firePos = new Vector2(Screen.width - 160, Screen.height - 170);
-        _secondFirePos = new Vector2(Screen.width - 64, Screen.height - 234);
-        _jumpPos = new Vector2(Screen.width - 255, Screen.height - 116);
-        _crouchPos = new Vector2(Screen.width - 88, Screen.height - 72);
+        _firePos = DefaultGuiCenter("fire");
+        _secondFirePos = DefaultGuiCenter("secondaryFire");
+        _jumpPos = DefaultGuiCenter("jump");
+        _crouchPos = DefaultGuiCenter("crouch");
 
         _loadoutRect = new Rect(20, Screen.height * 0.6f, 200, 50);
         _modeRect = new Rect(20, Screen.height * 0.7f, 250, 50);

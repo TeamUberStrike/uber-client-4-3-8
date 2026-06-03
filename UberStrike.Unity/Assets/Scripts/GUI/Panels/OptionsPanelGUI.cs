@@ -568,10 +568,15 @@ public class OptionsPanelGUI : PanelGuiBase
         GUI.enabled = _targetMap == null;
 
         GUI.skin = BlueStonez.Skin;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21)); //720 + 15));
+        // On mobile, reserve space at the top of the Controls tab for the touch-controls group.
+        int touchY = ApplicationDataManager.IsMobile ? 175 : 0;
+        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21 + touchY)); //720 + 15));
         {
-            DrawGroupControl(new Rect(GroupMarginX, 20, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
-            GUI.BeginGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 65));
+            if (ApplicationDataManager.IsMobile)
+                DrawTouchControlsGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 160));
+
+            DrawGroupControl(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
+            GUI.BeginGroup(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65));
             {
                 GUI.Label(new Rect(15, 10, 130, 30), LocalizedStrings.MouseSensitivity, BlueStonez.label_interparkbold_11pt_left);
                 float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 1, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
@@ -590,7 +595,7 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
 
-            int yOffset = 105;
+            int yOffset = 105 + touchY;
             if (Input.GetJoystickNames().Length > 0)
             {
                 DrawGroupControl(new Rect(GroupMarginX, 105, _rect.width - 65, 50), LocalizedStrings.Gamepad, BlueStonez.label_group_interparkbold_18pt);
@@ -620,6 +625,37 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         GUI.EndScrollView();
         GUITools.PopGUIState();
+    }
+
+    // Mobile-only: touch input settings + the entry point to the customizable on-screen layout editor.
+    private void DrawTouchControlsGroup(Rect area)
+    {
+        DrawGroupControl(area, "TOUCH CONTROLS", BlueStonez.label_group_interparkbold_18pt);
+        GUI.BeginGroup(area);
+        {
+            ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
+
+            bool multi = GUI.Toggle(new Rect(15, 10, 320, 24), opt.UseMultiTouch, " Multi-touch (tap 2nd finger to fire)", BlueStonez.toggle);
+            if (multi != opt.UseMultiTouch) opt.UseMultiTouch = multi;
+
+            GUI.Label(new Rect(15, 40, 130, 24), "Look Sensitivity", BlueStonez.label_interparkbold_11pt_left);
+            float look = GUI.HorizontalSlider(new Rect(155, 46, 200, 24), opt.TouchLookSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 40, 60, 24), look.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            if (look != opt.TouchLookSensitivity) opt.TouchLookSensitivity = look;
+
+            GUI.Label(new Rect(15, 68, 130, 24), "Move Sensitivity", BlueStonez.label_interparkbold_11pt_left);
+            float move = GUI.HorizontalSlider(new Rect(155, 74, 200, 24), opt.TouchMoveSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 68, 60, 24), move.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            if (move != opt.TouchMoveSensitivity) opt.TouchMoveSensitivity = move;
+
+            if (GUI.Button(new Rect(15, 100, 260, 30), "Customize On-Screen Controls", BlueStonez.button))
+            {
+                opt.SaveApplicationOptions();
+                MobileControlLayout.EditMode = true;
+                PanelManager.Instance.ClosePanel(PanelType.Options);
+            }
+        }
+        GUI.EndGroup();
     }
 
     private void DoSysInfoGroup()
