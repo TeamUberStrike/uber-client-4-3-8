@@ -11,6 +11,10 @@ public class GameState : MonoSingleton<GameState>
     public static bool IsShuttingDown { get; private set; }
     public Vector2 Offset;
 
+    // Per-axis look multiplier for the on-screen touch controls (x = horizontal, y = vertical).
+    // Combined with ApplicationOptions.TouchLookSensitivity in UserInput.UpdateMouse.
+    public Vector2 TouchLookSensitivity = new Vector2(1.0f, 0.5f);
+
     public static bool IsRagdollShootable = false;
 
     public static float Tangent

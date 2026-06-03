@@ -220,4 +220,16 @@ public static class RectExtentions
     {
         return new Rect(x, (r.height - height) * 0.5f, width, height);
     }
+
+    /// <summary>
+    /// Checks if a touch is inside the rect. Touch coordinates have their origin at the
+    /// bottom-left (Input.touch space) while GUI Rects use a top-left origin, so y is flipped
+    /// before the containment test. Ported from the mobile/webgl branch for the re-introduced
+    /// on-screen touch controls.
+    /// </summary>
+    public static bool ContainsTouch(this Rect rect, Vector2 touchPosition)
+    {
+        Vector2 invertedTouchPos = new Vector2(touchPosition.x, Screen.height - touchPosition.y);
+        return rect.Contains(invertedTouchPos);
+    }
 }

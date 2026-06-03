@@ -24,6 +24,13 @@ public class QuickItemGroupHud
         }
     }
 
+    // Screen position of the quick-item group, used by the on-screen touch controls to place
+    // the consumable changer over the quick-item HUD.
+    public Vector2 GetPosition()
+    {
+        return _quickItemsGroup != null ? _quickItemsGroup.Position : Vector2.zero;
+    }
+
     public QuickItemGroupHud()
     {
         if (HudAssets.Exists)

@@ -22,6 +22,24 @@ public static class UserInput
     {
         ResetDirection();
 
+        // On mobile channels the movement keys come from the on-screen joystick / D-pad
+        // (TouchInput.WishDirection), not from the keyboard. Gated at runtime so the same build
+        // drives both desktop and the Unity Device Simulator.
+        if (ApplicationDataManager.IsMobile)
+        {
+            GameState.LocalCharacter.Keys = 0;
+            if (TouchInput.WishJump) GameState.LocalCharacter.Keys |= KeyState.Jump;
+            if (TouchInput.WishCrouch) GameState.LocalCharacter.Keys |= KeyState.Crouch;
+            if (TouchInput.WishDirection.x > 0.1f) GameState.LocalCharacter.Keys |= KeyState.Right;
+            if (TouchInput.WishDirection.x < -0.1f) GameState.LocalCharacter.Keys |= KeyState.Left;
+            if (TouchInput.WishDirection.y > 0.1f) GameState.LocalCharacter.Keys |= KeyState.Forward;
+            if (TouchInput.WishDirection.y < -0.1f) GameState.LocalCharacter.Keys |= KeyState.Backward;
+
+            HorizontalDirection = new Vector3(TouchInput.WishDirection.x, 0, TouchInput.WishDirection.y);
+            VerticalDirection = new Vector3(0, TouchInput.WishCrouch ? -1 : TouchInput.WishJump ? 1 : 0, 0);
+            return;
+        }
+
         if ((GameState.LocalCharacter.Keys & KeyState.Left) != 0) HorizontalDirection.x -= 127;
         if ((GameState.LocalCharacter.Keys & KeyState.Right) != 0) HorizontalDirection.x += 127;
         if ((GameState.LocalCharacter.Keys & KeyState.Forward) != 0) HorizontalDirection.z += 127;
@@ -66,6 +84,31 @@ public static class UserInput
 
     public static void UpdateMouse()
     {
+        // On mobile channels the look delta comes from the touch "aim" drag (TouchInput.WishLook),
+        // scaled by the per-axis GameState multiplier and the user's TouchLookSensitivity option.
+        if (ApplicationDataManager.IsMobile)
+        {
+            if (Camera.main != null)
+            {
+                float mfactor = Mathf.Pow(Camera.main.fieldOfView / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);
+
+                //TURN AROUND
+                Mouse.x += TouchInput.WishLook.x * GameState.Instance.TouchLookSensitivity.x
+                    * ApplicationDataManager.ApplicationOptions.TouchLookSensitivity * mfactor;
+                Mouse.x = ClampAngle(Mouse.x, -360f, 360f);
+
+                //UP AND DOWN
+                int minv = (ApplicationDataManager.ApplicationOptions.InputInvertMouse) ? -1 : 1;
+
+                Mouse.y += TouchInput.WishLook.y * GameState.Instance.TouchLookSensitivity.y
+                    * ApplicationDataManager.ApplicationOptions.TouchLookSensitivity * minv * mfactor;
+                Mouse.y = ClampAngle(Mouse.y, -88, 88);
+            }
+
+            Rotation = Quaternion.AngleAxis(Mouse.x, Vector3.up) * Quaternion.AngleAxis(Mouse.y, Vector3.left);
+            return;
+        }
+
         if (Camera.main != null)
         {
             float factor = Mathf.Pow(Camera.main.fieldOfView / ApplicationDataManager.ApplicationOptions.CameraFovMax, 1.1f);

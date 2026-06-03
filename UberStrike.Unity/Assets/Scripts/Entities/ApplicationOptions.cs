@@ -28,6 +28,12 @@ public class ApplicationOptions
     public float InputMouseRotationMinY = -90;
     public bool InputInvertMouse = false;
 
+    // Touch / mobile input (used by the on-screen touch controls). Persisted via PlayerPrefs
+    // directly (below) so we don't have to extend the CmunePrefs.Key enum.
+    public bool UseMultiTouch = false;
+    public float TouchLookSensitivity = 1.5f;
+    public float TouchMoveSensitivity = 1.0f;
+
     // Gameplay
     public bool GameplayAutoPickupEnabled = true;
     public bool GameplayAutoEquipEnabled = false;
@@ -105,6 +111,12 @@ public class ApplicationOptions
         InputMouseRotationMinX = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputMouseRotationMinX, -360f);
         InputMouseRotationMinY = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputMouseRotationMinY, -90f);
         InputInvertMouse = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputInvertMouse, false);
+
+        // Touch input (PlayerPrefs-backed; see fields above)
+        UseMultiTouch = PlayerPrefs.GetInt("Options_UseMultiTouch", 0) != 0;
+        TouchLookSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchLookSensitivity", 1.5f), 0.5f, 3.0f);
+        TouchMoveSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchMoveSensitivity", 1.0f), 0.5f, 3.0f);
+
         bool isGamePadEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputEnableGamepad, false);
         InputManager.Instance.IsGamepadEnabled = Input.GetJoystickNames().Length > 0 && isGamePadEnabled;
 
@@ -146,6 +158,11 @@ public class ApplicationOptions
         // Input
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputXMouseSensitivity, InputXMouseSensitivity);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputYMouseSensitivity, InputYMouseSensitivity);
+
+        // Touch input (PlayerPrefs-backed)
+        PlayerPrefs.SetInt("Options_UseMultiTouch", UseMultiTouch ? 1 : 0);
+        PlayerPrefs.SetFloat("Options_TouchLookSensitivity", TouchLookSensitivity);
+        PlayerPrefs.SetFloat("Options_TouchMoveSensitivity", TouchMoveSensitivity);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMaxX, InputMouseRotationMaxX);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMaxY, InputMouseRotationMaxY);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMinX, InputMouseRotationMinX);
