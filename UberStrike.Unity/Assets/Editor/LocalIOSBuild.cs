@@ -63,7 +63,17 @@ public static class LocalIOSBuild
         // (IOSPostBuildProcessor also sets NSAllowsArbitraryLoads in Info.plist).
         PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
 
+        // UberStrike is a LANDSCAPE game. main defaults to Portrait (defaultScreenOrientation=0),
+        // which rendered the lobby as a squished vertical screen on device. Force landscape
+        // (both rotations), portrait off — matches what the mobile-il2cpp branch shipped.
+        PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
+        PlayerSettings.allowedAutorotateToLandscapeLeft = true;
+        PlayerSettings.allowedAutorotateToLandscapeRight = true;
+        PlayerSettings.allowedAutorotateToPortrait = false;
+        PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
+        PlayerSettings.useAnimatedAutorotation = false;
+
         Debug.Log("[LocalIOSBuild] iOS PlayerSettings configured (IL2CPP, Universal, "
-            + IOSBundleIdentifier + ", min iOS " + IOSMinimumOSVersion + ").");
+            + IOSBundleIdentifier + ", min iOS " + IOSMinimumOSVersion + ", landscape).");
     }
 }
