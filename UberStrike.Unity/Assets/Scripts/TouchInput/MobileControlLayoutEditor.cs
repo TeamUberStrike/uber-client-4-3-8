@@ -24,7 +24,19 @@ public class MobileControlLayoutEditor : MonoBehaviour
         _pixel = Texture2D.whiteTexture;
     }
 
+    private void OnDisable()
+    {
+        // Safety net: never leave the lobby torn down if this host is disabled while editing.
+        if (MobileMenuBackdrop.IsActive)
+        {
+            MobileControlLayout.EditMode = false;
+            MobileMenuBackdrop.Exit();
+            _editModePrev = false;
+        }
+    }
+
     private bool _autoOpened;
+    private bool _editModePrev;
 
     private void Update()
     {
@@ -36,8 +48,16 @@ public class MobileControlLayoutEditor : MonoBehaviour
             _autoOpened = true;
         }
 
+        // On the edit-mode edges, engage / release the lobby backdrop (hides the menu UI + avatar and
+        // shows the spaceship scene as a clean settings background). MobileMenuBackdrop self-gates to
+        // the lobby, so this is a no-op in a match and in the Editor force-preview.
+        bool editMode = MobileControlLayout.EditMode;
+        if (editMode && !_editModePrev) MobileMenuBackdrop.Enter();
+        else if (!editMode && _editModePrev) MobileMenuBackdrop.Exit();
+        _editModePrev = editMode;
+
         // Freeze look/move while editing so dragging never leaks into gameplay.
-        if (MobileControlLayout.EditMode)
+        if (editMode)
         {
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
@@ -81,9 +101,12 @@ public class MobileControlLayoutEditor : MonoBehaviour
             ? TouchInput.Instance.GetLayoutHandles()
             : BuildStandaloneHandles();
 
-        // Dim the world behind the editor.
+        // Dim the world behind the editor. With the lobby backdrop active the menu UI + avatar are
+        // already hidden and we want the spaceship scene to read as the background, so use a light
+        // scrim (just enough to keep the white control outlines/labels legible) instead of the heavy
+        // in-match dim.
         Color prev = GUI.color;
-        GUI.color = new Color(0f, 0f, 0f, 0.5f);
+        GUI.color = new Color(0f, 0f, 0f, MobileMenuBackdrop.IsActive ? 0.2f : 0.5f);
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _pixel);
         GUI.color = prev;
 
