@@ -44,12 +44,15 @@ public class ItemPopupDialog : IPopupDialog
 
     public void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         UpdateAlpha();
 
         GUI.color = GUI.color.SetAlpha(_alpha);
 
-        float offsetX = (Screen.width - Width) * 0.5f;
-        float offsetY = GlobalUIRibbon.HEIGHT + (Screen.height - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
+        //center against the virtual (scaled) screen
+        float offsetX = (MobileMenuScale.VirtualWidth - Width) * 0.5f;
+        float offsetY = GlobalUIRibbon.HEIGHT + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
         GUI.BeginGroup(new Rect(offsetX, offsetY, Width, Height), BlueStonez.window);
         {
             GUITools.OutlineLabel(new Rect(0, 10, Width, 40), Title, BlueStonez.label_interparkbold_32pt, 1, Color.white, ColorScheme.GuiTeamBlue);
@@ -80,6 +83,8 @@ public class ItemPopupDialog : IPopupDialog
         GUI.EndGroup();
 
         GUI.color = Color.white;
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public void OnHide()

@@ -70,6 +70,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
 
@@ -80,7 +82,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             _unFocus = false;
         }
 
-        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), Screen.width, Screen.height - GlobalUIRibbon.Instance.GetHeight());
+        // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
         GUI.Box(rect, string.Empty, BlueStonez.box_grey31);
 
         if (!_isConnectedToGameServer || GameServerController.Instance.SelectedServer == null)
@@ -94,8 +97,11 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
 
         if (_checkForPassword)
         {
-            PasswordCheck(new Rect((Screen.width - 280) / 2, (Screen.height - 200) / 2, 280, 200));
+            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth - 280) / 2, (MobileMenuScale.VirtualHeight - 200) / 2, 280, 200));
         }
+
+        MobileMenuScale.End(scaleMatrix);
+
         GuiManager.DrawTooltip();
     }
 
@@ -513,7 +519,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GUI.enabled &= (_dropDownList == 0) && !_checkForPassword;
             if (_showFilters)
             {
-                DoGameList(new Rect(25, 73, Screen.width - 0, Screen.height - 105));
+                DoGameList(new Rect(25, 73, MobileMenuScale.VirtualWidth - 0, MobileMenuScale.VirtualHeight - 105));
             }
             else
             {
@@ -930,7 +936,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GameServerController.Instance.SelectedServer.Data.RoomsCreated != 0 &&
             !PanelManager.Instance.IsPanelOpen(PanelType.CreateGame);
 
-        GUI.Label(new Rect(0, Screen.height - 20, Screen.width, 20), "lobby: " + LobbyConnectionManager.IsConnected +
+        GUI.Label(new Rect(0, MobileMenuScale.VirtualHeight - 20, MobileMenuScale.VirtualWidth, 20), "lobby: " + LobbyConnectionManager.IsConnected +
             " sel game: " + (_selectedGame != null) + " sel srv: " + (GameServerController.Instance.SelectedServer != null) + " room: " + GameServerController.Instance.SelectedServer.Data.RoomsCreated);
 
         if (GUITools.Button(new Rect(rect.width - 160, rect.height - 42, 140, 32), new GUIContent(LocalizedStrings.JoinCaps), BlueStonez.button_green, SoundEffectType.UIJoinGame))
@@ -1323,7 +1329,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
     /// </summary>
     private void UpdateColumnWidth()
     {
-        int maxWidth = GUITools.ScreenWidth - 20;
+        // VirtualWidth is float; this feeds an int width used to size the game-list columns.
+        int maxWidth = (int)MobileMenuScale.VirtualWidth - 20;
         int spaceLeft = maxWidth - _moderatorInGameWidth - _privateGameWidth - _gameTimeWidth - _playerCountWidth;
 
         _gameModeWidth = Mathf.Clamp(Mathf.CeilToInt(spaceLeft * 25f / 100f), 100, 200);

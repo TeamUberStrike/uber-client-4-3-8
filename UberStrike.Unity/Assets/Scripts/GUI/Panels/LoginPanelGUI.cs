@@ -66,7 +66,10 @@ public class LoginPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        _rect = new Rect((Screen.width - 334) / 2, (Screen.height - 200) / 2, 334, 200);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        // centre against the virtual screen for mobile menu scale
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 334) / 2, (MobileMenuScale.VirtualHeight - 200) / 2, 334, 200);
 
         DrawLoginPanel();
 
@@ -79,6 +82,8 @@ public class LoginPanelGUI : PanelGuiBase
             GUI.Label(position, GUI.tooltip, BlueStonez.tooltip);
             GUI.matrix = currentMatrix;
         }
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DrawLoginPanel()

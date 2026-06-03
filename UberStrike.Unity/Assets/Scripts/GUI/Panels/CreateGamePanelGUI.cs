@@ -85,15 +85,20 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
             }
         }
 
-        _windowRect.x = (Screen.width - _windowRect.width) * 0.5f;
-        _windowRect.y = (Screen.height - _windowRect.height) * 0.5f + 25;
+        // centre against the virtual screen for mobile menu scale
+        _windowRect.x = (MobileMenuScale.VirtualWidth - _windowRect.width) * 0.5f;
+        _windowRect.y = (MobileMenuScale.VirtualHeight - _windowRect.height) * 0.5f + 25;
     }
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.BeginGroup(_windowRect, GUIContent.none, BlueStonez.window);
         DrawCreateGamePanel();
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }

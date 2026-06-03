@@ -14,14 +14,19 @@ public class HelpPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         int height = Mathf.RoundToInt((Screen.height - 56) * 0.75f);
-        _rect = new Rect((Screen.width - 630) * 0.5f, GlobalUIRibbon.Instance.GetHeight(), 630, height);
+        // centre x against the virtual screen for mobile menu scale (y stays anchored to the ribbon)
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 630) * 0.5f, GlobalUIRibbon.Instance.GetHeight(), 630, height);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
             DrawHelpPanel();
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DrawHelpPanel()

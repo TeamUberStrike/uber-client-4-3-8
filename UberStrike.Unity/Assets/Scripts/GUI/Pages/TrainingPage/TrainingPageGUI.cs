@@ -11,12 +11,15 @@ public class TrainingPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
-        GUI.Box(new Rect(0, 56, Screen.width, Screen.height - 56), string.Empty, BlueStonez.box_grey31);
+        // Anchor against the virtual (scaled) screen size so the panel stays centered/sized under the mobile menu scale.
+        GUI.Box(new Rect(0, 56, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - 56), string.Empty, BlueStonez.box_grey31);
 
         //Stats GUI Panel
-        GUI.BeginGroup(new Rect((Screen.width - 330) * 0.5f, ((Screen.height + 56) - 410) * 0.5f, 330, 410), string.Empty, BlueStonez.window);
+        GUI.BeginGroup(new Rect((MobileMenuScale.VirtualWidth - 330) * 0.5f, ((MobileMenuScale.VirtualHeight + 56) - 410) * 0.5f, 330, 410), string.Empty, BlueStonez.window);
         {
             GUI.Label(new Rect(10, 20, 300, 48), LocalizedStrings.TrainingCaps, BlueStonez.label_interparkbold_48pt);
             GUI.Label(new Rect(30, 50, 270, 120), LocalizedStrings.TrainingModeDesc, BlueStonez.label_interparkbold_13pt);
@@ -89,5 +92,7 @@ public class TrainingPageGUI : MonoBehaviour
         GUI.EndGroup();
 
         GUI.enabled = true;
+
+        MobileMenuScale.End(scaleMatrix);
     }
 }

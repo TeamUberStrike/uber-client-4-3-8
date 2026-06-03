@@ -97,8 +97,11 @@ public class OptionsPanelGUI : PanelGuiBase
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.Panel - 100;
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
 
-        _rect = new Rect((Screen.width - 528) / 2, (Screen.height - 300) / 2, 528, 300);
+        // Centre against the virtual (scaled) screen size so the panel stays centred under the mobile
+        // menu scale; everything else is drawn relative to _rect and scales with it.
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 528) / 2, (MobileMenuScale.VirtualHeight - 300) / 2, 528, 300);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
@@ -109,6 +112,7 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
+        MobileMenuScale.End(scaleMatrix);
         GuiManager.DrawTooltip();
     }
 

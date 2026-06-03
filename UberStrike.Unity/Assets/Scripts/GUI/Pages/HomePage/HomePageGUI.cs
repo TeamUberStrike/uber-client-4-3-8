@@ -44,6 +44,7 @@ public class HomePageGUI : MonoBehaviour
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.Page;
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
 
         // Draw the Main Menu
         if (_mainMenuEnabled)
@@ -57,7 +58,9 @@ public class HomePageGUI : MonoBehaviour
             int topOffset = 14;
             int height = topOffset + (buttonSpacing * buttonCount);
 
-            int top = Mathf.RoundToInt((((Screen.height - GlobalUIRibbon.HEIGHT) * 0.5f) + GlobalUIRibbon.HEIGHT) - (height * 0.5f));
+            // Anchor against the virtual (scaled) screen height so the menu stays vertically centred
+            // below the (equally scaled) ribbon under the mobile menu scale.
+            int top = Mathf.RoundToInt((((MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT) * 0.5f) + GlobalUIRibbon.HEIGHT) - (height * 0.5f));
 
             GUI.BeginGroup(new Rect(mainMenuX, top, 310, height));
             {
@@ -108,13 +111,16 @@ public class HomePageGUI : MonoBehaviour
         }
 
         _itemTooltip.OnGui();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DrawWeeklySpecial()
     {
         float textureHeight = PromoTextureAspect * PromotionWidth;
         float height = 28 + textureHeight + 58;
-        Rect rect = new Rect(Screen.width - PromotionWidth, GlobalUIRibbon.Instance.GetHeight() + (Screen.height - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
+        // Right/centre-anchored against the virtual (scaled) screen so it stays placed under the scale.
+        Rect rect = new Rect(MobileMenuScale.VirtualWidth - PromotionWidth, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
 
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {

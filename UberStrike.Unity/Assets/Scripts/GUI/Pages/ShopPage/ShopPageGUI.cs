@@ -260,13 +260,18 @@ public class ShopPageGUI : PageGUI
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         if (IsOnGUIEnabled)
         {
-            DrawGUI(new Rect(Screen.width - shopPositionX, GlobalUIRibbon.Instance.GetHeight(), 590,
-                Screen.height - GlobalUIRibbon.Instance.GetHeight() + 1));
+            // Right-anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+            DrawGUI(new Rect(MobileMenuScale.VirtualWidth - shopPositionX, GlobalUIRibbon.Instance.GetHeight(), 590,
+                MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() + 1));
 
             ArmorHud.Instance.Update();
         }
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void DrawGUI(Rect rect)
@@ -296,8 +301,9 @@ public class ShopPageGUI : PageGUI
         }
         GUI.EndGroup();
 
-        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(0, 55, Screen.width - 580, Screen.height - 55), OnDropAvatar);
-        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(Screen.width - _rectLabs.width + 200, 55, _rectLabs.width - 200, Screen.height - 55), OnDropShop);
+        // Drop zones are anchored to the panel; use virtual (scaled) screen dims for the mobile menu scale.
+        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(0, 55, MobileMenuScale.VirtualWidth - 580, MobileMenuScale.VirtualHeight - 55), OnDropAvatar);
+        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(MobileMenuScale.VirtualWidth - _rectLabs.width + 200, 55, _rectLabs.width - 200, MobileMenuScale.VirtualHeight - 55), OnDropShop);
 
         GUITools.PopGUIState();
 

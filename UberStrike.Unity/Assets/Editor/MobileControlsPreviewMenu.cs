@@ -82,4 +82,21 @@ public static class MobileControlsPreviewMenu
         Menu.SetChecked(Toggle, MobileControlsBootstrap.ForcePreviewInEditor);
         return true;
     }
+
+    // Forces the mobile menu/lobby UI scale on in the Editor (it is normally IsMobile-gated, so a
+    // desktop-channel Editor session would not show it). Toggle on, then view the lobby/Options.
+    private const string MenuScale = "Tools/Mobile/Preview Menu Scale";
+
+    [MenuItem(MenuScale, priority = 21)]
+    private static void ToggleMenuScale()
+    {
+        MobileMenuScale.ForcePreviewInEditor = !MobileMenuScale.ForcePreviewInEditor;
+    }
+
+    [MenuItem(MenuScale, true)]
+    private static bool ToggleMenuScaleValidate()
+    {
+        Menu.SetChecked(MenuScale, MobileMenuScale.ForcePreviewInEditor);
+        return true;
+    }
 }
