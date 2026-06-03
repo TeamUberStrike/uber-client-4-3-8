@@ -1,0 +1,25 @@
+<!--
+  IL2CPP managed-stripping preservation (iOS).
+
+  Why this exists:
+    iPhone managedStrippingLevel = Low, so the IL2CPP managed stripper removes any
+    type/member reachable ONLY via reflection. Two things in the game are reached that
+    way and were being stripped, crashing the iOS build (works on PC/Mono):
+
+      1. Singleton<T> (Assets/Scripts/Utils/Singleton.cs) constructs its instance with
+         ConstructorInfo.Invoke() on a PRIVATE parameterless ctor. Those ctors are never
+         called directly, so the stripper drops them -> Instance throws -> the app closes
+         on the first touch of a pure-C# singleton during play. This is what crashed:
+           - issue #62 (HP/AP/Ammo pickup -> HpApHud.Instance / PickupNameHud.Instance)
+           - issue #61 (player kill -> HudUtil.Instance in the kill feed)
+
+      2. Beast lightmap / RenderSettings restoration uses reflection-adjacent paths
+         (BeastLightmapLoader already marks code [Preserve]); stripping the shader/lightmap
+         assignment code makes maps render unlit / with missing shaders -> issue #63.
+
+  Preserving the whole game assembly is the safe, blunt fix (UberStrike is not binary-size
+  constrained here). Tighten later to specific Singleton<T> subclasses if size matters.
+-->
+<linker>
+  <assembly fullname="Assembly-CSharp" preserve="all" />
+</linker>
