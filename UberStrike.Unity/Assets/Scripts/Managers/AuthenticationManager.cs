@@ -47,8 +47,14 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             case ChannelType.OSXStandalone:
             case ChannelType.WindowsStandalone:
             case ChannelType.MacAppStore:
+            case ChannelType.Android:
+            case ChannelType.IPhone:
+            case ChannelType.IPad:
                 {
-                    // Show the login panel
+                    // Show the login panel. Mobile (IPad/IPhone/Android) shares the standalone
+                    // login flow — without these cases LoginByChannel hits the default and logs
+                    // "No login mode defined for unsupported channel: IPad", leaving the player
+                    // stuck on the lobby (forward-ported from mobile-il2cpp).
                     MenuPageManager.Instance.LoadPage(PageType.Login, true);
                     break;
                 }
@@ -179,6 +185,11 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         {
             case ChannelType.MacAppStore:
             case ChannelType.WindowsStandalone:
+            case ChannelType.Android:
+            case ChannelType.IPhone:
+            case ChannelType.IPad:
+                // Mobile ships HD map assets too (per the mobile-il2cpp build); request HD
+                // map data so the definitions match the baked scenes.
                 mapType = MapType.HighDefinition;
                 break;
         }
