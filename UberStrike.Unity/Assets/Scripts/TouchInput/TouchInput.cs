@@ -200,7 +200,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             Shooter.OnFireEnd += OnFireEnd;
         }
         Shooter.IgnoreRect(WeaponChanger.Boundary);
-        Shooter.IgnoreRect(Joystick.Boundary); // includes dpad boundary
+        Shooter.SetJoystickIgnore(Joystick.Boundary); // replaceable: the joystick zone is customizable (includes dpad boundary)
         Shooter.IgnoreRect(new Rect(0, menu.Boundary.y, score.Boundary.width, score.Boundary.yMax - menu.Boundary.y));
 
         AimHelpText = new MeshGUIText("Drag finger to aim", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
@@ -270,6 +270,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "chat": return "Chat";
             case "score": return "Scores";
             case "weaponChanger": return "Weapons";
+            case "joystick": return "Move";
             default: return id;
         }
     }
@@ -293,6 +294,9 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "jump":               return new Vector2(w * 0.70f,  h * 0.82f);
             case "fire":               return new Vector2(w * 0.86f,  h * 0.80f);
             case "crouch":             return new Vector2(w * 0.96f,  h * 0.82f);
+            // Movement joystick: center of its default bottom-left activation zone
+            // (Rect(0, h/2, 0.4w, h/2) -> center (0.2w, 0.75h)). Kept in sync with SetupRects.
+            case "joystick":           return new Vector2(w * 0.20f,  h * 0.75f);
             default:                   return new Vector2(w * 0.5f,   h * 0.5f);
         }
     }
@@ -317,6 +321,21 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", WeaponChanger.Position, 1f);
             WeaponChanger.Position = MobileControlLayout.ToPixels(wp);
+        }
+
+        // Movement joystick: stays a floating joystick, but its activation zone can be moved/scaled.
+        // Re-derive the zone from the untouched default (_joystickRect) translated to the saved center
+        // and scaled, so an unedited layout reproduces _joystickRect exactly (zero regression). Keep the
+        // Shooter's look/aim ignore rect in sync so dragging in the zone never leaks into aiming.
+        if (Joystick != null)
+        {
+            MobileControlLayout.Placement jp = MobileControlLayout.GetOrDefault("joystick", DefaultGuiCenter("joystick"), 1f);
+            Vector2 c = MobileControlLayout.ToPixels(jp);
+            float zw = _joystickRect.width * jp.Scale;
+            float zh = _joystickRect.height * jp.Scale;
+            Rect zone = new Rect(c.x - zw * 0.5f, c.y - zh * 0.5f, zw, zh);
+            Joystick.Boundary = zone;
+            if (Shooter != null) Shooter.SetJoystickIgnore(zone);
         }
     }
 
@@ -352,6 +371,25 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Boundary = WeaponChanger.Boundary,
                 Icon = null,
                 Scale = 1f,
+            });
+        }
+
+        // Movement joystick handle: a ring-sized grab area centered on the (floating) zone, so the
+        // player can see + reposition/scale the movement zone. The icon is the outer ring.
+        if (Joystick != null)
+        {
+            MobileControlLayout.Placement jp = MobileControlLayout.GetOrDefault("joystick", DefaultGuiCenter("joystick"), 1f);
+            Vector2 c = Joystick.Boundary.center;
+            Texture ring = MobileIcons.JoystickOuter;
+            float rw = ((ring != null) ? ring.width : 128f) * jp.Scale;
+            float rh = ((ring != null) ? ring.height : 128f) * jp.Scale;
+            list.Add(new LayoutHandle
+            {
+                Id = "joystick",
+                DisplayName = DisplayNameFor("joystick"),
+                Boundary = new Rect(c.x - rw * 0.5f, c.y - rh * 0.5f, rw, rh),
+                Icon = ring,
+                Scale = jp.Scale,
             });
         }
 

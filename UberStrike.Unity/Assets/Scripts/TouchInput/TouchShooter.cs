@@ -108,6 +108,19 @@ public class TouchShooter : TouchBaseControl
             _ignoreTouches.Add(r);
     }
 
+    // The movement joystick zone is customizable (it can be moved/scaled in the layout editor), so
+    // its ignore rect must be replaceable rather than added once — otherwise look-drag would keep
+    // firing over the old zone. Removes the previously registered joystick rect and adds the new one.
+    public void SetJoystickIgnore(Rect r)
+    {
+        _ignoreTouches.Remove(_joystickIgnore);
+        _joystickIgnore = r;
+        if (!_ignoreTouches.Contains(r))
+            _ignoreTouches.Add(r);
+    }
+
+    private Rect _joystickIgnore = new Rect(-1, -1, 0, 0);
+
     private bool ValidArea(Vector2 pos)
     {
         if (_ignoreTouches.Count == 0) return true;

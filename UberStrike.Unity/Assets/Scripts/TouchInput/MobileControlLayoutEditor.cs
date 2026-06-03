@@ -81,8 +81,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void DrawOpenButton()
     {
-        // Entry point: shown during a match, or in the Editor standalone layout preview.
-        if (!GameState.HasCurrentGame && !MobileControlLayout.PreviewStandalone) return;
+        // In-match entry point only. NOT shown in the lobby (the menu uses Options ▸ Controls ▸
+        // Customize) nor in the Editor standalone preview (which auto-opens the editor) — so the
+        // floating "Edit Controls" button never clutters the menu/preview.
+        if (!GameState.HasCurrentGame) return;
 
         float w = 160, h = 32;
         Rect r = new Rect((Screen.width - w) * 0.5f, 6, w, h);
@@ -247,7 +249,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     // The full set of customizable control ids (matches TouchInput's layout key map + weapon changer).
     private static readonly string[] StandaloneIds =
     {
-        "fire", "secondaryFire", "multiSecondaryFire", "jump", "crouch", "menu", "chat", "score", "weaponChanger",
+        "joystick", "fire", "secondaryFire", "multiSecondaryFire", "jump", "crouch", "menu", "chat", "score", "weaponChanger",
     };
 
     // Builds editable handles WITHOUT a live TouchInput (no-match preview): each control is placed
@@ -282,6 +284,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     {
         switch (id)
         {
+            case "joystick": return MobileIcons.JoystickOuter;
             case "fire": return MobileIcons.FireIcon;
             case "secondaryFire":
             case "multiSecondaryFire": return MobileIcons.SecondFireIcon;
