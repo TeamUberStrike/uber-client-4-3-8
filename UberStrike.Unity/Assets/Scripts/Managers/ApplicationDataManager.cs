@@ -57,6 +57,26 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static readonly Dictionary<int, int> XpByLevel = new Dictionary<int, int>();
     private string clientConfigurationXml = string.Empty;
     private static float applicationDateTime = 0f;
+
+#if UNITY_IPHONE || UNITY_ANDROID
+    // Mobile loads its client configuration from this embedded XML, NOT from a file:
+    // GetConfigurationXmlFilePath() has no mobile case (returns empty -> "problem loading
+    // UberStrike"). Forward-ported from the mobile-il2cpp branch (which booted to lobby with
+    // exactly this). ChannelType=IPad on purpose — the dev server whitelists the iOS channel
+    // for 4.3.8 (an Android-channel client reads as "version out of date"); per HaZard the
+    // Android build also reports the iOS channel. Edit WebServiceBaseUrl/ContentBaseUrl here
+    // if the backend moves.
+    private readonly string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
+                                    <UberStrike>
+                                    <Application
+                                        BuildType=""Dev""
+                                        DebugLevel=""Debug""
+                                        Version=""4.3.8""
+                                        WebServiceBaseUrl=""https://ws-dev.uberforever.eu/""
+                                        ContentBaseUrl=""http://client-dev.uberforever.eu/""
+                                        ChannelType=""IPad"" />
+                                    </UberStrike>";
+#endif
     private static DateTime serverDateTime = DateTime.Now;
     private static ProgressPopupDialog initApplicationProgressPopup;
 
@@ -121,7 +141,13 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
 #endif
 
+#if UNITY_IPHONE || UNITY_ANDROID
+        // Mobile has no on-disk/remote config file to fetch; use the embedded config.
+        CmuneDebug.LogWarning("Loading Android/iOS XML Configuration from internal settings.");
+        clientConfigurationXml = mobileConfigXml;
+#else
         yield return StartCoroutine(LoadConfigurationXml(GetConfigurationXmlFilePath()));
+#endif
         initApplicationProgressPopup.ManualProgress = 0.3f;
 
         if (string.IsNullOrEmpty(clientConfigurationXml))
