@@ -23,10 +23,13 @@ public class ClanPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
 
-        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), GUITools.ScreenWidth, GUITools.ScreenHeight - GlobalUIRibbon.Instance.GetHeight());
+        // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
         GUI.BeginGroup(rect, BlueStonez.box_grey31);
         {
             GUI.enabled = PlayerDataManager.IsPlayerLoggedIn && IsNoPopupOpen() && !ClanDataManager.Instance.IsProcessingWebservice;
@@ -59,6 +62,8 @@ public class ClanPageGUI : MonoBehaviour
             GUI.enabled = true;
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     /// <summary>
@@ -340,7 +345,8 @@ public class ClanPageGUI : MonoBehaviour
     /// </summary>
     private void UpdateColumnWidth()
     {
-        int maxWidth = GUITools.ScreenWidth;
+        // VirtualWidth is float; this feeds an int width used to size the panel columns.
+        int maxWidth = (int)MobileMenuScale.VirtualWidth;
         int spaceLeft = maxWidth - _indicatorWidth - _positionWidth - _joinDateWidth;
 
         _nameWidth = Mathf.Clamp(Mathf.RoundToInt(spaceLeft * 0.5f), 200, 300);

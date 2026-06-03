@@ -49,10 +49,13 @@ public class InboxPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
 
-        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), Screen.width, Screen.height - GlobalUIRibbon.Instance.GetHeight());
+        // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
         _threadWidth = (int)rect.width / 4;
 
         GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
@@ -64,6 +67,8 @@ public class InboxPageGUI : MonoBehaviour
             GUI.enabled = true;
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DrawInbox(Rect rect)

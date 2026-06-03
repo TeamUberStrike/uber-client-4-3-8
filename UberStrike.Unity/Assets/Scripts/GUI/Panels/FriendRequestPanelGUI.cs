@@ -31,16 +31,21 @@ public class FriendRequestPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Panel;
         GUI.skin = BlueStonez.Skin;
 
-        Rect rect = new Rect((Screen.width - 480) / 2, (Screen.height - 320) / 2, 480, 320);
+        // centre against the virtual screen for mobile menu scale
+        Rect rect = new Rect((MobileMenuScale.VirtualWidth - 480) / 2, (MobileMenuScale.VirtualHeight - 320) / 2, 480, 320);
 
         GUI.Box(rect, GUIContent.none, BlueStonez.window);
 
         DoInvite(rect);
 
         GUI.enabled = true;
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DoInvite(Rect rect)

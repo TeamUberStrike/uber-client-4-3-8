@@ -30,12 +30,19 @@ public class SendMessagePanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        if (!_showComposeMessage) return;
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        if (!_showComposeMessage)
+        {
+            MobileMenuScale.End(scaleMatrix);
+            return;
+        }
 
         GUI.depth = (int)GuiDepth.Panel;
         GUI.skin = BlueStonez.Skin;
 
-        Rect rect = new Rect((Screen.width - 480) / 2, (Screen.height - 320) / 2, 480, 320);
+        // centre against the virtual screen for mobile menu scale
+        Rect rect = new Rect((MobileMenuScale.VirtualWidth - 480) / 2, (MobileMenuScale.VirtualHeight - 320) / 2, 480, 320);
 
         GUI.Box(rect, GUIContent.none, BlueStonez.window);
 
@@ -48,6 +55,8 @@ public class SendMessagePanelGUI : PanelGuiBase
             _rcvDropdownHeight = 0;
 
         GUI.enabled = true;
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DoCompose(Rect rect)

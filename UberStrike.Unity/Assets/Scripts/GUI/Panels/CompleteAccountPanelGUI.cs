@@ -58,11 +58,14 @@ public class CompleteAccountPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         float width = 400;
 
         GUI.depth = (int)GuiDepth.Popup;
 
-        Rect position = new Rect((Screen.width - width) * 0.5f, (Screen.height - _height) * 0.5f, width, _height);
+        // centre against the virtual screen for mobile menu scale
+        Rect position = new Rect((MobileMenuScale.VirtualWidth - width) * 0.5f, (MobileMenuScale.VirtualHeight - _height) * 0.5f, width, _height);
 
         GUI.BeginGroup(position, GUIContent.none, BlueStonez.window);
         {
@@ -126,6 +129,8 @@ public class CompleteAccountPanelGUI : PanelGuiBase
             GUI.EndGroup();
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DrawCheckAvailabilityButton(Rect position)
