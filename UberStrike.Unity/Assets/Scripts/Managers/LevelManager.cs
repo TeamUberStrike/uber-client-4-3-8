@@ -11,6 +11,12 @@ public class LevelManager : Singleton<LevelManager>
     private MapLoader _loader;
     private UberstrikeMap _initialMap;
 
+    // Per-map mobile allow-list — the platform-dependent map knob (one codebase, gated at runtime).
+    // Every map ships on mobile today; to drop a map from mobile/iOS, remove its id here AND from
+    // the scene list in SceneExporter.BuildiOS. Desktop channels are never filtered by this set.
+    private static readonly HashSet<int> _mobileSupportedMaps =
+        new HashSet<int> { 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12 };
+
     public IEnumerable<UberstrikeMap> AllMaps { get { return mapsById.Values; } }
     public int CurrentLoadingLevelId { get { return _loader.MapToLoad != null ? _loader.MapToLoad.Id : -1; } }
     public float CurrentProgress { get { return _loader.Progress; } }
@@ -188,6 +194,10 @@ public class LevelManager : Singleton<LevelManager>
 
         foreach (var m in maps)
         {
+            // Mobile/iOS gets only allow-listed maps; desktop channels get everything.
+            if (ApplicationDataManager.IsMobile && !_mobileSupportedMaps.Contains(m.MapId))
+                continue;
+
             if (!mapsById.ContainsKey(m.MapId))
             {
                 mapsById.Add(m.MapId, new UberstrikeMap(m));
