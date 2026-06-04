@@ -927,6 +927,7 @@ public class ShopPageGUI : PageGUI
 
         Rect contentRect = new Rect(0, 0, position.width - 20, ((list.Count - _skippedDefaultGearCount) * height) + 106);
         bool showTooltip = scrollRect.Contains(Event.current.mousePosition);
+        _labScroll = MobileScroll.Drag(ScrollId.ShopLab, scrollRect, _labScroll);
         _labScroll = GUI.BeginScrollView(scrollRect, _labScroll, contentRect);
         {
             //decrease the width of the content when there is a scrollbar
@@ -1075,6 +1076,7 @@ public class ShopPageGUI : PageGUI
 
     private void DrawWeaponLoadout(Rect position)
     {
+        _loadoutWeaponScroll = MobileScroll.Drag(ScrollId.LoadoutWeapons, position, _loadoutWeaponScroll);
         _loadoutWeaponScroll = GUI.BeginScrollView(position, _loadoutWeaponScroll, new Rect(0, 0, position.width - 20, (SlotHeight * 4) + 5));
         {
             string[] slotNames = new string[]
@@ -1151,6 +1153,7 @@ public class ShopPageGUI : PageGUI
             new Rect(0, SlotHeight * 5 - 10, 5, SlotHeight)
         };
 
+        _loadoutGearScroll = MobileScroll.Drag(ScrollId.LoadoutGear, position, _loadoutGearScroll);
         _loadoutGearScroll = GUI.BeginScrollView(position, _loadoutGearScroll, new Rect(0, 0, position.width - 20, SlotHeight * 7));
         {
             DrawLoadoutGearItem(LocalizedStrings.Holo, LoadoutManager.Instance.GetItemOnSlot(LoadoutSlotType.GearHolo), LoadoutSlotType.GearHolo, new Rect(0, 0, position.width - 5, SlotHeight), UberstrikeItemClass.GearHolo);

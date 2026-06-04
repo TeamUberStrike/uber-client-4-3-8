@@ -122,7 +122,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             DoStatusBar(new Rect(0, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, MobileMenuScale.VirtualWidth, STATUSBAR_HEIGHT));
         }
 
-        _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
+        // Settings dropdown (gear): inset off the right edge/notch so it's visible + tappable on mobile.
+        _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT - MobileMenuScale.RightInset, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
 
         if (_ribbonEvents.Count > 0)
         {
@@ -139,7 +140,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         // Draw the build info if not in game
         string buildInfo = string.Format("{0} v{1}", ApplicationDataManager.FrameRate, ApplicationDataManager.VersionLong);
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195 - MobileMenuScale.RightInset, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
         GUI.color = Color.white;
 
         _dropDown.Draw();
@@ -176,7 +177,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             }
 
             //BUY CREDITS 
-            if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
+            if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
             {
                 //GoogleAnalytics.Instance.LogEvent("ui-globaluiribbon-click", "Get Credits", true);
                 ApplicationDataManager.Instance.OpenBuyCredits();

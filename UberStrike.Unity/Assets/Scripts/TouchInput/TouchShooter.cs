@@ -76,6 +76,8 @@ public class TouchShooter : TouchBaseControl
                     LastPos = touch.position,
                     FingerId = touch.fingerId,
                 };
+                if (TouchInput.LogFireEvents)
+                    Debug.Log("[TouchFireLog] Shooter 2nd-finger FIRE at " + touch.position + " (multiTouch=" + TouchInput.UseMultiTouch + ")");
                 if (OnFireStart != null) OnFireStart();
             }
         }
@@ -120,6 +122,22 @@ public class TouchShooter : TouchBaseControl
     }
 
     private Rect _joystickIgnore = new Rect(-1, -1, 0, 0);
+
+    // Replaceable set of action-button zones (fire/jump/crouch/secondary). A touch that starts on a
+    // button must NOT also bind as the look/aim or 2nd-finger-fire finger, so the look-drag and the
+    // buttons don't fight. Refreshed from TouchInput.ApplyLayout so it tracks the customizable layout.
+    private readonly ArrayList _buttonIgnores = new ArrayList();
+    public void SetButtonIgnores(Rect[] rects)
+    {
+        foreach (Rect r in _buttonIgnores) _ignoreTouches.Remove(r);
+        _buttonIgnores.Clear();
+        if (rects == null) return;
+        foreach (Rect r in rects)
+        {
+            _buttonIgnores.Add(r);
+            if (!_ignoreTouches.Contains(r)) _ignoreTouches.Add(r);
+        }
+    }
 
     private bool ValidArea(Vector2 pos)
     {

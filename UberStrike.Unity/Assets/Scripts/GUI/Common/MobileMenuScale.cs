@@ -70,6 +70,22 @@ public static class MobileMenuScale
     /// <summary>Screen height in the scaled coordinate space — anchor menu rects against this.</summary>
     public static float VirtualHeight { get { return Screen.height / Scale; } }
 
+    // Base tap margin (virtual px) kept between interactive edge elements and the screen edge, so they
+    // are not flush to the edge (easier to tap) — on top of the device's notch/home-indicator safe area.
+    public const float EdgeMargin = 18f;
+
+    /// <summary>Inset (virtual px) to keep right-anchored interactive elements off the right edge/notch. 0 on desktop.</summary>
+    public static float RightInset
+    {
+        get { return Active ? Mathf.Max(Screen.width - Screen.safeArea.xMax, 0f) / Scale + EdgeMargin : 0f; }
+    }
+
+    /// <summary>Inset (virtual px) to keep left-anchored interactive elements off the left edge/notch. 0 on desktop.</summary>
+    public static float LeftInset
+    {
+        get { return Active ? Mathf.Max(Screen.safeArea.x, 0f) / Scale + EdgeMargin : 0f; }
+    }
+
     /// <summary>
     /// Begin a scaled menu OnGUI block. Returns the previous matrix to restore with <see cref="End"/>.
     /// Scales about the top-left origin, composing with any existing matrix.

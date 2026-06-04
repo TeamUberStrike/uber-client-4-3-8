@@ -66,34 +66,12 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void OnGUI()
     {
-        // Active with a live TouchInput (in a match), in the Editor standalone preview, or whenever
-        // edit mode was opened explicitly (e.g. the Options menu "Customize On-Screen Controls" button).
-        if (!TouchInput.Exists && !MobileControlLayout.PreviewStandalone && !MobileControlLayout.EditMode) return;
-
-        if (!MobileControlLayout.EditMode)
-        {
-            DrawOpenButton();
-            return;
-        }
+        // Only draws while editing. The customize editor is opened explicitly from
+        // Options ▸ Controls ▸ "Customize On-Screen Controls" (sets EditMode), so there is NO floating
+        // "Edit Controls" button cluttering gameplay, the lobby, or the Editor preview.
+        if (!MobileControlLayout.EditMode) return;
 
         DrawEditor();
-    }
-
-    private void DrawOpenButton()
-    {
-        // In-match entry point only. NOT shown in the lobby (the menu uses Options ▸ Controls ▸
-        // Customize) nor in the Editor standalone preview (which auto-opens the editor) — so the
-        // floating "Edit Controls" button never clutters the menu/preview.
-        if (!GameState.HasCurrentGame) return;
-
-        float w = 160, h = 32;
-        Rect r = new Rect((Screen.width - w) * 0.5f, 6, w, h);
-        if (GUI.Button(r, "Edit Controls"))
-        {
-            MobileControlLayout.EditMode = true;
-            _selectedId = null;
-            _dragging = false;
-        }
     }
 
     private void DrawEditor()

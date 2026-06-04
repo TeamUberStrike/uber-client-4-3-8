@@ -259,7 +259,9 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         int length = GameServerManager.Instance.PhotonServerCount * 48;
 
         GUI.color = Color.white;
-        _serverSelectionScrollBar = GUI.BeginScrollView(new Rect(0, 31, pos.width + 1, pos.height - 31 - 55), _serverSelectionScrollBar, new Rect(0, 0, pos.width - 20, length));
+        Rect serverListView = new Rect(0, 31, pos.width + 1, pos.height - 31 - 55);
+        _serverSelectionScrollBar = MobileScroll.Drag(ScrollId.ServerList, serverListView, _serverSelectionScrollBar);
+        _serverSelectionScrollBar = GUI.BeginScrollView(serverListView, _serverSelectionScrollBar, new Rect(0, 0, pos.width - 20, length));
 
         int i = 0;
         string text = string.Empty;
@@ -676,7 +678,9 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             if (LobbyConnectionManager.IsConnected)
             {
                 Vector2 tmp = _serverScroll;
-                _serverScroll = GUI.BeginScrollView(new Rect(0, 25, serverRect.width, serverRect.height - 1 - 25), _serverScroll, new Rect(0, 0, serverRect.width - 60, length), BlueStonez.horizontalScrollbar, BlueStonez.verticalScrollbar);
+                Rect serverRoomsView = new Rect(0, 25, serverRect.width, serverRect.height - 1 - 25);
+                _serverScroll = MobileScroll.Drag(ScrollId.ServerHelp, serverRoomsView, _serverScroll);
+                _serverScroll = GUI.BeginScrollView(serverRoomsView, _serverScroll, new Rect(0, 0, serverRect.width - 60, length), BlueStonez.horizontalScrollbar, BlueStonez.verticalScrollbar);
                 {
                     _filteredActiveRoomCount = DrawAllGames(serverRect, serverRect.height <= length);
                 }

@@ -46,6 +46,10 @@ public class TouchInput : MonoSingleton<TouchInput>
     public static bool WishCrouch;
     public static bool IsFiring;
 
+    // Diagnostic: log every fire trigger (button / 2nd-finger / secondary / scope) to help pinpoint
+    // accidental auto-fire on move/look. On for the v12 device-test build.
+    public static bool LogFireEvents = true;
+
 
     public Dictionary<int, TouchButton> Buttons;
     public TouchDPad Dpad;
@@ -337,6 +341,22 @@ public class TouchInput : MonoSingleton<TouchInput>
             Joystick.Boundary = zone;
             if (Shooter != null) Shooter.SetJoystickIgnore(zone);
         }
+
+        // Keep the look/aim area clear of the action buttons: a touch that starts on fire/jump/crouch/
+        // secondary must not ALSO become the aim or 2nd-finger-fire finger. Refreshed here so it tracks
+        // the customizable layout. (Fixes look-drags that begin on a button also firing/aiming.)
+        if (Shooter != null && Buttons != null)
+        {
+            var btnRects = new List<Rect>();
+            TouchKeyType[] actionKeys = { TouchKeyType.PrimaryFire, TouchKeyType.SecondaryFire, TouchKeyType.MultiSecondaryFire, TouchKeyType.Jump, TouchKeyType.Crouch };
+            foreach (TouchKeyType k in actionKeys)
+            {
+                TouchButton b;
+                if (Buttons.TryGetValue((int)k, out b) && b != null)
+                    btnRects.Add(b.Boundary);
+            }
+            Shooter.SetButtonIgnores(btnRects.ToArray());
+        }
     }
 
     // Snapshot of every editable control for the layout editor (id, current rect, icon, scale).
@@ -608,11 +628,13 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnScopeUp()
     {
+        if (LogFireEvents) Debug.Log("[TouchFireLog] SCOPE-UP (NextWeapon) routed");
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.NextWeapon, 1));
     }
 
     void OnFireTouchBegan(Vector2 obj)
     {
+        if (LogFireEvents) Debug.Log("[TouchFireLog] FIRE BUTTON pressed at " + obj);
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 1));
     }
 
@@ -623,6 +645,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnSecondaryFireTouchBegan(Vector2 obj)
     {
+        if (LogFireEvents) Debug.Log("[TouchFireLog] SECONDARY-FIRE button at " + obj);
         _toggleSecondaryFire = !_toggleSecondaryFire;
 
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.SecondaryFire, _toggleSecondaryFire ? 1 : 0));
