@@ -176,11 +176,23 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
                 i++;
             }
 
-            //BUY CREDITS 
+            //BUY CREDITS
             if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
             {
                 //GoogleAnalytics.Instance.LogEvent("ui-globaluiribbon-click", "Get Credits", true);
                 ApplicationDataManager.Instance.OpenBuyCredits();
+            }
+
+            // Explicit OPTIONS button (mobile only). The corner gear dropdown (_dropDown) renders as a
+            // tiny 25x25 icon at the very screen edge — invisible/untappable under a phone notch, and its
+            // caption depends on a serialized icon texture that isn't reliably set on this branch. A plain
+            // text button is a reliable Options/Settings entry on device. Desktop keeps the gear unchanged.
+            if (ApplicationDataManager.IsMobile)
+            {
+                if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset - 112, 2, 106, 33), new GUIContent(LocalizedStrings.OptionsCaps, LocalizedStrings.OptionsBtnTooltip), BlueStonez.buttongold_large, SoundEffectType.UIButtonClick))
+                {
+                    PanelManager.Instance.OpenPanel(PanelType.Options);
+                }
             }
         }
         GUI.EndGroup();

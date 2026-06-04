@@ -16,47 +16,47 @@ using UnityEngine;
 /// </summary>
 public static class MobileScroll
 {
-    private class DragState { public int fingerId = -1; }
-    private static readonly Dictionary<int, DragState> _states = new Dictionary<int, DragState>();
+    // Per-view: was the drag that's currently in progress started inside this view's viewport?
+    // Tracked so a drag that begins on the list keeps scrolling it even after the finger leaves the
+    // viewport bounds, and so a drag starting elsewhere never scrolls this list.
+    private static readonly Dictionary<int, bool> _dragging = new Dictionary<int, bool>();
 
     public static Vector2 Drag(int viewId, Rect localViewRect, Vector2 scrollPos)
     {
-        if (!MobileMenuScale.Active) return scrollPos;
-        // Apply once per frame (OnGUI runs Layout+Repaint); Repaint sees the final transform stack.
-        if (Event.current == null || Event.current.type != EventType.Repaint) return scrollPos;
+        if (!MobileMenuScale.Active || Event.current == null) return scrollPos;
 
-        DragState st;
-        if (!_states.TryGetValue(viewId, out st)) { st = new DragState(); _states[viewId] = st; }
-
-        if (Input.touchCount == 0) { st.fingerId = -1; return scrollPos; }
-
-        // Map the viewport (local GUI space, inside the current group + GUI.matrix) to screen pixels.
-        float s = MobileMenuScale.Scale;
-        Vector2 tl = GUIUtility.GUIToScreenPoint(new Vector2(localViewRect.x, localViewRect.y));
-        Rect screenRect = new Rect(tl.x, tl.y, localViewRect.width * s, localViewRect.height * s);
-
-        for (int i = 0; i < Input.touchCount; i++)
+        // IMGUI synthesizes mouse events from touch, so a one-finger drag arrives as MouseDown ->
+        // MouseDrag* -> MouseUp. Event.current.mousePosition and .delta are already in the CURRENT GUI
+        // coordinate space (inside the active group + GUI.matrix scale) — the SAME space as localViewRect —
+        // so no GUIToScreenPoint / manual scale conversion is needed (that was why the old version was inert).
+        // This runs BEFORE BeginScrollView at each call site, so it reads the event before any item button
+        // can consume it.
+        switch (Event.current.type)
         {
-            Touch t = Input.GetTouch(i);
-            // GUIToScreenPoint is y-down from the top-left; touch.position is y-up from the bottom-left.
-            Vector2 sp = new Vector2(t.position.x, Screen.height - t.position.y);
+            case EventType.MouseDown:
+                _dragging[viewId] = localViewRect.Contains(Event.current.mousePosition);
+                break;
 
-            if (t.phase == TouchPhase.Began)
-            {
-                if (st.fingerId == -1 && screenRect.Contains(sp)) st.fingerId = t.fingerId;
-            }
-            else if (t.fingerId == st.fingerId)
-            {
-                if (t.phase == TouchPhase.Moved)
+            case EventType.MouseDrag:
+                bool active;
+                if (!_dragging.TryGetValue(viewId, out active))
                 {
-                    // Finger up (deltaPosition.y > 0 in y-up) reveals lower items => scrollPos.y increases.
-                    scrollPos.y = Mathf.Max(0f, scrollPos.y + t.deltaPosition.y / s);
+                    // No MouseDown was seen (e.g. drag entered mid-gesture) — fall back to "is the finger
+                    // over the list right now?".
+                    active = localViewRect.Contains(Event.current.mousePosition);
+                    _dragging[viewId] = active;
                 }
-                else if (t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
+                if (active)
                 {
-                    st.fingerId = -1;
+                    // GUI space is y-down: dragging the finger UP gives a negative delta.y and should reveal
+                    // lower items (scrollPos.y increases) => subtract the delta. Content follows the finger.
+                    scrollPos.y = Mathf.Max(0f, scrollPos.y - Event.current.delta.y);
                 }
-            }
+                break;
+
+            case EventType.MouseUp:
+                _dragging[viewId] = false;
+                break;
         }
 
         return scrollPos;
