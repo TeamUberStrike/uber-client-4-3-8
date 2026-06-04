@@ -16,12 +16,46 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private string _selectedId;
     private bool _dragging;
     private Vector2 _dragOffset;
-    private Rect _toolbarRect;
+    private Rect _toolbarRect;   // the floating control panel rect = the drag-exclusion zone
     private Texture2D _pixel;
+
+    private float _ui = 1f;      // UI scale (screen-height based) so the panel isn't tiny on a phone
+    private GUIStyle _titleStyle, _btnStyle, _labelStyle, _sliderStyle, _thumbStyle, _handleLabelStyle;
 
     private void Awake()
     {
         _pixel = Texture2D.whiteTexture;
+    }
+
+    // Built once (during OnGUI, when GUI.skin exists). Sizes scale with the screen so buttons/slider
+    // are big enough to tap on a high-DPI phone (the old default-skin toolbar was unreadably small).
+    private void EnsureStyles()
+    {
+        if (_btnStyle != null) return;
+        int big = Mathf.RoundToInt(19f * _ui);
+        _btnStyle = new GUIStyle(GUI.skin.button) { fontSize = big, fontStyle = FontStyle.Bold };
+        _titleStyle = new GUIStyle(GUI.skin.label) { fontSize = big, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, wordWrap = false };
+        _labelStyle = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(15f * _ui), alignment = TextAnchor.MiddleCenter };
+        _handleLabelStyle = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(13f * _ui), alignment = TextAnchor.UpperCenter };
+        _sliderStyle = new GUIStyle(GUI.skin.horizontalSlider) { fixedHeight = 16f * _ui };
+        _thumbStyle = new GUIStyle(GUI.skin.horizontalSliderThumb) { fixedWidth = 34f * _ui, fixedHeight = 34f * _ui };
+    }
+
+    // The floating control panel: centered horizontally, just below the top safe-area inset, sized so
+    // NOTHING sits on a screen edge or under the notch (Pixel-Gun-3D style). Returns its rect, which also
+    // becomes the drag-exclusion zone so taps on the panel never move a control behind it.
+    private Rect ComputePanelRect(bool hasSelection)
+    {
+        Rect sa = Screen.safeArea;                       // y-up from bottom
+        float topInset = Screen.height - sa.yMax;        // px from top edge to safe-area top
+        float sideInset = Mathf.Max(sa.x, Screen.width - sa.xMax);
+
+        float pad = 24f * _ui;
+        float pw = Mathf.Min(700f * _ui, Screen.width - 2f * (sideInset + pad));
+        float ph = (hasSelection ? 184f : 116f) * _ui;
+        float px = (Screen.width - pw) * 0.5f;
+        float py = topInset + 18f * _ui;
+        return new Rect(px, py, pw, ph);
     }
 
     private void OnDisable()
@@ -85,15 +119,17 @@ public class MobileControlLayoutEditor : MonoBehaviour
         // already hidden and we want the spaceship scene to read as the background, so use a light
         // scrim (just enough to keep the white control outlines/labels legible) instead of the heavy
         // in-match dim.
+        _ui = Mathf.Clamp(Screen.height / 720f, 1f, 2.5f);
+        EnsureStyles();
+
         Color prev = GUI.color;
         GUI.color = new Color(0f, 0f, 0f, MobileMenuBackdrop.IsActive ? 0.2f : 0.5f);
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _pixel);
         GUI.color = prev;
 
-        // Reserve a slim TOP toolbar (kept off the bottom row where fire/jump/crouch live); drags
-        // that start inside it are ignored so its buttons/slider work.
-        float barH = 76;
-        _toolbarRect = new Rect(0, 0, Screen.width, barH);
+        // The floating control panel (centered, off all edges). Computed before HandleDrag so its rect
+        // is the drag-exclusion zone; drawn after the handles so it sits on top.
+        _toolbarRect = ComputePanelRect(!string.IsNullOrEmpty(_selectedId));
 
         // Draw each control + its outline + label.
         foreach (TouchInput.LayoutHandle hd in handles)
@@ -113,7 +149,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
             DrawOutline(hd.Boundary, selected ? Color.yellow : new Color(1f, 1f, 1f, 0.6f), selected ? 3f : 1f);
 
-            GUI.Label(new Rect(hd.Boundary.x - 10, hd.Boundary.yMax + 2, Mathf.Max(hd.Boundary.width + 20, 90), 18), hd.DisplayName);
+            GUI.Label(new Rect(hd.Boundary.x - 10, hd.Boundary.yMax + 2, Mathf.Max(hd.Boundary.width + 20, 90), 20 * _ui), hd.DisplayName, _handleLabelStyle);
         }
 
         HandleDrag(handles);
@@ -147,8 +183,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
                 if (_dragging && !string.IsNullOrEmpty(_selectedId))
                 {
                     Vector2 center = mouse - _dragOffset;
-                    center.x = Mathf.Clamp(center.x, 24, Screen.width - 24);
-                    center.y = Mathf.Clamp(center.y, _toolbarRect.height + 24, Screen.height - 24);
+                    // Keep controls on-screen and off the top notch (safe-area aware). The panel itself
+                    // is the drag-exclusion zone (handled on MouseDown), so controls may sit beside it.
+                    float topInset = Screen.height - Screen.safeArea.yMax;
+                    center.x = Mathf.Clamp(center.x, 24f, Screen.width - 24f);
+                    center.y = Mathf.Clamp(center.y, topInset + 24f, Screen.height - 24f);
                     float scale = GetScale(handles, _selectedId);
                     MobileControlLayout.SetPixels(_selectedId, center, scale);
                     if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
@@ -168,46 +207,67 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void DrawToolbar(List<TouchInput.LayoutHandle> handles)
     {
-        GUI.color = new Color(0.05f, 0.05f, 0.08f, 0.92f);
-        GUI.DrawTexture(_toolbarRect, _pixel);
+        bool hasSel = !string.IsNullOrEmpty(_selectedId);
+        Rect panel = _toolbarRect;
+        float pad = 18f * _ui;
+
+        // Panel background + outline.
+        GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.93f);
+        GUI.DrawTexture(panel, _pixel);
         GUI.color = Color.white;
+        DrawOutline(panel, new Color(1f, 1f, 1f, 0.22f), 2f);
 
-        GUILayout.BeginArea(new Rect(8, _toolbarRect.y + 6, Screen.width - 16, _toolbarRect.height - 12));
+        // Title.
+        GUI.Label(new Rect(panel.x + pad, panel.y + 10f * _ui, panel.width - 2f * pad, 28f * _ui),
+            hasSel ? "Selected: " + DisplayName(handles, _selectedId)
+                   : "Customize Controls — drag to move, tap to select",
+            _titleStyle);
 
-        GUILayout.BeginHorizontal();
-        GUILayout.Label(string.IsNullOrEmpty(_selectedId)
-            ? "Drag a control to move it. Tap one to select, then scale below."
-            : "Selected: " + DisplayName(handles, _selectedId));
-        GUILayout.FlexibleSpace();
-        if (GUILayout.Button("Reset All", GUILayout.Width(110), GUILayout.Height(30)))
+        // Size slider (only when a control is selected), between title and buttons.
+        if (hasSel)
         {
-            MobileControlLayout.ResetAll();
-            if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
-            _selectedId = null;
-        }
-        if (GUILayout.Button("Done", GUILayout.Width(90), GUILayout.Height(30)))
-        {
-            MobileControlLayout.Save();
-            MobileControlLayout.EditMode = false;
-        }
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        if (!string.IsNullOrEmpty(_selectedId))
-        {
-            GUILayout.Label("Size", GUILayout.Width(40));
+            float sy = panel.y + 48f * _ui;
+            GUI.Label(new Rect(panel.x + pad, sy, 60f * _ui, 30f * _ui), "Size", _labelStyle);
             float cur = GetScale(handles, _selectedId);
-            float next = GUILayout.HorizontalSlider(cur, 0.6f, 2.2f, GUILayout.Width(Mathf.Min(360, Screen.width - 160)));
+            float sliderX = panel.x + pad + 64f * _ui;
+            float sliderW = panel.width - 2f * pad - 64f * _ui - 60f * _ui;
+            float next = GUI.HorizontalSlider(new Rect(sliderX, sy + 6f * _ui, sliderW, 30f * _ui), cur, 0.6f, 2.2f, _sliderStyle, _thumbStyle);
             if (!Mathf.Approximately(next, cur))
             {
                 MobileControlLayout.SetScale(_selectedId, next);
                 if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
             }
-            GUILayout.Label(cur.ToString("N2"), GUILayout.Width(50));
+            GUI.Label(new Rect(panel.xMax - pad - 56f * _ui, sy, 56f * _ui, 30f * _ui), cur.ToString("N2"), _labelStyle);
         }
-        GUILayout.EndHorizontal();
 
-        GUILayout.EndArea();
+        // Button row: Default (revert to factory) | Cancel (discard, keep last saved) | Save (persist + close).
+        float bh = 50f * _ui;
+        float by = panel.yMax - pad - bh;
+        float gap = 10f * _ui;
+        float bw = (panel.width - 2f * pad - 2f * gap) / 3f;
+
+        GUI.backgroundColor = new Color(0.85f, 0.7f, 0.2f);   // Default — gold
+        if (GUI.Button(new Rect(panel.x + pad, by, bw, bh), "Default", _btnStyle))
+        {
+            MobileControlLayout.ResetAll();
+            if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
+            _selectedId = null;
+        }
+        GUI.backgroundColor = new Color(0.8f, 0.3f, 0.3f);     // Cancel — red
+        if (GUI.Button(new Rect(panel.x + pad + bw + gap, by, bw, bh), "Cancel", _btnStyle))
+        {
+            MobileControlLayout.Load();   // discard unsaved edits → revert to last saved layout
+            if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
+            _selectedId = null;
+            MobileControlLayout.EditMode = false;
+        }
+        GUI.backgroundColor = new Color(0.3f, 0.75f, 0.35f);   // Save — green
+        if (GUI.Button(new Rect(panel.x + pad + 2f * (bw + gap), by, bw, bh), "Save", _btnStyle))
+        {
+            MobileControlLayout.Save();
+            MobileControlLayout.EditMode = false;
+        }
+        GUI.backgroundColor = Color.white;
     }
 
     private static float GetScale(List<TouchInput.LayoutHandle> handles, string id)
@@ -228,6 +288,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private static readonly string[] StandaloneIds =
     {
         "joystick", "fire", "secondaryFire", "multiSecondaryFire", "jump", "crouch", "menu", "chat", "score", "weaponChanger",
+        "quickItem1", "quickItem2", "quickItem3",
     };
 
     // Builds editable handles WITHOUT a live TouchInput (no-match preview): each control is placed
@@ -271,6 +332,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
             case "menu": return MobileIcons.MenuIcon;
             case "chat": return MobileIcons.ChatIcon;
             case "score": return MobileIcons.ScoreboardIcon;
+            case "quickItem1":
+            case "quickItem2":
+            case "quickItem3": return ConsumableHudTextures.AmmoBlue;
             case "weaponChanger":
             {
                 Texture2D[] w = MobileIcons.WeaponIcons;

@@ -48,7 +48,13 @@ public static class MobileMenuScale
         }
     }
 
-    public static float Scale
+    // Per-screen extra multiplier on top of the base height scale. A screen that wants to render bigger
+    // than the default menu (e.g. the login panel, the training map list) calls Begin(extra) and the
+    // whole block — including the VirtualWidth/Height anchors — scales by base * extra. Reset on End().
+    private static float _activeExtra = 1f;
+
+    /// <summary>Base height-derived scale, WITHOUT the per-screen extra multiplier.</summary>
+    private static float BaseScale
     {
         get
         {
@@ -63,6 +69,8 @@ public static class MobileMenuScale
             return 1f;
         }
     }
+
+    public static float Scale { get { return BaseScale * _activeExtra; } }
 
     /// <summary>Screen width in the scaled coordinate space — anchor menu rects against this.</summary>
     public static float VirtualWidth { get { return Screen.width / Scale; } }
@@ -92,6 +100,18 @@ public static class MobileMenuScale
     /// </summary>
     public static Matrix4x4 Begin()
     {
+        return Begin(1f);
+    }
+
+    /// <summary>
+    /// Begin a scaled menu OnGUI block at base*extra scale. <paramref name="extra"/> > 1 makes this one
+    /// screen render bigger than the default menu (login panel, map lists). VirtualWidth/Height honour the
+    /// extra for the duration, so rects anchored against them stay correct. Must be paired with End().
+    /// </summary>
+    public static Matrix4x4 Begin(float extra)
+    {
+        // The extra multiplier is a mobile-only enlargement; desktop keeps its authored size.
+        _activeExtra = Active ? Mathf.Max(0.1f, extra) : 1f;
         Matrix4x4 prev = GUI.matrix;
         float s = Scale;
         if (s != 1f)
@@ -102,5 +122,6 @@ public static class MobileMenuScale
     public static void End(Matrix4x4 prev)
     {
         GUI.matrix = prev;
+        _activeExtra = 1f;
     }
 }

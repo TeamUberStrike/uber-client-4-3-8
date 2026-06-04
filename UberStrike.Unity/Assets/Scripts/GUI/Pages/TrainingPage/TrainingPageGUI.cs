@@ -11,7 +11,8 @@ public class TrainingPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Render the training panel (incl. the map list) 1.3x larger than the default menu scale on mobile.
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(1.3f);
 
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
@@ -30,7 +31,9 @@ public class TrainingPageGUI : MonoBehaviour
 
             int totalcount = LevelManager.Instance.Count;
             GUI.Box(new Rect(12, 179, 300, 176), string.Empty, BlueStonez.window);
-            _mapScroll = GUI.BeginScrollView(new Rect(0, 179, 312, 176), _mapScroll, new Rect(0, 0, 100, 80 * Mathf.CeilToInt(totalcount * 0.5f)));
+            Rect mapView = new Rect(0, 179, 312, 176);
+            _mapScroll = MobileScroll.Drag(ScrollId.TrainingMaps, mapView, _mapScroll);
+            _mapScroll = GUI.BeginScrollView(mapView, _mapScroll, new Rect(0, 0, 100, 80 * Mathf.CeilToInt(totalcount * 0.5f)));
             {
                 Vector2 s = new Vector2(283, 80);
                 int i = 0;

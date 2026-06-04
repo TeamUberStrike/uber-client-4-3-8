@@ -27,6 +27,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         Menu,
         Chat,
         Loadout,
+        QuickItem1,
+        QuickItem2,
+        QuickItem3,
     }
 
     public enum TouchState
@@ -58,6 +61,9 @@ public class TouchInput : MonoSingleton<TouchInput>
     public TouchSwipeBar ScopeSwipe;
     public TouchWeaponChanger WeaponChanger;
     public TouchConsumableChanger ConsumableChanger;
+
+    // The 3 customizable Quick Item buttons (slots 1/2/3), replacing the swipe-changer on mobile.
+    public readonly TouchButtonCircle[] QuickItemButtons = new TouchButtonCircle[3];
 
     public MeshGUIText AimHelpText;
     public MeshGUIText ShootHelpText;
@@ -135,6 +141,21 @@ public class TouchInput : MonoSingleton<TouchInput>
         ConsumableChanger.OnPrevConsumable += OnPrevConsumable;
         ConsumableChanger.OnStartUseConsumable += OnStartUseConsumable;
         ConsumableChanger.OnEndUseConsumable += OnEndUseConsumable;
+        // The 3 Quick Items are now 3 independent, customizable on-screen buttons (each uses its slot
+        // directly via QuickItemController's QuickItem1/2/3 handling), replacing the single swipe-changer
+        // and the stacked desktop HUD on mobile. Take the changer out of the touch dispatch so its old
+        // hit-zone over the (now hidden) HUD can't phantom-use an item.
+        TouchController.Instance.RemoveControl(ConsumableChanger);
+        for (int qi = 0; qi < 3; qi++)
+        {
+            int slot = qi; // capture for the closure
+            TouchButtonCircle qiBtn = new TouchButtonCircle(ConsumableHudTextures.AmmoBlue);
+            qiBtn.CenterPosition = DefaultGuiCenter("quickItem" + (slot + 1));
+            qiBtn.MinGUIAlpha = 1.0f;
+            qiBtn.OnPushed += () => OnUseQuickItemSlot(slot);
+            QuickItemButtons[slot] = qiBtn;
+            Buttons.Add((int)TouchKeyType.QuickItem1 + slot, qiBtn);
+        }
 
         ScopeSwipe = new TouchSwipeBar(MobileIcons.SniperSwipeIcon);
         ScopeSwipe.Boundary = _scopeSwipeRect;
@@ -259,6 +280,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         new KeyValuePair<string, TouchKeyType>("menu", TouchKeyType.Menu),
         new KeyValuePair<string, TouchKeyType>("chat", TouchKeyType.Chat),
         new KeyValuePair<string, TouchKeyType>("score", TouchKeyType.Score),
+        new KeyValuePair<string, TouchKeyType>("quickItem1", TouchKeyType.QuickItem1),
+        new KeyValuePair<string, TouchKeyType>("quickItem2", TouchKeyType.QuickItem2),
+        new KeyValuePair<string, TouchKeyType>("quickItem3", TouchKeyType.QuickItem3),
     };
 
     public static string DisplayNameFor(string id)
@@ -275,6 +299,9 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "score": return "Scores";
             case "weaponChanger": return "Weapons";
             case "joystick": return "Move";
+            case "quickItem1": return "Quick Item 1";
+            case "quickItem2": return "Quick Item 2";
+            case "quickItem3": return "Quick Item 3";
             default: return id;
         }
     }
@@ -298,6 +325,10 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "jump":               return new Vector2(w * 0.70f,  h * 0.82f);
             case "fire":               return new Vector2(w * 0.86f,  h * 0.80f);
             case "crouch":             return new Vector2(w * 0.96f,  h * 0.82f);
+            // Quick items: stacked vertically on the right, between the weapon changer and the fire cluster.
+            case "quickItem1":         return new Vector2(w * 0.55f,  h * 0.90f);
+            case "quickItem2":         return new Vector2(w * 0.62f,  h * 0.90f);
+            case "quickItem3":         return new Vector2(w * 0.69f,  h * 0.90f);
             // Movement joystick: center of its default bottom-left activation zone
             // (Rect(0, h/2, 0.4w, h/2) -> center (0.2w, 0.75h)). Kept in sync with SetupRects.
             case "joystick":           return new Vector2(w * 0.20f,  h * 0.75f);
@@ -348,7 +379,12 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (Shooter != null && Buttons != null)
         {
             var btnRects = new List<Rect>();
-            TouchKeyType[] actionKeys = { TouchKeyType.PrimaryFire, TouchKeyType.SecondaryFire, TouchKeyType.MultiSecondaryFire, TouchKeyType.Jump, TouchKeyType.Crouch };
+            // NOTE: PrimaryFire is intentionally NOT ignored — a finger that starts on the fire button
+            // must ALSO drive the Shooter's aim so you can look/turn WHILE holding fire (e.g. tracking a
+            // moving target with a rapid-fire weapon). The fire button still fires on press independently;
+            // the same finger just additionally pans the camera. The other action buttons stay ignored so
+            // a quick jump/crouch/scope tap doesn't jerk the view.
+            TouchKeyType[] actionKeys = { TouchKeyType.SecondaryFire, TouchKeyType.MultiSecondaryFire, TouchKeyType.Jump, TouchKeyType.Crouch };
             foreach (TouchKeyType k in actionKeys)
             {
                 TouchButton b;
@@ -423,6 +459,46 @@ public class TouchInput : MonoSingleton<TouchInput>
         ShootHelpText.FadeAlphaTo(1.0f, 1.0f);
         AimHelpText.FadeAlphaTo(1.0f, 1.0f);
         CheckIdleTime = false;
+    }
+
+    // Tap of a customizable Quick Item button -> use that exact slot (QuickItemController handles
+    // QuickItem1/2/3 directly, gating on alive/enabled/cooldown), independent of the cycle selection.
+    void OnUseQuickItemSlot(int slot)
+    {
+        GameInputKey key = (GameInputKey)((int)GameInputKey.QuickItem1 + slot);
+        CmuneEventHandler.Route(new InputChangeEvent(key, 1));
+        CmuneEventHandler.Route(new InputChangeEvent(key, 0));
+    }
+
+    // Sync the 3 Quick Item buttons to the live loadout: show each slot's real item icon and enable only
+    // the slots that actually hold an item. Called when in-match controls are (re)configured.
+    public void RefreshQuickItemButtons()
+    {
+        // WeaponsHud is a lazily-created Singleton (never null in-match); QuickItems may be null only if
+        // HudAssets weren't ready, in which case every slot reads as not-configured and the buttons hide.
+        QuickItemGroupHud hud = WeaponsHud.Instance != null ? WeaponsHud.Instance.QuickItems : null;
+        for (int i = 0; i < QuickItemButtons.Length; i++)
+        {
+            TouchButtonCircle btn = QuickItemButtons[i];
+            if (btn == null) continue;
+
+            bool has = hud != null && hud.IsSlotConfigured(i);
+            if (has)
+            {
+                Texture icon = hud.GetSlotIcon(i);
+                if (icon != null && (btn.Content == null || btn.Content.image != icon))
+                    btn.Content = new GUIContent(icon);
+            }
+            btn.Enabled = has;
+        }
+        // Re-apply saved positions/scales now that the icons (and thus native sizes) are set.
+        ApplyLayout();
+    }
+
+    public void SetQuickItemButtonsEnabled(bool on)
+    {
+        for (int i = 0; i < QuickItemButtons.Length; i++)
+            if (QuickItemButtons[i] != null) QuickItemButtons[i].Enabled = on;
     }
 
     void OnStartUseConsumable()
@@ -548,8 +624,11 @@ public class TouchInput : MonoSingleton<TouchInput>
         AimHelpText.Draw();
         ShootHelpText.Draw();
 
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING) & ~PlayerStates.GROUNDED) == 0)
-            WishJump = false;
+        // NOTE: the old per-frame "WishJump = false" auto-clear was removed — it cleared the momentary
+        // jump request within the same frame it was set, and if it ran before UserInput.UpdateDirections
+        // consumed it (script execution order on the desktop-base main), the jump key was never set and
+        // jump silently never worked (crouch was fine because WishCrouch is a persistent toggle). WishJump
+        // is now held while the button is pressed and cleared in OnJumpTouchEnded — see that handler.
 
         if (_playerMoving || Dpad.Moving)
         {
@@ -681,8 +760,11 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnJumpTouchEnded(Vector2 obj)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) != 0)
-            WishJump = false;
+        // Clear WishJump on release ALWAYS (not only when diving/swimming). WishJump is now held for
+        // the press duration — set in OnJump, cleared here — so it survives across frames regardless of
+        // script execution order. CharacterMoveController edge-triggers (one jump per press; _canJump
+        // only resets when the Jump key goes 0), exactly like holding the keyboard jump key.
+        WishJump = false;
     }
 
     void OnCrouchPushed(Vector2 obj)
@@ -767,6 +849,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Shooter.Enabled = false;
             TouchInput.Instance.ScopeSwipe.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
+            TouchInput.Instance.SetQuickItemButtonsEnabled(false);
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
@@ -809,6 +892,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
                 TouchInput.Instance.WeaponChanger.Enabled = true;
                 TouchInput.Instance.ConsumableChanger.Enabled = true;
+                TouchInput.Instance.RefreshQuickItemButtons();
             }
             else if (GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Tutorial)
             {
@@ -818,12 +902,14 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.WeaponChanger.Enabled = true;
                 TouchInput.Instance.ConsumableChanger.UpdateConsumablesHeld();
                 TouchInput.Instance.ConsumableChanger.Enabled = true;
+                TouchInput.Instance.RefreshQuickItemButtons();
             }
             else
             {
                 TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = false;
                 TouchInput.Instance.WeaponChanger.Enabled = false;
                 TouchInput.Instance.ConsumableChanger.Enabled = false;
+            TouchInput.Instance.SetQuickItemButtonsEnabled(false);
             }
 
             UpdateWalkingEnabled();
@@ -943,6 +1029,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Joystick.Enabled = false;
             TouchInput.Instance.ScopeSwipe.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
+            TouchInput.Instance.SetQuickItemButtonsEnabled(false);
 
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
@@ -975,6 +1062,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Shooter.Enabled = true;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
+            TouchInput.Instance.SetQuickItemButtonsEnabled(false);
             TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
@@ -1044,6 +1132,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
+            TouchInput.Instance.SetQuickItemButtonsEnabled(false);
             TouchInput.Instance.Dpad.Enabled = false;
             TouchInput.Instance.Shooter.Enabled = false;
             TouchInput.Instance.Joystick.Enabled = false;
@@ -1084,6 +1173,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
+            TouchInput.Instance.SetQuickItemButtonsEnabled(false);
             TouchInput.Instance.Dpad.Enabled = false;
             TouchInput.Instance.Shooter.Enabled = false;
             TouchInput.Instance.Joystick.Enabled = false;
@@ -1124,6 +1214,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
+            TouchInput.Instance.SetQuickItemButtonsEnabled(false);
             TouchInput.Instance.Shooter.Enabled = false;
             TouchInput.Instance.ScopeSwipe.Enabled = false;
             TouchInput.Instance.AimHelpText.IsEnabled = false;

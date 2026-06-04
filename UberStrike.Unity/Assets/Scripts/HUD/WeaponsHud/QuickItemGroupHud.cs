@@ -117,6 +117,19 @@ public class QuickItemGroupHud
         return null;
     }
 
+    // Mobile on-screen Quick Item buttons read these to mirror the live loadout.
+    public bool IsSlotConfigured(int slot)
+    {
+        return _quickItemSlots != null && slot >= 0 && slot < _quickItemSlots.Count && !_quickItemSlots[slot].IsEmpty;
+    }
+
+    public Texture GetSlotIcon(int slot)
+    {
+        if (_quickItemSlots != null && slot >= 0 && slot < _quickItemSlots.Count)
+            return _quickItemSlots[slot].Icon;
+        return null;
+    }
+
     public void Expand()
     {
         int n = 0;

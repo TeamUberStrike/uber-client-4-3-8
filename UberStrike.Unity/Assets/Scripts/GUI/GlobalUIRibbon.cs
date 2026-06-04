@@ -145,6 +145,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         _dropDown.Draw();
 
+        // Temporary on-device diagnostics for the finger drag-to-scroll (remove once confirmed working).
+        MobileScroll.DrawDebug();
+
         MobileMenuScale.End(scaleMatrix);
         GuiManager.DrawTooltip();
     }
@@ -183,13 +186,17 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
                 ApplicationDataManager.Instance.OpenBuyCredits();
             }
 
-            // Explicit OPTIONS button (mobile only). The corner gear dropdown (_dropDown) renders as a
-            // tiny 25x25 icon at the very screen edge — invisible/untappable under a phone notch, and its
-            // caption depends on a serialized icon texture that isn't reliably set on this branch. A plain
-            // text button is a reliable Options/Settings entry on device. Desktop keeps the gear unchanged.
+            // Explicit OPTIONS button (mobile only), styled like the HOME/PLAY/SHOP nav tabs (NOT a 2nd
+            // gold CTA), sitting immediately left of GET CREDITS — a reliable, on-brand Options entry. The
+            // corner gear dropdown (_dropDown) renders as a tiny 25x25 icon flush to the screen edge,
+            // invisible/untappable under a phone notch, with a caption that needs a serialized icon texture
+            // not reliably set on this branch. Desktop keeps the gear unchanged.
             if (ApplicationDataManager.IsMobile)
             {
-                if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset - 112, 2, 106, 33), new GUIContent(LocalizedStrings.OptionsCaps, LocalizedStrings.OptionsBtnTooltip), BlueStonez.buttongold_large, SoundEffectType.UIButtonClick))
+                const float optW = 112f;
+                // tab-height (37) at y=0 so it lines up with the nav tabs; tight 4px gap to GET CREDITS.
+                Rect optRect = new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset - optW - 4, 0, optW, 37);
+                if (GUITools.Button(optRect, new GUIContent(LocalizedStrings.OptionsCaps, LocalizedStrings.OptionsBtnTooltip), BlueStonez.tab_large, SoundEffectType.UIButtonClick))
                 {
                     PanelManager.Instance.OpenPanel(PanelType.Options);
                 }

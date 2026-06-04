@@ -26,7 +26,11 @@ public class WeaponsHud : Singleton<WeaponsHud>
     public void Draw()
     {
         Weapons.Draw();
-        QuickItems.Draw();
+        // On mobile the 3 Quick Items are drawn as customizable on-screen touch buttons
+        // (TouchInput.QuickItemButtons), so suppress the stacked desktop HUD to avoid doubling.
+        // The slot data (icons/amounts) is still configured — the touch buttons read it.
+        if (!ApplicationDataManager.IsMobile)
+            QuickItems.Draw();
     }
 
     public void Update()
