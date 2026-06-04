@@ -122,9 +122,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             DoStatusBar(new Rect(0, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, MobileMenuScale.VirtualWidth, STATUSBAR_HEIGHT));
         }
 
-        // Settings dropdown (gear) — desktop only. On mobile the OPTIONS ribbon button opens an equivalent
-        // popup (DrawOptionsMenu) sized for touch; the tiny corner gear is not used.
-        if (!ApplicationDataManager.IsMobile)
+        // Settings dropdown (gear) — desktop only (incl. NOT under the Editor preview). On mobile the
+        // OPTIONS ribbon button opens an equivalent touch popup (DrawOptionsMenu); the tiny gear is unused.
+        if (!MobileMenuScale.Active)
             _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT - MobileMenuScale.RightInset, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
 
         if (_ribbonEvents.Count > 0)
@@ -142,10 +142,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         // Draw the build info if not in game
         string buildInfo = string.Format("{0} v{1}", ApplicationDataManager.FrameRate, ApplicationDataManager.VersionLong);
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195 - MobileMenuScale.RightInset, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195 - MobileMenuScale.RightInsetTight, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
         GUI.color = Color.white;
 
-        if (!ApplicationDataManager.IsMobile)
+        if (!MobileMenuScale.Active)
             _dropDown.Draw();
 
         // Mobile settings popup opened by the OPTIONS ribbon button (Help / Options / Audio / Report).
@@ -185,8 +185,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
                 i++;
             }
 
-            //BUY CREDITS
-            if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
+            //BUY CREDITS (tighter right inset on mobile so the OPTIONS+GET CREDITS cluster sits closer to the edge)
+            if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInsetTight, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
             {
                 //GoogleAnalytics.Instance.LogEvent("ui-globaluiribbon-click", "Get Credits", true);
                 ApplicationDataManager.Instance.OpenBuyCredits();
@@ -197,11 +197,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             // corner gear dropdown (_dropDown) renders as a tiny 25x25 icon flush to the screen edge,
             // invisible/untappable under a phone notch, with a caption that needs a serialized icon texture
             // not reliably set on this branch. Desktop keeps the gear unchanged.
-            if (ApplicationDataManager.IsMobile)
+            // Active (not IsMobile) so it ALSO shows under the Editor "Preview Menu Scale" toggle.
+            if (MobileMenuScale.Active)
             {
                 const float optW = 112f;
                 // tab-height (37) at y=0 so it lines up with the nav tabs; tight 4px gap to GET CREDITS.
-                Rect optRect = new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset - optW - 4, 0, optW, 37);
+                Rect optRect = new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInsetTight - optW - 4, 0, optW, 37);
                 // Remember the button's absolute (scaled-local) rect so the popup can anchor under it
                 // (optRect is local to this BeginGroup at _pageGroupRect).
                 _optionsAnchor = new Rect(_pageGroupRect.x + optRect.x, _pageGroupRect.y + optRect.y, optRect.width, optRect.height);

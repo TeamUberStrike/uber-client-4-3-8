@@ -88,6 +88,24 @@ public static class MobileMenuScale
         get { return Active ? Mathf.Max(Screen.width - Screen.safeArea.xMax, 0f) / Scale + EdgeMargin : 0f; }
     }
 
+    // Smaller tap margin for the top-ribbon right cluster (OPTIONS / GET CREDITS / build info) so they sit
+    // closer to the edge — a tight gap. The notch/safe-area contribution is CAPPED (not added in full) so a
+    // device with the notch on the right doesn't push the cluster way in; the cluster sits in the safe band
+    // below the status bar, so a small fixed gap clears the rounded corner without a big empty space.
+    public const float EdgeMarginTight = 6f;
+    public const float RightNotchCap = 10f;   // max virtual px of right safe-area inset to honour here
+
+    /// <summary>Like RightInset but with a tight, notch-capped margin — for the ribbon's right cluster. 0 on desktop.</summary>
+    public static float RightInsetTight
+    {
+        get
+        {
+            if (!Active) return 0f;
+            float notch = Mathf.Max(Screen.width - Screen.safeArea.xMax, 0f) / Scale;
+            return Mathf.Min(notch, RightNotchCap) + EdgeMarginTight;
+        }
+    }
+
     /// <summary>Inset (virtual px) to keep left-anchored interactive elements off the left edge/notch. 0 on desktop.</summary>
     public static float LeftInset
     {

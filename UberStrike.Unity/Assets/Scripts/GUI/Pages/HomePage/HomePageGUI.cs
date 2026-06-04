@@ -119,10 +119,11 @@ public class HomePageGUI : MonoBehaviour
     {
         float textureHeight = PromoTextureAspect * PromotionWidth;
         float height = 28 + textureHeight + 58;
-        // Desktop: right-anchored. Mobile: moved into the central open area (left of the right edge, away
-        // from the corner controls), centred ~57% across — matches where the player wants it on a phone.
-        float x = ApplicationDataManager.IsMobile
-            ? MobileMenuScale.VirtualWidth * 0.57f - PromotionWidth * 0.5f
+        // Desktop: right-anchored. Mobile (and Editor "Preview Menu Scale"): moved into the open area to the
+        // RIGHT of the lobby avatar (left edge ~54% across) so it no longer covers the avatar, but isn't
+        // jammed in the far corner. Gated on Active so it previews in the Editor.
+        float x = MobileMenuScale.Active
+            ? MobileMenuScale.VirtualWidth * 0.60f
             : MobileMenuScale.VirtualWidth - PromotionWidth;
         Rect rect = new Rect(x, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
 

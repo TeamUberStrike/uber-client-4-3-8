@@ -223,7 +223,7 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         float height = 100;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, width, 85), LocalizedStrings.Misc, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20, width, 85));
@@ -389,6 +389,7 @@ public class OptionsPanelGUI : PanelGuiBase
             contentRect.height += _screenResText.Length * 16;
         }
 
+        _scrollVideo = MobileScroll.Drag(ScrollId.OptionsVideo, videoRect, _scrollVideo);
         _scrollVideo = GUI.BeginScrollView(videoRect, _scrollVideo, contentRect);
         {
             GUI.enabled = true;
@@ -516,7 +517,7 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         float height = 130;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, width, 130), LocalizedStrings.Volume, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20, width, 130));
@@ -576,7 +577,7 @@ public class OptionsPanelGUI : PanelGuiBase
         GUI.skin = BlueStonez.Skin;
         // On mobile, reserve space at the top of the Controls tab for the touch-controls group.
         int touchY = ApplicationDataManager.IsMobile ? 175 : 0;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21 + touchY)); //720 + 15));
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21 + touchY)); //720 + 15));
         {
             if (ApplicationDataManager.IsMobile)
                 DrawTouchControlsGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 160));
@@ -670,7 +671,7 @@ public class OptionsPanelGUI : PanelGuiBase
         float height = 1450 + ((GameServerManager.Instance.PhotonServerCount > 0) ? (GameServerManager.Instance.PhotonServerCount * 20) + 60 : 80);
         float width = Mathf.Max(_rect.width, BlueStonez.label_interparkbold_11pt_left.CalcSize(new GUIContent("Absolute URL : " + ApplicationDataManager.Instance.LocalSystemInfo.AbsoluteURL)).x) + 100;
 
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, width + 15, height));//new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, width + 15, height));//new Rect(0, 0, _rect.width - 50, height));
         {
             //System
             Rect systemGroupRect = new Rect(8, 20, width, 340);

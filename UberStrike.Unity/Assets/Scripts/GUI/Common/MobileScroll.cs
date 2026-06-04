@@ -108,4 +108,9 @@ public static class ScrollId
     public const int LoadoutGear = 5;
     public const int TrainingMaps = 6;
     public const int CreateGameMaps = 7;
+    public const int HelpGeneral = 8;
+    public const int HelpGameplay = 9;
+    public const int HelpItems = 10;
+    public const int OptionsControls = 11;
+    public const int OptionsVideo = 12;
 }
