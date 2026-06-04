@@ -49,6 +49,19 @@ public class TouchInput : MonoSingleton<TouchInput>
     public static bool WishCrouch;
     public static bool IsFiring;
 
+    // True in the Shop "Try your weapons" shooting range (GameStateId.TryWeapon). This is a playable FPS
+    // context with a local character but NO "current game", so the touch controls must run here too —
+    // the bootstrap creates the driver and Update() keeps it in Playing the same as a real match.
+    public static bool InTryWeaponMode
+    {
+        get
+        {
+            return GameStateController.Instance != null
+                && GameStateController.Instance.StateMachine != null
+                && GameStateController.Instance.StateMachine.CurrentStateId == (int)GameStateId.TryWeapon;
+        }
+    }
+
     // Diagnostic: log every fire trigger (button / 2nd-finger / secondary / scope) to help pinpoint
     // accidental auto-fire on move/look. On for the v12 device-test build.
     public static bool LogFireEvents = true;
@@ -597,13 +610,12 @@ public class TouchInput : MonoSingleton<TouchInput>
     private void Update()
     {
 
-        if (InputManager.Instance.IsDown(GameInputKey.UseQuickItem))
-        {
-            Debug.Log("Button down: TRUE");
-        }
         _stateMachine.Update();
 
-        if (!GameState.HasCurrentGame)
+        // "Playable" = a real match OR the Shop Try-Weapon range. Both have a local character that needs
+        // the on-screen controls; only a real match sets HasCurrentGame, so Try-Weapon must be added here.
+        bool playable = GameState.HasCurrentGame || InTryWeaponMode;
+        if (!playable)
         {
             if (_stateMachine.CurrentStateId != (int)TouchState.None)
             {
@@ -613,6 +625,15 @@ public class TouchInput : MonoSingleton<TouchInput>
                 AimHelpText.Alpha = 0.0f;
             }
             return;
+        }
+
+        // Self-heal into Playing if we're stuck in None while alive. The normal None->Playing transition is
+        // event-driven (OnModeInitialized / OnPlayerRespawn); in Try-Weapon the driver is created lazily and
+        // can miss that event, so without this the controls would never appear (player frozen, no buttons).
+        if (_stateMachine.CurrentStateId == (int)TouchState.None
+            && GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive)
+        {
+            _stateMachine.SetState((int)TouchState.Playing);
         }
 
         if (CheckIdleTime && !HasDisplayedFireHelp && LastFireTime + IdleTimeBeforeHelp < Time.time)

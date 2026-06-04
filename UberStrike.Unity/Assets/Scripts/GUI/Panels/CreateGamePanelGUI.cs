@@ -179,6 +179,7 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
     {
         float buttonWidth = (LevelManager.Instance.Count > 8) ? (rect.width - 18) : rect.width;
 
+        _scroll = MobileScroll.Drag(ScrollId.CreateGameMaps, rect, _scroll);
         _scroll = GUI.BeginScrollView(rect, _scroll, new Rect(0, 0, rect.width - 18, 10 + LevelManager.Instance.Count * 35));
         {
             int i = 0;

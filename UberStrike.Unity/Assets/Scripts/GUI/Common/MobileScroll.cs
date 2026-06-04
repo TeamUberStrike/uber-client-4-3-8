@@ -107,4 +107,5 @@ public static class ScrollId
     public const int LoadoutWeapons = 4;
     public const int LoadoutGear = 5;
     public const int TrainingMaps = 6;
+    public const int CreateGameMaps = 7;
 }

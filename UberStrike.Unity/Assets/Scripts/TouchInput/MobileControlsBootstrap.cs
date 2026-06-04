@@ -67,7 +67,12 @@ public class MobileControlsBootstrap : MonoBehaviour
         EnsureHost();
 
         // Upgrade to the full input driver once a match + HUD are up (TouchInput.Start needs HudAssets).
-        if (!_touchInputCreated && !TouchInput.Exists && GameState.HasCurrentGame && HudAssets.Exists)
+        // Also covers the Shop "Try your weapons" range (TryWeapon), which is a playable FPS context with
+        // no "current game" — without this the player there has no controls and is frozen.
+        // HudAssets.Exists is checked first so InTryWeaponMode (which touches GameStateController) is only
+        // evaluated in-game, never force-creating that singleton in the pure lobby.
+        if (!_touchInputCreated && !TouchInput.Exists && HudAssets.Exists
+            && (GameState.HasCurrentGame || TouchInput.InTryWeaponMode))
         {
             _host.AddComponent<TouchInput>();
             _touchInputCreated = true;
