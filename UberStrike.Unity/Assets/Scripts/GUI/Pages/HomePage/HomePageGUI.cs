@@ -127,6 +127,8 @@ public class HomePageGUI : MonoBehaviour
             : MobileMenuScale.VirtualWidth - PromotionWidth;
         Rect rect = new Rect(x, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
 
+        GhostHudDiag.Log("WeeklySpecial", "panelRect=" + rect + " texH=" + textureHeight.ToString("N0"));
+
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
             GUI.Label(new Rect(0, 0, rect.width, 28), ItemPromotionManager.Instance.WeeklySpecial.Title, BlueStonez.tab_strip_small);

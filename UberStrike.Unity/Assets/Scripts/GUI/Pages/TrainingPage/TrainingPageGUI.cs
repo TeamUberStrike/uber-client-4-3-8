@@ -20,7 +20,9 @@ public class TrainingPageGUI : MonoBehaviour
         GUI.Box(new Rect(0, 56, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - 56), string.Empty, BlueStonez.box_grey31);
 
         //Stats GUI Panel
-        GUI.BeginGroup(new Rect((MobileMenuScale.VirtualWidth - 330) * 0.5f, ((MobileMenuScale.VirtualHeight + 56) - 410) * 0.5f, 330, 410), string.Empty, BlueStonez.window);
+        Rect panelRect = new Rect((MobileMenuScale.VirtualWidth - 330) * 0.5f, ((MobileMenuScale.VirtualHeight + 56) - 410) * 0.5f, 330, 410);
+        GhostHudDiag.Log("Training", "groupRect=" + panelRect);
+        GUI.BeginGroup(panelRect, string.Empty, BlueStonez.window);
         {
             GUI.Label(new Rect(10, 20, 300, 48), LocalizedStrings.TrainingCaps, BlueStonez.label_interparkbold_48pt);
             GUI.Label(new Rect(30, 50, 270, 120), LocalizedStrings.TrainingModeDesc, BlueStonez.label_interparkbold_13pt);
