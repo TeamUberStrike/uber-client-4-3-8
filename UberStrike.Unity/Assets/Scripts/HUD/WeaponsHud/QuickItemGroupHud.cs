@@ -49,6 +49,19 @@ public class QuickItemGroupHud
             ResetQuickItemsTransform();
             ResetQuickItemVisibility();
 
+            // On mobile the 3 Quick Items are the customizable on-screen touch buttons
+            // (TouchInput.QuickItemButtons); the stacked desktop HUD must NOT render. These slots are
+            // persistent MeshGUI meshes (Show() activates the GameObject), so skipping Draw() does NOT hide
+            // them — that's why "Key: 6/7/8" leaked top-left. Disabling each group hides what's shown AND
+            // makes every later Show() a no-op (Animatable2DGroup.Show is gated on IsEnabled). The per-slot
+            // icon is still assigned in ConfigureSlot, so the touch buttons can still read GetSlotIcon().
+            if (ApplicationDataManager.IsMobile)
+            {
+                _quickItemsGroup.IsEnabled = false;
+                foreach (QuickItemHud slot in _quickItemSlots)
+                    slot.Group.IsEnabled = false;
+            }
+
             CmuneEventHandler.AddListener<ScreenResolutionEvent>(OnScreenResolutionChange);
             CmuneEventHandler.AddListener<InputAssignmentEvent>(OnInputAssignmentChange);
         }

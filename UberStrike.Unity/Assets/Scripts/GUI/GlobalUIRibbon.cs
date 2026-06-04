@@ -122,8 +122,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             DoStatusBar(new Rect(0, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, MobileMenuScale.VirtualWidth, STATUSBAR_HEIGHT));
         }
 
-        // Settings dropdown (gear): inset off the right edge/notch so it's visible + tappable on mobile.
-        _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT - MobileMenuScale.RightInset, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
+        // Settings dropdown (gear) — desktop only. On mobile the OPTIONS ribbon button opens an equivalent
+        // popup (DrawOptionsMenu) sized for touch; the tiny corner gear is not used.
+        if (!ApplicationDataManager.IsMobile)
+            _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT - MobileMenuScale.RightInset, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
 
         if (_ribbonEvents.Count > 0)
         {
@@ -143,7 +145,11 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195 - MobileMenuScale.RightInset, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
         GUI.color = Color.white;
 
-        _dropDown.Draw();
+        if (!ApplicationDataManager.IsMobile)
+            _dropDown.Draw();
+
+        // Mobile settings popup opened by the OPTIONS ribbon button (Help / Options / Audio / Report).
+        DrawOptionsMenu();
 
         // Temporary on-device diagnostics for the finger drag-to-scroll (remove once confirmed working).
         MobileScroll.DrawDebug();
@@ -196,9 +202,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
                 const float optW = 112f;
                 // tab-height (37) at y=0 so it lines up with the nav tabs; tight 4px gap to GET CREDITS.
                 Rect optRect = new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset - optW - 4, 0, optW, 37);
+                // Remember the button's absolute (scaled-local) rect so the popup can anchor under it
+                // (optRect is local to this BeginGroup at _pageGroupRect).
+                _optionsAnchor = new Rect(_pageGroupRect.x + optRect.x, _pageGroupRect.y + optRect.y, optRect.width, optRect.height);
                 if (GUITools.Button(optRect, new GUIContent(LocalizedStrings.OptionsCaps, LocalizedStrings.OptionsBtnTooltip), BlueStonez.tab_large, SoundEffectType.UIButtonClick))
                 {
-                    PanelManager.Instance.OpenPanel(PanelType.Options);
+                    _optionsMenuOpen = !_optionsMenuOpen;   // toggle the Help/Options/Audio/Report popup
                 }
             }
         }
@@ -245,6 +254,52 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             GUI.color = Color.white;
         }
         GUI.EndGroup();
+    }
+
+    // Mobile-only settings popup opened by the OPTIONS ribbon button. Mirrors the desktop gear dropdown
+    // (Help / Options / Audio / Report) but WITHOUT "Full Screen" (meaningless on a phone), with big
+    // touch-sized rows, anchored under the OPTIONS button and drawn inside the menu scale matrix.
+    private void DrawOptionsMenu()
+    {
+        if (!_optionsMenuOpen) return;
+
+        const float itemH = 46f;
+        const float w = 220f;
+        const int count = 4;
+        float px = _optionsAnchor.xMax - w;          // right-aligned to the button's right edge
+        float py = _optionsAnchor.yMax + 2f;
+        Rect panel = new Rect(px, py, w, itemH * count + 8f);
+
+        // Tap outside the popup (and not the button) closes it. NOTE: qualify UnityEngine.EventType —
+        // this class has its own nested EventType enum (XpEvent/PointEvent/CreditEvent).
+        if (Event.current.type == UnityEngine.EventType.MouseDown
+            && !panel.Contains(Event.current.mousePosition)
+            && !_optionsAnchor.Contains(Event.current.mousePosition))
+        {
+            _optionsMenuOpen = false;
+            return;
+        }
+
+        GUI.Box(panel, GUIContent.none, BlueStonez.window);
+        float bx = px + 4f, bw = w - 8f, by = py + 4f, bh = itemH - 2f;
+
+        if (GUITools.Button(new Rect(bx, by, bw, bh), new GUIContent(" Help"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        { _optionsMenuOpen = false; PanelManager.Instance.OpenPanel(PanelType.Help); }
+
+        if (GUITools.Button(new Rect(bx, by + itemH, bw, bh), new GUIContent(" Options"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        { _optionsMenuOpen = false; PanelManager.Instance.OpenPanel(PanelType.Options); }
+
+        bool audioOn = ApplicationDataManager.ApplicationOptions.AudioEnabled;
+        if (GUITools.Button(new Rect(bx, by + 2 * itemH, bw, bh), new GUIContent(audioOn ? " Audio: On" : " Audio: Off"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        {
+            ApplicationDataManager.ApplicationOptions.AudioEnabled = !audioOn;
+            SfxManager.EnableAudio(ApplicationDataManager.ApplicationOptions.AudioEnabled);
+            ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
+            // stay open so the user sees the On/Off label flip
+        }
+
+        if (GUITools.Button(new Rect(bx, by + 3 * itemH, bw, bh), new GUIContent(" Report"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        { _optionsMenuOpen = false; PanelManager.Instance.OpenPanel(PanelType.ReportPlayer); }
     }
 
     private void DoLiveFeeds()
@@ -388,6 +443,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     private Rect _pageGroupRect;
     private Rect _pageToggleRect;
+
+    // Mobile OPTIONS-button settings popup (Help/Options/Audio/Report).
+    private bool _optionsMenuOpen;
+    private Rect _optionsAnchor;
 
     private Dictionary<EventType, RibbonEvent> _ribbonEvents = new Dictionary<EventType, RibbonEvent>();
 

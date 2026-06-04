@@ -119,8 +119,12 @@ public class HomePageGUI : MonoBehaviour
     {
         float textureHeight = PromoTextureAspect * PromotionWidth;
         float height = 28 + textureHeight + 58;
-        // Right/centre-anchored against the virtual (scaled) screen so it stays placed under the scale.
-        Rect rect = new Rect(MobileMenuScale.VirtualWidth - PromotionWidth, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
+        // Desktop: right-anchored. Mobile: moved into the central open area (left of the right edge, away
+        // from the corner controls), centred ~57% across — matches where the player wants it on a phone.
+        float x = ApplicationDataManager.IsMobile
+            ? MobileMenuScale.VirtualWidth * 0.57f - PromotionWidth * 0.5f
+            : MobileMenuScale.VirtualWidth - PromotionWidth;
+        Rect rect = new Rect(x, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
 
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
