@@ -7,6 +7,7 @@ public class DynamicTexture
     private State _state = 0;
     private float _alpha = 0;
     private bool _hasDrawn;
+    private bool _cacheToDisk; // false for stable-url/mutable-content sources (e.g. FB avatars)
 
     private enum State
     {
@@ -29,15 +30,16 @@ public class DynamicTexture
         get { return _state == State.Success || TextureLoader.Instance.GetState(_texture) == 1; }
     }
 
-    public DynamicTexture(string url, bool loadNow = false)
+    public DynamicTexture(string url, bool loadNow = false, bool cacheToDisk = true)
     {
         _url = url;
+        _cacheToDisk = cacheToDisk;
         _texture = new Texture2D(1, 1);
 
         if (loadNow)
         {
             _state = State.Loading;
-            _texture = TextureLoader.Instance.LoadImage(_url);
+            _texture = TextureLoader.Instance.LoadImage(_url, cacheToDisk: _cacheToDisk);
         }
     }
 
@@ -60,7 +62,7 @@ public class DynamicTexture
         if (_state != State.None || string.IsNullOrEmpty(_url))
             return;
         _state = State.Loading;
-        _texture = TextureLoader.Instance.LoadImage(_url);
+        _texture = TextureLoader.Instance.LoadImage(_url, cacheToDisk: _cacheToDisk);
     }
 
     public void Draw(Rect rect)
@@ -74,7 +76,7 @@ public class DynamicTexture
         if (_state == State.None)
         {
             _state = State.Loading;
-            _texture = TextureLoader.Instance.LoadImage(_url);
+            _texture = TextureLoader.Instance.LoadImage(_url, cacheToDisk: _cacheToDisk);
         }
         if (_state == State.Loading)
         {
