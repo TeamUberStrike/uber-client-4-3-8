@@ -175,58 +175,74 @@ public class HomePageGUI : MonoBehaviour
     }
 
     // ── Classic 4.3.10.1-style lobby (opt-in: Options ▸ General ▸ "Classic lobby HUD") ───────────────
-    // First-pass layout matching the reference screenshot: Play + Shop big (side by side), then a
-    // Profile / Inbox / Clans / Options ring + Chat. Uses 4.3.8's existing Play/Shop icons; the round
-    // ring icons + glowing frame are placeholders (text buttons) until the 4.3.10.1 icon set is
-    // extracted (Phase 2). Weekly Special is drawn by the shared DrawWeeklySpecial above. Spacing/colors
-    // and the Lvl bar are Phase 3 fidelity work — this is the structural skeleton to preview + iterate.
+    // Authentic menu tiles extracted from the 4.3.10.1 client (Resources/ClassicLobby/*Tile). Each *Tile
+    // is the COMPLETE glowing button graphic — icon + label baked in — so a button is just its tile drawn
+    // clickable. Layout follows the reference screenshot: Play + Shop big (side by side), then a
+    // Profile / Inbox / Clans / Options ring + Chat centred below. Weekly Special is the shared
+    // DrawWeeklySpecial above; the Lvl/XP bar (XPBar*Tile art is imported) is Phase 3 fidelity.
+    private static readonly System.Collections.Generic.Dictionary<string, Texture2D> _classicTiles
+        = new System.Collections.Generic.Dictionary<string, Texture2D>();
+
+    private static Texture2D ClassicTile(string name)
+    {
+        Texture2D t;
+        if (!_classicTiles.TryGetValue(name, out t))
+        {
+            t = Resources.Load<Texture2D>("ClassicLobby/" + name);
+            _classicTiles[name] = t;
+        }
+        return t;
+    }
+
     private void DrawClassicMainMenu()
     {
         float vw = MobileMenuScale.VirtualWidth;
-        float top = GlobalUIRibbon.HEIGHT + 40;
+        float top = GlobalUIRibbon.HEIGHT + 40f;
 
-        const float bigW = 250f, bigH = 90f, gap = 24f;
+        // Big Play/Shop tiles are wide horizontal bars (~3.9:1); the ring tiles are pills (~3.2:1).
+        const float bigW = 260f, bigH = 68f, gap = 16f;
         float blockW = bigW * 2f + gap;
         // Bias the cluster left of the lobby avatar (which sits on the right), clamped on-screen.
         float left = mainMenuX + Mathf.Max(40f, vw * 0.5f - blockW * 0.5f - 120f);
 
-        // Two big buttons: Play (left), Shop (right).
-        if (ClassicBigButton(new Rect(left, top, bigW, bigH), LocalizedStrings.PlayCaps, UberstrikeIcons.MainMenuPlay64x64))
+        if (TileButton(new Rect(left, top, bigW, bigH), "PlayTile"))
         {
             if (PlayerDataManager.IsPlayerLoggedIn)
                 GameServerController.Instance.JoinFastestServer();
             else
                 MenuPageManager.Instance.LoadPage(PageType.Training);
         }
-        if (ClassicBigButton(new Rect(left + bigW + gap, top, bigW, bigH), LocalizedStrings.GunsNStuffCaps, UberstrikeIcons.MainMenuShop64x64))
+        if (TileButton(new Rect(left + bigW + gap, top, bigW, bigH), "ShopTile"))
             MenuPageManager.Instance.LoadPage(PageType.Shop);
 
         // Ring: Profile / Inbox under Play; Clans / Options under Shop; Chat centred below the left pair.
-        float ringY = top + bigH + 18f;
-        const float rW = 118f, rH = 40f, rGap = 12f;
-        if (ClassicRingButton(new Rect(left, ringY, rW, rH), "Profile"))
-            MenuPageManager.Instance.LoadPage(PageType.Home); // TODO(Phase 1): real Profile destination
-        if (ClassicRingButton(new Rect(left + rW + rGap, ringY, rW, rH), "Inbox"))
+        float ringY = top + bigH + 16f;
+        const float rW = 140f, rH = 44f, rGap = 10f;
+        if (TileButton(new Rect(left, ringY, rW, rH), "ProfileTile"))
+            MenuPageManager.Instance.LoadPage(PageType.Home); // TODO: real Profile destination
+        if (TileButton(new Rect(left + rW + rGap, ringY, rW, rH), "InboxTile"))
             MenuPageManager.Instance.LoadPage(PageType.Inbox);
-        if (ClassicRingButton(new Rect(left + bigW + gap, ringY, rW, rH), "Clans"))
+        if (TileButton(new Rect(left + bigW + gap, ringY, rW, rH), "ClansTile"))
             MenuPageManager.Instance.LoadPage(PageType.Clans);
-        if (ClassicRingButton(new Rect(left + bigW + gap + rW + rGap, ringY, rW, rH), "Options"))
+        if (TileButton(new Rect(left + bigW + gap + rW + rGap, ringY, rW, rH), "OptionsTile"))
             PanelManager.Instance.OpenPanel(PanelType.Options);
-        if (ClassicRingButton(new Rect(left + (bigW - rW) * 0.5f, ringY + rH + rGap, rW, rH), "Chat"))
+        if (TileButton(new Rect(left + (bigW - rW) * 0.5f, ringY + rH + rGap, rW, rH), "ChatTile"))
             MenuPageManager.Instance.LoadPage(PageType.Chat);
     }
 
-    private bool ClassicBigButton(Rect rect, string label, Texture2D icon)
+    // Draws a classic menu tile (icon+label baked in) as a clickable button: aspect-preserving art with
+    // an invisible hit-rect on top. Hover brightens the glow; non-hover sits slightly dimmed.
+    private bool TileButton(Rect rect, string tileName)
     {
-        bool b = GUITools.Button(rect, new GUIContent(label), BlueStonez.button_mainmenu, SoundEffectType.UIRibbonClick);
-        if (icon != null)
-            GUI.DrawTexture(new Rect(rect.x + 12f, rect.y + (rect.height - 64f) * 0.5f, 64f, 64f), icon);
-        return b;
-    }
-
-    private bool ClassicRingButton(Rect rect, string label)
-    {
-        // Placeholder round-button until the 4.3.10.1 circular icon set is imported (Phase 2).
-        return GUITools.Button(rect, new GUIContent(label), BlueStonez.button, SoundEffectType.UIRibbonClick);
+        Texture2D tex = ClassicTile(tileName);
+        if (tex != null)
+        {
+            bool hover = rect.Contains(Event.current.mousePosition);
+            Color prev = GUI.color;
+            GUI.color = new Color(1f, 1f, 1f, hover ? 1f : 0.88f);
+            GUI.DrawTexture(rect, tex, ScaleMode.ScaleToFit);
+            GUI.color = prev;
+        }
+        return GUI.Button(rect, GUIContent.none, GUIStyle.none);
     }
 }
