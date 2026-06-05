@@ -151,9 +151,6 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         // Mobile settings popup opened by the OPTIONS ribbon button (Help / Options / Audio / Report).
         DrawOptionsMenu();
 
-        // Temporary on-device diagnostics for the finger drag-to-scroll (remove once confirmed working).
-        MobileScroll.DrawDebug();
-
         MobileMenuScale.End(scaleMatrix);
         GuiManager.DrawTooltip();
     }
@@ -538,6 +535,15 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     public int GetHeight()
     {
+        // THE GHOST HUD: _yOffset is the ribbon's OWN intro slide-in. Update() lerps it from -HEIGHT up
+        // to 0 over ~1s (Mathf.Lerp(_yOffset, 0.1f, dt*8)) then snaps to 0. Every page/panel top-anchors
+        // its content to this value (Home WeeklySpecial, Play, Shop, Stats, Inbox, Clan, Chat, Help...),
+        // so on first open the whole content area RODE the lerp at half speed and then snapped = the
+        // "float for ~1s then jump" ghost. The ribbon draws ITSELF from _yOffset directly (not GetHeight),
+        // so returning the final docked height here keeps the ribbon's slide-in intact while docking page
+        // content immediately. Mobile/Editor-preview only; desktop keeps its original animated behaviour.
+        if (MobileMenuScale.Active)
+            return HEIGHT - 1;
         return (int)_yOffset + HEIGHT - 1;
     }
 

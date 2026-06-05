@@ -117,6 +117,18 @@ public class HomePageGUI : MonoBehaviour
 
     private void DrawWeeklySpecial()
     {
+        var promo = ItemPromotionManager.Instance.WeeklySpecial;
+        if (promo == null)
+            return;
+
+        // Mobile (and Editor preview): hold the panel hidden until its prewarmed promo image has
+        // finished downloading, so it appears complete in one go instead of flashing an empty box +
+        // spinner next to the avatar. The image URL only arrives ~0.02s before the lobby (its data is
+        // the last step of login), too late for prewarm to finish in time — so we wait for it here.
+        // Desktop keeps its original immediate spinner-box behaviour.
+        if (MobileMenuScale.Active && !promo.Texture.IsLoaded)
+            return;
+
         float textureHeight = PromoTextureAspect * PromotionWidth;
         float height = 28 + textureHeight + 58;
         // Desktop: right-anchored. Mobile (and Editor "Preview Menu Scale"): moved into the open area to the
@@ -126,8 +138,6 @@ public class HomePageGUI : MonoBehaviour
             ? MobileMenuScale.VirtualWidth * 0.60f
             : MobileMenuScale.VirtualWidth - PromotionWidth;
         Rect rect = new Rect(x, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
-
-        GhostHudDiag.Log("WeeklySpecial", "panelRect=" + rect + " texH=" + textureHeight.ToString("N0"));
 
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {

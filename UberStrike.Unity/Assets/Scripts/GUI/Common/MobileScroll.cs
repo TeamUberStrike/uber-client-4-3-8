@@ -29,7 +29,7 @@ public static class MobileScroll
 {
     // Flip on to draw a small live readout (touch count / active view / scrollPos / delta) for diagnosing
     // on device. Leave off in normal builds.
-    public static bool DebugOverlay = true;
+    public static bool DebugOverlay = false;
 
     private static readonly Dictionary<int, bool> _dragging = new Dictionary<int, bool>();
     private static int _activeView = -1;     // debug: which view currently owns the drag

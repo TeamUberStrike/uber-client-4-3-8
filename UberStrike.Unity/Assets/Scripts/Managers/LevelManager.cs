@@ -204,6 +204,12 @@ public class LevelManager : Singleton<LevelManager>
             }
         }
 
+        // Prewarm every map's icon during the loading screen so the Training/Create-Game map list
+        // paints fully on first open instead of streaming thumbnails in over ~1s. TextureLoader caches
+        // by URL and blacklists dead URLs, so this is cheap and safe for icons that 404 on the CDN.
+        foreach (var map in mapsById.Values)
+            map.Icon.Preload();
+
         return (mapsById.Count > 0);
     }
 
