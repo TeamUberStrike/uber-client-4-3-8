@@ -230,6 +230,7 @@ public class OptionsPanelGUI : PanelGuiBase
             {
                 ApplicationDataManager.ApplicationOptions.GameplayAutoPickupEnabled = GUI.Toggle(new Rect(12, 15, 200, 20), ApplicationDataManager.ApplicationOptions.GameplayAutoPickupEnabled, LocalizedStrings.AutoPickupWeapons, BlueStonez.toggle);
                 ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled = GUI.Toggle(new Rect(12, 35, 200, 20), ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled, LocalizedStrings.AutoEquipWeapons, BlueStonez.toggle);
+                ApplicationDataManager.ApplicationOptions.UseClassicLobby = GUI.Toggle(new Rect(12, 55, 320, 20), ApplicationDataManager.ApplicationOptions.UseClassicLobby, " Classic lobby HUD (4.3.10.1 style)", BlueStonez.toggle);
             }
             GUI.EndGroup();
         }

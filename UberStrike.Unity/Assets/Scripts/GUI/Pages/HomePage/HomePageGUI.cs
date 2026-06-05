@@ -53,6 +53,12 @@ public class HomePageGUI : MonoBehaviour
 
             DrawWeeklySpecial();
 
+            if (ApplicationDataManager.ApplicationOptions.UseClassicLobby)
+            {
+                DrawClassicMainMenu();
+            }
+            else
+            {
             int buttonCount = (Application.platform != RuntimePlatform.WebGLPlayer) ? 4 : 3;
             int buttonSpacing = 59 + 8;
             int topOffset = 14;
@@ -106,6 +112,7 @@ public class HomePageGUI : MonoBehaviour
                 GUI.color = Color.white;
             }
             GUI.EndGroup();
+            }
             GUI.enabled = true;
             GuiManager.DrawTooltip();
         }
@@ -165,5 +172,61 @@ public class HomePageGUI : MonoBehaviour
         bool b = GUITools.Button(new Rect(position.x, position.y, 310, 59), content, BlueStonez.button_mainmenu, SoundEffectType.UIRibbonClick);
         GUI.DrawTexture(new Rect(position.x + iconPosition.x, position.y + iconPosition.y, 64, 64), icon);
         return b;
+    }
+
+    // ── Classic 4.3.10.1-style lobby (opt-in: Options ▸ General ▸ "Classic lobby HUD") ───────────────
+    // First-pass layout matching the reference screenshot: Play + Shop big (side by side), then a
+    // Profile / Inbox / Clans / Options ring + Chat. Uses 4.3.8's existing Play/Shop icons; the round
+    // ring icons + glowing frame are placeholders (text buttons) until the 4.3.10.1 icon set is
+    // extracted (Phase 2). Weekly Special is drawn by the shared DrawWeeklySpecial above. Spacing/colors
+    // and the Lvl bar are Phase 3 fidelity work — this is the structural skeleton to preview + iterate.
+    private void DrawClassicMainMenu()
+    {
+        float vw = MobileMenuScale.VirtualWidth;
+        float top = GlobalUIRibbon.HEIGHT + 40;
+
+        const float bigW = 250f, bigH = 90f, gap = 24f;
+        float blockW = bigW * 2f + gap;
+        // Bias the cluster left of the lobby avatar (which sits on the right), clamped on-screen.
+        float left = mainMenuX + Mathf.Max(40f, vw * 0.5f - blockW * 0.5f - 120f);
+
+        // Two big buttons: Play (left), Shop (right).
+        if (ClassicBigButton(new Rect(left, top, bigW, bigH), LocalizedStrings.PlayCaps, UberstrikeIcons.MainMenuPlay64x64))
+        {
+            if (PlayerDataManager.IsPlayerLoggedIn)
+                GameServerController.Instance.JoinFastestServer();
+            else
+                MenuPageManager.Instance.LoadPage(PageType.Training);
+        }
+        if (ClassicBigButton(new Rect(left + bigW + gap, top, bigW, bigH), LocalizedStrings.GunsNStuffCaps, UberstrikeIcons.MainMenuShop64x64))
+            MenuPageManager.Instance.LoadPage(PageType.Shop);
+
+        // Ring: Profile / Inbox under Play; Clans / Options under Shop; Chat centred below the left pair.
+        float ringY = top + bigH + 18f;
+        const float rW = 118f, rH = 40f, rGap = 12f;
+        if (ClassicRingButton(new Rect(left, ringY, rW, rH), "Profile"))
+            MenuPageManager.Instance.LoadPage(PageType.Home); // TODO(Phase 1): real Profile destination
+        if (ClassicRingButton(new Rect(left + rW + rGap, ringY, rW, rH), "Inbox"))
+            MenuPageManager.Instance.LoadPage(PageType.Inbox);
+        if (ClassicRingButton(new Rect(left + bigW + gap, ringY, rW, rH), "Clans"))
+            MenuPageManager.Instance.LoadPage(PageType.Clans);
+        if (ClassicRingButton(new Rect(left + bigW + gap + rW + rGap, ringY, rW, rH), "Options"))
+            PanelManager.Instance.OpenPanel(PanelType.Options);
+        if (ClassicRingButton(new Rect(left + (bigW - rW) * 0.5f, ringY + rH + rGap, rW, rH), "Chat"))
+            MenuPageManager.Instance.LoadPage(PageType.Chat);
+    }
+
+    private bool ClassicBigButton(Rect rect, string label, Texture2D icon)
+    {
+        bool b = GUITools.Button(rect, new GUIContent(label), BlueStonez.button_mainmenu, SoundEffectType.UIRibbonClick);
+        if (icon != null)
+            GUI.DrawTexture(new Rect(rect.x + 12f, rect.y + (rect.height - 64f) * 0.5f, 64f, 64f), icon);
+        return b;
+    }
+
+    private bool ClassicRingButton(Rect rect, string label)
+    {
+        // Placeholder round-button until the 4.3.10.1 circular icon set is imported (Phase 2).
+        return GUITools.Button(rect, new GUIContent(label), BlueStonez.button, SoundEffectType.UIRibbonClick);
     }
 }

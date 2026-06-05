@@ -34,6 +34,11 @@ public class ApplicationOptions
     public float TouchLookSensitivity = 1.5f;
     public float TouchMoveSensitivity = 1.0f;
 
+    // Interface — opt-in "classic" lobby HUD (4.3.10.1-style Play/Shop + Profile/Inbox/Clans/Options ring).
+    // Default OFF so production keeps the current lobby unless the player switches it in Options.
+    // PlayerPrefs-backed (like the touch fields) so we don't extend the CmunePrefs.Key enum.
+    public bool UseClassicLobby = false;
+
     // Gameplay
     public bool GameplayAutoPickupEnabled = true;
     public bool GameplayAutoEquipEnabled = false;
@@ -117,6 +122,9 @@ public class ApplicationOptions
         TouchLookSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchLookSensitivity", 1.5f), 0.5f, 3.0f);
         TouchMoveSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchMoveSensitivity", 1.0f), 0.5f, 3.0f);
 
+        // Interface (PlayerPrefs-backed)
+        UseClassicLobby = PlayerPrefs.GetInt("Options_UseClassicLobby", 0) != 0;
+
         bool isGamePadEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputEnableGamepad, false);
         InputManager.Instance.IsGamepadEnabled = Input.GetJoystickNames().Length > 0 && isGamePadEnabled;
 
@@ -163,6 +171,9 @@ public class ApplicationOptions
         PlayerPrefs.SetInt("Options_UseMultiTouch", UseMultiTouch ? 1 : 0);
         PlayerPrefs.SetFloat("Options_TouchLookSensitivity", TouchLookSensitivity);
         PlayerPrefs.SetFloat("Options_TouchMoveSensitivity", TouchMoveSensitivity);
+
+        // Interface (PlayerPrefs-backed)
+        PlayerPrefs.SetInt("Options_UseClassicLobby", UseClassicLobby ? 1 : 0);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMaxX, InputMouseRotationMaxX);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMaxY, InputMouseRotationMaxY);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMinX, InputMouseRotationMinX);
