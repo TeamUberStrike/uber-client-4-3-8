@@ -63,8 +63,9 @@ public class TouchInput : MonoSingleton<TouchInput>
     }
 
     // Diagnostic: log every fire trigger (button / 2nd-finger / secondary / scope) to help pinpoint
-    // accidental auto-fire on move/look. On for the v12 device-test build.
-    public static bool LogFireEvents = true;
+    // accidental auto-fire on move/look. Was on for the v12 device-test build; auto-fire is fixed and
+    // confirmed on device (v13+), so it ships OFF to avoid per-shot Debug.Log spam. Flip on to re-diagnose.
+    public static bool LogFireEvents = false;
 
 
     public Dictionary<int, TouchButton> Buttons;
