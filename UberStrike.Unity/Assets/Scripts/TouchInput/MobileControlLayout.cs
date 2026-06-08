@@ -18,6 +18,7 @@ public static class MobileControlLayout
         public float Nx;        // normalized GUI-space center X (0..1 of screen width)
         public float Ny;        // normalized GUI-space center Y (0..1 of screen height)
         public float Scale = 1f;
+        public bool Hidden;     // player removed this control via the editor's red ✕ button
     }
 
     private const string PrefsKey = "MobileControlLayout";
@@ -84,6 +85,30 @@ public static class MobileControlLayout
             p.Scale = Mathf.Clamp(scale, MinScale, MaxScale);
     }
 
+    // True if the player removed this control via the editor's ✕ button. Removed controls are skipped in
+    // the live game (TouchController) but still shown — greyed — in the editor so they can be restored.
+    public static bool IsHidden(string id)
+    {
+        EnsureLoaded();
+        Placement p;
+        return _map.TryGetValue(id, out p) && p.Hidden;
+    }
+
+    // Marks a control removed / restored. The caller (editor) seeds the placement at the control's current
+    // spot first, so a later restore returns it exactly where it was; the fallback below only guards the
+    // (practically unreachable) case of toggling an id that was never positioned.
+    public static void SetHidden(string id, bool hidden)
+    {
+        EnsureLoaded();
+        Placement p;
+        if (!_map.TryGetValue(id, out p))
+        {
+            p = new Placement { Nx = 0.5f, Ny = 0.5f, Scale = 1f };
+            _map[id] = p;
+        }
+        p.Hidden = hidden;
+    }
+
     public static void Save()
     {
         EnsureLoaded();
@@ -93,7 +118,8 @@ public static class MobileControlLayout
             sb.Append(kv.Key).Append(':')
               .Append(kv.Value.Nx.ToString("R", CultureInfo.InvariantCulture)).Append(',')
               .Append(kv.Value.Ny.ToString("R", CultureInfo.InvariantCulture)).Append(',')
-              .Append(kv.Value.Scale.ToString("R", CultureInfo.InvariantCulture)).Append(';');
+              .Append(kv.Value.Scale.ToString("R", CultureInfo.InvariantCulture)).Append(',')
+              .Append(kv.Value.Hidden ? '1' : '0').Append(';');
         }
         PlayerPrefs.SetString(PrefsKey, sb.ToString());
         PlayerPrefs.Save();
@@ -122,11 +148,14 @@ public static class MobileControlLayout
                 && float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out ny)
                 && float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out sc))
             {
+                // 4th field (Hidden) is optional — older saves without it parse as not-hidden.
+                bool hidden = parts.Length >= 4 && parts[3] == "1";
                 _map[id] = new Placement
                 {
                     Nx = Mathf.Clamp01(nx),
                     Ny = Mathf.Clamp01(ny),
                     Scale = Mathf.Clamp(sc, MinScale, MaxScale),
+                    Hidden = hidden,
                 };
             }
         }

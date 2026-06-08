@@ -61,12 +61,15 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         ResetFilters();
 
         _unFocus = true;
+        _shownTime = Time.realtimeSinceStartup;   // start of the mobile settle-reveal (see OnGUI)
     }
 
     private void OnDisable()
     {
 
     }
+
+    private float _shownTime = -10f;   // realtime the play page last opened (set in Show()) — drives the HELP-column settle-reveal
 
     private void OnGUI()
     {
@@ -162,6 +165,21 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
     /// </summary>
     private void DoServerHelpText(Rect position)
     {
+        // Mobile settle-reveal for the HELP column ONLY. It is RIGHT-anchored (x = rect.width - helpPartWidth),
+        // so while VirtualWidth is still settling during the ~1s page-open camera fly-in it briefly renders
+        // pulled toward the centre, then snaps to the right edge — the #65 "HELP floats in the middle for ~1s"
+        // bug. (The left-anchored server list doesn't move, which is why ONLY the HELP drifts.) Hold the HELP
+        // hidden until the page settles, then fade it in, so only its final docked position is ever seen.
+        // _shownTime is reset in Show() (the real per-open hook); the rest of the page draws immediately.
+        Color prevHelpColor = GUI.color;
+        if (MobileMenuScale.Active)
+        {
+            const float revealDelay = 1.1f, revealFade = 0.25f;
+            float a = Mathf.Clamp01((Time.realtimeSinceStartup - _shownTime - revealDelay) / revealFade);
+            if (a <= 0f) return;   // hidden until settled — kills the centre-float
+            GUI.color = new Color(prevHelpColor.r, prevHelpColor.g, prevHelpColor.b, prevHelpColor.a * a);
+        }
+
         GUI.BeginGroup(position);
         {
             GUI.Box(new Rect(0, 0, position.width, 32), LocalizedStrings.HelpCaps, BlueStonez.box_grey50);
@@ -175,6 +193,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GUI.EndScrollView();
         }
         GUI.EndGroup();
+
+        GUI.color = prevHelpColor;
     }
 
     /// <summary>
@@ -1348,6 +1368,12 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
     /// </summary>
     public void Show()
     {
+        // Restart the HELP-column settle-reveal on every page open. This is the reliable per-open hook
+        // (PlayPageScene.OnLoad calls it); OnEnable only fires once because this is a persistent singleton
+        // whose Show()/Hide() don't toggle enabled/active. Without this the reveal timer was always elapsed
+        // and the gate did nothing (#65 v32 "HELP still floats").
+        _shownTime = Time.realtimeSinceStartup;
+
         //update game list of currently selected server
         if (_isConnectedToGameServer)
         {

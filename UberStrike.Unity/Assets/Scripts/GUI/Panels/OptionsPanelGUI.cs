@@ -577,11 +577,11 @@ public class OptionsPanelGUI : PanelGuiBase
 
         GUI.skin = BlueStonez.Skin;
         // On mobile, reserve space at the top of the Controls tab for the touch-controls group.
-        int touchY = ApplicationDataManager.IsMobile ? 175 : 0;
+        int touchY = ApplicationDataManager.IsMobile ? 200 : 0;
         _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21 + touchY)); //720 + 15));
         {
             if (ApplicationDataManager.IsMobile)
-                DrawTouchControlsGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 160));
+                DrawTouchControlsGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 182));
 
             DrawGroupControl(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65));
@@ -643,20 +643,37 @@ public class OptionsPanelGUI : PanelGuiBase
         {
             ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
 
-            bool multi = GUI.Toggle(new Rect(15, 10, 320, 24), opt.UseMultiTouch, " Multi-touch (tap 2nd finger to fire)", BlueStonez.toggle);
-            if (multi != opt.UseMultiTouch) opt.UseMultiTouch = multi;
+            // Movement style — a clear two-way choice (drives UseMultiTouch, which the TouchInput state
+            // machine reads to swap control schemes):
+            //   • Joystick      = single-touch: floating joystick + on-screen Fire button (current default)
+            //   • D-Pad (Classic) = original UberStrike multi-touch: twisted direction pad + its own Jump/
+            //                       Crouch buttons, drag to aim, tap a 2nd finger to fire (no Fire button).
+            GUI.Label(new Rect(15, 6, 200, 22), "Movement Style", BlueStonez.label_interparkbold_11pt_left);
+            bool joyWas = !opt.UseMultiTouch;
+            bool joyNow = GUI.Toggle(new Rect(15, 28, 150, 26), joyWas, " Joystick", BlueStonez.toggle);
+            bool dpadWas = opt.UseMultiTouch;
+            bool dpadNow = GUI.Toggle(new Rect(170, 28, 200, 26), dpadWas, " D-Pad (Classic)", BlueStonez.toggle);
+            if (joyNow && !joyWas) opt.UseMultiTouch = false;
+            else if (dpadNow && !dpadWas) opt.UseMultiTouch = true;
 
-            GUI.Label(new Rect(15, 40, 130, 24), "Look Sensitivity", BlueStonez.label_interparkbold_11pt_left);
-            float look = GUI.HorizontalSlider(new Rect(155, 46, 200, 24), opt.TouchLookSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
-            GUI.Label(new Rect(370, 40, 60, 24), look.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            GUI.color = Color.white.SetAlpha(0.7f);
+            GUI.Label(new Rect(15, 55, 420, 20),
+                opt.UseMultiTouch ? "D-Pad to move  ·  drag to aim  ·  tap 2nd finger to fire"
+                                  : "Joystick to move  ·  drag to aim  ·  on-screen Fire button",
+                BlueStonez.label_interparkbold_11pt_left);
+            GUI.color = Color.white;
+
+            GUI.Label(new Rect(15, 82, 130, 24), "Look Sensitivity", BlueStonez.label_interparkbold_11pt_left);
+            float look = GUI.HorizontalSlider(new Rect(155, 88, 200, 24), opt.TouchLookSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 82, 60, 24), look.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
             if (look != opt.TouchLookSensitivity) opt.TouchLookSensitivity = look;
 
-            GUI.Label(new Rect(15, 68, 130, 24), "Move Sensitivity", BlueStonez.label_interparkbold_11pt_left);
-            float move = GUI.HorizontalSlider(new Rect(155, 74, 200, 24), opt.TouchMoveSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
-            GUI.Label(new Rect(370, 68, 60, 24), move.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            GUI.Label(new Rect(15, 110, 130, 24), "Move Sensitivity", BlueStonez.label_interparkbold_11pt_left);
+            float move = GUI.HorizontalSlider(new Rect(155, 116, 200, 24), opt.TouchMoveSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 110, 60, 24), move.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
             if (move != opt.TouchMoveSensitivity) opt.TouchMoveSensitivity = move;
 
-            if (GUI.Button(new Rect(15, 100, 260, 30), "Customize On-Screen Controls", BlueStonez.button))
+            if (GUI.Button(new Rect(15, 142, 260, 30), "Customize On-Screen Controls", BlueStonez.button))
             {
                 opt.SaveApplicationOptions();
                 MobileControlLayout.EditMode = true;

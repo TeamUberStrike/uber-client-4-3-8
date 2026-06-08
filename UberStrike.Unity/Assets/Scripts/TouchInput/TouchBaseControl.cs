@@ -6,6 +6,12 @@ using Cmune.Util;
 public abstract class TouchBaseControl
 {
     public virtual bool Enabled { get; set; }
+
+    // Independent "player removed this control in the layout editor" gate. Kept SEPARATE from Enabled
+    // because the touch state machine toggles Enabled every frame (UpdateWalkingEnabled, OnEnter, etc.)
+    // and would otherwise undo a removal. TouchController skips Removed controls for BOTH input and draw;
+    // TouchInput.ApplyLayout sets it from the saved layout. The movement joystick/D-pad are never removable.
+    public bool Removed { get; set; }
     public virtual Rect Boundary { get; set; }
     public virtual void FirstUpdate() { }
     public virtual void UpdateTouches(Touch touch) { }

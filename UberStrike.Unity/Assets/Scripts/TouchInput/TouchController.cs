@@ -23,7 +23,7 @@ public class TouchController : Singleton<TouchController>
 
         foreach (TouchBaseControl control in _controls)
         {
-            if (!control.Enabled) continue;
+            if (!control.Enabled || control.Removed) continue;
             control.FirstUpdate();
             foreach (Touch touch in Input.touches)
             {
@@ -40,7 +40,7 @@ public class TouchController : Singleton<TouchController>
 
         foreach (TouchBaseControl control in _controls)
         {
-            if (!control.Enabled) continue;
+            if (!control.Enabled || control.Removed) continue;
             control.Draw();
         }
     }

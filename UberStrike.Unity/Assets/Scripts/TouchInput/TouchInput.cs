@@ -233,11 +233,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         Shooter = new TouchShooter();
         Shooter.Boundary = new Rect(0, 0, Screen.width, Screen.height);
-        if (UseMultiTouch)
-        {
-            Shooter.OnFireStart += OnFireStart;
-            Shooter.OnFireEnd += OnFireEnd;
-        }
+        // Tap-anywhere-to-fire (Shooter.OnFireStart/End) is intentionally NOT hooked: firing is always the
+        // on-screen Fire button in BOTH joystick and D-pad modes (user pref: "D-pad mode like joystick mode").
         Shooter.IgnoreRect(WeaponChanger.Boundary);
         Shooter.SetJoystickIgnore(Joystick.Boundary); // replaceable: the joystick zone is customizable (includes dpad boundary)
         Shooter.IgnoreRect(new Rect(0, menu.Boundary.y, score.Boundary.width, score.Boundary.yMax - menu.Boundary.y));
@@ -248,7 +245,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         AimHelpText.Scale = new Vector2(0.6f, 0.6f);
         AimHelpText.Alpha = 0.0f;
 
-        ShootHelpText = new MeshGUIText("Tap second finger to shoot", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
+        ShootHelpText = new MeshGUIText("Tap the fire button to shoot", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(ShootHelpText);
         ShootHelpText.Position = new Vector2(Screen.width - 300, Screen.height - 100);
         ShootHelpText.Scale = new Vector2(0.6f, 0.6f);
@@ -278,6 +275,8 @@ public class TouchInput : MonoSingleton<TouchInput>
         public Rect Boundary;   // GUI-space rect of the control
         public Texture Icon;    // icon to draw in the editor (may be null)
         public float Scale;
+        public bool Hidden;     // player removed this control via the editor's ✕ button (still editable, shown greyed)
+        public bool Removable;  // false for the movement joystick/D-pad (you can't remove your only way to move)
     }
 
     // Maps a stable layout id -> the button it controls. Only round (TouchButtonCircle) buttons
@@ -312,7 +311,8 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "chat": return "Chat";
             case "score": return "Scores";
             case "weaponChanger": return "Weapons";
-            case "joystick": return "Move";
+            case "joystick": return "Joystick";
+            case "dpad": return "D-Pad";
             case "quickItem1": return "Quick Item 1";
             case "quickItem2": return "Quick Item 2";
             case "quickItem3": return "Quick Item 3";
@@ -346,6 +346,14 @@ public class TouchInput : MonoSingleton<TouchInput>
             // Movement joystick: center of its default bottom-left activation zone
             // (Rect(0, h/2, 0.4w, h/2) -> center (0.2w, 0.75h)). Kept in sync with SetupRects.
             case "joystick":           return new Vector2(w * 0.20f,  h * 0.75f);
+            // D-pad cluster: centre of the default cluster (top-left (25, h-256), image-sized).
+            case "dpad":
+            {
+                Texture dpadTex = MobileIcons.KeyboardDpad;
+                float dw = (dpadTex != null) ? dpadTex.width : 399f;
+                float dh = (dpadTex != null) ? dpadTex.height : 209f;
+                return new Vector2(25f + dw * 0.5f, (h - 256f) + dh * 0.5f);
+            }
             default:                   return new Vector2(w * 0.5f,   h * 0.5f);
         }
     }
@@ -364,12 +372,14 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             MobileControlLayout.Placement p = MobileControlLayout.GetOrDefault(entry.Key, circle.CenterPosition, circle.LayoutScale);
             circle.SetLayout(MobileControlLayout.ToPixels(p), p.Scale);
+            circle.Removed = p.Hidden;   // player-removed controls vanish from the live game (state machine can't re-show them)
         }
 
         if (WeaponChanger != null)
         {
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", WeaponChanger.Position, 1f);
             WeaponChanger.Position = MobileControlLayout.ToPixels(wp);
+            WeaponChanger.Removed = wp.Hidden;
         }
 
         // Movement joystick: stays a floating joystick, but its activation zone can be moved/scaled.
@@ -385,6 +395,35 @@ public class TouchInput : MonoSingleton<TouchInput>
             Rect zone = new Rect(c.x - zw * 0.5f, c.y - zh * 0.5f, zw, zh);
             Joystick.Boundary = zone;
             if (Shooter != null) Shooter.SetJoystickIgnore(zone);
+        }
+
+        // D-pad cluster: position from the saved center (converted to the top-left it's anchored by). The
+        // cluster size is fixed (scaling is a follow-up); only its position is customizable. Re-apply the
+        // rotation afterwards so the Jump/Crouch hit-rects rotate about the cluster's new centre.
+        if (Dpad != null)
+        {
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenter("dpad"), 1f);
+            Vector2 dc = MobileControlLayout.ToPixels(dp);
+            float dpadRot = Dpad.Rotation;
+            Dpad.Scale = dp.Scale;
+            Dpad.TopLeftPosition = new Vector2(dc.x - Dpad.ImageWidth * dp.Scale * 0.5f, dc.y - Dpad.ImageHeight * dp.Scale * 0.5f);
+            Dpad.Rotation = dpadRot;
+            // In D-pad mode the movement zone is the cluster, so the aim-Shooter must ignore it (not the
+            // joystick zone). Only override when multi-touch is active; single-touch keeps the joystick ignore.
+            if (ApplicationDataManager.ApplicationOptions.UseMultiTouch && Shooter != null)
+            {
+                // Inflate the ignore zone past the tight image rect. The cluster is DRAWN rotated 15°, so a
+                // press near a twisted corner lands OUTSIDE the axis-aligned Bounds yet still registers as
+                // movement (TouchDPad un-rotates before its hit-test) — that finger then also binds as the
+                // Shooter's look finger and pans the POV (#65 v29 "POV moves when sliding on the D-pad").
+                // The Shooter only classifies look-vs-move at TouchPhase.Began, so the margin just needs to
+                // cover the rotated extent + a thumb's width. A generous zone mirrors how the joystick's
+                // large floating zone keeps the movement finger out of aim.
+                Rect b = Dpad.Bounds;
+                float padX = b.width * 0.15f;
+                float padY = b.height * 0.35f;
+                Shooter.SetJoystickIgnore(new Rect(b.x - padX, b.y - padY, b.width + 2f * padX, b.height + 2f * padY));
+            }
         }
 
         // Keep the look/aim area clear of the action buttons: a touch that starts on fire/jump/crouch/
@@ -429,6 +468,8 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Boundary = circle.Boundary,
                 Icon = (circle.Content != null) ? circle.Content.image : null,
                 Scale = circle.LayoutScale,
+                Hidden = MobileControlLayout.IsHidden(entry.Key),
+                Removable = true,
             });
         }
 
@@ -441,12 +482,26 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Boundary = WeaponChanger.Boundary,
                 Icon = null,
                 Scale = 1f,
+                Hidden = MobileControlLayout.IsHidden("weaponChanger"),
+                Removable = true,
             });
         }
 
-        // Movement joystick handle: a ring-sized grab area centered on the (floating) zone, so the
-        // player can see + reposition/scale the movement zone. The icon is the outer ring.
-        if (Joystick != null)
+        // Movement handle — the ACTIVE scheme only: the D-pad cluster in multi-touch mode, otherwise the
+        // floating joystick zone. The editor's "Switch to …" button flips between them.
+        if (ApplicationDataManager.ApplicationOptions.UseMultiTouch && Dpad != null)
+        {
+            MobileControlLayout.Placement dpp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenter("dpad"), 1f);
+            list.Add(new LayoutHandle
+            {
+                Id = "dpad",
+                DisplayName = DisplayNameFor("dpad"),
+                Boundary = Dpad.Bounds,
+                Icon = MobileIcons.KeyboardDpad,
+                Scale = dpp.Scale,
+            });
+        }
+        else if (Joystick != null)
         {
             MobileControlLayout.Placement jp = MobileControlLayout.GetOrDefault("joystick", DefaultGuiCenter("joystick"), 1f);
             Vector2 c = Joystick.Boundary.center;
@@ -470,8 +525,11 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnIdleTime()
     {
-        ShootHelpText.FadeAlphaTo(1.0f, 1.0f);
-        AimHelpText.FadeAlphaTo(1.0f, 1.0f);
+        // The "Drag finger to aim / Tap the fire button to shoot" idle tutorial is obsolete: D-pad mode is
+        // now joystick-like (fire is always the on-screen button), so the hint only cluttered the bottom-
+        // right over the Fire button when on the D-pad (#65 v32). This is the ONLY place its alpha was faded
+        // up, so neutralising it keeps the text hidden no matter which path arms the idle timer
+        // (OnModeChangePushed / TouchStatePlaying.OnEnter). The help texts start at alpha 0 and stay there.
         CheckIdleTime = false;
     }
 
@@ -569,8 +627,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (WeaponController.Instance.GetCurrentWeapon().Item.Configuration.SecondaryAction != WeaponSecondaryAction.None
             && _stateMachine.CurrentStateId == (int)TouchState.Playing)
         {
-            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = !UseMultiTouch;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = UseMultiTouch;
+            // One shared Secondary-fire button in both modes (D-pad mode behaves like joystick mode).
+            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
         }
         else
         {
@@ -676,17 +735,10 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
 
-            // unhook extra functions of right finger if in single fire mode
-            if (UseMultiTouch)
-            {
-                Shooter.OnFireStart += OnFireStart;
-                Shooter.OnFireEnd += OnFireEnd;
-            }
-            else
-            {
-                Shooter.OnFireStart -= OnFireStart;
-                Shooter.OnFireEnd -= OnFireEnd;
-            }
+            // Tap-anywhere-to-fire is retired in both modes (firing is always the on-screen Fire button).
+            // Defensively detach in case an earlier build/session left the Shooter fire events bound.
+            Shooter.OnFireStart -= OnFireStart;
+            Shooter.OnFireEnd -= OnFireEnd;
 
             // force state update
             int state = _stateMachine.CurrentStateId;
@@ -797,25 +849,35 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnCrouchBegan(Vector2 obj)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
-            WishCrouch = true;
+        // Crouch is held in BOTH cases: on land it ducks, and while swimming/diving it swims DOWN
+        // (production reads the held Crouch key as downward VerticalDirection in water). The old gate
+        // blocked it underwater, which (together with the Jump gate below) left no vertical swim control
+        // on mobile (#65 v29).
+        WishCrouch = true;
     }
 
     void OnCrouchEnded(Vector2 obj)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
-            WishCrouch = false;
+        WishCrouch = false;
     }
 
     void OnJump(Vector2 pos)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
+        // Underwater / half-submerged (DIVING or SWIMMING): Jump = swim UP. The old gate skipped this
+        // branch entirely, so the touch Jump button did NOTHING in water (#65 v29 "jump does nothing in
+        // water"). Production rises by reading the HELD Jump key as upward VerticalDirection in
+        // MoveInWater / MoveOnWaterRim, so we just hold WishJump; the on-land "un-crouch before jumping"
+        // step doesn't apply while swimming.
+        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) != 0)
         {
-            if (WishCrouch)
-                WishCrouch = false;
-            else
-                WishJump = true;
+            WishJump = true;
+            return;
         }
+
+        if (WishCrouch)
+            WishCrouch = false;
+        else
+            WishJump = true;
     }
 
     void OnMenu()
@@ -899,14 +961,13 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         public void OnEnter()
         {
-            if (UseMultiTouch && !TouchInput.Instance.HasDisplayedFireHelp)
-            {
-                TouchInput.Instance.CheckIdleTime = true;
-                TouchInput.Instance.LastFireTime = Time.time;
-            }
-
-            TouchInput.Instance.AimHelpText.IsEnabled = true;
-            TouchInput.Instance.ShootHelpText.IsEnabled = true;
+            // The idle tutorial ("Drag finger to aim / Tap the fire button to shoot") was for the OLD
+            // multi-touch tap-anywhere-to-fire scheme and only triggered in UseMultiTouch (D-pad) mode.
+            // D-pad mode is now joystick-like (fire is always the on-screen button), so the hint is obsolete
+            // and just cluttered the bottom-right over the Fire button when switching to the D-pad in a match
+            // (#65 v32). Keep it permanently hidden in both modes — don't arm the idle timer, don't draw it.
+            TouchInput.Instance.AimHelpText.IsEnabled = false;
+            TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
 
             if (GameStateController.Instance.StateMachine.CurrentStateId == (int)GameStateId.TryWeapon)
@@ -956,37 +1017,30 @@ public class TouchInput : MonoSingleton<TouchInput>
             _inputEnabled = InputManager.Instance.IsInputEnabled;
             if (_walkingEnabled && _inputEnabled)
             {
-                if (UseMultiTouch)
+                // The movement scheme is now the ONLY difference between modes (user pref: "D-pad mode like
+                // joystick mode"): the D-pad cluster (left) in multi-touch, the floating joystick otherwise.
+                // The right-side action buttons (Fire / Jump / Crouch + Secondary) are shown in BOTH modes.
+                // The D-pad's own integrated Jump/Crouch zones are disabled so they neither duplicate the
+                // right-side buttons nor fight the angle-based movement.
+                bool dpadMode = UseMultiTouch;
+                TouchInput.Instance.Dpad.Enabled = dpadMode;
+                TouchInput.Instance.Joystick.Enabled = !dpadMode;
+                if (dpadMode)
                 {
-                    TouchInput.Instance.Dpad.Enabled = true;
-
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
-                    TouchInput.Instance.Joystick.Enabled = false;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
+                    TouchInput.Instance.Dpad.JumpButton.Enabled = false;
+                    TouchInput.Instance.Dpad.CrouchButton.Enabled = false;
                 }
-                else
-                {
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
 
-                    TouchInput.Instance.Joystick.Enabled = true;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = true;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = true;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = true;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = true;
 
-                    TouchInput.Instance.Dpad.Enabled = false;
-                }
                 WeaponSlot slot = WeaponController.Instance.GetCurrentWeapon();
                 if (slot != null)
                 {
-                    if (UseMultiTouch)
-                    {
-                        TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
-                    }
-                    else
-                    {
-                        TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
-
-                    }
+                    // One shared Secondary-fire button in both modes; the multi-touch-only variant is retired.
+                    TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
+                    TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
                 }
             }
             else
@@ -1091,23 +1145,22 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
-            if (UseMultiTouch)
+            // Movement scheme is the ONLY mode difference (v28 decouple: D-pad mode behaves like joystick
+            // mode — firing is ALWAYS the on-screen Fire button). The old code hid PrimaryFire in D-pad mode
+            // (legacy tap-anywhere-to-fire), so scoping a sniper while on the D-pad left NO visible fire
+            // button (#65 v29). Show Fire + the shared Secondary button in BOTH modes; only swap the mover.
+            // (Jump/Crouch stay disabled here — that's intentional for the sniping state, set above.)
+            bool dpadMode = UseMultiTouch;
+            TouchInput.Instance.Dpad.Enabled = dpadMode;
+            TouchInput.Instance.Joystick.Enabled = !dpadMode;
+            if (dpadMode)
             {
-                TouchInput.Instance.Dpad.Enabled = true;
-
-                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
-                TouchInput.Instance.Joystick.Enabled = false;
+                TouchInput.Instance.Dpad.JumpButton.Enabled = false;
+                TouchInput.Instance.Dpad.CrouchButton.Enabled = false;
             }
-            else
-            {
-                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
-                TouchInput.Instance.Joystick.Enabled = true;
-
-                TouchInput.Instance.Dpad.Enabled = false;
-
-            }
-            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = !UseMultiTouch;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
 
             ZoomInfo zoomInfo = WeaponController.Instance.GetCurrentWeapon().Item.Configuration.ZoomInformation;
             if (zoomInfo.DefaultMultiplier != 1 && zoomInfo.MaxMultiplier != zoomInfo.MinMultiplier)

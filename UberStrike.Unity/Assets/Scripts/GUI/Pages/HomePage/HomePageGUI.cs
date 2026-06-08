@@ -215,6 +215,7 @@ public class HomePageGUI : MonoBehaviour
     {
         public Rect Rect;
         public Color Color;
+        public float Hover;   // 0..1 hover amount, smoothly faded (NGUI-style), drives the hover highlight
         private readonly float _relativeWidth;
         private readonly float _relativeHeight;
 
@@ -262,18 +263,21 @@ public class HomePageGUI : MonoBehaviour
     {
         _tiles = new Dictionary<string, MenuTile>
         {
-            // Authentic 4.3.10.1 relative tile sizes (match retail), with a little inter-row breathing
-            // room added in ClassicLayoutTiles. AdLarge = big Weekly Special (bottom-left); AdSmall = the
-            // small Weekly Special thumbnail to its right (retail's big+small ad pair).
-            { "Play", new MenuTile(0.5f, 0.23f) },
-            { "Shop", new MenuTile(0.5f, 0.23f) },
-            { "MenuOne", new MenuTile(0.25f, 0.14f) },
-            { "MenuTwo", new MenuTile(0.25f, 0.14f) },
-            { "MenuThree", new MenuTile(0.25f, 0.14f) },
-            { "MenuFour", new MenuTile(0.25f, 0.14f) },
-            { "AdLarge", new MenuTile(0.7f, 0.56f) },
-            { "Chat", new MenuTile(0.3f, 0.28f) },
-            { "AdSmall", new MenuTile(0.3f, 0.24f) },
+            // Authentic 4.3.10.1 relative tile sizes — VERBATIM from the original decomp so the rows pack
+            // flush (Play 0.24 + icons 0.15 + AdLarge 0.61 == 1.0), exactly like retail. No inter-row gaps:
+            // retail has none, and the added 0.035 bands were the "big gaps" between rows. AdLarge = big
+            // Weekly Special (bottom-left); AdSmall = the small thumbnail to its right (retail's ad pair).
+            { "Play", new MenuTile(0.5f, 0.24f) },
+            { "Shop", new MenuTile(0.5f, 0.24f) },
+            { "MenuOne", new MenuTile(0.25f, 0.15f) },
+            { "MenuTwo", new MenuTile(0.25f, 0.15f) },
+            { "MenuThree", new MenuTile(0.25f, 0.15f) },
+            { "MenuFour", new MenuTile(0.25f, 0.15f) },
+            { "AdLarge", new MenuTile(0.7f, 0.61f) },
+            // Chat is a bigger tile (wider + taller than the icon row, like retail) centred vertically in
+            // the right column between the icon row and the small ad (positioned in ClassicLayoutTiles).
+            { "Chat", new MenuTile(0.3f, 0.2f) },
+            { "AdSmall", new MenuTile(0.3f, 0.28f) },
         };
         _playTiles = new Dictionary<string, MenuTile>
         {
@@ -293,8 +297,8 @@ public class HomePageGUI : MonoBehaviour
         _classicReady = true;
         _classicTransitioning = false;
         _classicPlayActive = false;
-        if (_tiles != null) foreach (var kv in _tiles) kv.Value.Color = Color.white;
-        if (_playTiles != null) foreach (var kv in _playTiles) kv.Value.Color = Color.white;
+        if (_tiles != null) foreach (var kv in _tiles) { kv.Value.Color = Color.white; kv.Value.Hover = 0f; }
+        if (_playTiles != null) foreach (var kv in _playTiles) { kv.Value.Color = Color.white; kv.Value.Hover = 0f; }
     }
 
     private void ClassicLayout()
@@ -324,19 +328,25 @@ public class HomePageGUI : MonoBehaviour
 
     private void ClassicLayoutTiles()
     {
-        // Vertical breathing room between the Play/Shop row, the icon row, and the ad row.
-        float gap = _classicMenuRect.height * 0.035f;
+        // Authentic flush packing (no inter-row gaps — see ClassicInit). Each row butts up against the
+        // previous row's yMax, matching retail's compact ring.
         _tiles["Play"].SetRect(0f, 0f, _classicMenuRect);
         _tiles["Shop"].SetRect(_tiles["Play"].Rect.xMax, 0f, _classicMenuRect);
-        float iconRowY = _tiles["Play"].Rect.yMax + gap;
+        float iconRowY = _tiles["Play"].Rect.yMax;
         _tiles["MenuOne"].SetRect(0f, iconRowY, _classicMenuRect);
         _tiles["MenuTwo"].SetRect(_tiles["MenuOne"].Rect.xMax, iconRowY, _classicMenuRect);
         _tiles["MenuThree"].SetRect(_tiles["MenuTwo"].Rect.xMax, iconRowY, _classicMenuRect);
         _tiles["MenuFour"].SetRect(_tiles["MenuThree"].Rect.xMax, iconRowY, _classicMenuRect);
-        float adRowY = _tiles["MenuOne"].Rect.yMax + gap;
+        float adRowY = _tiles["MenuOne"].Rect.yMax;
         _tiles["AdLarge"].SetRect(0f, adRowY, _classicMenuRect);
+        // Pin the small ad to the bottom (aligned with the big ad's bottom).
+        float adSmallH = Mathf.RoundToInt(_classicMenuRect.height * 0.28f);
+        _tiles["AdSmall"].SetRect(_tiles["AdLarge"].Rect.xMax, _tiles["AdLarge"].Rect.yMax - adSmallH, _classicMenuRect);
+        // Chat FILLS the whole right-column gap between the icon row and the small ad — no empty space above
+        // or below it. Its backing is drawn filled (not hugged — see the fill flag in DrawClassicRing); the
+        // icon/label sits centred inside the tall pill.
         _tiles["Chat"].SetRect(_tiles["AdLarge"].Rect.xMax, adRowY, _classicMenuRect);
-        _tiles["AdSmall"].SetRect(_tiles["AdLarge"].Rect.xMax, _tiles["Chat"].Rect.yMax + gap * 0.6f, _classicMenuRect);
+        _tiles["Chat"].Rect.height = _tiles["AdSmall"].Rect.yMin - adRowY;
         _playTiles["JoinGame"].SetRect(_tiles["Play"].Rect.xMax, 0f, _classicMenuRect);
         _playTiles["NewGame"].SetRect(_tiles["Play"].Rect.xMax, _playTiles["JoinGame"].Rect.yMax, _classicMenuRect);
         _playTiles["ExploreMaps"].SetRect(_tiles["Play"].Rect.xMax, _playTiles["NewGame"].Rect.yMax, _classicMenuRect);
@@ -405,9 +415,36 @@ public class HomePageGUI : MonoBehaviour
         // Inbox "you have unread" glow pulse (authentic).
         float pulse = (Mathf.Sin(Time.time * 6f) + 1.2f) * 0.5f;
 
+        // Nested clip groups (screen -> canvas -> menu). NOTE: do NOT replace these with a GUI.matrix
+        // translate — on mobile MobileMenuScale already sets a scale matrix, and multiplying another matrix
+        // onto GUI.matrix here produced a "matrix needs to be invertible" error on device that broke touch
+        // hit-testing on the ring (tiles needed multiple taps). The minor cosmetic cost is that the menuRect
+        // group clips the very edge of the outermost tiles' hover glow — acceptable vs. broken input.
         GUI.BeginGroup(_classicScreenRect);
         GUI.BeginGroup(_classicCanvasRect);
         GUI.BeginGroup(_classicMenuRect);
+
+        // Per-ELEMENT dark backings — each tile gets its own rounded pill hugged to its icon/label, with a
+        // small uniform gap separating it from its neighbours, and a cyan hover flash. Drawn first, behind
+        // the tile content.
+        if (!_classicPlayActive)
+        {
+            ClassicTileBack(_tiles["Play"], ClassicTile("PlayTile"));
+            ClassicTileBack(_tiles["Shop"], ClassicTile("ShopTile"));
+            ClassicTileBack(_tiles["MenuOne"], ClassicTile("ProfileTile"));
+            ClassicTileBack(_tiles["MenuTwo"], ClassicTile("InboxTile"));
+            ClassicTileBack(_tiles["MenuThree"], ClassicTile("ClansTile"));
+            ClassicTileBack(_tiles["MenuFour"], ClassicTile("OptionsTile"));
+            ClassicTileBack(_tiles["Chat"], ClassicTile("ChatTile"), fill: true);
+        }
+        else
+        {
+            ClassicTileBack(_tiles["Play"], ClassicTile("PlayTile"));
+            ClassicTileBack(_playTiles["JoinGame"], ClassicTile("JoinGameTile"));
+            ClassicTileBack(_playTiles["NewGame"], ClassicTile("NewGameTile"));
+            ClassicTileBack(_playTiles["ExploreMaps"], ClassicTile("ExploreMapsTile"));
+            ClassicTileBack(_playTiles["Back"], ClassicTile("BackTile"));
+        }
 
         ClassicDrawTile(_tiles["Play"], "PlayTile", ClassicTogglePlay);
         ClassicDrawTile(_tiles["Shop"], "ShopTile", delegate { MenuPageManager.Instance.LoadPage(PageType.Shop); });
@@ -458,39 +495,160 @@ public class HomePageGUI : MonoBehaviour
         }
         GUI.color = prev;
 
-        if (!_classicTransitioning && GUITools.Button(tile.Rect, GUIContent.none, GUIStyle.none))
+        if (ClassicTapped(tile.Rect, withTitle ? "WeeklySpecialLarge" : "WeeklySpecialSmall"))
             MenuPageManager.Instance.LoadPage(PageType.Shop);
     }
 
-    // A classic tile is a baked icon/label/glow graphic on a dark semi-transparent backing (the retail
-    // MenuTile background). Retail's style isn't in the fork's skin, so reconstruct it: draw the imported
-    // flat-grey TileNormal/TileHover tinted DARK as the backing (so the glow reads over the busy 3D scene),
-    // then the tile graphic on top. Honours the tile's fade alpha, an optional content-alpha pulse for
-    // unread badges, a subtle non-hover dim, and an invisible click hit-rect.
+    // Robust single-tap hit-test for the classic ring tiles. The IMGUI GUI.Button model needs multiple taps
+    // here on device: the nested clip-groups + MobileMenuScale's scale matrix desync GUI.Button's internal
+    // hot/active control tracking, so the first (sometimes second) tap is dropped. We detect the tap
+    // explicitly instead — MouseDown inside a tile arms it, MouseUp inside the SAME tile fires. Both read
+    // Event.current.mousePosition, which Unity has already mapped into this group-local space (the same
+    // space tile.Rect lives in), so it is correct under the groups + scale. Works with mouse in the Editor
+    // preview too. _classicTransitioning gates clicks during the energy-wipe / page transition.
+    private string _classicPressedTile;
+    private bool ClassicTapped(Rect rect, string tileId)
+    {
+        if (_classicTransitioning) return false;
+        Event e = Event.current;
+        switch (e.type)
+        {
+            case UnityEngine.EventType.MouseDown:
+                if (rect.Contains(e.mousePosition)) { _classicPressedTile = tileId; e.Use(); }
+                break;
+            case UnityEngine.EventType.MouseUp:
+                if (_classicPressedTile == tileId)
+                {
+                    _classicPressedTile = null;
+                    if (rect.Contains(e.mousePosition))
+                    {
+                        SfxManager.Play2dAudioClip(SoundEffectType.UIRibbonClick);
+                        e.Use();
+                        return true;
+                    }
+                }
+                break;
+        }
+        return false;
+    }
+
+    // A classic tile is a baked icon/label/glow graphic (the *Tile PNG). The dark backing is no longer per
+    // tile — it's a per-element pill drawn first by ClassicTileBack (with the hover flash). So this just
+    // draws the crisp icon/label on top, honouring the tile's fade alpha, an optional content-alpha pulse
+    // for unread badges, a subtle non-hover dim, and an invisible click hit-rect.
     private void ClassicDrawTile(MenuTile tile, string tileName, Action action, float contentAlpha = 1f)
     {
         if (tile.Color.a <= 0.001f) return;
 
-        bool hover = tile.Rect.Contains(Event.current.mousePosition);
         Color prev = GUI.color;
-
-        Texture2D backing = ClassicTile(hover ? "TileHover" : "TileNormal");
-        if (backing != null)
-        {
-            GUI.color = new Color(0f, 0f, 0f, tile.Color.a * (hover ? 0.55f : 0.4f));
-            GUI.DrawTexture(tile.Rect, backing, ScaleMode.StretchToFill);
-        }
 
         Texture2D tex = ClassicTile(tileName);
         if (tex != null)
         {
-            GUI.color = new Color(1f, 1f, 1f, tile.Color.a * contentAlpha * (hover ? 1f : 0.92f));
+            // Brighten the icon/label smoothly with the hover amount (0.9 dim → 1.0), matching the backing fade.
+            GUI.color = new Color(1f, 1f, 1f, tile.Color.a * contentAlpha * Mathf.Lerp(0.9f, 1f, tile.Hover));
             GUI.DrawTexture(tile.Rect, tex, ScaleMode.ScaleToFit);
         }
 
         GUI.color = prev;
 
-        if (action != null && !_classicTransitioning && GUITools.Button(tile.Rect, GUIContent.none, GUIStyle.none))
+        if (action != null && ClassicTapped(tile.Rect, tileName))
             action();
+    }
+
+    // Per-element rounded dark pill behind one tile: spans the tile's full width MINUS a small gap on each
+    // side (so neighbours are separated by a thin gap), hugged vertically to the icon/label height (so the
+    // 3D scene shows between rows). On hover it "flashes": the fill warms to a cyan tint and a soft, gently
+    // pulsing cyan glow haloes the pill. Drawn behind the tile content.
+    private void ClassicTileBack(MenuTile tile, Texture2D tex, bool fill = false)
+    {
+        if (tile.Color.a <= 0.001f) return;
+
+        Rect cell = tile.Rect;
+        // Uniform thin gap on ALL four sides, so the gap between tiles is the SAME small size horizontally
+        // (incl. Play↔Shop) and vertically (between rows). Tiles butt to "cell inset by gap"; a tall cell
+        // whose content is much shorter is clamped to hug its content so it stays a compact pill instead of
+        // a big empty box — UNLESS fill==true (Chat), which keeps the backing filling the whole cell.
+        float gap = Mathf.Max(1f, _classicMenuRect.height * 0.004f);
+        float vmargin = _classicMenuRect.height * 0.028f;
+        float top = cell.yMin + gap, bot = cell.yMax - gap;
+        if (!fill && tex != null && tex.width > 0 && tex.height > 0)
+        {
+            float cellScale = Mathf.Min(cell.width / tex.width, cell.height / tex.height);
+            float maxH = tex.height * cellScale + vmargin * 2f;
+            if (bot - top > maxH)
+            {
+                float cy = cell.center.y;
+                top = cy - maxH * 0.5f;
+                bot = cy + maxH * 0.5f;
+            }
+        }
+        Rect back = Rect.MinMaxRect(cell.xMin + gap, top, cell.xMax - gap, bot);
+
+        // Smoothly fade a per-tile hover amount in/out (like NGUI's UIButtonColor 0.2s tween) instead of an
+        // instant pulsing flash — much cleaner. Advance the fade once per frame (on Repaint).
+        bool over = cell.Contains(Event.current.mousePosition);
+        if (Event.current.type == UnityEngine.EventType.Repaint)
+            tile.Hover = Mathf.MoveTowards(tile.Hover, over ? 1f : 0f, Time.deltaTime / 0.12f);
+        float h = tile.Hover;
+
+        GUIStyle style = BackingStyle();
+        Color prev = GUI.color;
+
+        // Steady soft cyan glow rim behind the panel, alpha-faded by the hover amount (no pulse).
+        if (h > 0.001f)
+        {
+            float grow = _classicMenuRect.height * 0.005f;
+            GUI.color = new Color(0.32f, 0.82f, 1f, tile.Color.a * 0.5f * h);
+            GUI.Box(new Rect(back.x - grow, back.y - grow, back.width + grow * 2f, back.height + grow * 2f), GUIContent.none, style);
+        }
+        // Fill: flat black → soft dark-cyan tint as the hover fades in.
+        GUI.color = Color.Lerp(new Color(0f, 0f, 0f, tile.Color.a * 0.42f),
+                               new Color(0.06f, 0.20f, 0.28f, tile.Color.a * 0.6f), h);
+        GUI.Box(back, GUIContent.none, style);
+
+        GUI.color = prev;
+    }
+
+    // Procedural rounded-rectangle panel for the classic tile backings — generated once, cached static.
+    // White with a 1px anti-aliased rounded edge (signed-distance), tinted at draw time via GUI.color.
+    // Used as a 9-sliced GUIStyle.background (border == corner radius) so the rounded corners stay sharp
+    // no matter how the tile stretches; the straight edges/centre stretch cleanly.
+    private static Texture2D _backingTex;
+    private static GUIStyle _backingStyle;
+
+    private static GUIStyle BackingStyle()
+    {
+        if (_backingStyle != null && _backingTex != null) return _backingStyle;
+
+        const int size = 64;
+        const int radius = 5; // rounded pill corners; small so the inter-tile gap stays uniform/tiny at corners
+        _backingTex = new Texture2D(size, size, TextureFormat.RGBA32, false)
+        {
+            wrapMode = TextureWrapMode.Clamp,
+            filterMode = FilterMode.Bilinear,
+            name = "ClassicTileBacking"
+        };
+        Color32[] px = new Color32[size * size];
+        float half = size * 0.5f;
+        float inner = half - radius;
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float dx = Mathf.Abs(x + 0.5f - half) - inner;
+                float dy = Mathf.Abs(y + 0.5f - half) - inner;
+                float outside = Mathf.Sqrt(Mathf.Max(dx, 0f) * Mathf.Max(dx, 0f) + Mathf.Max(dy, 0f) * Mathf.Max(dy, 0f));
+                float sd = outside + Mathf.Min(Mathf.Max(dx, dy), 0f) - radius; // signed distance; <0 inside
+                byte a = (byte)Mathf.RoundToInt(Mathf.Clamp01(0.5f - sd) * 255f);
+                px[y * size + x] = new Color32(255, 255, 255, a);
+            }
+        }
+        _backingTex.SetPixels32(px);
+        _backingTex.Apply(false);
+
+        _backingStyle = new GUIStyle { border = new RectOffset(radius, radius, radius, radius) };
+        _backingStyle.normal.background = _backingTex;
+        return _backingStyle;
     }
 }

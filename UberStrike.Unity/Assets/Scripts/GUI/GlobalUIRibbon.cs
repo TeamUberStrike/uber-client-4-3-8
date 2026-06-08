@@ -151,6 +151,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         // Mobile settings popup opened by the OPTIONS ribbon button (Help / Options / Audio / Report).
         DrawOptionsMenu();
 
+        // "Menu UI" switcher dropdown popup (4.3.8 column vs 4.3.10 classic ring).
+        DrawMenuUiDropdown();
+
         MobileMenuScale.End(scaleMatrix);
         GuiManager.DrawTooltip();
     }
@@ -207,6 +210,27 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
                 {
                     _optionsMenuOpen = !_optionsMenuOpen;   // toggle the Help/Options/Audio/Report popup
                 }
+            }
+
+            // "Menu UI" switcher dropdown — same tab style, sitting immediately left of OPTIONS (when that
+            // button is shown) or left of GET CREDITS otherwise. Home page only (that's where the lobby UI
+            // lives). Picks 4.3.8 column vs 4.3.10 classic ring; switching plays the LobbyUiSwitchFx wipe.
+            if (MenuPageManager.IsCurrentPage(PageType.Home))
+            {
+                const float menuUiW = 150f;
+                float getCreditsLeft = MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInsetTight;
+                float anchorLeft = MobileMenuScale.Active ? (getCreditsLeft - 112f - 4f) : getCreditsLeft; // left edge of OPTIONS or GET CREDITS
+                Rect menuUiRect = new Rect(anchorLeft - menuUiW - 4f, 0, menuUiW, 37);
+                _menuUiAnchor = new Rect(_pageGroupRect.x + menuUiRect.x, _pageGroupRect.y + menuUiRect.y, menuUiRect.width, menuUiRect.height);
+                string menuUiLabel = ApplicationDataManager.ApplicationOptions.UseClassicLobby ? " 4.3.10 Menu UI" : " 4.3.8 Menu UI";
+                if (GUITools.Button(menuUiRect, new GUIContent(menuUiLabel), BlueStonez.tab_large, SoundEffectType.UIButtonClick))
+                {
+                    _menuUiDropOpen = !_menuUiDropOpen;
+                }
+            }
+            else
+            {
+                _menuUiDropOpen = false;
             }
         }
         GUI.EndGroup();
@@ -298,6 +322,49 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         if (GUITools.Button(new Rect(bx, by + 3 * itemH, bw, bh), new GUIContent(" Report"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
         { _optionsMenuOpen = false; PanelManager.Instance.OpenPanel(PanelType.ReportPlayer); }
+    }
+
+    // Dropdown popup for the "Menu UI" switcher: 4.3.8 column lobby vs 4.3.10 classic ring. A check marks
+    // the active one; picking the OTHER one plays the LobbyUiSwitchFx wipe (which flips the flag + reloads
+    // Home at its midpoint). Anchored under the dropdown button, drawn inside the menu scale matrix.
+    private void DrawMenuUiDropdown()
+    {
+        if (!_menuUiDropOpen) return;
+
+        const float itemH = 46f;
+        const int count = 2;
+        float w = _menuUiAnchor.width;
+        float px = _menuUiAnchor.x;
+        float py = _menuUiAnchor.yMax + 2f;
+        Rect panel = new Rect(px, py, w, itemH * count + 8f);
+
+        // Tap outside the popup (and not the button) closes it.
+        if (Event.current.type == UnityEngine.EventType.MouseDown
+            && !panel.Contains(Event.current.mousePosition)
+            && !_menuUiAnchor.Contains(Event.current.mousePosition))
+        {
+            _menuUiDropOpen = false;
+            return;
+        }
+
+        GUI.Box(panel, GUIContent.none, BlueStonez.window);
+        float bx = px + 4f, bw = w - 8f, by = py + 4f, bh = itemH - 2f;
+
+        bool isClassic = ApplicationDataManager.ApplicationOptions.UseClassicLobby;
+
+        if (GUITools.Button(new Rect(bx, by, bw, bh), new GUIContent(!isClassic ? " > 4.3.8 Menu UI" : "    4.3.8 Menu UI"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        {
+            _menuUiDropOpen = false;
+            if (isClassic && !LobbyUiSwitchFx.Instance.IsPlaying)
+                LobbyUiSwitchFx.Instance.Begin(false);
+        }
+
+        if (GUITools.Button(new Rect(bx, by + itemH, bw, bh), new GUIContent(isClassic ? " > 4.3.10 Menu UI" : "    4.3.10 Menu UI"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        {
+            _menuUiDropOpen = false;
+            if (!isClassic && !LobbyUiSwitchFx.Instance.IsPlaying)
+                LobbyUiSwitchFx.Instance.Begin(true);
+        }
     }
 
     private void DoLiveFeeds()
@@ -445,6 +512,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     // Mobile OPTIONS-button settings popup (Help/Options/Audio/Report).
     private bool _optionsMenuOpen;
     private Rect _optionsAnchor;
+
+    // "Menu UI" switcher dropdown (4.3.8 column lobby <-> 4.3.10 classic ring), shown left of OPTIONS on Home.
+    private bool _menuUiDropOpen;
+    private Rect _menuUiAnchor;
 
     private Dictionary<EventType, RibbonEvent> _ribbonEvents = new Dictionary<EventType, RibbonEvent>();
 

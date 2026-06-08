@@ -18,8 +18,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private Vector2 _dragOffset;
     private Rect _toolbarRect;   // the floating control panel rect = the drag-exclusion zone
     private Texture2D _pixel;
+    private bool _selRemovable;  // selected control can be removed (not the movement joystick/D-pad)
+    private bool _selHidden;     // selected control is currently removed
 
     private float _ui = 1f;      // UI scale (screen-height based) so the panel isn't tiny on a phone
+    private const float DpadTwist = 15f;   // clockwise twist of the D-pad handle — matches TouchInput's Dpad.Rotation
     private GUIStyle _titleStyle, _btnStyle, _labelStyle, _sliderStyle, _thumbStyle, _handleLabelStyle;
 
     private void Awake()
@@ -44,7 +47,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
     // The floating control panel: centered horizontally, just below the top safe-area inset, sized so
     // NOTHING sits on a screen edge or under the notch (Pixel-Gun-3D style). Returns its rect, which also
     // becomes the drag-exclusion zone so taps on the panel never move a control behind it.
-    private Rect ComputePanelRect(bool hasSelection)
+    private bool SelIsMovement { get { return _selectedId == "joystick" || _selectedId == "dpad"; } }
+    private bool SelShowsSlider { get { return !string.IsNullOrEmpty(_selectedId); } }   // all controls (incl. D-pad) are scalable
+
+    private Rect ComputePanelRect()
     {
         Rect sa = Screen.safeArea;                       // y-up from bottom
         float topInset = Screen.height - sa.yMax;        // px from top edge to safe-area top
@@ -52,7 +58,15 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
         float pad = 24f * _ui;
         float pw = Mathf.Min(700f * _ui, Screen.width - 2f * (sideInset + pad));
-        float ph = (hasSelection ? 184f : 116f) * _ui;
+
+        // Content stack: title + (movement-style switch) + (size slider) + (remove/restore) + button row.
+        float content = 34f;                       // title
+        if (SelIsMovement) content += 54f;         // switch button row
+        if (SelShowsSlider) content += 40f;        // size slider
+        if (_selRemovable) content += 50f;         // remove / restore button
+        content += 62f;                            // button row
+        float ph = (content + 20f) * _ui;
+
         float px = (Screen.width - pw) * 0.5f;
         float py = topInset + 18f * _ui;
         return new Rect(px, py, pw, ph);
@@ -127,29 +141,50 @@ public class MobileControlLayoutEditor : MonoBehaviour
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _pixel);
         GUI.color = prev;
 
+        // Whether the currently-selected control can be removed (drives the panel height + the ✕ button).
+        TouchInput.LayoutHandle selHandle = FindHandle(handles, _selectedId);
+        _selRemovable = selHandle != null && selHandle.Removable;
+        _selHidden = selHandle != null && selHandle.Hidden;
+
         // The floating control panel (centered, off all edges). Computed before HandleDrag so its rect
         // is the drag-exclusion zone; drawn after the handles so it sits on top.
-        _toolbarRect = ComputePanelRect(!string.IsNullOrEmpty(_selectedId));
+        _toolbarRect = ComputePanelRect();
 
         // Draw each control + its outline + label.
         foreach (TouchInput.LayoutHandle hd in handles)
         {
             bool selected = (hd.Id == _selectedId);
+            bool isDpad = (hd.Id == "dpad");
 
+            // The D-pad is drawn with its in-game twist (clockwise) so the editor matches the real, twisted
+            // control instead of a straight box. Icon + outline rotate; the text label stays upright.
+            Matrix4x4 m = GUI.matrix;
+            if (isDpad) GUIUtility.RotateAroundPivot(DpadTwist, hd.Boundary.center);
+
+            // Removed controls are drawn faded (and outlined red) so the player can still see and restore
+            // them in the editor, even though they don't appear in the live game.
             if (hd.Icon != null)
             {
-                GUI.DrawTexture(hd.Boundary, hd.Icon, ScaleMode.StretchToFill, true);
+                GUI.color = hd.Hidden ? new Color(1f, 1f, 1f, 0.28f) : Color.white;
+                GUI.DrawTexture(hd.Boundary, hd.Icon, isDpad ? ScaleMode.ScaleToFit : ScaleMode.StretchToFill, true);
+                GUI.color = Color.white;
             }
             else
             {
-                GUI.color = new Color(0.35f, 0.55f, 1f, 0.85f);
+                GUI.color = hd.Hidden ? new Color(0.35f, 0.55f, 1f, 0.30f) : new Color(0.35f, 0.55f, 1f, 0.85f);
                 GUI.Box(hd.Boundary, GUIContent.none);
                 GUI.color = Color.white;
             }
 
-            DrawOutline(hd.Boundary, selected ? Color.yellow : new Color(1f, 1f, 1f, 0.6f), selected ? 3f : 1f);
+            Color outline = selected ? Color.yellow
+                          : hd.Hidden ? new Color(1f, 0.4f, 0.4f, 0.7f)
+                                      : new Color(1f, 1f, 1f, 0.6f);
+            DrawOutline(hd.Boundary, outline, selected ? 3f : 1f);
 
-            GUI.Label(new Rect(hd.Boundary.x - 10, hd.Boundary.yMax + 2, Mathf.Max(hd.Boundary.width + 20, 90), 20 * _ui), hd.DisplayName, _handleLabelStyle);
+            if (isDpad) GUI.matrix = m;
+
+            string label = hd.Hidden ? hd.DisplayName + " (removed)" : hd.DisplayName;
+            GUI.Label(new Rect(hd.Boundary.x - 10, hd.Boundary.yMax + 2, Mathf.Max(hd.Boundary.width + 20, 90), 20 * _ui), label, _handleLabelStyle);
         }
 
         HandleDrag(handles);
@@ -217,27 +252,80 @@ public class MobileControlLayoutEditor : MonoBehaviour
         GUI.color = Color.white;
         DrawOutline(panel, new Color(1f, 1f, 1f, 0.22f), 2f);
 
+        float y = panel.y + 10f * _ui;
+
         // Title.
-        GUI.Label(new Rect(panel.x + pad, panel.y + 10f * _ui, panel.width - 2f * pad, 28f * _ui),
+        GUI.Label(new Rect(panel.x + pad, y, panel.width - 2f * pad, 28f * _ui),
             hasSel ? "Selected: " + DisplayName(handles, _selectedId)
                    : "Customize Controls — drag to move, tap to select",
             _titleStyle);
+        y += 34f * _ui;
 
-        // Size slider (only when a control is selected), between title and buttons.
-        if (hasSel)
+        // Movement-style switch — appears when the movement control is selected. Its label is the OTHER
+        // style; tapping it flips schemes (Joystick <-> D-Pad) and keeps the movement control selected.
+        if (SelIsMovement)
         {
-            float sy = panel.y + 48f * _ui;
-            GUI.Label(new Rect(panel.x + pad, sy, 60f * _ui, 30f * _ui), "Size", _labelStyle);
+            bool multi = ApplicationDataManager.ApplicationOptions.UseMultiTouch;
+            GUI.backgroundColor = new Color(0.30f, 0.60f, 0.95f);
+            if (GUI.Button(new Rect(panel.x + pad, y, panel.width - 2f * pad, 44f * _ui),
+                           multi ? "Switch to Joystick" : "Switch to D-Pad (Classic)", _btnStyle))
+            {
+                ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
+                opt.UseMultiTouch = !multi;
+                opt.SaveApplicationOptions();
+                if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
+                _selectedId = opt.UseMultiTouch ? "dpad" : "joystick";   // keep movement selected
+            }
+            GUI.backgroundColor = Color.white;
+            y += 54f * _ui;
+        }
+
+        // Size slider — scales the selected control (incl. the D-pad cluster).
+        if (SelShowsSlider)
+        {
+            GUI.Label(new Rect(panel.x + pad, y, 60f * _ui, 30f * _ui), "Size", _labelStyle);
             float cur = GetScale(handles, _selectedId);
             float sliderX = panel.x + pad + 64f * _ui;
             float sliderW = panel.width - 2f * pad - 64f * _ui - 60f * _ui;
-            float next = GUI.HorizontalSlider(new Rect(sliderX, sy + 6f * _ui, sliderW, 30f * _ui), cur, 0.6f, 2.2f, _sliderStyle, _thumbStyle);
+            float next = GUI.HorizontalSlider(new Rect(sliderX, y + 6f * _ui, sliderW, 30f * _ui), cur, 0.6f, 2.2f, _sliderStyle, _thumbStyle);
             if (!Mathf.Approximately(next, cur))
             {
                 MobileControlLayout.SetScale(_selectedId, next);
                 if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
             }
-            GUI.Label(new Rect(panel.xMax - pad - 56f * _ui, sy, 56f * _ui, 30f * _ui), cur.ToString("N2"), _labelStyle);
+            GUI.Label(new Rect(panel.xMax - pad - 56f * _ui, y, 56f * _ui, 30f * _ui), cur.ToString("N2"), _labelStyle);
+            y += 40f * _ui;
+        }
+
+        // Remove / Restore — only for removable controls (NOT the movement joystick/D-pad, since you'd have
+        // no way to move). Removing pins the control's current spot first, so a later restore puts it back
+        // exactly where it was. Removed controls vanish from the live game but stay greyed in the editor;
+        // "Default" also brings everything back.
+        if (_selRemovable)
+        {
+            if (!_selHidden)
+            {
+                GUI.backgroundColor = new Color(0.85f, 0.25f, 0.25f);   // Remove — red
+                if (GUI.Button(new Rect(panel.x + pad, y, panel.width - 2f * pad, 40f * _ui), "X   Remove This Control", _btnStyle))
+                {
+                    MobileControlLayout.SetPixels(_selectedId, FindCenter(handles, _selectedId), GetScale(handles, _selectedId));
+                    MobileControlLayout.SetHidden(_selectedId, true);
+                    if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
+                    _selHidden = true;
+                }
+            }
+            else
+            {
+                GUI.backgroundColor = new Color(0.3f, 0.75f, 0.35f);    // Restore — green
+                if (GUI.Button(new Rect(panel.x + pad, y, panel.width - 2f * pad, 40f * _ui), "Restore This Control", _btnStyle))
+                {
+                    MobileControlLayout.SetHidden(_selectedId, false);
+                    if (TouchInput.Exists) TouchInput.Instance.ApplyLayout();
+                    _selHidden = false;
+                }
+            }
+            GUI.backgroundColor = Color.white;
+            y += 50f * _ui;
         }
 
         // Button row: Default (revert to factory) | Cancel (discard, keep last saved) | Save (persist + close).
@@ -277,6 +365,20 @@ public class MobileControlLayoutEditor : MonoBehaviour
         return 1f;
     }
 
+    private static TouchInput.LayoutHandle FindHandle(List<TouchInput.LayoutHandle> handles, string id)
+    {
+        if (string.IsNullOrEmpty(id)) return null;
+        foreach (TouchInput.LayoutHandle h in handles)
+            if (h.Id == id) return h;
+        return null;
+    }
+
+    private static Vector2 FindCenter(List<TouchInput.LayoutHandle> handles, string id)
+    {
+        TouchInput.LayoutHandle h = FindHandle(handles, id);
+        return (h != null) ? h.Boundary.center : new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+    }
+
     private static string DisplayName(List<TouchInput.LayoutHandle> handles, string id)
     {
         foreach (TouchInput.LayoutHandle h in handles)
@@ -296,8 +398,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private static List<TouchInput.LayoutHandle> BuildStandaloneHandles()
     {
         var list = new List<TouchInput.LayoutHandle>();
-        foreach (string id in StandaloneIds)
+        // Swap the movement control to match the active scheme: D-pad in multi-touch, joystick otherwise.
+        bool multi = ApplicationDataManager.ApplicationOptions.UseMultiTouch;
+        foreach (string baseId in StandaloneIds)
         {
+            string id = (baseId == "joystick" && multi) ? "dpad" : baseId;
             Texture icon = IconFor(id);
             MobileControlLayout.Placement p = MobileControlLayout.GetOrDefault(id, TouchInput.DefaultGuiCenter(id), 1f);
             Vector2 c = MobileControlLayout.ToPixels(p);
@@ -314,6 +419,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
                 Boundary = new Rect(c.x - bw / 2f, c.y - bh / 2f, bw, bh),
                 Icon = icon,
                 Scale = p.Scale,
+                Hidden = p.Hidden,
+                Removable = (id != "joystick" && id != "dpad"),
             });
         }
         return list;
@@ -324,6 +431,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         switch (id)
         {
             case "joystick": return MobileIcons.JoystickOuter;
+            case "dpad": return MobileIcons.KeyboardDpad;
             case "fire": return MobileIcons.FireIcon;
             case "secondaryFire":
             case "multiSecondaryFire": return MobileIcons.SecondFireIcon;
