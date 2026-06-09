@@ -69,6 +69,39 @@ public static class MobileControlsPreviewMenu
             Debug.LogWarning("[MobileControls] Backdrop did not engage. Are you in the lobby? It needs the live menu (MenuPageManager) and no active match.");
     }
 
+    /// <summary>
+    /// Opens the Options panel in Play mode (from the live lobby) with the mobile menu scale forced on, so
+    /// you can preview the mobile-only Touch Controls group — Movement Style, sensitivities, the GYROSCOPE
+    /// AIMING controls (Gyroscope / Invert Vertical toggles + Strength slider + Try Gyroscope), and the
+    /// Customize button — in the Editor without a device. Click the "Controls" tab once it opens.
+    /// (The group is normally IsMobile-gated; it now renders whenever MobileMenuScale.Active, which this turns on.)
+    /// </summary>
+    private const string OptionsControls = "Tools/Mobile/Preview Options ▸ Controls (in Play, from lobby)";
+
+    [MenuItem(OptionsControls, priority = 3)]
+    private static void PreviewOptionsControls()
+    {
+        if (!EditorApplication.isPlaying)
+        {
+            EditorUtility.DisplayDialog("Preview Options ▸ Controls",
+                "Enter Play mode and reach the lobby first (open Assets/Scenes/Latest.unity, Play, log in), " +
+                "then run this again. It forces the mobile menu scale on and opens Options — click the Controls tab " +
+                "to see the Touch Controls + Gyroscope group.", "OK");
+            return;
+        }
+
+        MobileMenuScale.ForcePreviewInEditor = true;   // make the mobile-only Touch Controls group render
+        try
+        {
+            PanelManager.Instance.OpenPanel(PanelType.Options);
+            Debug.Log("[MobileControls] Options opened with menu scale forced on — click the Controls tab to see the Gyroscope group.");
+        }
+        catch
+        {
+            Debug.LogWarning("[MobileControls] Couldn't open Options — reach the lobby first (Play + log in), then run this from there.");
+        }
+    }
+
     // Plain toggle (does not change play state) — for leaving it on across sessions if wanted.
     [MenuItem(Toggle, priority = 20)]
     private static void ToggleFlag()

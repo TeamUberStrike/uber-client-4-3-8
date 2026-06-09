@@ -34,6 +34,14 @@ public class ApplicationOptions
     public float TouchLookSensitivity = 1.5f;
     public float TouchMoveSensitivity = 1.0f;
 
+    // Gyroscope aim — mobile, SCOPE-ONLY (only drives the view while a weapon is scoped). High-end
+    // "game" gyro: integrates the device's angular velocity into the look. Strength is a sensitivity
+    // multiplier (1 ≈ 1:1 device→view rotation, scaled by the scope's zoom); InvertY flips the vertical
+    // axis. PlayerPrefs-backed like the other touch fields.
+    public bool GyroAimEnabled = false;
+    public float GyroStrength = 1.5f;
+    public bool GyroInvertY = false;
+
     // Interface — opt-in "classic" lobby HUD (4.3.10.1-style Play/Shop + Profile/Inbox/Clans/Options ring).
     // Default OFF so production keeps the current lobby unless the player switches it in Options.
     // PlayerPrefs-backed (like the touch fields) so we don't extend the CmunePrefs.Key enum.
@@ -122,6 +130,11 @@ public class ApplicationOptions
         TouchLookSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchLookSensitivity", 1.5f), 0.5f, 3.0f);
         TouchMoveSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchMoveSensitivity", 1.0f), 0.5f, 3.0f);
 
+        // Gyroscope aim (PlayerPrefs-backed)
+        GyroAimEnabled = PlayerPrefs.GetInt("Options_GyroAimEnabled", 0) != 0;
+        GyroStrength = Mathf.Clamp(PlayerPrefs.GetFloat("Options_GyroStrength", 1.5f), 0.2f, 4.0f);
+        GyroInvertY = PlayerPrefs.GetInt("Options_GyroInvertY", 0) != 0;
+
         // Interface (PlayerPrefs-backed)
         UseClassicLobby = PlayerPrefs.GetInt("Options_UseClassicLobby", 0) != 0;
 
@@ -171,6 +184,11 @@ public class ApplicationOptions
         PlayerPrefs.SetInt("Options_UseMultiTouch", UseMultiTouch ? 1 : 0);
         PlayerPrefs.SetFloat("Options_TouchLookSensitivity", TouchLookSensitivity);
         PlayerPrefs.SetFloat("Options_TouchMoveSensitivity", TouchMoveSensitivity);
+
+        // Gyroscope aim (PlayerPrefs-backed)
+        PlayerPrefs.SetInt("Options_GyroAimEnabled", GyroAimEnabled ? 1 : 0);
+        PlayerPrefs.SetFloat("Options_GyroStrength", GyroStrength);
+        PlayerPrefs.SetInt("Options_GyroInvertY", GyroInvertY ? 1 : 0);
 
         // Interface (PlayerPrefs-backed)
         PlayerPrefs.SetInt("Options_UseClassicLobby", UseClassicLobby ? 1 : 0);

@@ -103,6 +103,24 @@ public static class UserInput
                 Mouse.y += TouchInput.WishLook.y * GameState.Instance.TouchLookSensitivity.y
                     * ApplicationDataManager.ApplicationOptions.TouchLookSensitivity * minv * mfactor;
                 Mouse.y = ClampAngle(Mouse.y, -88, 88);
+
+                // GYROSCOPE AIM — scope-only. Integrate the device's angular velocity straight into the look
+                // angle (independent of WishLook's drag-smoothing, so it tracks the device 1:1 and stops the
+                // instant the device stops). Scaled by mfactor so it gets finer as the scope zooms in, just
+                // like the touch look. The gyro carries its own Invert Vertical (GyroInvertY), so the desktop
+                // InputInvertMouse is not applied here.
+                // Gate on LevelCamera.IsZoomedIn (the universal camera-zoom state) rather than the Sniping
+                // touch-state: that state is only entered for SecondaryAction == Zoom, so it missed IronSight
+                // scopes like Vlad / Spiteful Stinger. IsZoomedIn is true for ALL scope types.
+                if (ApplicationDataManager.ApplicationOptions.GyroAimEnabled
+                    && LevelCamera.Exists && LevelCamera.Instance.IsZoomedIn)
+                {
+                    Vector2 gyro = GyroAim.LookDelta(
+                        ApplicationDataManager.ApplicationOptions.GyroStrength,
+                        ApplicationDataManager.ApplicationOptions.GyroInvertY);
+                    Mouse.x = ClampAngle(Mouse.x + gyro.x * mfactor, -360f, 360f);
+                    Mouse.y = ClampAngle(Mouse.y + gyro.y * mfactor, -88f, 88f);
+                }
             }
 
             Rotation = Quaternion.AngleAxis(Mouse.x, Vector3.up) * Quaternion.AngleAxis(Mouse.y, Vector3.left);

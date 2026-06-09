@@ -577,11 +577,13 @@ public class OptionsPanelGUI : PanelGuiBase
 
         GUI.skin = BlueStonez.Skin;
         // On mobile, reserve space at the top of the Controls tab for the touch-controls group.
-        int touchY = ApplicationDataManager.IsMobile ? 200 : 0;
+        // Active (not IsMobile) so the touch-controls group reserves its space + renders under the Editor
+        // "Preview Menu Scale" toggle too. On a real device IsMobile == Active, so this is device-identical.
+        int touchY = MobileMenuScale.Active ? 330 : 0;
         _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21 + touchY)); //720 + 15));
         {
-            if (ApplicationDataManager.IsMobile)
-                DrawTouchControlsGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 182));
+            if (MobileMenuScale.Active)
+                DrawTouchControlsGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 310));
 
             DrawGroupControl(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65));
@@ -679,8 +681,48 @@ public class OptionsPanelGUI : PanelGuiBase
                 MobileControlLayout.EditMode = true;
                 PanelManager.Instance.ClosePanel(PanelType.Options);
             }
+
+            // --- Gyroscope aim (scope-only) ----------------------------------------------------------
+            GUI.color = Color.white.SetAlpha(0.85f);
+            GUI.Label(new Rect(15, 182, 430, 20), "GYROSCOPE AIMING  —  active only while scoped", BlueStonez.label_interparkbold_11pt_left);
+            GUI.color = Color.white;
+
+            bool gyroOn = GUI.Toggle(new Rect(15, 206, 150, 26), opt.GyroAimEnabled, " Gyroscope", BlueStonez.toggle);
+            if (gyroOn != opt.GyroAimEnabled) opt.GyroAimEnabled = gyroOn;
+
+            bool gyroInv = GUI.Toggle(new Rect(180, 206, 220, 26), opt.GyroInvertY, " Invert Vertical", BlueStonez.toggle);
+            if (gyroInv != opt.GyroInvertY) opt.GyroInvertY = gyroInv;
+
+            GUI.Label(new Rect(15, 236, 130, 24), "Strength", BlueStonez.label_interparkbold_11pt_left);
+            float gyroStr = GUI.HorizontalSlider(new Rect(155, 242, 200, 24), opt.GyroStrength, 0.2f, 4f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 236, 60, 24), gyroStr.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            if (gyroStr != opt.GyroStrength) opt.GyroStrength = gyroStr;
+
+            // Preview the gyro in the shooting range, exactly like Shop ▸ "Try your weapons". Enable the
+            // gyro option first so scoping there actually drives the view (the whole point of the preview),
+            // save, close Options, then load the Try-Weapon range. Scope a zoom weapon to feel the strength.
+            if (GUI.Button(new Rect(15, 270, 260, 30), "Try Gyroscope", BlueStonez.button))
+            {
+                opt.GyroAimEnabled = true;
+                opt.SaveApplicationOptions();
+                PanelManager.Instance.ClosePanel(PanelType.Options);
+                // Defer the range entry a couple frames (see EnterGyroTryRange): transitioning the game
+                // state synchronously from this button handler — while the Options panel is still closing —
+                // tripped a pause-on-spawn that bounced straight back to the Shop instead of the range.
+                CoroutineManager.StartCoroutine(EnterGyroTryRange);
+            }
         }
         GUI.EndGroup();
+    }
+
+    // Enter the Try-Weapon shooting range for the gyroscope preview, but only AFTER the Options panel has
+    // fully closed and the menu/GUI-lock state has settled. Entering synchronously from the button handler
+    // quit straight to the Shop (OnPlayerPause fired as the player spawned mid-panel-close).
+    private System.Collections.IEnumerator EnterGyroTryRange()
+    {
+        yield return null;   // let Hide() take effect
+        yield return null;   // let PanelManager release the GUI lock on the next Layout pass
+        GameStateController.Instance.LoadTryWeaponMode();
     }
 
     private void DoSysInfoGroup()
