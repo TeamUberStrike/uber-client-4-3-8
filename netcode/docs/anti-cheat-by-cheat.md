@@ -89,11 +89,14 @@ The single principle under everything below:
   one heuristic.
 - **Why:** architecture caps what an aimbot can *achieve*; detection catches the residual (a human
   can't flick 2000°/s onto heads every shot). Graduated response avoids false bans.
-- **Status:** ⚠️ **PARTIAL.** Server hit-reg ✅ with **multi-part hitboxes** (head/torso/legs,
-  Phase 5) so an aimbot's headshots are still bounded by real geometry. Anomaly scoring is a
-  **soft scaffold** (`AnomalyTracker`: aim-snap/accuracy/headshot signals) — real tuning against
-  play data + a review pipeline is **Phase 8**, not built. Honest: we *raise the floor*, we don't
-  yet *detect* aimbots well.
+- **Status:** ⚠️ **PARTIAL (by nature — detection, not prevention).** Server hit-reg ✅ with
+  **multi-part hitboxes** (head/torso/legs, Phase 5) bounds what an aimbot achieves. The detection
+  layer is now **built (Phase 8)**: per-kind anomaly scoring (aim-snap angular velocity, windowed
+  accuracy/headshot ratio), a telemetry pipeline (`TelemetrySink`, JSONL) and a graduated
+  `SuspicionPolicy` (Flag→Review→Action, ≥2 independent signals required past Flag, never an
+  instant ban). What remains is inherently ops, not code: **tuning thresholds against real play
+  data** so known-cheat replays separate cleanly from high-skill humans. Honest: perfect aim is
+  legal input — this raises the floor *and* flags the residual, but no detector is ever "done".
 
 ## 5. Triggerbot
 
@@ -105,7 +108,11 @@ The single principle under everything below:
   "fires within N ms of crosshair-on-target, every time" signal would live.
 - **Why:** the server gates the rate and owns the hit; detection handles the "too perfect timing"
   residual.
-- **Status:** ⚠️ **PARTIAL** — gating ✅, the specific reaction-time signal is **Phase 8** (not built).
+- **Status:** ✅ **DONE (Phase 8).** Gating ✅ + the reaction-time signal is built: `AimWatch`
+  tracks server-side crosshair-on-enemy (server aim, positions, LOS) and `CombatSystem` samples
+  acquire→fire time at the real shot; sustained sub-~120 ms reactions bump `AnomalyKind.Triggerbot`.
+  Threshold *tuning against real play* remains an ops follow-up, but the signal exists and feeds
+  the graduated `SuspicionPolicy`.
 
 ## 6. Wallhack / ESP (seeing enemies through geometry)
 
@@ -230,21 +237,25 @@ The single principle under everything below:
 | Speedhack/teleport/fly | server movement authority | ✅ done (P1) |
 | No-recoil/no-spread | server-side spread | ✅ done |
 | Rapidfire/no-reload/infinite ammo | server weapon state gate | ✅ done |
-| Aimbot | server hit-reg (multi-part) + detection | ⚠️ floor done; detection = P8 |
-| Triggerbot | gate + detection | ⚠️ gate done; detection = P8 |
+| Aimbot | server hit-reg (multi-part) + detection | ⚠️ floor + detection done (P5/P8); threshold tuning = ops |
+| Triggerbot | gate + reaction-time detection | ✅ **done (P5/P8)**; threshold tuning = ops |
 | Wallhack/ESP (seeing) | Fog of War (don't send) | ✅ **done (P5.5)** |
 | Wallbang (firing through walls) | server LOS | ✅ **done (P4)** |
 | Quick-switch fire exploit | server switch-delay gate | ✅ done (P5) |
-| Lag switch/backtrack | clamped rewind, server RTT | ⚠️ clamp done; RTT source = P7 |
+| Lag switch/backtrack | clamped rewind, server-observed RTT | ✅ **done (P6)** |
 | Currency/XP/score injection | idempotent server economy | ✅ done |
 | Packet replay/forgery/spoof | auth + seq + schema | ✅ done |
 | Memory editing | server never reads client state | ✅ done by design |
 | Desync exploitation | determinism + detector | ✅ done (P1) |
+| Packet flood / DoS-input | per-connection rate limiting | ✅ done (P7) |
 
-**Ten of thirteen fully defended, three partial, none open.** Phase 4 closed wallbang (real LOS
-on baked map geometry), Phase 5 added multi-part hitboxes, the quick-switch gate, shotgun
-pellets and LOS-gated projectile splash, and Phase 5.5 closed ESP/wallhack with Fog of War
-(per-viewer snapshot culling — unseen enemies are never sent). The three partials are all
-detection/transport refinements with their phase numbers above (aimbot/triggerbot signals = P8,
-server-observed RTT = P7) — every architectural defense is now in. Nothing here is overstated:
-where a defense is stubbed, it's marked stubbed.
+**Twelve of thirteen fully defended; one (aimbot) partial by nature — and that's the honest
+ceiling, not an unbuilt feature.** All ten phases are implemented (P1 movement/determinism,
+P2 wire, P3 Unity adapter [in-engine verify deferred], P4 collision/LOS, P5 combat, P5.5 Fog of
+War, P6 lag-comp, P7 WS transport, P8 detection+telemetry, P9 hardening doc+integrity, P10
+sharding). The single remaining partial is **aimbot**: server hit-reg + multi-part hitboxes
+bound it and the Phase-8 detection layer flags the residual, but perfect aim is *legal input* —
+no game "solves" aimbot, it detects and tunes against play data (an ops loop, not code). What
+genuinely awaits real deployment, all flagged inline: detection **threshold tuning** against live
+play, the **WASM↔native determinism cross-run** hash check (needs a WASM runtime), and HaZard's
+**deploy-topology** decision (.NET authority vs Node relay). Nothing here is overstated.

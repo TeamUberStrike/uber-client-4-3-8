@@ -983,6 +983,19 @@ var stream10k = RecordStream(10_000);
     Check(snapCount > 0 && snapBytes / snapCount < 1200, $"phase10: snapshot bandwidth is modest (~{snapBytes/Math.Max(1,snapCount)}B/snapshot)");
 }
 
+// ---------------------------------------------------------------------------------------
+// 23. Phase 9 — integrity registry (soft build-hash gate).
+// ---------------------------------------------------------------------------------------
+{
+    var reg = new IntegrityRegistry();
+    Check(reg.IsAccepted("anything"), "phase9: with no allow-list, all hashes accepted (don't lock players out pre-config)");
+    reg.Allow("abc123");
+    reg.Allow("def456");                                   // previous build during a rollout window
+    Check(reg.IsAccepted("abc123") && reg.IsAccepted("DEF456"), "phase9: registered build hashes accepted (case-insensitive)");
+    Check(!reg.IsAccepted("tampered"), "phase9: an unregistered (stale/tampered) build hash is rejected");
+    Check(!reg.IsAccepted(""), "phase9: empty hash rejected once an allow-list exists");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;
