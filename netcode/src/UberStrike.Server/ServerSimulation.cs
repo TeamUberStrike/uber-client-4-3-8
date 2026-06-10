@@ -17,7 +17,12 @@ public sealed class ServerSimulation
     private readonly MovementSystem   _movement;
     private readonly CombatSystem     _combat;
     private readonly VisibilitySystem _visibility;
-    public  readonly EconomySystem    Economy = new();
+    public  readonly EconomySystem    Economy   = new();
+    public  readonly TelemetrySink    Telemetry = new();
+
+    /// <summary>Raised when a player's graduated-response level changes (Flag/Review/Action).
+    /// Action is a RECOMMENDATION — the host decides what (if anything) to do.</summary>
+    public event Action<int, ResponseLevel>? ResponseChanged;
 
     private readonly Dictionary<int, PlayerState>     _players     = new();
     private readonly Dictionary<int, Queue<InputCmd>> _inputQueues = new();
@@ -58,6 +63,8 @@ public sealed class ServerSimulation
         p.Move.Grounded = true;
         _players[id] = p;
         _inputQueues[id] = new Queue<InputCmd>();
+        p.Anomaly.Bumped += (kind, add, total) =>
+            Telemetry.Emit(ServerTime, id, "anomaly", kind.ToString(), total);
         return p;
     }
 
@@ -111,6 +118,11 @@ public sealed class ServerSimulation
             s.History.Record(ServerTime, s.Move.Position, s.Move.Yaw);
         }
 
+        // 2b (Phase 8): crosshair tracking for the triggerbot reaction signal — runs after
+        // movement so it sees this tick's aim, before combat so a same-tick fire samples it.
+        foreach (PlayerState s in _players.Values)
+            AimWatch.Update(s, _players.Values, _world, ServerTime);
+
         // 3a: weapon switches before fires this tick (so a switch+fire in one tick is gated).
         while (_switchQueue.Count > 0)
         {
@@ -136,8 +148,21 @@ public sealed class ServerSimulation
             if (!_combat.StepProjectile(_projectiles[i], GameConstants.FixedDt, ServerTime))
                 _projectiles.RemoveAt(i);
 
-        // 4: anomaly decay.
+        // 4: anomaly decay + graduated response (policy evaluated at ~1 Hz).
         foreach (PlayerState s in _players.Values) s.Anomaly.Decay(GameConstants.FixedDt);
+        if (Tick % (uint)GameConstants.TickRate == 0)
+        {
+            foreach (PlayerState s in _players.Values)
+            {
+                ResponseLevel before = s.Policy.Level;
+                ResponseLevel after  = s.Policy.Evaluate(s.Anomaly, ServerTime);
+                if (after != before)
+                {
+                    Telemetry.Emit(ServerTime, s.EntityId, "response", after.ToString(), s.Anomaly.Score);
+                    ResponseChanged?.Invoke(s.EntityId, after);
+                }
+            }
+        }
 
         // 5: snapshots.
         foreach (KeyValuePair<int, PlayerState> kv in _players)

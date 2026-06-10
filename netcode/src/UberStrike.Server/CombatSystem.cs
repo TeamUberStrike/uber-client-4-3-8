@@ -60,6 +60,10 @@ public sealed class CombatSystem
         w.NextFireTime = serverNow + def.FireInterval;
         shooter.LastFireTime = serverNow; // fog-of-war fire-reveal (only a REAL shot reveals)
 
+        // Phase 8 — triggerbot signal: acquire→fire reaction time (server-derived both ends).
+        if (shooter.WasOnTarget)
+            shooter.Anomaly.RecordReaction(serverNow - shooter.AimAcquiredTime < AimWatch.ReactionFloorSeconds);
+
         // (3) ORIGIN + AIM are OURS — never a client-supplied origin (kills shoot-through-walls).
         Vector3 origin = shooter.Move.Position + new Vector3(0f, GameConstants.EyeHeight, 0f);
         shooter.Anomaly.ObserveAimDelta(serverNow, shooter.Move.Yaw, shooter.Move.Pitch);

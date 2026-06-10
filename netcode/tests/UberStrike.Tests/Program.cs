@@ -740,6 +740,89 @@ var stream10k = RecordStream(10_000);
     Check(MathF.Abs(ep2.X - frozenX) < 0.01f, $"interp: freezes at the extrapolation cap (x={ep2.X:F2})");
 }
 
+// ---------------------------------------------------------------------------------------
+// 20. Phase 8 — detection signals, graduated response, telemetry.
+// ---------------------------------------------------------------------------------------
+{
+    // triggerbot window: human-speed reactions never bump; sustained sub-120ms does
+    var human = new AnomalyTracker();
+    for (int i = 0; i < 16; i++) human.RecordReaction(false);
+    Check(human.ScoreOf(AnomalyKind.Triggerbot) == 0f, "phase8: human reaction times never bump triggerbot");
+    var mixed = new AnomalyTracker();
+    for (int i = 0; i < 8; i++) mixed.RecordReaction(i < 2);          // 2 fast in 8 = lucky, not a bot
+    Check(mixed.ScoreOf(AnomalyKind.Triggerbot) == 0f, "phase8: occasional fast reactions don't bump");
+    var bot = new AnomalyTracker();
+    for (int i = 0; i < 8; i++) bot.RecordReaction(true);
+    Check(bot.ScoreOf(AnomalyKind.Triggerbot) > 0f, "phase8: sustained sub-human reactions bump triggerbot");
+
+    // windowed accuracy: near-perfect over 30+ shots bumps; 50% never does
+    var laser = new AnomalyTracker();
+    for (int i = 0; i < 35; i++) laser.RecordShot(true, true);
+    Check(laser.ScoreOf(AnomalyKind.Accuracy) > 0f, "phase8: sustained near-perfect accuracy bumps");
+    var normal = new AnomalyTracker();
+    for (int i = 0; i < 40; i++) normal.RecordShot(i % 2 == 0, false);
+    Check(normal.ScoreOf(AnomalyKind.Accuracy) == 0f, "phase8: 50% accuracy never bumps");
+
+    // policy rule 1: a single heuristic can NEVER pass Flag, no matter how hot
+    var oneKind = new AnomalyTracker();
+    var pol1 = new SuspicionPolicy();
+    for (int i = 0; i < 80; i++) oneKind.Bump(AnomalyKind.AimSnap, 1f);  // score 40 from ONE kind
+    pol1.Evaluate(oneKind, 0);
+    pol1.Evaluate(oneKind, 60);
+    Check(pol1.Level == ResponseLevel.Flag,
+        $"phase8: one heuristic alone caps at Flag even at score {oneKind.Score:F0} ({pol1.Level})");
+
+    // policy escalation: two independent kinds → Review now, Action only after sustain
+    var multi = new AnomalyTracker();
+    var pol2 = new SuspicionPolicy();
+    for (int i = 0; i < 6; i++) multi.Bump(AnomalyKind.Triggerbot, 1f);  // 6.0
+    for (int i = 0; i < 5; i++) multi.Bump(AnomalyKind.WallShot, 1f);    // +6.0 → 12, two kinds
+    Check(pol2.Evaluate(multi, 100) == ResponseLevel.Review, "phase8: two corroborating kinds → Review");
+    Check(pol2.Evaluate(multi, 120) == ResponseLevel.Review, "phase8: Action withheld before the sustain window");
+    Check(pol2.Evaluate(multi, 131) == ResponseLevel.Action, "phase8: sustained multi-signal score → Action recommendation");
+
+    // hysteresis: decay to just under the entry threshold doesn't flap the level
+    var fading = new AnomalyTracker();
+    var pol3 = new SuspicionPolicy();
+    for (int i = 0; i < 4; i++) fading.Bump(AnomalyKind.Triggerbot, 1f);
+    for (int i = 0; i < 3; i++) fading.Bump(AnomalyKind.WallShot, 1f);   // ~7.6, two kinds → Review
+    Check(pol3.Evaluate(fading, 0) == ResponseLevel.Review, "phase8: enters Review");
+    while (fading.Score >= 3.5f) fading.Decay(1f);                       // decay to ~3.4 (≥ half of 6)
+    Check(pol3.Evaluate(fading, 10) == ResponseLevel.Review, "phase8: hysteresis holds Review above half-threshold");
+    while (fading.Score >= 1.0f) fading.Decay(1f);
+    Check(pol3.Evaluate(fading, 20) < ResponseLevel.Review, "phase8: level releases once the score clearly decays");
+
+    // full-loop triggerbot through ServerSimulation: aim-away → snap-on + fire same tick
+    var w = new FlatCollisionWorld();
+    var sim = new ServerSimulation(w, (_, _) => { }, _ => { });
+    var ps  = sim.AddPlayer(1, "tok-1", Vector3.Zero, 1);                // machine gun
+    var tgt = sim.AddPlayer(2, "tok-2", new Vector3(0, 0, 10), 1);
+    // aim values for on-target (at the torso) and away
+    Vector3 eye = new(0, GameConstants.EyeHeight, 0);
+    Vector3 torso = tgt.Move.Position + new Vector3(0, (GameConstants.BodyBottom + GameConstants.BodyTop) * 0.5f, 0);
+    Vector3 dOn = Vector3.Normalize(torso - eye);
+    float yawOn = MathF.Atan2(dOn.X, dOn.Z), pitchOn = -MathF.Asin(Math.Clamp(dOn.Y, -1f, 1f));
+    int telemetryEvents = 0;
+    sim.Telemetry.Emitted += _ => telemetryEvents++;
+    for (int cycle = 0; cycle < 12; cycle++)
+    {
+        tgt.Health = 100f;                                              // keep the dummy alive to test the signal, not the kill
+        ps.Move.Yaw = MathF.PI; ps.Move.Pitch = 0f;                      // aim away
+        for (int i = 0; i < 3; i++) sim.StepTick();
+        tgt.Health = 100f;
+        ps.Move.Yaw = yawOn; ps.Move.Pitch = pitchOn;                    // snap on + fire SAME tick
+        sim.EnqueueFire(new FireIntent { EntityId = 1, SessionToken = "tok-1", Slot = 0, ClientTick = (uint)cycle });
+        sim.StepTick();
+    }
+    Check(ps.Anomaly.ScoreOf(AnomalyKind.Triggerbot) > 0f,
+        $"phase8: full-loop snap-and-fire pattern bumps triggerbot (score {ps.Anomaly.ScoreOf(AnomalyKind.Triggerbot):F1})");
+    Check(telemetryEvents > 0, "phase8: anomaly bumps stream to the telemetry sink");
+    bool foundJsonl = false;
+    foreach (TelemetryEvent e in sim.Telemetry.Recent())
+        if (e.Kind == "anomaly" && TelemetrySink.ToJsonl(e).Contains("\"kind\":\"anomaly\"")) { foundJsonl = true; break; }
+    Check(foundJsonl, "phase8: telemetry events serialize to JSONL for the host pipeline");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;

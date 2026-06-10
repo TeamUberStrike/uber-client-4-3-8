@@ -47,7 +47,12 @@ public sealed class PlayerState
     // fire-reveal. NegativeInfinity so a fresh player isn't "revealed" for the first second.
     public double LastFireTime = double.NegativeInfinity;
 
+    // Phase 8 — aim-watch state (server-derived; feeds the triggerbot reaction signal)
+    public bool   WasOnTarget;
+    public double AimAcquiredTime;
+
     public readonly AnomalyTracker  Anomaly = new();
+    public readonly SuspicionPolicy Policy  = new();
     public readonly HitboxHistory   History = new();
     public readonly HashSet<string> SeenPurchaseKeys = new();
 
