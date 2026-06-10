@@ -39,6 +39,10 @@ public sealed class PlayerState
 
     public double SmoothedRtt; // seconds; feeds lag-comp rewind
 
+    // Server time of the last shot that actually fired (consumed ammo). Feeds the fog-of-war
+    // fire-reveal. NegativeInfinity so a fresh player isn't "revealed" for the first second.
+    public double LastFireTime = double.NegativeInfinity;
+
     public readonly AnomalyTracker  Anomaly = new();
     public readonly HitboxHistory   History = new();
     public readonly HashSet<string> SeenPurchaseKeys = new();

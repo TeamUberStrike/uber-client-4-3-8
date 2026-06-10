@@ -121,11 +121,16 @@ The single principle under everything below:
   (or are about to be) visible.
 - **Why:** *"there would be nothing for the wallhack to see"* — you can't render information the
   client never received.
-- **Status:** ❌ **NOT BUILT — biggest open gap.** Snapshots currently send ALL other players to
-  every client (`ServerSimulation.BuildSnapshot` → `Others`). An ESP cheat reading WASM memory sees
-  everyone. **This is the highest-value next feature** and I'd add it as a new phase: per-viewer
-  relevance culling against the baked collision world (which Phase 4 brings), exactly the VALORANT
-  model. Flagging it loudly rather than pretending the current design stops ESP — it doesn't.
+- **Status:** ✅ **DONE (Phase 5.5).** `VisibilitySystem` culls `Snapshot.Others` per viewer
+  against the Phase-4 baked collision world: multi-sample LOS (head / torso / feet / both
+  shoulders, so a peeking head or exposed shoulder reveals), velocity look-ahead (the VALORANT
+  *"looking into the future"* — a peek streams to the viewer before it rounds the corner),
+  a short post-LOS grace window (covers the remote-interpolation delay, kills edge flicker),
+  and pragmatic reveals: gunfire reveals the shooter for ~1 s (it's audible and traced anyway),
+  teammates are always sent, dead viewers spectate everyone. A wallhack reading WASM memory now
+  finds nothing — the data for an occluded enemy was never sent. Verified by tests: walled enemy
+  absent from the snapshot, per-viewer asymmetry, grace expiry, fire-reveal + expiry, look-ahead
+  peek reveal, head-over-low-wall reveal.
 
 ## 7. Wallbang / ESP-assisted firing through geometry
 
@@ -227,7 +232,7 @@ The single principle under everything below:
 | Rapidfire/no-reload/infinite ammo | server weapon state gate | ✅ done |
 | Aimbot | server hit-reg (multi-part) + detection | ⚠️ floor done; detection = P8 |
 | Triggerbot | gate + detection | ⚠️ gate done; detection = P8 |
-| **Wallhack/ESP (seeing)** | **Fog of War (don't send)** | ❌ **not built — top gap** |
+| Wallhack/ESP (seeing) | Fog of War (don't send) | ✅ **done (P5.5)** |
 | Wallbang (firing through walls) | server LOS | ✅ **done (P4)** |
 | Quick-switch fire exploit | server switch-delay gate | ✅ done (P5) |
 | Lag switch/backtrack | clamped rewind, server RTT | ⚠️ clamp done; RTT source = P7 |
@@ -236,9 +241,10 @@ The single principle under everything below:
 | Memory editing | server never reads client state | ✅ done by design |
 | Desync exploitation | determinism + detector | ✅ done (P1) |
 
-**Eight of thirteen fully defended, three partial, one open.** Phase 4 closed wallbang (real LOS
-on baked map geometry) and Phase 5 added multi-part hitboxes, the quick-switch gate, shotgun
-pellets and LOS-gated projectile splash. **The one remaining hard gap is ESP/Fog-of-War (don't send
-unseen enemies)** — snapshots still send all players to all clients. That's the recommended next
-build; the baked collision world from Phase 4 is exactly the visibility data it needs. Nothing here
-is overstated: where a defense is stubbed, it's marked stubbed.
+**Ten of thirteen fully defended, three partial, none open.** Phase 4 closed wallbang (real LOS
+on baked map geometry), Phase 5 added multi-part hitboxes, the quick-switch gate, shotgun
+pellets and LOS-gated projectile splash, and Phase 5.5 closed ESP/wallhack with Fog of War
+(per-viewer snapshot culling — unseen enemies are never sent). The three partials are all
+detection/transport refinements with their phase numbers above (aimbot/triggerbot signals = P8,
+server-observed RTT = P7) — every architectural defense is now in. Nothing here is overstated:
+where a defense is stubbed, it's marked stubbed.

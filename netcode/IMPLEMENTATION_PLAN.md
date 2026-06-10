@@ -142,6 +142,36 @@ the shooter saw within the rewind window; tests cover each weapon's gate and dam
 
 ---
 
+## Phase 5.5 — Fog of War / ESP defense ✅ DONE (2026-06-10)
+
+**Goal:** close the last "seeing" cheat — don't network players the recipient can't see, so a
+wallhack reading WASM memory finds nothing (VALORANT's model; was the scorecard's one open gap).
+
+**What shipped**
+- `VisibilitySystem` (server-only — never touches the shared sim, so determinism is unaffected):
+  per-viewer culling of `Snapshot.Others` in `ServerSimulation.BuildSnapshot`.
+- Multi-sample LOS against the Phase-4 baked world: head / torso / feet / both shoulders — a
+  peeking head or a shoulder past a corner reveals.
+- Velocity look-ahead (`VisLookaheadSeconds`): the target is also tested at its extrapolated
+  position, so a fast peek is streaming before it rounds the corner (no pop-in advantage).
+- Grace window (`VisGraceSeconds` > `InterpDelaySeconds`): a just-hidden target keeps streaming
+  briefly — covers remote interpolation and kills edge flicker.
+- Pragmatic reveals: gunfire reveals the shooter for `FireRevealSeconds` (set from the REAL
+  consume step in `CombatSystem.HandleFire`, so a rejected fire intent reveals nothing);
+  teammates always sent; dead viewers spectate everyone; dead targets are sent.
+
+**Files:** `VisibilitySystem.cs` (new), `ServerSimulation.cs`, `PlayerState.cs` (`LastFireTime`),
+`CombatSystem.cs`, `GameConstants.cs`.
+
+**Unity-adapter note (Phase 3):** an entity that stops appearing in snapshots must be hidden by
+the client adapter after a short timeout (its `RemoteInterpolator` buffer simply starves) — and
+re-shown when it reappears. Audio for revealed-by-fire shooters comes with the fire event.
+
+**Done-when (met):** tests cover walled-enemy culling, per-viewer asymmetry, grace expiry,
+fire-reveal + expiry, look-ahead peek reveal, head-over-low-wall reveal, dead-viewer spectate.
+
+---
+
 ## Phase 6 — Lag-compensation & interpolation tuning
 
 **Goal:** make hit registration fair across realistic mobile RTTs.

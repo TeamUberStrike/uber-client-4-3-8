@@ -54,6 +54,13 @@ public static class GameConstants
     // --- client smoothing ---
     public const float SmoothRate = 15f;           // error decay rate for reconciliation blending
 
+    // --- fog of war / visibility culling (the ESP defense — see VisibilitySystem) ---
+    // Grace must exceed InterpDelaySeconds: clients render remotes in the buffered past, so a
+    // target must keep streaming a beat after LOS is lost or it vanishes mid-interpolation.
+    public const float VisGraceSeconds     = 0.5f;
+    public const float VisLookaheadSeconds = 0.25f; // extrapolate target by velocity (peek pop-in)
+    public const float FireRevealSeconds   = 1.0f;  // gunfire reveals the shooter (audible + traced)
+
     // --- hitbox geometry (multi-part: head sphere + torso capsule + legs capsule) ---
     public const float EyeHeight  = 1.6f;          // PlayerAttributes.HEIGHT_NORMAL
     public const float BodyRadius = 0.40f;

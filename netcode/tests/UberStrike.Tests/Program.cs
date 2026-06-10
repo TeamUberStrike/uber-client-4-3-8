@@ -461,9 +461,84 @@ var stream10k = RecordStream(10_000);
     Check(shielded.Health == sHp, "projectile: a wall between the blast and a player blocks splash (LOS-gated)");
 }
 
+// ---------------------------------------------------------------------------------------
+// 17. Fog of War (ESP defense): snapshots only carry players the recipient could see.
+//     Wall room: floor + a wall plane at x=5 covering z in [-10,2] (open corridor at z>2).
+// ---------------------------------------------------------------------------------------
+{
+    var v = new List<Vector3>(); var idx = new List<int>();
+    Quad(v, idx, new Vector3(-50,0,-50), new Vector3(50,0,-50), new Vector3(50,0,50), new Vector3(-50,0,50)); // floor
+    Quad(v, idx, new Vector3(5,0,-10), new Vector3(5,4,-10), new Vector3(5,4,2), new Vector3(5,0,2));         // wall x=5, z[-10,2]
+    var fogRoom = new BakedCollisionWorld(new TriangleMesh(v.ToArray(), idx.ToArray()));
+
+    var snaps = new Dictionary<int, Snapshot>();
+    var sim = new ServerSimulation(fogRoom, (id, s) => snaps[id] = s, _ => { });
+    var p1 = sim.AddPlayer(1, "tok-1", new Vector3(0, 0, 0), 1);  // viewer
+    var p2 = sim.AddPlayer(2, "tok-2", new Vector3(8, 0, 0), 1);  // enemy behind the wall
+    var p3 = sim.AddPlayer(3, "tok-3", new Vector3(0, 0, 3), 1);  // enemy in the open (viewer's side)
+
+    sim.StepTick();
+    Check(!Sees(snaps[1], 2), "fog of war: enemy behind a wall is NOT in the snapshot (ESP has nothing to read)");
+    Check(Sees(snaps[1], 3),  "fog of war: enemy in the open IS in the snapshot");
+    Check(!Sees(snaps[2], 1) && !Sees(snaps[2], 3), "fog of war: culling is per-viewer (walled player sees no one)");
+    Check(snaps[2].Local.EntityId == 2, "fog of war: the recipient's own state is never culled");
+
+    // hysteresis: a visible enemy who breaks LOS keeps streaming for the grace window, then drops
+    p3.Move.Position = new Vector3(8, 0, -3);          // teleport behind the wall
+    sim.StepTick();
+    Check(Sees(snaps[1], 3), "fog of war: grace window keeps a just-hidden enemy streaming (no pop-out)");
+    for (int i = 0; i < (int)(GameConstants.VisGraceSeconds * GameConstants.TickRate) + 3; i++) sim.StepTick();
+    Check(!Sees(snaps[1], 3), "fog of war: grace window expires — hidden enemy culled");
+
+    // gunfire reveals the shooter even through the wall (it is audible + traced in-world)
+    sim.EnqueueFire(new FireIntent { EntityId = 2, SessionToken = "tok-2", Slot = 0 });
+    sim.StepTick();
+    Check(Sees(snaps[1], 2), "fog of war: firing reveals a hidden shooter");
+    for (int i = 0; i < (int)((GameConstants.FireRevealSeconds + GameConstants.VisGraceSeconds) * GameConstants.TickRate) + 3; i++) sim.StepTick();
+    Check(!Sees(snaps[1], 2), "fog of war: fire-reveal expires — shooter re-hidden");
+
+    // teammates are always relevant, walls or not
+    p1.TeamId = 1; p2.TeamId = 1;
+    sim.StepTick();
+    Check(Sees(snaps[1], 2) && !Sees(snaps[1], 3), "fog of war: teammate always sent; hidden enemy still culled");
+
+    // "look into the future": a hidden enemy moving toward the corridor opening is revealed
+    // by velocity look-ahead BEFORE its current position has line-of-sight
+    var p4 = sim.AddPlayer(4, "tok-4", new Vector3(8, 0, 1.0f), 1);
+    sim.StepTick();
+    Check(!Sees(snaps[1], 4), "fog of war: stationary enemy near the corridor edge is still hidden");
+    p4.Move.Velocity = new Vector3(0, 0, 12f);         // sprinting toward the opening at z>2
+    sim.StepTick();
+    Check(Sees(snaps[1], 4), "fog of war: velocity look-ahead reveals a peek before it pops in");
+
+    // body-sample test: a head visible over a LOW wall reveals, even with the torso occluded
+    var v2 = new List<Vector3>(); var i2 = new List<int>();
+    Quad(v2, i2, new Vector3(-50,0,-50), new Vector3(50,0,-50), new Vector3(50,0,50), new Vector3(-50,0,50));
+    Quad(v2, i2, new Vector3(5,0,-10), new Vector3(5,1.3f,-10), new Vector3(5,1.3f,10), new Vector3(5,0,10)); // low wall
+    var lowRoom = new BakedCollisionWorld(new TriangleMesh(v2.ToArray(), i2.ToArray()));
+    var snaps2 = new Dictionary<int, Snapshot>();
+    var sim2 = new ServerSimulation(lowRoom, (id, s) => snaps2[id] = s, _ => { });
+    sim2.AddPlayer(1, "tok-1", new Vector3(0, 0, 0), 1);
+    sim2.AddPlayer(2, "tok-2", new Vector3(8, 0, 0), 1);
+    sim2.StepTick();
+    Check(Sees(snaps2[1], 2), "fog of war: a head over a low wall is enough to reveal (multi-sample LOS)");
+
+    // death: a dead viewer spectates everyone; a dead target's position is no longer secret
+    p3.Health = 0f;
+    sim.StepTick();
+    Check(Sees(snaps[3], 2) && Sees(snaps[3], 4), "fog of war: a dead viewer receives everyone (spectate/kill-cam)");
+    Check(Sees(snaps[1], 3), "fog of war: a dead player is sent (kill already broadcast the position)");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;
+
+static bool Sees(in Snapshot s, int entityId)
+{
+    foreach (PlayerSnap o in s.Others) if (o.EntityId == entityId) return true;
+    return false;
+}
 
 static Snapshot MakeSnap(in MoveState srv, uint acked) => new()
 {

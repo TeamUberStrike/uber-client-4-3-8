@@ -13,10 +13,11 @@ namespace UberStrike.Server;
 /// </summary>
 public sealed class ServerSimulation
 {
-    private readonly ICollisionWorld _world;
-    private readonly MovementSystem  _movement;
-    private readonly CombatSystem    _combat;
-    public  readonly EconomySystem   Economy = new();
+    private readonly ICollisionWorld  _world;
+    private readonly MovementSystem   _movement;
+    private readonly CombatSystem     _combat;
+    private readonly VisibilitySystem _visibility;
+    public  readonly EconomySystem    Economy = new();
 
     private readonly Dictionary<int, PlayerState>     _players     = new();
     private readonly Dictionary<int, Queue<InputCmd>> _inputQueues = new();
@@ -35,8 +36,9 @@ public sealed class ServerSimulation
         _world = world;
         _sendSnapshot = sendSnapshot;
         _broadcast = broadcast;
-        _movement = new MovementSystem(world);
-        _combat   = new CombatSystem(world, () => _players.Values, h => _broadcast(h));
+        _movement   = new MovementSystem(world);
+        _combat     = new CombatSystem(world, () => _players.Values, h => _broadcast(h));
+        _visibility = new VisibilitySystem(world);
     }
 
     public IEnumerable<PlayerState> Players => _players.Values;
@@ -144,9 +146,12 @@ public sealed class ServerSimulation
 
     private Snapshot BuildSnapshot(PlayerState me)
     {
+        // Fog of War: only network the players this recipient could plausibly see. An ESP
+        // cheat reading WASM memory learns nothing about a player that was never sent.
         List<PlayerSnap> others = new(Math.Max(0, _players.Count - 1));
         foreach (PlayerState p in _players.Values)
-            if (!ReferenceEquals(p, me)) others.Add(ToSnap(p));
+            if (!ReferenceEquals(p, me) && _visibility.ShouldSend(me, p, ServerTime))
+                others.Add(ToSnap(p));
 
         return new Snapshot
         {
