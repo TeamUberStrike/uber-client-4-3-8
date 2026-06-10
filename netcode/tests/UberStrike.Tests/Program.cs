@@ -823,6 +823,101 @@ var stream10k = RecordStream(10_000);
     Check(foundJsonl, "phase8: telemetry events serialize to JSONL for the host pipeline");
 }
 
+// ---------------------------------------------------------------------------------------
+// 21. Phase 7 — real WebSocket transport over loopback: handshake binds EntityId<->token,
+//     packets reach the sim, snapshots reach the client, floods are throttled, reconnect works.
+// ---------------------------------------------------------------------------------------
+{
+    var sw = System.Diagnostics.Stopwatch.StartNew();
+    double Now() => sw.Elapsed.TotalSeconds;
+    async Task<bool> WaitUntil(Func<bool> cond, int ms)
+    {
+        var until = Now() + ms / 1000.0;
+        while (Now() < until) { if (cond()) return true; await Task.Delay(5); }
+        return cond();
+    }
+
+    using var server = new UberStrike.Server.WebSocketServerLink(0, Now);
+    server.Authenticate = tok => tok == "tok-1" ? 1 : (tok == "tok-2" ? 2 : (int?)null);
+
+    int inputsSeen = 0, firesSeen = 0, connects = 0, disconnects = 0;
+    server.InputReceived  += _ => inputsSeen++;
+    server.FireReceived   += _ => firesSeen++;
+    server.ClientConnected    += _ => connects++;
+    server.ClientDisconnected += _ => disconnects++;
+    server.InputsPerSec = 90; server.InputBurst = 10;   // tight burst so the flood test trips fast
+    server.Start();
+    var uri = new Uri($"ws://127.0.0.1:{server.Port}/");
+
+    // (a) handshake: bad token is rejected
+    var bad = new WebSocketClientLink();
+    bool badOk = await bad.ConnectAsync(uri, "nope");
+    Check(!badOk, "ws: connection with an unknown session token is rejected at handshake");
+    bad.Dispose();
+
+    // (b) valid handshake binds EntityId<->token
+    int clientEntity = -1;
+    var client = new WebSocketClientLink();
+    client.Welcomed += id => clientEntity = id;
+    Snapshot? lastSnap = null;
+    client.SnapshotReceived += s => lastSnap = s;
+    int hitsAtClient = 0;
+    client.HitReceived += _ => hitsAtClient++;
+    bool ok = await client.ConnectAsync(uri, "tok-1");
+    Check(ok && clientEntity == 1, $"ws: valid token completes Hello->Welcome with the server's EntityId ({clientEntity})");
+    Check(await WaitUntil(() => connects == 1, 1000), "ws: server raised ClientConnected");
+
+    // (c) inputs/fires flow to the server and get the authenticated EntityId stamped
+    InputPacket forged = new() { EntityId = 999, SessionToken = "spoofed", Cmd = new InputCmd { Seq = 1, MoveDir = new Vector3(0,0,1) } };
+    InputPacket capturedInput = default;
+    server.InputReceived += p => capturedInput = p;
+    client.SendInput(forged);
+    Check(await WaitUntil(() => inputsSeen >= 1, 1000), "ws: client input reaches the server");
+    Check(capturedInput.EntityId == 1 && capturedInput.SessionToken == "tok-1",
+        "ws: server STAMPS the authenticated EntityId/token, ignoring the packet's forged ids");
+    client.SendFire(new FireIntent { EntityId = 1, Slot = 0, ClientTick = 1 });
+    Check(await WaitUntil(() => firesSeen >= 1, 1000), "ws: client fire reaches the server");
+
+    // (d) server -> client snapshot + hit decode
+    var snapOut = new Snapshot
+    {
+        ServerTime = 1.0, LastProcessedInput = 7,
+        Local = new PlayerSnap { EntityId = 1, Position = new Vector3(3.5f, 0f, -2.25f), Health = 80f, SpeedScale = 1f, ActiveAmmo = 12 },
+        Others = new[] { new PlayerSnap { EntityId = 2, Position = new Vector3(9f, 0f, 4f), Health = 55f, SpeedScale = 1f } },
+    };
+    server.SendSnapshot(1, snapOut);
+    Check(await WaitUntil(() => lastSnap.HasValue, 1000) &&
+        lastSnap!.Value.Local.EntityId == 1 &&
+        (lastSnap.Value.Local.Position - snapOut.Local.Position).Length() < 0.01f &&
+        lastSnap.Value.Others.Length == 1 && lastSnap.Value.Others[0].EntityId == 2,
+        "ws: server snapshot decodes correctly on the client over the real socket");
+    server.Broadcast(new HitEvent { Shooter = 2, Target = 1, Damage = 18f, Killed = false, Point = Vector3.Zero });
+    Check(await WaitUntil(() => hitsAtClient >= 1, 1000), "ws: broadcast HitEvent reaches the client");
+
+    // (e) rate limiting: an input flood is throttled (flagged) without killing the connection
+    for (int i = 0; i < 200; i++) client.SendInput(new InputPacket { Cmd = new InputCmd { Seq = (uint)(100 + i) } });
+    Check(await WaitUntil(() => server.FlaggedCount(1) > 0, 1500),
+        $"ws: input flood is rate-limited and flagged (flagged={server.FlaggedCount(1)})");
+    // the connection survives the flood — a fresh snapshot still gets through
+    lastSnap = null;
+    server.SendSnapshot(1, snapOut);
+    Check(await WaitUntil(() => lastSnap.HasValue, 1000), "ws: connection survives the flood (snapshot still delivered)");
+
+    // (f) reconnect/resync: same token rebinds to the same entity with a fresh baseline
+    client.Dispose();
+    Check(await WaitUntil(() => disconnects == 1, 1500), "ws: server sees the disconnect");
+    var client2 = new WebSocketClientLink();
+    int reEntity = -1; client2.Welcomed += id => reEntity = id;
+    Snapshot? reSnap = null; client2.SnapshotReceived += s => reSnap = s;
+    bool reOk = await client2.ConnectAsync(uri, "tok-1");
+    Check(reOk && reEntity == 1, "ws: reconnect with the same token rebinds to the same EntityId");
+    server.SendSnapshot(1, snapOut);   // fresh encoder => full baseline, all fields present
+    Check(await WaitUntil(() => reSnap.HasValue && reSnap!.Value.Others.Length == 1 &&
+        (reSnap.Value.Others[0].Position - snapOut.Others[0].Position).Length() < 0.01f, 1000),
+        "ws: post-reconnect snapshot decodes from a fresh full baseline");
+    client2.Dispose();
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;
