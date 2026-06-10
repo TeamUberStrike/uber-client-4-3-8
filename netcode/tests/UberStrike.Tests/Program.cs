@@ -530,6 +530,135 @@ var stream10k = RecordStream(10_000);
     Check(Sees(snaps[1], 3), "fog of war: a dead player is sent (kill already broadcast the position)");
 }
 
+// ---------------------------------------------------------------------------------------
+// 18. Phase 2 — wire format: lossless round-trips, delta compression, strict reader.
+// ---------------------------------------------------------------------------------------
+{
+    // input packet: server simulates FROM these floats — they must round-trip bit-exact
+    var inPkt = new InputPacket { EntityId = 7, SessionToken = "tok-7", Cmd = new InputCmd {
+        Seq = 1234, ClientTick = 99, MoveDir = new Vector3(-0.7071f, 0f, 0.7071f),
+        Jump = true, Crouch = false, Yaw = -2.5f, Pitch = 0.33f } };
+    Check(Wire.TryDecodeInput(Wire.EncodeInput(inPkt), out InputPacket inBack)
+        && inBack.EntityId == 7 && inBack.SessionToken == "tok-7" && inBack.Cmd.Seq == 1234
+        && BitConverter.SingleToInt32Bits(inBack.Cmd.MoveDir.X) == BitConverter.SingleToInt32Bits(inPkt.Cmd.MoveDir.X)
+        && BitConverter.SingleToInt32Bits(inBack.Cmd.Yaw) == BitConverter.SingleToInt32Bits(inPkt.Cmd.Yaw)
+        && inBack.Cmd.Jump && !inBack.Cmd.Crouch,
+        "wire: InputPacket round-trips bit-exact");
+
+    var fire = new FireIntent { EntityId = 7, SessionToken = "tok-7", Slot = 1, ClientTick = 55 };
+    Check(Wire.TryDecodeFire(Wire.EncodeFire(fire), out FireIntent fBack)
+        && fBack.EntityId == 7 && fBack.SessionToken == "tok-7" && fBack.Slot == 1 && fBack.ClientTick == 55,
+        "wire: FireIntent round-trips");
+
+    var hit = new HitEvent { Shooter = 1, Target = 2, Damage = 47.5f, Headshot = true, Killed = false,
+        Point = new Vector3(12.345f, 1.618f, -77.7f) };
+    Check(Wire.TryDecodeHit(Wire.EncodeHit(hit), out HitEvent hBack)
+        && hBack.Shooter == 1 && hBack.Target == 2 && hBack.Headshot && !hBack.Killed
+        && (hBack.Point - hit.Point).Length() < 0.01f,
+        "wire: HitEvent round-trips within quantization");
+
+    // snapshot: Local must be BIT-exact (reconciliation replays from it); Others quantized
+    var enc = new SnapshotEncoder();
+    var dec = new SnapshotDecoder();
+    var snap = new Snapshot
+    {
+        ServerTime = 12.3456789,
+        LastProcessedInput = 4242,
+        Local = new PlayerSnap { EntityId = 1, Position = new Vector3(1.234567f, 5.4321f, -9.87f),
+            Velocity = new Vector3(-3.3f, 0.001f, 7.0001f), Yaw = 1.234f, Pitch = -0.456f,
+            Grounded = true, JumpArmed = true, UngroundedTicks = 1, SpeedScale = 0.7f,
+            Health = 87.5f, ActiveSlot = 0, ActiveAmmo = 31 },
+        Others = new[]
+        {
+            new PlayerSnap { EntityId = 2, Position = new Vector3(10.5f, 0f, -20.25f),
+                Velocity = new Vector3(7f, -1f, 0f), Yaw = 3.0f, Pitch = -0.8f,
+                Grounded = true, Ducked = true, Health = 64.2f, ActiveSlot = 1, SpeedScale = 1f },
+            new PlayerSnap { EntityId = 3, Position = new Vector3(-5f, 2f, 8f),
+                Velocity = Vector3.Zero, Yaw = -1.5f, Pitch = 1.2f, Health = 100f, SpeedScale = 1f },
+        },
+    };
+    byte[] full = enc.Encode(snap);
+    Check(dec.TryDecode(full, out Snapshot got), "wire: snapshot decodes");
+    Check(BitConverter.SingleToInt32Bits(got.Local.Position.X) == BitConverter.SingleToInt32Bits(snap.Local.Position.X)
+        && BitConverter.SingleToInt32Bits(got.Local.Velocity.Z) == BitConverter.SingleToInt32Bits(snap.Local.Velocity.Z)
+        && got.Local.JumpArmed && got.Local.UngroundedTicks == 1
+        && BitConverter.SingleToInt32Bits(got.Local.SpeedScale) == BitConverter.SingleToInt32Bits(snap.Local.SpeedScale)
+        && got.Local.ActiveAmmo == 31 && got.ServerTime == snap.ServerTime && got.LastProcessedInput == 4242,
+        "wire: snapshot LOCAL state is bit-exact (reconciliation-safe)");
+    Check(got.Others.Length == 2
+        && (got.Others[0].Position - snap.Others[0].Position).Length() < 2f / Wire.PosScale
+        && MathF.Abs(got.Others[0].Yaw - snap.Others[0].Yaw) < 0.001f
+        && MathF.Abs(got.Others[0].Pitch - snap.Others[0].Pitch) < 0.001f   // negative pitch survives the u16 wrap
+        && got.Others[0].Ducked && MathF.Abs(got.Others[0].Health - 64.2f) < 0.06f,
+        "wire: snapshot OTHERS within quantization tolerance (incl. negative pitch)");
+
+    // delta: an unchanged remote costs only id+mask on the next snapshot
+    byte[] second = enc.Encode(snap);
+    Check(second.Length < full.Length - 20,
+        $"wire: delta-encoded repeat snapshot is much smaller ({second.Length} vs {full.Length} bytes)");
+    Check(dec.TryDecode(second, out Snapshot got2) && got2.Others.Length == 2
+        && (got2.Others[1].Position - snap.Others[1].Position).Length() < 2f / Wire.PosScale,
+        "wire: delta decode reproduces unchanged values");
+
+    // fog of war interplay: entity culled from a snapshot, then reappears — values intact
+    var culled = snap; culled.Others = new[] { snap.Others[0] };           // 3 hidden
+    Check(dec.TryDecode(enc.Encode(culled), out Snapshot got3) && got3.Others.Length == 1,
+        "wire: culled entity absent after fog-of-war drop");
+    var back = snap;                                                        // 3 re-revealed, unchanged
+    Check(dec.TryDecode(enc.Encode(back), out Snapshot got4) && got4.Others.Length == 2
+        && (got4.Others[1].Position - snap.Others[1].Position).Length() < 2f / Wire.PosScale,
+        "wire: re-revealed entity decodes correctly from cached baseline");
+
+    // strict reader: EVERY truncation of a valid buffer is rejected, no exception escapes
+    bool truncSafe = true;
+    for (int len = 0; len < full.Length; len++)
+    {
+        var cut = new byte[len];
+        Array.Copy(full, cut, len);
+        var freshDec = new SnapshotDecoder();
+        try { if (freshDec.TryDecode(cut, out _)) { /* short prefix decoding = reader hole */ truncSafe = len == 0 ? truncSafe : false; } }
+        catch { truncSafe = false; }
+    }
+    for (int len = 0; len < 16; len++)
+    {
+        var cut = new byte[len];
+        Array.Copy(Wire.EncodeInput(inPkt), cut, Math.Min(len, Wire.EncodeInput(inPkt).Length));
+        try { if (Wire.TryDecodeInput(cut, out _)) truncSafe = false; }
+        catch { truncSafe = false; }
+    }
+    Check(truncSafe, "wire: every truncated buffer is rejected without an exception escaping");
+
+    // fuzz: seeded xorshift garbage through every decoder — must never throw
+    bool fuzzSafe = true;
+    uint frng = 0xDEADBEEF;
+    byte NextB() { frng ^= frng << 13; frng ^= frng >> 17; frng ^= frng << 5; return (byte)frng; }
+    for (int i = 0; i < 2000 && fuzzSafe; i++)
+    {
+        var buf = new byte[NextB() % 96];
+        for (int j = 0; j < buf.Length; j++) buf[j] = NextB();
+        if (i % 4 == 0 && buf.Length >= 2) { buf[0] = Wire.ProtocolVersion; buf[1] = (byte)(1 + (NextB() % 9)); } // valid header, garbage body
+        try
+        {
+            Wire.TryDecodeInput(buf, out _); Wire.TryDecodeFire(buf, out _);
+            Wire.TryDecodeSwitch(buf, out _); Wire.TryDecodeHit(buf, out _);
+            Wire.TryDecodePing(buf, out _); Wire.TryDecodePong(buf, out _, out _);
+            Wire.TryDecodeHello(buf, out _); Wire.TryDecodeWelcome(buf, out _, out _);
+            new SnapshotDecoder().TryDecode(buf, out _);
+        }
+        catch { fuzzSafe = false; }
+    }
+    Check(fuzzSafe, "wire: 2000 fuzzed buffers never throw past the reader boundary");
+
+    // version gate
+    byte[] wrongVer = Wire.EncodeFire(fire); wrongVer[0] = 99;
+    Check(!Wire.TryDecodeFire(wrongVer, out _), "wire: wrong protocol version rejected");
+
+    // trailing-garbage gate (forged oversized packet)
+    byte[] padded = Wire.EncodeFire(fire);
+    Array.Resize(ref padded, padded.Length + 3);
+    Check(!Wire.TryDecodeFire(padded, out _), "wire: trailing bytes rejected");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;
