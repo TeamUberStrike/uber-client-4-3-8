@@ -687,11 +687,16 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.Label(new Rect(15, 182, 430, 20), "GYROSCOPE AIMING  —  active only while scoped", BlueStonez.label_interparkbold_11pt_left);
             GUI.color = Color.white;
 
-            bool gyroOn = GUI.Toggle(new Rect(15, 206, 150, 26), opt.GyroAimEnabled, " Gyroscope", BlueStonez.toggle);
+            // Three toggles on one row, each bar trimmed to hug its label with a ~16px gap between them
+            // (so they don't read as one merged strip). x: 12 -> 128 -> 268.
+            bool gyroOn = GUI.Toggle(new Rect(12, 206, 100, 26), opt.GyroAimEnabled, " Gyroscope", BlueStonez.toggle);
             if (gyroOn != opt.GyroAimEnabled) opt.GyroAimEnabled = gyroOn;
 
-            bool gyroInv = GUI.Toggle(new Rect(180, 206, 220, 26), opt.GyroInvertY, " Invert Vertical", BlueStonez.toggle);
-            if (gyroInv != opt.GyroInvertY) opt.GyroInvertY = gyroInv;
+            bool gyroInvY = GUI.Toggle(new Rect(128, 206, 124, 26), opt.GyroInvertY, " Invert Vertical", BlueStonez.toggle);
+            if (gyroInvY != opt.GyroInvertY) opt.GyroInvertY = gyroInvY;
+
+            bool gyroInvX = GUI.Toggle(new Rect(268, 206, 145, 26), opt.GyroInvertX, " Invert Horizontal", BlueStonez.toggle);
+            if (gyroInvX != opt.GyroInvertX) opt.GyroInvertX = gyroInvX;
 
             GUI.Label(new Rect(15, 236, 130, 24), "Strength", BlueStonez.label_interparkbold_11pt_left);
             float gyroStr = GUI.HorizontalSlider(new Rect(155, 242, 200, 24), opt.GyroStrength, 0.2f, 4f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);

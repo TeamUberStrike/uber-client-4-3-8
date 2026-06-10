@@ -72,7 +72,7 @@ public static class MobileControlsPreviewMenu
     /// <summary>
     /// Opens the Options panel in Play mode (from the live lobby) with the mobile menu scale forced on, so
     /// you can preview the mobile-only Touch Controls group — Movement Style, sensitivities, the GYROSCOPE
-    /// AIMING controls (Gyroscope / Invert Vertical toggles + Strength slider + Try Gyroscope), and the
+    /// AIMING controls (Gyroscope / Invert Vertical / Invert Horizontal toggles + Strength slider + Try Gyroscope), and the
     /// Customize button — in the Editor without a device. Click the "Controls" tab once it opens.
     /// (The group is normally IsMobile-gated; it now renders whenever MobileMenuScale.Active, which this turns on.)
     /// </summary>

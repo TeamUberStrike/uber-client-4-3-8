@@ -24,11 +24,13 @@ public class TouchShooter : TouchBaseControl
             if (value != enabled)
             {
                 enabled = value;
-                if (!enabled)
-                {
-                    _primaryFinger = new TouchFinger();
-                    _secondaryFinger = new TouchFinger();
-                }
+                // Clear fingers AND the stale Aim on every enable/disable transition. A finger held through
+                // death -> respawn never re-binds as the primary (its Began already passed while the Shooter
+                // was disabled), so a leftover non-zero Aim would keep feeding WishLook and rotate the POV
+                // with no input — the "POV rotates by itself after respawn" regression. Zeroing Aim stops it.
+                _primaryFinger = new TouchFinger();
+                _secondaryFinger = new TouchFinger();
+                Aim = Vector2.zero;
             }
         }
     }
@@ -102,6 +104,35 @@ public class TouchShooter : TouchBaseControl
                 _secondaryFinger.Reset();
             }
         }
+    }
+
+    public override void FinalUpdate()
+    {
+        // iOS does not always deliver TouchPhase.Ended (the same dropped-Ended behaviour the D-pad hit on
+        // device in v29). If it's dropped for the AIM finger, _primaryFinger stays bound to a finger that is
+        // gone — and the guard in UpdateTouches then makes the NEXT finger bind as the SECONDARY (fire)
+        // finger instead of the primary. Aim is driven only by the primary, so the POV stops moving while
+        // you drag ("two fingers on the right side, POV sometimes won't move"). Prune any finger that has
+        // left the live touch set so a fresh finger can re-bind as primary.
+        if (_primaryFinger.FingerId != -1 && !IsFingerLive(_primaryFinger.FingerId))
+        {
+            _primaryFinger.Reset();
+            Aim = Vector2.zero;
+        }
+        if (_secondaryFinger.FingerId != -1 && !IsFingerLive(_secondaryFinger.FingerId))
+        {
+            _secondaryFinger.Reset();
+            if (OnFireEnd != null) OnFireEnd();   // also clears a stuck-fire if the fire finger's Ended was lost
+        }
+    }
+
+    private static bool IsFingerLive(int fingerId)
+    {
+        foreach (Touch t in Input.touches)
+        {
+            if (t.fingerId == fingerId) return true;
+        }
+        return false;
     }
 
     public void IgnoreRect(Rect r)

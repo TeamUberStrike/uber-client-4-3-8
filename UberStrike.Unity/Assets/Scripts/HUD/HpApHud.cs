@@ -133,7 +133,13 @@ public class HpApHud : Singleton<HpApHud>
         _curScaleFactor = 0.65f;
         ResetHpApTransform();
         ResetBlurTransform();
-        _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
+        // HP/AP anchor: top-left on mobile (the original mobile-il2cpp build), bottom-left on desktop/PC.
+        // The forward-port onto desktop-base `main` dropped mobile-il2cpp's #if UNITY_IPHONE branch and
+        // left both platforms at the desktop bottom-left value — that's why HP/AP showed bottom-left.
+        if (ApplicationDataManager.IsMobile)
+            _entireGroup.Position = new Vector2(Screen.width * 0.04f, Screen.height * 0.08f);
+        else
+            _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
         _entireGroup.UpdateMeshGUIPosition();
     }
 

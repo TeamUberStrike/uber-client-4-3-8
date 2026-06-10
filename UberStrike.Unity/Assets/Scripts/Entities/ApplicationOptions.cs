@@ -8,8 +8,8 @@ public class ApplicationOptions
     // Video
     public bool IsUsingCustom = false;
     public int VideoQualityLevel = 1;
-    public int VideoMaxQueuedFrames = 1;
-    public int VideoTextureQuality = 4;
+    public int VideoMaxQueuedFrames = 10;   // default: slider maxed (per request)
+    public int VideoTextureQuality = 0;     // globalTextureMipmapLimit; 0 = full-res = Texture Quality slider 5 (best)
     public int VideoVSyncCount = 0;
     public int VideoAntiAliasing = 0;
     public int VideoWaterMode = 1;
@@ -41,6 +41,7 @@ public class ApplicationOptions
     public bool GyroAimEnabled = false;
     public float GyroStrength = 1.5f;
     public bool GyroInvertY = false;
+    public bool GyroInvertX = false;
 
     // Interface — opt-in "classic" lobby HUD (4.3.10.1-style Play/Shop + Profile/Inbox/Clans/Options ring).
     // Default OFF so production keeps the current lobby unless the player switches it in Options.
@@ -134,6 +135,7 @@ public class ApplicationOptions
         GyroAimEnabled = PlayerPrefs.GetInt("Options_GyroAimEnabled", 0) != 0;
         GyroStrength = Mathf.Clamp(PlayerPrefs.GetFloat("Options_GyroStrength", 1.5f), 0.2f, 4.0f);
         GyroInvertY = PlayerPrefs.GetInt("Options_GyroInvertY", 0) != 0;
+        GyroInvertX = PlayerPrefs.GetInt("Options_GyroInvertX", 0) != 0;
 
         // Interface (PlayerPrefs-backed)
         UseClassicLobby = PlayerPrefs.GetInt("Options_UseClassicLobby", 0) != 0;
@@ -150,6 +152,19 @@ public class ApplicationOptions
         AudioEffectsVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioEffectsVolume, 0.7f);
         AudioMusicVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioMusicVolume, 0.3f);
         AudioMasterVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioMasterVolume, 0.5f);
+
+        // One-time migration so EXISTING installs also land on the new video defaults (Target FPS 200,
+        // Max Queued Frames 10, Texture Quality 5 = full-res) once — then the player's later changes stick.
+        // New installs already get these from the field defaults; this covers devices with older saved prefs
+        // (which would otherwise keep showing their previous values).
+        if (PlayerPrefs.GetInt("Options_VideoDefaults_v2", 0) == 0)
+        {
+            GeneralTargetFrameRate = 200;
+            VideoMaxQueuedFrames = 10;
+            VideoTextureQuality = 0;
+            PlayerPrefs.SetInt("Options_VideoDefaults_v2", 1);
+            SaveApplicationOptions();
+        }
 
         if (isReset) SaveApplicationOptions();
     }
@@ -189,6 +204,7 @@ public class ApplicationOptions
         PlayerPrefs.SetInt("Options_GyroAimEnabled", GyroAimEnabled ? 1 : 0);
         PlayerPrefs.SetFloat("Options_GyroStrength", GyroStrength);
         PlayerPrefs.SetInt("Options_GyroInvertY", GyroInvertY ? 1 : 0);
+        PlayerPrefs.SetInt("Options_GyroInvertX", GyroInvertX ? 1 : 0);
 
         // Interface (PlayerPrefs-backed)
         PlayerPrefs.SetInt("Options_UseClassicLobby", UseClassicLobby ? 1 : 0);

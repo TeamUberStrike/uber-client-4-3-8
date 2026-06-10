@@ -196,6 +196,13 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                     QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
                 }
 
+                // Apply Max Queued Frames + Texture Quality at boot regardless of the quality preset, so the
+                // defaults (Max Queued Frames 10, Texture Quality 5 = full-res) and any saved values actually
+                // take effect and show correctly in Options ▸ Video. maxQueuedFrames was not applied at boot
+                // at all before; the texture limit was only applied for custom configs.
+                QualitySettings.maxQueuedFrames = applicationOptions.VideoMaxQueuedFrames;
+                QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
+
                 // Set the initial Audio options based on Cmune Prefs
                 SfxManager.EnableAudio(ApplicationOptions.AudioEnabled);
                 SfxManager.UpdateMasterVolume();

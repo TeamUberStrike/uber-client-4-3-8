@@ -82,6 +82,8 @@ public static class UserInput
         UpdateDirections();
     }
 
+    private static bool _gyroWasZoomed;
+
     public static void UpdateMouse()
     {
         // On mobile channels the look delta comes from the touch "aim" drag (TouchInput.WishLook),
@@ -112,15 +114,21 @@ public static class UserInput
                 // Gate on LevelCamera.IsZoomedIn (the universal camera-zoom state) rather than the Sniping
                 // touch-state: that state is only entered for SecondaryAction == Zoom, so it missed IronSight
                 // scopes like Vlad / Spiteful Stinger. IsZoomedIn is true for ALL scope types.
-                if (ApplicationDataManager.ApplicationOptions.GyroAimEnabled
-                    && LevelCamera.Exists && LevelCamera.Instance.IsZoomedIn)
+                bool gyroZoomed = ApplicationDataManager.ApplicationOptions.GyroAimEnabled
+                    && LevelCamera.Exists && LevelCamera.Instance.IsZoomedIn;
+                if (gyroZoomed)
                 {
+                    // Clear the 1€ filter history on the rising edge of scope so the first scoped frame
+                    // doesn't inherit a stale rate from the previous scope session (avoids a tiny snap).
+                    if (!_gyroWasZoomed) GyroAim.Reset();
                     Vector2 gyro = GyroAim.LookDelta(
                         ApplicationDataManager.ApplicationOptions.GyroStrength,
-                        ApplicationDataManager.ApplicationOptions.GyroInvertY);
+                        ApplicationDataManager.ApplicationOptions.GyroInvertY,
+                        ApplicationDataManager.ApplicationOptions.GyroInvertX);
                     Mouse.x = ClampAngle(Mouse.x + gyro.x * mfactor, -360f, 360f);
                     Mouse.y = ClampAngle(Mouse.y + gyro.y * mfactor, -88f, 88f);
                 }
+                _gyroWasZoomed = gyroZoomed;
             }
 
             Rotation = Quaternion.AngleAxis(Mouse.x, Vector3.up) * Quaternion.AngleAxis(Mouse.y, Vector3.left);

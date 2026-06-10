@@ -123,6 +123,30 @@ public class TouchControl : TouchBaseControl
         }
     }
 
+    public override void FinalUpdate()
+    {
+        // iOS does not reliably deliver TouchPhase.Ended for every finger (the same dropped-Ended behaviour
+        // the D-pad hit on device in v29). When it's dropped, this control stays bound to a finger that is
+        // no longer on screen, and the guard at the top of UpdateTouches (bound to another fingerId -> return)
+        // then makes it ignore EVERY new finger — so a right-side button "stops working" until the state
+        // machine happens to toggle its Enabled. Prune the binding once its fingerId leaves the live touch
+        // set. ResetTouch() clears state WITHOUT firing OnTouchEnded/OnPushed, so this never causes a
+        // phantom press.
+        if (finger.FingerId != -1 && !IsFingerLive(finger.FingerId))
+        {
+            ResetTouch();
+        }
+    }
+
+    private static bool IsFingerLive(int fingerId)
+    {
+        foreach (Touch t in Input.touches)
+        {
+            if (t.fingerId == fingerId) return true;
+        }
+        return false;
+    }
+
     protected virtual void ResetTouch()
     {
         finger.Reset();
