@@ -52,8 +52,8 @@ The single principle under everything below:
 - **Used by:** Valve (recoil/spread are server-simulated in the authoritative model,
   [Source Networking](https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking));
   CS2 reconstructs the exact shot server-side from a sub-tick timestamp
-  ([CS2 sub-tick](https://www.counter-strike.net/news/20697) — the server "calculates the physics
-  retroactively using your exact timestamp").
+  ([Counter-Strike 2, Valve Developer Community](https://developer.valvesoftware.com/wiki/Counter-Strike_2)
+  — sub-tick: "servers know the exact instant that motion starts, a shot is fired").
 - **How:** the server applies the spread cone to the shot itself, seeded only from server-owned
   values; a client that zeroes its local recoil just sees a wrong tracer.
 - **Why:** the cheater's "no-spread" never reaches the server's hit math, so it changes nothing but
