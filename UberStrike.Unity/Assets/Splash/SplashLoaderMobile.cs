@@ -35,8 +35,13 @@ class SplashLoaderMobile : MonoBehaviour
             Debug.LogError("Unity Caching Authorization Failed!");
         }
 		
-        // Start playing back the UberStrike splash movie
+        // Start playing back the UberStrike splash movie.
+        // Handheld / FullScreenMovieControlMode are mobile-only APIs (don't
+        // exist on WebGL or desktop), so guard the call to the platforms that
+        // actually have it.
+#if UNITY_IPHONE || UNITY_ANDROID
         Handheld.PlayFullScreenMovie(movieFilename, Color.black, FullScreenMovieControlMode.CancelOnInput);
+#endif
 		
 		// Load the Main Scene
         StartCoroutine(LoadMainScene());

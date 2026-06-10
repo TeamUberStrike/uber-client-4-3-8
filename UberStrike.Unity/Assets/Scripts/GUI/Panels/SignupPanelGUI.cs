@@ -51,7 +51,9 @@ public class SignupPanelGUI : PanelGuiBase
 
     private void Update()
     {
-        if (ApplicationDataManager.IsMobile)
+        // Only real iOS/Android players open a TouchScreenKeyboard, so only they
+        // need to read it back. isMobilePlatform is false on WebGL/desktop/editor.
+        if (Application.isMobilePlatform)
         {
             if (_emailKeyboard != null)
             {
@@ -122,8 +124,12 @@ public class SignupPanelGUI : PanelGuiBase
 
                 GUI.enabled = _enableGUI;
 
-#if !UNITY_EDITOR
-                if (ApplicationDataManager.IsMobile)
+                // Real iOS/Android devices use the on screen TouchScreenKeyboard;
+                // desktop, editor, and all web (including mobile browsers) use the
+                // GUI.TextFields below, which Unity backs with a hidden HTML input
+                // on WebGL. isMobilePlatform is true only on real mobile players.
+                // See LoginPanelGUI for the same pattern.
+                if (Application.isMobilePlatform)
                 {
                     if (GUI.Button(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField)) {
                         _emailKeyboard = TouchScreenKeyboard.Open(_emailAddress, TouchScreenKeyboardType.EmailAddress, false, false, false, false);
@@ -163,7 +169,6 @@ public class SignupPanelGUI : PanelGuiBase
                 }
                 else
                 {
-#endif
                     GUI.SetNextControlName("@Email");
                     _emailAddress = GUI.TextField(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField);
                     if (string.IsNullOrEmpty(_emailAddress) && GUI.GetNameOfFocusedControl() != "@Email")
@@ -190,9 +195,7 @@ public class SignupPanelGUI : PanelGuiBase
                         GUI.Label(new Rect(188, 208 - 62, 180, 22), LocalizedStrings.RetypeYourPassword, BlueStonez.label_interparkmed_11pt_left);
                         GUI.color = Color.white;
                     }
-#if !UNITY_EDITOR
-                 }
-#endif
+                }
 
                 GUI.enabled = true;
 

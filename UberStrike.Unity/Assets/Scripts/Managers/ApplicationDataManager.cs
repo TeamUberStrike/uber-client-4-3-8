@@ -335,7 +335,19 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         switch (Application.platform)
         {
             case RuntimePlatform.WebGLPlayer:
-                return Application.absoluteURL.Replace(".unity3d", ".xml");
+            {
+                // Legacy logic replaced ".unity3d" in the page URL with ".xml"
+                // (Unity Web Player era). Modern WebGL builds have no .unity3d,
+                // so derive the directory of the hosting page and read
+                // UberStrike.xml sitting next to index.html. This keeps the
+                // config external/editable per host without a rebuild.
+                string pageUrl = Application.absoluteURL;
+                int mark = pageUrl.IndexOfAny(new char[] { '?', '#' });
+                if (mark >= 0) pageUrl = pageUrl.Substring(0, mark);
+                int slash = pageUrl.LastIndexOf('/');
+                string baseUrl = (slash >= 0) ? pageUrl.Substring(0, slash + 1) : pageUrl;
+                return baseUrl + "UberStrike.xml";
+            }
             case RuntimePlatform.WindowsPlayer:
                 return ("file://" + Application.dataPath + "/" + ApplicationDataManager.StandaloneFilename + ".xml");
             case RuntimePlatform.OSXPlayer:
@@ -348,7 +360,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     private IEnumerator LoadConfigurationXml(string configurationXmlFilePath)
     {
-        if ((string.IsNullOrEmpty(configurationXmlFilePath) || !configurationXmlFilePath.ToLower().Contains(".xml")) || (!configurationXmlFilePath.ToLower().Contains("file://") && !configurationXmlFilePath.ToLower().Contains("http://")))
+        if ((string.IsNullOrEmpty(configurationXmlFilePath) || !configurationXmlFilePath.ToLower().Contains(".xml")) || (!configurationXmlFilePath.ToLower().Contains("file://") && !configurationXmlFilePath.ToLower().Contains("http")))
         {
             Debug.LogError("Invalid url supplied for the Configuration XML file.\n'" + configurationXmlFilePath + "'");
             yield break;

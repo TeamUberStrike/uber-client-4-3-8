@@ -51,7 +51,9 @@ public class LoginPanelGUI : PanelGuiBase
 
     private void Update()
     {
-        if (ApplicationDataManager.IsMobile)
+        // Only real iOS/Android players open a TouchScreenKeyboard, so only they
+        // need to read it back. isMobilePlatform is false on WebGL/desktop/editor.
+        if (Application.isMobilePlatform)
         {
             if (_loginKeyboard != null)
             {
@@ -137,8 +139,13 @@ public class LoginPanelGUI : PanelGuiBase
             GUI.Label(new Rect(8, 30, _rect.width - 16, 23), ErrorMessage, BlueStonez.label_interparkmed_11pt);
             GUI.contentColor = Color.white;
         }
-#if !UNITY_EDITOR
-        if (ApplicationDataManager.IsMobile)
+        // Real iOS/Android devices use Unity's on screen TouchScreenKeyboard.
+        // Everything else (desktop, editor, and all web including mobile browsers)
+        // uses GUI.TextField. On WebGL, Unity backs the TextField with a hidden
+        // HTML input, so the browser handles typing and still raises the soft
+        // keyboard on mobile browsers. Application.isMobilePlatform is true only on
+        // real mobile players, so it cleanly excludes WebGL, desktop, and editor.
+        if (Application.isMobilePlatform)
         {
             if (GUI.Button(new Rect(8, 64, 220, 24), new GUIContent(_emailAddress), BlueStonez.textField))
             {
@@ -152,7 +159,6 @@ public class LoginPanelGUI : PanelGuiBase
         }
         else
         {
-#endif
             // Email Address
             _emailAddress = GUI.TextField(new Rect(8, 64, 220, 24), _emailAddress, CommonConfig.MemberEmailMaxLength, BlueStonez.textField);
             if (string.IsNullOrEmpty(_emailAddress))
@@ -170,9 +176,7 @@ public class LoginPanelGUI : PanelGuiBase
                 GUI.Label(new Rect(8, 92, 200, 24), "  " + LocalizedStrings.Password, BlueStonez.label_interparkbold_13pt_left);
                 GUI.color = Color.white;
             }
-#if !UNITY_EDITOR
         }
-#endif
 
         GUI.color = Color.white.SetAlpha(0.7f);
 
