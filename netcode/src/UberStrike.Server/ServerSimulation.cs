@@ -20,7 +20,9 @@ public sealed class ServerSimulation
 
     private readonly Dictionary<int, PlayerState>     _players     = new();
     private readonly Dictionary<int, Queue<InputCmd>> _inputQueues = new();
-    private readonly Queue<(int entity, FireIntent intent)> _fireQueue = new();
+    private readonly Queue<(int entity, FireIntent intent)> _fireQueue   = new();
+    private readonly Queue<SwitchIntent>                    _switchQueue = new();
+    private readonly List<Projectile>                       _projectiles = new();
 
     private readonly Action<int, Snapshot> _sendSnapshot;
     private readonly Action<HitEvent>      _broadcast;
@@ -82,6 +84,17 @@ public sealed class ServerSimulation
         return true;
     }
 
+    /// <summary>Weapon-switch intent with the same ownership check as inputs/fire.</summary>
+    public bool EnqueueSwitch(in SwitchIntent sw)
+    {
+        if (!_players.TryGetValue(sw.EntityId, out PlayerState? s)) return false;
+        if (sw.SessionToken != s.SessionToken) { s.Anomaly.Bump(AnomalyKind.SchemaViolation, 0.5f); return false; }
+        _switchQueue.Enqueue(sw);
+        return true;
+    }
+
+    public IReadOnlyList<Projectile> Projectiles => _projectiles;
+
     public void StepTick()
     {
         Tick++;
@@ -96,13 +109,30 @@ public sealed class ServerSimulation
             s.History.Record(ServerTime, s.Move.Position, s.Move.Yaw);
         }
 
-        // 3: combat (uses the freshly recorded history for lag-comp rewind).
+        // 3a: weapon switches before fires this tick (so a switch+fire in one tick is gated).
+        while (_switchQueue.Count > 0)
+        {
+            SwitchIntent sw = _switchQueue.Dequeue();
+            if (_players.TryGetValue(sw.EntityId, out PlayerState? sp) && sp.Alive)
+                _combat.HandleSwitch(sp, sw.Slot, ServerTime);
+        }
+
+        // 3b: combat (uses the freshly recorded history for lag-comp rewind). A projectile
+        //     weapon returns a round to track; hitscan/shotgun resolve inline.
         while (_fireQueue.Count > 0)
         {
             (int id, FireIntent intent) = _fireQueue.Dequeue();
             if (_players.TryGetValue(id, out PlayerState? shooter) && shooter.Alive)
-                _combat.HandleFire(shooter, intent, ServerTime);
+            {
+                Projectile? proj = _combat.HandleFire(shooter, intent, ServerTime);
+                if (proj != null) _projectiles.Add(proj);
+            }
         }
+
+        // 3c: advance projectiles; drop spent ones.
+        for (int i = _projectiles.Count - 1; i >= 0; i--)
+            if (!_combat.StepProjectile(_projectiles[i], GameConstants.FixedDt, ServerTime))
+                _projectiles.RemoveAt(i);
 
         // 4: anomaly decay.
         foreach (PlayerState s in _players.Values) s.Anomaly.Decay(GameConstants.FixedDt);

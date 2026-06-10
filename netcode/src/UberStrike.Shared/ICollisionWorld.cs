@@ -21,6 +21,9 @@ public interface ICollisionWorld
     /// <summary>Unobstructed sightline test between two points (used for server hit LOS).</summary>
     bool LineOfSight(Vector3 a, Vector3 b);
 
+    /// <summary>Nearest static-geometry ray hit (projectile travel). Returns hit distance.</summary>
+    bool Raycast(Vector3 origin, Vector3 dir, float maxDist, out float t);
+
     bool Contains(Vector3 p);
     Vector3 ClampToBounds(Vector3 p);
 }

@@ -31,7 +31,8 @@ public sealed class PlayerState
     public int   TeamId;
 
     public WeaponRuntime[] Weapons = Array.Empty<WeaponRuntime>();
-    public int   ActiveSlot;
+    public int    ActiveSlot;
+    public double SwitchReadyTime; // server time the active weapon may first fire after a switch
 
     public long  Currency;
     public int   Kills, Deaths;

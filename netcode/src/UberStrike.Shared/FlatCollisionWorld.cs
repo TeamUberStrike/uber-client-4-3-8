@@ -25,8 +25,19 @@ public sealed class FlatCollisionWorld : ICollisionWorld
     // No ceilings in the flat world; a ducked player can always stand.
     public bool HasHeadroom(Vector3 p) => true;
 
-    // TODO(Phase 4): raycast against real geometry. Placeholder = always visible.
+    // Flat world has no occluders other than the ground plane; sightlines above ground are clear.
     public bool LineOfSight(Vector3 a, Vector3 b) => true;
+
+    // Ray vs the ground plane only (enough for the in-process demo/tests).
+    public bool Raycast(Vector3 origin, Vector3 dir, float maxDist, out float t)
+    {
+        t = 0f;
+        if (dir.Y >= -1e-6f) return false;          // not heading down toward the plane
+        float dist = (GroundY - origin.Y) / dir.Y;  // > 0 when origin is above the plane
+        if (dist < 0f || dist > maxDist) return false;
+        t = dist;
+        return true;
+    }
 
     public bool Contains(Vector3 p) =>
         p.X >= Min.X && p.X <= Max.X &&

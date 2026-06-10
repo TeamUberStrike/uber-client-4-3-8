@@ -54,7 +54,7 @@ public static class GameConstants
     // --- client smoothing ---
     public const float SmoothRate = 15f;           // error decay rate for reconciliation blending
 
-    // --- hitbox geometry (capsule body + sphere head) ---
+    // --- hitbox geometry (multi-part: head sphere + torso capsule + legs capsule) ---
     public const float EyeHeight  = 1.6f;          // PlayerAttributes.HEIGHT_NORMAL
     public const float BodyRadius = 0.40f;
     public const float BodyBottom = 0.10f;
@@ -62,4 +62,10 @@ public static class GameConstants
     public const float HeadOffset = 1.70f;
     public const float HeadRadius = 0.22f;
     public const float HeightDucked = 0.9f;        // PlayerAttributes.HEIGHT_DUCKED
+
+    // Phase 5 hitbox split + per-part damage multipliers (head uses the weapon's HeadshotMult).
+    public const float LegsTop     = 0.90f;        // legs capsule: BodyBottom..LegsTop
+    public const float TorsoBottom = 0.90f;        // torso capsule: TorsoBottom..BodyTop
+    public const float TorsoMult   = 1.00f;
+    public const float LegsMult    = 0.85f;
 }

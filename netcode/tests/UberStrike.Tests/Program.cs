@@ -346,6 +346,121 @@ var stream10k = RecordStream(10_000);
     Check(BitsEqual(a, b), "10k-tick movement on a BAKED mesh world is bit-identical (fresh vs loaded)");
 }
 
+// ---------------------------------------------------------------------------------------
+// 13. Phase 5 — multi-part hitboxes: a leg hit does less damage than a torso hit.
+// ---------------------------------------------------------------------------------------
+{
+    float DamageAimingAt(float targetLocalY)
+    {
+        var w = new FlatCollisionWorld();
+        var shooter = MakePlayer(1, 1, Vector3.Zero);            // machine gun, no headshot
+        var target  = MakePlayer(2, 1, new Vector3(0, 0, 6));
+        target.History.Record(0, target.Move.Position, 0);
+        // aim at a specific height on the target
+        Vector3 eye = shooter.Move.Position + new Vector3(0, GameConstants.EyeHeight, 0);
+        Vector3 aimPt = target.Move.Position + new Vector3(0, targetLocalY, 0);
+        Vector3 d = Vector3.Normalize(aimPt - eye);
+        shooter.Move.Yaw = MathF.Atan2(d.X, d.Z);
+        shooter.Move.Pitch = -MathF.Asin(Math.Clamp(d.Y, -1f, 1f));
+        var players = new List<PlayerState> { shooter, target };
+        var combat = new CombatSystem(w, () => players, _ => { });
+        float before = target.Health;
+        combat.HandleFire(shooter, new FireIntent { EntityId = 1, Slot = 0, ClientTick = 1 }, 1.0);
+        return before - target.Health;
+    }
+    float torso = DamageAimingAt(1.3f);   // chest height
+    float legs  = DamageAimingAt(0.5f);   // shin height
+    Check(torso > 0 && legs > 0, "multi-part: both torso and leg shots register");
+    Check(legs < torso, $"multi-part: leg hit does less damage than torso ({legs:F1} < {torso:F1})");
+}
+
+// ---------------------------------------------------------------------------------------
+// 14. Phase 5 — weapon switch delay defeats quick-switch (fire-instantly) exploit.
+// ---------------------------------------------------------------------------------------
+{
+    var w = new FlatCollisionWorld();
+    var def1 = WeaponTable.Get(1); var def3 = WeaponTable.Get(3);
+    var shooter = new PlayerState { EntityId = 1, SessionToken = "t",
+        Weapons = new[] {
+            new WeaponRuntime { WeaponId = 1, Ammo = def1.MagSize },
+            new WeaponRuntime { WeaponId = 3, Ammo = def3.MagSize },
+        } };
+    shooter.Move.Grounded = true;
+    var target = MakePlayer(2, 1, new Vector3(0, 0, 6)); target.History.Record(0, target.Move.Position, 0);
+    (shooter.Move.Yaw, shooter.Move.Pitch) = AimAt(shooter.Move.Position, target.Move.Position);
+    var players = new List<PlayerState> { shooter, target };
+    int hits = 0;
+    var combat = new CombatSystem(w, () => players, _ => hits++);
+
+    combat.HandleSwitch(shooter, 1, 10.0);                       // switch to sniper at t=10
+    combat.HandleFire(shooter, new FireIntent { EntityId = 1, Slot = 1, ClientTick = 1 }, 10.01); // instant
+    Check(hits == 0, "switch delay: firing immediately after a switch is rejected");
+    combat.HandleFire(shooter, new FireIntent { EntityId = 1, Slot = 1, ClientTick = 2 }, 10.0 + def3.SwitchDelay + 0.01);
+    Check(hits == 1, "switch delay: firing after the switch delay is allowed");
+}
+
+// ---------------------------------------------------------------------------------------
+// 15. Phase 5 — shotgun fires multiple pellets from ONE shell (more damage, one ammo).
+// ---------------------------------------------------------------------------------------
+{
+    var w = new FlatCollisionWorld();
+    var shooter = MakePlayer(1, 2, Vector3.Zero);               // shotgun, 8 pellets
+    var target  = MakePlayer(2, 2, new Vector3(0, 0, 4));       // close, wide target
+    target.History.Record(0, target.Move.Position, 0);
+    (shooter.Move.Yaw, shooter.Move.Pitch) = AimAt(shooter.Move.Position, target.Move.Position);
+    var players = new List<PlayerState> { shooter, target };
+    int events = 0; float total = 0;
+    var combat = new CombatSystem(w, () => players, e => { events++; total += e.Damage; });
+    int ammoBefore = shooter.ActiveWeapon.Ammo;
+    combat.HandleFire(shooter, new FireIntent { EntityId = 1, Slot = 0, ClientTick = 1 }, 1.0);
+    Check(shooter.ActiveWeapon.Ammo == ammoBefore - 1, "shotgun: one trigger pull consumes one shell");
+    Check(events == 1, "shotgun: pellets aggregate into one hit event per victim");
+    Check(total > WeaponTable.Get(2).BaseDamage, $"shotgun: multiple pellets landed (total {total:F0} > one pellet)");
+}
+
+// ---------------------------------------------------------------------------------------
+// 16. Phase 5 — projectile: splash damage + rocket-jump impulse, and a wall shields splash.
+// ---------------------------------------------------------------------------------------
+{
+    // Open world: projectile detonates on a victim, splashes a nearby third player.
+    var w = new FlatCollisionWorld();
+    var shooter = MakePlayer(1, 4, Vector3.Zero);               // splattergun
+    var victim  = MakePlayer(2, 4, new Vector3(0, 0, 10));
+    var nearby  = MakePlayer(3, 4, new Vector3(1.5f, 0, 10));   // within splash radius (4)
+    var players = new List<PlayerState> { shooter, victim, nearby };
+    // aim the round at the victim's torso so it scores a direct hit
+    Vector3 eye = shooter.Move.Position + new Vector3(0, GameConstants.EyeHeight, 0);
+    Vector3 tp = victim.Move.Position + new Vector3(0, 0.8f, 0);
+    Vector3 ad = Vector3.Normalize(tp - eye);
+    shooter.Move.Yaw = MathF.Atan2(ad.X, ad.Z); shooter.Move.Pitch = -MathF.Asin(Math.Clamp(ad.Y, -1f, 1f));
+    var combat = new CombatSystem(w, () => players, _ => { });
+
+    var proj = combat.HandleFire(shooter, new FireIntent { EntityId = 1, Slot = 0, ClientTick = 1 }, 1.0);
+    Check(proj != null, "projectile: firing a splatter weapon spawns a server projectile (no instant hit)");
+    float vHpBefore = victim.Health, nHpBefore = nearby.Health;
+    double tnow = 1.0;
+    for (int i = 0; i < 60 && proj != null && !proj.Dead; i++) { tnow += dt; combat.StepProjectile(proj!, dt, tnow); }
+    Check(victim.Health < vHpBefore, "projectile: direct/blast damage applied to the victim");
+    Check(nearby.Health < nHpBefore, "projectile: splash damages a nearby player");
+    Check(nearby.Move.ExternalForceMode == ForceMode.Additive,
+        "projectile: splash imparts a knockback impulse (rocket-jump physics)");
+
+    // Walled world: two players equidistant from a blast — the one behind a wall is shielded.
+    var v2 = new List<Vector3>(); var i2 = new List<int>();
+    Quad(v2, i2, new Vector3(-50,0,-50), new Vector3(50,0,-50), new Vector3(50,0,50), new Vector3(-50,0,50)); // floor
+    Quad(v2, i2, new Vector3(0,0,1.0f), new Vector3(0,5,1.0f), new Vector3(0,5,3.0f), new Vector3(0,0,3.0f)); // wall x=0, z[1,3]
+    var wallWorld = new BakedCollisionWorld(new TriangleMesh(v2.ToArray(), i2.ToArray()));
+    var owner    = MakePlayer(1, 4, new Vector3(-5, 0, 0));
+    var exposed  = MakePlayer(2, 4, new Vector3(2f, 0, 2f));     // no wall between blast and here
+    var shielded = MakePlayer(3, 4, new Vector3(-2f, 0, 2f));    // wall at x=0 sits between blast and here
+    var players2 = new List<PlayerState> { owner, exposed, shielded };
+    var combat2 = new CombatSystem(wallWorld, () => players2, _ => { });
+    float eHp = exposed.Health, sHp = shielded.Health;
+    combat2.Detonate(1, WeaponTable.Get(4), new Vector3(1.5f, 0.8f, 2f), 1.0); // blast on the +x side
+    Check(exposed.Health < eHp,  "projectile: blast damages a player in the open");
+    Check(shielded.Health == sHp, "projectile: a wall between the blast and a player blocks splash (LOS-gated)");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;

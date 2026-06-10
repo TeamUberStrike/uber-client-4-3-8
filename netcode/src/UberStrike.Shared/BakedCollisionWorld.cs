@@ -128,6 +128,9 @@ public sealed class BakedCollisionWorld : ICollisionWorld
         return !Mesh.RayCast(a, dir, maxD, out _, out _);
     }
 
+    public bool Raycast(Vector3 origin, Vector3 dir, float maxDist, out float t)
+        => Mesh.RayCast(origin, dir, maxDist, out t, out _);
+
     public bool Contains(Vector3 p) =>
         p.X >= _min.X && p.X <= _max.X &&
         p.Y >= _min.Y && p.Y <= _max.Y &&

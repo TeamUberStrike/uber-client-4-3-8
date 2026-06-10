@@ -22,6 +22,14 @@ public struct FireIntent
     public uint   ClientTick;
 }
 
+/// <summary>Client weapon-switch INTENT. The server enforces the per-weapon switch delay.</summary>
+public struct SwitchIntent
+{
+    public int    EntityId;
+    public string SessionToken;
+    public int    Slot;
+}
+
 // ---- Server -> Client ----------------------------------------------------------------
 
 /// <summary>
