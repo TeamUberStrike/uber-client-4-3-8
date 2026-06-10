@@ -89,7 +89,8 @@ The single principle under everything below:
   one heuristic.
 - **Why:** architecture caps what an aimbot can *achieve*; detection catches the residual (a human
   can't flick 2000°/s onto heads every shot). Graduated response avoids false bans.
-- **Status:** ⚠️ **PARTIAL.** Server hit-reg ✅ (`CombatSystem` raycast). Anomaly scoring is a
+- **Status:** ⚠️ **PARTIAL.** Server hit-reg ✅ with **multi-part hitboxes** (head/torso/legs,
+  Phase 5) so an aimbot's headshots are still bounded by real geometry. Anomaly scoring is a
   **soft scaffold** (`AnomalyTracker`: aim-snap/accuracy/headshot signals) — real tuning against
   play data + a review pipeline is **Phase 8**, not built. Honest: we *raise the floor*, we don't
   yet *detect* aimbots well.
@@ -135,9 +136,10 @@ The single principle under everything below:
   applying damage.
 - **Why:** the hit is only credited if the server agrees there's a clear line — ESP can't turn an
   occluded target into a kill.
-- **Status:** ❌ **STUBBED — OPEN.** `FlatCollisionWorld.LineOfSight` currently returns `true`
-  always. The *call site is wired*, but until **Phase 4** exports the real baked map colliders, LOS
-  enforces nothing. Wallbang is open today. (This is why I recommend Phase 4 next over Phase 2.)
+- **Status:** ✅ **DONE (Phase 4).** `BakedCollisionWorld.LineOfSight` is a real segment-vs-mesh
+  raycast against the baked map triangles; `CombatSystem` step (7) rejects + flags any shot whose
+  hit point isn't visible from the muzzle. Verified by tests (shot through a wall/pillar denied,
+  clear shot allowed). Splash damage from projectiles is LOS-gated too (a wall shields you).
 
 ## 8. Lag switch / backtrack / fake-latency abuse
 
@@ -223,16 +225,20 @@ The single principle under everything below:
 | Speedhack/teleport/fly | server movement authority | ✅ done (P1) |
 | No-recoil/no-spread | server-side spread | ✅ done |
 | Rapidfire/no-reload/infinite ammo | server weapon state gate | ✅ done |
-| Aimbot | server hit-reg + detection | ⚠️ floor done; detection = P8 |
+| Aimbot | server hit-reg (multi-part) + detection | ⚠️ floor done; detection = P8 |
 | Triggerbot | gate + detection | ⚠️ gate done; detection = P8 |
 | **Wallhack/ESP (seeing)** | **Fog of War (don't send)** | ❌ **not built — top gap** |
-| Wallbang (firing through walls) | server LOS | ❌ stubbed (LOS=true until P4) |
+| Wallbang (firing through walls) | server LOS | ✅ **done (P4)** |
+| Quick-switch fire exploit | server switch-delay gate | ✅ done (P5) |
 | Lag switch/backtrack | clamped rewind, server RTT | ⚠️ clamp done; RTT source = P7 |
 | Currency/XP/score injection | idempotent server economy | ✅ done |
 | Packet replay/forgery/spoof | auth + seq + schema | ✅ done |
 | Memory editing | server never reads client state | ✅ done by design |
 | Desync exploitation | determinism + detector | ✅ done (P1) |
 
-**Six of twelve fully defended, four partial, two open (ESP + wallbang) — both blocked on the same
-thing: the real collision world / visibility (Phase 4), which is why I recommend it as the next
-phase.** Nothing here is overstated: where a defense is stubbed, it's marked stubbed.
+**Eight of thirteen fully defended, three partial, one open.** Phase 4 closed wallbang (real LOS
+on baked map geometry) and Phase 5 added multi-part hitboxes, the quick-switch gate, shotgun
+pellets and LOS-gated projectile splash. **The one remaining hard gap is ESP/Fog-of-War (don't send
+unseen enemies)** — snapshots still send all players to all clients. That's the recommended next
+build; the baked collision world from Phase 4 is exactly the visibility data it needs. Nothing here
+is overstated: where a defense is stubbed, it's marked stubbed.

@@ -105,7 +105,7 @@ interpolate smoothly, and corrections are visually imperceptible on a clean LAN.
 
 ---
 
-## Phase 4 — Real collision world + line-of-sight
+## Phase 4 — Real collision world + line-of-sight ✅ DONE (2026-06-10, commit 724a708c)
 
 **Goal:** replace `FlatCollisionWorld` with the actual map geometry, shared by both sides.
 
@@ -124,7 +124,7 @@ solid geometry are rejected and flagged.
 
 ---
 
-## Phase 5 — Full combat
+## Phase 5 — Full combat ✅ DONE (2026-06-10, commit 249ff533)
 
 **Goal:** complete the weapon/combat model.
 
