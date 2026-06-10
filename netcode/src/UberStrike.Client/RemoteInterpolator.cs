@@ -24,7 +24,28 @@ public sealed class RemoteInterpolator
         if (_buf.Count == 0) return false;
 
         if (renderTime <= _buf[0].t)        { (_, pos, yaw, pitch) = _buf[0];        return true; }
-        if (renderTime >= _buf[^1].t)       { (_, pos, yaw, pitch) = _buf[^1];       return true; }
+
+        // Buffer starvation (renderTime past the newest sample — snapshot late/lost or the
+        // entity was fog-of-war culled): extrapolate along the last observed velocity for a
+        // short window, then FREEZE. Extrapolation hides one-snapshot hiccups; freezing caps
+        // how wrong we can be — beyond MaxExtrapolateSeconds a guess is worse than a pause.
+        if (renderTime >= _buf[^1].t)
+        {
+            (double tN, Vector3 pN, float yawN, float pitchN) = _buf[^1];
+            yaw = yawN; pitch = pitchN; pos = pN;
+            if (_buf.Count >= 2)
+            {
+                (double tP, Vector3 pP, _, _) = _buf[^2];
+                float span = (float)(tN - tP);
+                if (span > 1e-6f)
+                {
+                    Vector3 vel = (pN - pP) / span;
+                    float dt = (float)Math.Min(renderTime - tN, UberStrike.Shared.GameConstants.MaxExtrapolateSeconds);
+                    pos = pN + vel * dt;
+                }
+            }
+            return true;
+        }
 
         for (int i = 0; i < _buf.Count - 1; i++)
         {

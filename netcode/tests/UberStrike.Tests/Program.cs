@@ -659,6 +659,87 @@ var stream10k = RecordStream(10_000);
     Check(!Wire.TryDecodeFire(padded, out _), "wire: trailing bytes rejected");
 }
 
+// ---------------------------------------------------------------------------------------
+// 19. Phase 6 — lag-comp tuning: hits land under jittery RTT, backtrack abuse is clamped,
+//     RTT growth is rate-limited, interpolation extrapolates briefly then freezes.
+// ---------------------------------------------------------------------------------------
+{
+    // (a) hit-reg under 120ms RTT with ±30ms jitter against a strafing target.
+    // Sniper (0.1° spread) so the only variable under test is the REWIND, not weapon spread.
+    // History is a 64-tick ring (~2.1s), so record continuously and fire at RECENT times.
+    var w = new FlatCollisionWorld();
+    var shooter = MakePlayer(1, 3, Vector3.Zero);
+    var target  = MakePlayer(2, 3, new Vector3(0, 0, 10));
+    var players = new List<PlayerState> { shooter, target };
+    int hits = 0;
+    var combat = new CombatSystem(w, () => players, _ => hits++);
+    Vector3 PosAt(double t) => new(7f * (float)t, 0f, 10f);          // strafes +X at walk speed
+
+    shooter.ObserveRtt(0.12);                                       // server-measured RTT
+    float[] jitter = { -0.03f, 0.0f, 0.03f };
+    int fired = 0;
+    int gtick = 0;
+    void RecordTo(double until) { while ((gtick + 1) * dt <= until + 1e-9) { gtick++; double t = gtick * dt; target.History.Record(t, PosAt(t), 0f); } }
+    for (int i = 0; i < jitter.Length; i++)
+    {
+        double now = 0.5 + i * 1.3;                                 // recent + respects 1.2s FireInterval
+        RecordTo(now);
+        double clientRtt = 0.12 + jitter[i];                        // what the CLIENT experienced
+        double clientViewTime = now - GameConstants.InterpDelaySeconds - clientRtt * 0.5;
+        // the client aimed at the target where it RENDERED it (torso height)
+        Vector3 eye = shooter.Move.Position + new Vector3(0, GameConstants.EyeHeight, 0);
+        Vector3 aimPt = PosAt(clientViewTime) + new Vector3(0, 0.8f, 0);
+        Vector3 d = Vector3.Normalize(aimPt - eye);
+        shooter.Move.Yaw = MathF.Atan2(d.X, d.Z);
+        shooter.Move.Pitch = -MathF.Asin(Math.Clamp(d.Y, -1f, 1f));
+        target.Health = 100f;
+        combat.HandleFire(shooter, new FireIntent { EntityId = 1, Slot = 0, ClientTick = (uint)(100 + i) }, now);
+        fired++;
+    }
+    Check(hits == fired, $"lag-comp: all {fired} shots land at 120ms RTT with ±30ms jitter (hits={hits})");
+
+    // (b) backtrack abuse: inflated RTT cannot rewind past MaxRewindSeconds.
+    int abuseHits = 0;
+    var combat2 = new CombatSystem(w, () => players, _ => abuseHits++);
+    double nowAbuse = gtick * dt + 1.3;                             // next allowed sniper shot
+    RecordTo(nowAbuse);
+    for (int i = 0; i < 50; i++) shooter.ObserveRtt(2.0);           // hold fake 2s RTT
+    double staleTime = nowAbuse - 1.0;                              // aim ~1s back (rewind floor is 0.25s)
+    Vector3 eye2 = shooter.Move.Position + new Vector3(0, GameConstants.EyeHeight, 0);
+    Vector3 stalePt = PosAt(staleTime) + new Vector3(0, 0.8f, 0);
+    Vector3 d2 = Vector3.Normalize(stalePt - eye2);
+    shooter.Move.Yaw = MathF.Atan2(d2.X, d2.Z);
+    shooter.Move.Pitch = -MathF.Asin(Math.Clamp(d2.Y, -1f, 1f));
+    target.Health = 100f;
+    combat2.HandleFire(shooter, new FireIntent { EntityId = 1, Slot = 0, ClientTick = 999 }, nowAbuse);
+    // rewind floor = now - MaxRewind = now-0.25; the target there is ~5.25u from the 1s-stale
+    // position the cheater aimed at — far outside the 0.4u hitbox.
+    Check(abuseHits == 0, "lag-comp: inflated RTT cannot land a hit beyond the MaxRewind window");
+
+    // (c) RttTracker: init cap, rate-limited growth, free fall
+    var rt = new RttTracker();
+    rt.Observe(1.5);
+    Check(rt.Seconds <= RttTracker.InitCap + 1e-9, $"rtt: first observation capped ({rt.Seconds:F3}s)");
+    var rt2 = new RttTracker();
+    rt2.Observe(0.05);
+    rt2.Observe(2.0);
+    Check(rt2.Seconds <= 0.05 + RttTracker.MaxGrowPerObservation + 1e-9,
+        $"rtt: growth rate-limited per observation ({rt2.Seconds:F3}s)");
+    double before = rt2.Seconds;
+    rt2.Observe(0.05);
+    Check(rt2.Seconds < before, "rtt: estimate falls freely when latency improves");
+
+    // (d) interpolation buffer starvation: brief extrapolation, then freeze
+    var interp = new RemoteInterpolator();
+    interp.Ingest(0.9, new Vector3(0, 0, 0), 0f, 0f);
+    interp.Ingest(1.0, new Vector3(1, 0, 0), 0f, 0f);                // 10 u/s along +X
+    interp.Sample(1.05, out Vector3 ep1, out _, out _);
+    Check(MathF.Abs(ep1.X - 1.5f) < 0.01f, $"interp: extrapolates through a short gap (x={ep1.X:F2})");
+    interp.Sample(5.0, out Vector3 ep2, out _, out _);
+    float frozenX = 1f + 10f * GameConstants.MaxExtrapolateSeconds;
+    Check(MathF.Abs(ep2.X - frozenX) < 0.01f, $"interp: freezes at the extrapolation cap (x={ep2.X:F2})");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;

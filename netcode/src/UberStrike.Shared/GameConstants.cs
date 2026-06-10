@@ -50,6 +50,9 @@ public static class GameConstants
     public const float MaxRewindSeconds   = 0.25f; // server can rewind at most this far
     public const float InterpDelaySeconds = 0.10f; // remote players rendered this far in the past
     public const uint  MaxSeqGap          = 64;    // reject inputs beyond this gap (replay guard)
+    // Buffer starvation: extrapolate a remote at most this far past its newest sample, then
+    // freeze (a longer guess reads worse than a brief pause). Phase 6.
+    public const float MaxExtrapolateSeconds = 0.2f;
 
     // --- client smoothing ---
     public const float SmoothRate = 15f;           // error decay rate for reconciliation blending

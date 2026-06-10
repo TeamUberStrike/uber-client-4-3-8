@@ -37,7 +37,11 @@ public sealed class PlayerState
     public long  Currency;
     public int   Kills, Deaths;
 
-    public double SmoothedRtt; // seconds; feeds lag-comp rewind
+    public double SmoothedRtt; // seconds; feeds lag-comp rewind (write via ObserveRtt)
+
+    /// <summary>Server-measured RTT (ping→pong), growth-rate-limited vs inflation abuse.</summary>
+    public readonly RttTracker Rtt = new();
+    public void ObserveRtt(double sample) { Rtt.Observe(sample); SmoothedRtt = Rtt.Seconds; }
 
     // Server time of the last shot that actually fired (consumed ammo). Feeds the fog-of-war
     // fire-reveal. NegativeInfinity so a fresh player isn't "revealed" for the first second.
