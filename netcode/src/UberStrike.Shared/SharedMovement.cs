@@ -221,6 +221,21 @@ public static class SharedMovement
     public static float Len3(in Vector3 v)
         => MathF.Sqrt(((v.X * v.X) + (v.Y * v.Y)) + (v.Z * v.Z));
 
+    /// <summary>Cross product, component-wise (no horizontal reduction — determinism-safe).</summary>
+    public static Vector3 Cross3(in Vector3 a, in Vector3 b)
+        => new((a.Y * b.Z) - (a.Z * b.Y),
+               (a.Z * b.X) - (a.X * b.Z),
+               (a.X * b.Y) - (a.Y * b.X));
+
+    /// <summary>Full 3D normalize using the fixed-order Len3. Returns zero for a zero vector.</summary>
+    public static Vector3 Normalize3(in Vector3 v)
+    {
+        float len = Len3(v);
+        if (len <= 0f) return Vector3.Zero;
+        float inv = 1f / len;
+        return new Vector3(v.X * inv, v.Y * inv, v.Z * inv);
+    }
+
     /// <summary>Direction-only normalize on the XZ plane (Y forced to 0).</summary>
     public static Vector3 NormalizeXZ(in Vector3 v)
     {

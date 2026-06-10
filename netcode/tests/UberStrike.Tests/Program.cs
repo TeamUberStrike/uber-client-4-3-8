@@ -291,6 +291,61 @@ var stream10k = RecordStream(10_000);
         "fire intent with the owner's session token is accepted");
 }
 
+// ---------------------------------------------------------------------------------------
+// 11. Phase 4 — baked collision world: real LOS (closes wallbang) + wall slide + grounded.
+// ---------------------------------------------------------------------------------------
+{
+    // A room: floor at y=0, a wall plane at x=5 (z in [-10,10], y in [0,4]), a pillar box
+    // centred at (0,0,5) size (1,3,1).
+    var v = new List<Vector3>(); var idx = new List<int>();
+    Quad(v, idx, new Vector3(-10,0,-10), new Vector3(10,0,-10), new Vector3(10,0,10), new Vector3(-10,0,10)); // floor
+    Quad(v, idx, new Vector3(5,0,-10), new Vector3(5,4,-10), new Vector3(5,4,10), new Vector3(5,0,10));       // wall x=5
+    Box(v, idx, new Vector3(0,0,5), new Vector3(1,3,1));                                                       // pillar
+    var room = new BakedCollisionWorld(new TriangleMesh(v.ToArray(), idx.ToArray()));
+
+    Vector3 eye = new(0, 1.5f, 0);
+    Check(room.LineOfSight(eye, new Vector3(0, 1.5f, 3)),  "LOS clear across open floor");
+    Check(!room.LineOfSight(eye, new Vector3(0, 1.5f, 10)), "LOS blocked through the pillar (wallbang denied)");
+    Check(!room.LineOfSight(eye, new Vector3(8, 1.5f, 0)),  "LOS blocked through the wall");
+    Check(room.LineOfSight(new Vector3(-2,1.5f,0), new Vector3(2,1.5f,0)), "LOS clear with no geometry between");
+
+    // Walk into the wall: must not tunnel through x=5.
+    Vector3 stopped = room.CollideAndSlide(new Vector3(4.0f, 0, 0), new Vector3(2f, 0, 0));
+    Check(stopped.X < 4.75f, $"CollideAndSlide stops the player at the wall (x={stopped.X:F2}, did not pass 5)");
+
+    // Slide along the wall: pushing into it diagonally still advances along Z.
+    Vector3 slid = room.CollideAndSlide(new Vector3(4.55f, 0, 0), new Vector3(1f, 0, 1f));
+    Check(slid.X < 4.75f && slid.Z > 0.3f, $"CollideAndSlide slides along the wall (x={slid.X:F2}, z={slid.Z:F2})");
+
+    Check(room.CheckGrounded(new Vector3(0, 0f, 0)), "grounded standing on the floor");
+    Check(!room.CheckGrounded(new Vector3(0, 5f, 0)), "not grounded 5m above the floor");
+    Check(room.HasHeadroom(new Vector3(-3, 0, 0)), "headroom to stand in the open");
+}
+
+// ---------------------------------------------------------------------------------------
+// 12. Phase 4 — movement on a mesh world is bit-identical client vs server over 10k ticks,
+//     and the .ubw binary round-trips losslessly.
+// ---------------------------------------------------------------------------------------
+{
+    var v = new List<Vector3>(); var idx = new List<int>();
+    Quad(v, idx, new Vector3(-1000,0,-1000), new Vector3(1000,0,-1000), new Vector3(1000,0,1000), new Vector3(-1000,0,1000));
+    var verts = v.ToArray(); var indices = idx.ToArray();
+
+    // round-trip the binary format
+    using var ms = new MemoryStream();
+    BakedCollisionWorld.Write(ms, verts, indices);
+    ms.Position = 0;
+    var loaded = BakedCollisionWorld.Load(ms);
+    Check(loaded.Mesh.TriangleCount == indices.Length / 3, ".ubw round-trips the triangle count");
+
+    var worldA = new BakedCollisionWorld(new TriangleMesh(verts, indices));
+    var worldB = loaded; // built from the serialized bytes — must behave identically
+    MoveState a = default, b = default; a.Grounded = b.Grounded = true;
+    foreach (var cmd in stream10k) SharedMovement.Step(ref a, cmd, dt, worldA);
+    foreach (var cmd in stream10k) SharedMovement.Step(ref b, cmd, dt, worldB);
+    Check(BitsEqual(a, b), "10k-tick movement on a BAKED mesh world is bit-identical (fresh vs loaded)");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;
@@ -330,4 +385,27 @@ static (float yaw, float pitch) AimAt(Vector3 from, Vector3 to)
     Vector3 head = to + new Vector3(0, GameConstants.HeadOffset, 0);
     Vector3 d = Vector3.Normalize(head - eye);
     return (MathF.Atan2(d.X, d.Z), -MathF.Asin(Math.Clamp(d.Y, -1f, 1f)));
+}
+
+// --- mesh builders for the Phase 4 collision tests ---
+static void Quad(List<Vector3> v, List<int> t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+{
+    int b = v.Count;
+    v.Add(p0); v.Add(p1); v.Add(p2); v.Add(p3);
+    t.Add(b); t.Add(b + 1); t.Add(b + 2);
+    t.Add(b); t.Add(b + 2); t.Add(b + 3);
+}
+
+static void Box(List<Vector3> v, List<int> t, Vector3 center, Vector3 size)
+{
+    Vector3 s = size * 0.5f;
+    var c = new Vector3[8]; int k = 0;
+    for (int xi = -1; xi <= 1; xi += 2)
+        for (int yi = -1; yi <= 1; yi += 2)
+            for (int zi = -1; zi <= 1; zi += 2)
+                c[k++] = center + new Vector3(s.X * xi, s.Y * yi, s.Z * zi);
+    int[] f = { 0,1,3, 0,3,2, 4,6,7, 4,7,5, 0,4,5, 0,5,1, 2,3,7, 2,7,6, 0,2,6, 0,6,4, 1,5,7, 1,7,3 };
+    int bse = v.Count;
+    foreach (Vector3 corner in c) v.Add(corner);
+    foreach (int fi in f) t.Add(bse + fi);
 }
