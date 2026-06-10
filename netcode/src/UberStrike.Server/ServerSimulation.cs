@@ -47,7 +47,17 @@ public sealed class ServerSimulation
     }
 
     public IEnumerable<PlayerState> Players => _players.Values;
+    public int PlayerCount => _players.Count;
     public PlayerState? Get(int id) => _players.TryGetValue(id, out PlayerState? p) ? p : null;
+
+    /// <summary>Remove a player (leave/disconnect) and drop their fog-of-war pair history.</summary>
+    public bool RemovePlayer(int id)
+    {
+        if (!_players.Remove(id)) return false;
+        _inputQueues.Remove(id);
+        _visibility.RemovePlayer(id);
+        return true;
+    }
 
     public PlayerState AddPlayer(int id, string token, Vector3 spawn, int weaponId)
     {

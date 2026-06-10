@@ -918,6 +918,71 @@ var stream10k = RecordStream(10_000);
     client2.Dispose();
 }
 
+// ---------------------------------------------------------------------------------------
+// 22. Phase 10 — room sharding, capacity, reaping, and a load test within tick budget.
+// ---------------------------------------------------------------------------------------
+{
+    var mgr = new MatchManager(() => new FlatCollisionWorld(), roomCapacity: 8);
+
+    // capacity + overflow: 20 joins at cap 8 → 3 rooms (8/8/4)
+    for (int i = 0; i < 20; i++) mgr.Join($"tok-{i}", new Vector3(i % 8, 0, 0), 1);
+    Check(mgr.RoomCount == 3, $"phase10: 20 joins at cap 8 shard into 3 rooms ({mgr.RoomCount})");
+    int capped = 0; foreach (Room r in mgr.Rooms) { if (r.PlayerCount > r.Capacity) capped++; }
+    Check(capped == 0, "phase10: no room ever exceeds its capacity");
+
+    // reaping: empty a room, reap it
+    Room first = mgr.Rooms.First();
+    var ids = first.Sim.Players.Select(p => p.EntityId).ToList();
+    foreach (int id in ids) first.Remove(id);
+    int beforeReap = mgr.RoomCount;
+    mgr.ReapEmptyRooms();
+    Check(mgr.RoomCount == beforeReap - 1, "phase10: empty rooms are reaped");
+
+    // load test: 20 rooms × 8 bots = 160 sims, 300 ticks, measure tick time + snapshot bytes
+    long snapBytes = 0; int snapCount = 0;
+    var load = new MatchManager(() => new FlatCollisionWorld(), roomCapacity: 8);
+    var encoders = new Dictionary<int, SnapshotEncoder>();
+    void Send(int entityId, Snapshot s)
+    {
+        if (!encoders.TryGetValue(entityId, out SnapshotEncoder? e)) { e = new SnapshotEncoder(); encoders[entityId] = e; }
+        try { snapBytes += e.Encode(s).Length; snapCount++; } catch { }
+    }
+    int globalEntity = 0;
+    for (int room = 0; room < 20; room++)
+        for (int p = 0; p < 8; p++)
+            load.Join($"load-{globalEntity++}", new Vector3(p * 2, 0, room * 2), 1, Send);
+    Check(load.RoomCount == 20, $"phase10: load harness built 20 rooms ({load.RoomCount})");
+
+    // drive movement + a fire each tick so the sim does real work (combat, fog-of-war, history)
+    uint seq = 0;
+    uint lrng = 0x1234567;
+    float LF() { lrng ^= lrng << 13; lrng ^= lrng >> 17; lrng ^= lrng << 5; return ((lrng & 0xFFFF) / 65535f) * 2f - 1f; }
+    for (int tick = 0; tick < 300; tick++)
+    {
+        seq++;
+        foreach (Room r in load.Rooms)
+            foreach (PlayerState ps2 in r.Sim.Players)
+            {
+                r.Sim.EnqueueInput(new InputPacket { EntityId = ps2.EntityId, SessionToken = ps2.SessionToken,
+                    Cmd = new InputCmd { Seq = seq, ClientTick = seq, MoveDir = new Vector3(LF(), 0, LF()),
+                        Jump = LF() > 0.7f, Yaw = LF() * 3f, Pitch = LF() } });
+                if (tick % 6 == 0)
+                    r.Sim.EnqueueFire(new FireIntent { EntityId = ps2.EntityId, SessionToken = ps2.SessionToken, Slot = 0, ClientTick = seq });
+            }
+        load.StepAll();
+    }
+
+    Console.Error.WriteLine($"[load] rooms=20 players=160 ticks=300 avg={load.Metrics.AvgMs:F3}ms " +
+        $"p99={load.Metrics.PercentileMs(0.99):F3}ms max={load.Metrics.MaxMs:F3}ms budget={load.Metrics.BudgetMs:F2}ms " +
+        $"avgSnap={(snapCount>0 ? (double)snapBytes/snapCount : 0):F0}B");
+    Check(load.Metrics.AvgMs < load.Metrics.BudgetMs,
+        $"phase10: average per-room tick is within the {load.Metrics.BudgetMs:F1}ms budget (avg {load.Metrics.AvgMs:F3}ms)");
+    Check(load.Metrics.PercentileMs(0.99) < load.Metrics.BudgetMs * 2,
+        $"phase10: p99 per-room tick is well-bounded (p99 {load.Metrics.PercentileMs(0.99):F3}ms)");
+    Check(load.Metrics.TotalTicks == 20 * 300, $"phase10: metrics counted every room-tick ({load.Metrics.TotalTicks})");
+    Check(snapCount > 0 && snapBytes / snapCount < 1200, $"phase10: snapshot bandwidth is modest (~{snapBytes/Math.Max(1,snapCount)}B/snapshot)");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;
