@@ -14,19 +14,31 @@ public sealed class MovementSystem
 
     public void Apply(PlayerState s, in InputCmd cmd, float dt)
     {
-        Vector3 before = s.Move.Position;
+        Vector3 before  = s.Move.Position;
+        Vector3 vBefore = s.Move.Velocity;
+        // External impulses are queued by SERVER gameplay code only (never from a client
+        // packet), so a tick that consumes one is legitimately allowed any speed.
+        bool hadImpulse = s.Move.ExternalForceMode != ForceMode.None;
 
         SharedMovement.Step(ref s.Move, cmd, dt, _world); // identical to client prediction
 
-        // Horizontal speed/teleport guard: displacement can't exceed the physical maximum.
-        Vector3 d  = s.Move.Position - before;
-        Vector3 dh = new(d.X, 0f, d.Z);
-        float maxStep = (GameConstants.RunSpeed + GameConstants.ExtraSpeedTolerance) * dt;
-        if (dh.Length() > maxStep)
+        // Horizontal speed/teleport guard: in one tick, speed can't grow past "what was
+        // already carried, or walk speed" + tolerance. The server runs the sim itself, so
+        // this catches state corruption/NaN rather than client input (the gateway already
+        // clamped that) — but it's the last line if anything upstream goes wrong.
+        if (!hadImpulse)
         {
-            s.Anomaly.Bump(AnomalyKind.Teleport);
-            dh = Vector3.Normalize(dh) * maxStep;
-            s.Move.Position = before + new Vector3(dh.X, d.Y, dh.Z);
+            Vector3 d  = s.Move.Position - before;
+            Vector3 dh = new(d.X, 0f, d.Z);
+            float carried = SharedMovement.Len3(new Vector3(vBefore.X, 0f, vBefore.Z));
+            float ceiling = MathF.Max(GameConstants.WalkSpeed, carried) + GameConstants.ExtraSpeedTolerance;
+            float maxStep = ceiling * dt;
+            if (SharedMovement.Len3(dh) > maxStep)
+            {
+                s.Anomaly.Bump(AnomalyKind.Teleport);
+                dh = Vector3.Normalize(dh) * maxStep;
+                s.Move.Position = before + new Vector3(dh.X, d.Y, dh.Z);
+            }
         }
 
         if (!_world.Contains(s.Move.Position))

@@ -30,6 +30,13 @@ public sealed class PredictionClient
     public int       PendingCount => _pending.Count;
     public float     LastReconcileError { get; private set; }
 
+    // --- desync detector (Phase 1): persistent reconcile error means client and server are
+    //     NOT running the same simulation — in testing, treat every alarm as a bug. ---
+    public int  ConsecutiveDesyncs { get; private set; }
+    public int  DesyncAlarms       { get; private set; }
+    /// <summary>Raised when reconcile error exceeded DesyncEpsilon for DesyncTickLimit consecutive snapshots.</summary>
+    public event Action<float>? DesyncDetected;
+
     /// <summary>Sequence + predict locally + retain for reconciliation. Returns the packet to send.</summary>
     public InputPacket BuildAndPredict(InputCmd cmd)
     {
@@ -45,14 +52,20 @@ public sealed class PredictionClient
         uint acked = snap.LastProcessedInput;   // hoist: can't capture an 'in' param in a lambda
         _pending.RemoveAll(c => c.Seq <= acked);
 
-        // 2. Reset to authoritative truth.
+        // 2. Reset to authoritative truth — EVERY MoveState field Step() reads across ticks,
+        //    or the replay below silently diverges.
         MoveState corrected = new()
         {
-            Position = snap.Local.Position,
-            Velocity = snap.Local.Velocity,
-            Grounded = snap.Local.Grounded,
-            Yaw = snap.Local.Yaw,
-            Pitch = snap.Local.Pitch,
+            Position        = snap.Local.Position,
+            Velocity        = snap.Local.Velocity,
+            Grounded        = snap.Local.Grounded,
+            Jumping         = snap.Local.Jumping,
+            Ducked          = snap.Local.Ducked,
+            JumpArmed       = snap.Local.JumpArmed,
+            UngroundedTicks = snap.Local.UngroundedTicks,
+            SpeedScale      = snap.Local.SpeedScale,
+            Yaw             = snap.Local.Yaw,
+            Pitch           = snap.Local.Pitch,
         };
 
         // 3. Replay the still-unacked inputs on top.
@@ -66,6 +79,22 @@ public sealed class PredictionClient
             _positionError = Vector3.Zero;        // teleport/respawn: don't smooth
         else
             _positionError += err;                // smooth small corrections
+
+        // 5. Desync detector: teleports/respawns are expected snaps; everything else above
+        //    epsilon for N consecutive snapshots means the two sims disagree.
+        if (LastReconcileError > GameConstants.DesyncEpsilon &&
+            LastReconcileError <= GameConstants.TeleportThreshold)
+        {
+            if (++ConsecutiveDesyncs == GameConstants.DesyncTickLimit)
+            {
+                DesyncAlarms++;
+                DesyncDetected?.Invoke(LastReconcileError);
+            }
+        }
+        else
+        {
+            ConsecutiveDesyncs = 0;
+        }
 
         _state = corrected;
     }

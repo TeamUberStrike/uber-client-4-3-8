@@ -15,14 +15,20 @@ public struct InputPacket
 /// <summary>Client fire INTENT. Never carries a hit, a target, damage, or an origin.</summary>
 public struct FireIntent
 {
-    public int  EntityId;
-    public int  Slot;
-    public uint ClientTick;
+    public int    EntityId;
+    public string SessionToken; // bound to the connection like InputPacket — a fire intent
+                                // without proof of ownership lets anyone fire your weapon
+    public int    Slot;
+    public uint   ClientTick;
 }
 
 // ---- Server -> Client ----------------------------------------------------------------
 
-/// <summary>Authoritative per-player state in a snapshot.</summary>
+/// <summary>
+/// Authoritative per-player state in a snapshot. Must carry EVERY MoveState field the
+/// movement step reads across ticks — reconciliation rebuilds MoveState from this and
+/// replays unacked inputs; a missing field silently diverges the replay.
+/// </summary>
 public struct PlayerSnap
 {
     public int     EntityId;
@@ -31,6 +37,11 @@ public struct PlayerSnap
     public float   Yaw;
     public float   Pitch;
     public bool    Grounded;
+    public bool    Jumping;
+    public bool    Ducked;
+    public bool    JumpArmed;
+    public byte    UngroundedTicks;
+    public float   SpeedScale;     // server-owned modifier (client never writes it)
     public float   Health;
     // local-only reconciliation aids:
     public int     ActiveSlot;

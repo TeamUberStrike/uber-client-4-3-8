@@ -10,14 +10,15 @@ namespace UberStrike.Client;
 public sealed class CombatClient
 {
     public int EntityId { get; }
+    private readonly string _token;
     private readonly int    _activeSlot;
     private readonly double _fireInterval;
     private int    _predictedAmmo;
     private double _nextFire;
 
-    public CombatClient(int entityId, int activeSlot, int magSize, double fireInterval)
+    public CombatClient(int entityId, string sessionToken, int activeSlot, int magSize, double fireInterval)
     {
-        EntityId = entityId; _activeSlot = activeSlot;
+        EntityId = entityId; _token = sessionToken; _activeSlot = activeSlot;
         _predictedAmmo = magSize; _fireInterval = fireInterval;
     }
 
@@ -34,7 +35,7 @@ public sealed class CombatClient
         _predictedAmmo--;                 // optimistic; reconciled by server
         _nextFire = now + _fireInterval;
         MuzzleFlash?.Invoke();            // cosmetic only
-        return new FireIntent { EntityId = EntityId, Slot = _activeSlot, ClientTick = clientTick };
+        return new FireIntent { EntityId = EntityId, SessionToken = _token, Slot = _activeSlot, ClientTick = clientTick };
     }
 
     public void OnHitEvent(in HitEvent e)

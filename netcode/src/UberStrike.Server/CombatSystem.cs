@@ -38,7 +38,9 @@ public sealed class CombatSystem
         shooter.Anomaly.ObserveAimDelta(serverNow, shooter.Move.Yaw, shooter.Move.Pitch);
 
         // (4) SPREAD applied server-side — "no-spread" hacks only desync the cheater's view.
-        (float yaw, float pitch) = ApplyServerSpread(shooter, def, f.ClientTick);
+        // Seeded ONLY from server state: seeding from f.ClientTick let a modified client grind
+        // candidate ticks offline until it found one whose spread ≈ 0 (Phase A audit finding).
+        (float yaw, float pitch) = ApplyServerSpread(shooter, def, serverNow);
         Vector3 aim = SharedMovement.DirFromAngles(yaw, pitch);
 
         // (5) REWIND window, clamped — can't claim ancient ticks.
@@ -103,12 +105,14 @@ public sealed class CombatSystem
     }
 
     // Deterministic server spread so the result is reproducible and not client-controlled.
-    private static (float yaw, float pitch) ApplyServerSpread(PlayerState s, WeaponDef def, uint clientTick)
+    // Every seed component is server-owned (entity, server tick of the shot, server shot count).
+    private static (float yaw, float pitch) ApplyServerSpread(PlayerState s, WeaponDef def, double serverNow)
     {
         float spreadRad = def.MaxSpreadDeg * (MathF.PI / 180f);
         if (spreadRad <= 0f) return (s.Move.Yaw, s.Move.Pitch);
 
-        uint seed = (uint)(s.EntityId * 73856093) ^ (clientTick * 19349663u) ^ ((uint)s.Anomaly.Shots * 83492791u);
+        uint serverTick = (uint)(serverNow * GameConstants.TickRate);
+        uint seed = (uint)(s.EntityId * 73856093) ^ (serverTick * 19349663u) ^ ((uint)s.Anomaly.Shots * 83492791u);
         if (seed == 0u) seed = 0x9E3779B9u;
         float rx = NextUnit(ref seed);
         float ry = NextUnit(ref seed);

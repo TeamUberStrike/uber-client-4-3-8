@@ -66,9 +66,20 @@ public sealed class ServerSimulation
         return true;
     }
 
-    public void EnqueueFire(in FireIntent f)
+    /// <summary>
+    /// Fire intents pass the same ownership check as inputs. Without this, ANY connected
+    /// client could fire ANOTHER player's weapon by forging EntityId (found in Phase A audit).
+    /// </summary>
+    public bool EnqueueFire(in FireIntent f)
     {
-        if (_players.ContainsKey(f.EntityId)) _fireQueue.Enqueue((f.EntityId, f));
+        if (!_players.TryGetValue(f.EntityId, out PlayerState? s)) return false;
+        if (f.SessionToken != s.SessionToken)
+        {
+            s.Anomaly.Bump(AnomalyKind.SchemaViolation, 0.5f);
+            return false;
+        }
+        _fireQueue.Enqueue((f.EntityId, f));
+        return true;
     }
 
     public void StepTick()
@@ -124,6 +135,11 @@ public sealed class ServerSimulation
         Yaw = p.Move.Yaw,
         Pitch = p.Move.Pitch,
         Grounded = p.Move.Grounded,
+        Jumping = p.Move.Jumping,
+        Ducked = p.Move.Ducked,
+        JumpArmed = p.Move.JumpArmed,
+        UngroundedTicks = p.Move.UngroundedTicks,
+        SpeedScale = p.Move.SpeedScale,
         Health = p.Health,
         ActiveSlot = p.ActiveSlot,
         ActiveAmmo = p.ActiveWeapon.Ammo,

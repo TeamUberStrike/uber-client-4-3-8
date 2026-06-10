@@ -22,6 +22,9 @@ public sealed class FlatCollisionWorld : ICollisionWorld
 
     public bool CheckGrounded(Vector3 p) => p.Y <= GroundY + 0.01f;
 
+    // No ceilings in the flat world; a ducked player can always stand.
+    public bool HasHeadroom(Vector3 p) => true;
+
     // TODO(Phase 4): raycast against real geometry. Placeholder = always visible.
     public bool LineOfSight(Vector3 a, Vector3 b) => true;
 

@@ -28,19 +28,43 @@ markers left in the code.
 identical on client (WASM) and server (native).
 
 **Tasks**
-- Port UberStrike's movement: acceleration/friction, air control, crouch transitions, stamina
-  drain/regen, jump cooldown, slope handling — all inside `SharedMovement.Step`.
-- Keep the function pure: no `UnityEngine.*`, no wall-clock, no randomness, no `double`/`float`
-  mixing that differs per platform.
-- Add a **desync detector**: log when reconciliation error exceeds a small epsilon for N
-  consecutive ticks; treat any such log in testing as a bug.
-- Decide the float-determinism strategy (see Phase 9): either constrain the math or move to
-  fixed-point for the movement path.
+- [x] Port UberStrike's movement — done from the Unity client's `CharacterMoveController`
+  (Quake-3 lineage): stop-speed friction, dot-gated acceleration (air-strafe/bunny-hop
+  preserving), edge-triggered jump, duck + headroom check, grounded grace, external
+  impulses (jump pads/explosions), retail constants (walk 7 / jump 15 / gravity 50 /
+  accel 15 ground + 3 air / friction 8 / stop-speed 8 / duck ×0.7). UberStrike has no
+  sprint/stamina — `InputCmd.Sprint` became `Crouch`. Water/ladder/fly states need volume
+  queries from the collision world → land with **Phase 4**.
+  One deliberate fixed-tick adaptation (documented in `SharedMovement.ApplyAcceleration`):
+  the accel add is capped at addSpeed — the canonical Q3 formula the original approximates
+  at per-frame dt; uncapped it overshoots ~40% and oscillates at 30 Hz.
+- [x] Pure function — no engine calls, no wall clock, no randomness; determinism-constrained
+  math only (see `docs/determinism.md`).
+- [x] Desync detector — `PredictionClient.DesyncDetected` fires after `DesyncTickLimit`
+  consecutive reconciles above `DesyncEpsilon` (teleport snaps excluded); covered by tests.
+- [x] Float-determinism strategy DECIDED: **constrained float** (not fixed-point) —
+  rationale + rules in `docs/determinism.md`.
 
-**Files:** `SharedMovement.cs`, `GameConstants.cs`, `PredictionClient.cs` (detector hook), tests.
+**Also fixed during the Phase-A audit of this phase:**
+- [x] `FireIntent` now carries `SessionToken`; `ServerSimulation.EnqueueFire` validates
+  ownership (any client could previously fire any player's weapon by forging EntityId).
+- [x] Server spread no longer seeded from `ClientTick` (a modified client could grind
+  candidate ticks until spread ≈ 0); seed components are all server-owned now.
+- [x] `PlayerSnap` carries the full movement state (duck/jump-arm/grounded-grace/speed-scale)
+  so reconciliation replay can't silently diverge.
+- [x] Projects retargeted `net8.0` → `net10.0` (the build box only has the .NET 10 runtime).
+
+**Files:** `SharedMovement.cs`, `MoveState.cs`, `InputCmd.cs`, `GameConstants.cs`,
+`ICollisionWorld.cs`, `FlatCollisionWorld.cs`, `Protocol.cs`, `MovementSystem.cs`,
+`PredictionClient.cs`, `CombatSystem.cs`, `CombatClient.cs`, `ServerSimulation.cs`,
+`docs/determinism.md`, tests.
 
 **Done-when:** running the same recorded input stream through the client core and the server
 core yields bit-identical end state across 10k ticks, on both desktop and a WASM build.
+**Status: desktop half DONE** — the harness replays a 10k-tick recorded stream twice and
+through both code paths, comparing float BITS (and prints a trajectory hash). The WASM half
+needs a WASM runtime on the build box (not installed); the printed hash makes it a one-line
+comparison when it is. See `docs/determinism.md` § Verification status.
 
 ---
 

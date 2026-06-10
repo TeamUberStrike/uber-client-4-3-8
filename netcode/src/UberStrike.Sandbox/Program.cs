@@ -32,7 +32,7 @@ var pred   = new PredictionClient(world, 1, "tok-1", new Vector3(0, 0, 0));
 var dummy  = new RemoteInterpolator();
 var clock  = new ClockSync();
 var sniper = WeaponTable.Get(SniperId);
-var combat = new CombatClient(1, 0, sniper.MagSize, sniper.FireInterval);
+var combat = new CombatClient(1, "tok-1", 0, sniper.MagSize, sniper.FireInterval);
 
 int hits = 0;
 combat.ConfirmedHit += e => { hits++; Console.WriteLine($"  >> server-confirmed hit on {e.Target}: dmg={e.Damage:F0} head={e.Headshot} killed={e.Killed}"); };
@@ -63,7 +63,7 @@ for (int tick = 1; tick <= Ticks; tick++)
     PlayerState tgt = server.Get(2)!;
     (float yaw, float pitch) = AimAt(me.Move.Position, tgt.Move.Position);
 
-    var cmd = new InputCmd { MoveDir = moveDir, Jump = false, Sprint = false, Yaw = yaw, Pitch = pitch, ClientTick = (uint)tick };
+    var cmd = new InputCmd { MoveDir = moveDir, Jump = false, Crouch = false, Yaw = yaw, Pitch = pitch, ClientTick = (uint)tick };
     link.SendInput(pred.BuildAndPredict(cmd));
 
     if (tick > 30 && tick % 8 == 0)

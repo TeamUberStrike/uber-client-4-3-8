@@ -15,6 +15,9 @@ public interface ICollisionWorld
 
     bool CheckGrounded(Vector3 position);
 
+    /// <summary>Can a ducked player stand up here? (original CharacterMoveController.HasCollision check)</summary>
+    bool HasHeadroom(Vector3 position);
+
     /// <summary>Unobstructed sightline test between two points (used for server hit LOS).</summary>
     bool LineOfSight(Vector3 a, Vector3 b);
 
