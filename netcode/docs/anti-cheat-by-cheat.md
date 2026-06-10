@@ -248,6 +248,7 @@ The single principle under everything below:
 | Memory editing | server never reads client state | ✅ done by design |
 | Desync exploitation | determinism + detector | ✅ done (P1) |
 | Packet flood / DoS-input | per-connection rate limiting | ✅ done (P7) |
+| WS frame replay / reorder / forge | transport frame-sequence guard | ✅ **done (P7.5)** |
 
 **Twelve of thirteen fully defended; one (aimbot) partial by nature — and that's the honest
 ceiling, not an unbuilt feature.** All ten phases are implemented (P1 movement/determinism,

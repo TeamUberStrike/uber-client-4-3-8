@@ -25,6 +25,11 @@ public sealed class WebSocketClientLink : IClientLink, IDisposable
     private readonly ClientWebSocket _ws = new();
     private readonly SnapshotDecoder _decoder = new();
     private readonly CancellationTokenSource _cts = new();
+    // Transport anti-replay: a monotonic per-connection frame sequence on every outbound frame,
+    // and a send lock so the seq assignment + SendAsync stay ordered (ClientWebSocket also
+    // forbids overlapping sends). The server's TransportGuard rejects replayed/reordered frames.
+    private readonly System.Threading.SemaphoreSlim _sendLock = new(1, 1);
+    private uint _frameSeq;
     public int EntityId { get; private set; } = -1;
 
     /// <summary>Connect, complete the Hello→Welcome handshake, and start the receive loop.</summary>
@@ -72,7 +77,14 @@ public sealed class WebSocketClientLink : IClientLink, IDisposable
     private async Task SendRawAsync(byte[] data, CancellationToken ct)
     {
         if (_ws.State != WebSocketState.Open) return;
-        try { await _ws.SendAsync(data, WebSocketMessageType.Binary, true, ct); } catch { }
+        await _sendLock.WaitAsync(ct);
+        try
+        {
+            byte[] framed = TransportEnvelope.Wrap(_frameSeq++, data);
+            await _ws.SendAsync(framed, WebSocketMessageType.Binary, true, ct);
+        }
+        catch { }
+        finally { _sendLock.Release(); }
     }
 
     private async Task<byte[]?> ReceiveMessageAsync(CancellationToken ct)

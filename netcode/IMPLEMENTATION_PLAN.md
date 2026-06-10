@@ -241,6 +241,30 @@ brief disconnect/reconnect, and input floods are throttled without affecting oth
 
 ---
 
+## Phase 7.5 — WebSocket frame anti-manipulation ✅ DONE (2026-06-10)
+
+**Goal:** defend the raw transport from a malicious client that captures/replays/reorders/floods
+its own WebSocket frames (or drives the socket directly, bypassing the game) — the layer *below*
+message validation. WSS/TLS only protects against third parties; here the client IS the attacker.
+
+**What shipped**
+- `TransportEnvelope` (Shared): a 4-byte monotonic per-connection frame sequence prefixed to every
+  client→server frame (kept out of the `Wire` body — transport concern, not protocol). The client
+  stamps it under a send lock so seq + send stay ordered.
+- `TransportGuard` (server, per connection): rejects **replay** (seq seen / ≤ last), **reorder**
+  (stale seq past the dedup window), **forged gap** (seq jump beyond the window), and **flood**
+  (frames/sec ceiling). Replay/reorder/gap are *tampering* → strikes → drop the connection at the
+  limit; a single-second *burst* is dropped-not-struck (a legit catch-up/reconnect may briefly
+  burst). Pure + time-injected.
+- Wired into `WebSocketServerLink` (unwrap + inspect the Hello frame and every receive-loop frame
+  before the byte/message layers) and `WebSocketClientLink` (wrap every outbound frame).
+
+**Done-when (met):** a replayed/reordered/forged raw frame is rejected; sustained tampering drops
+the connection; legitimate enveloped play is unaffected. Verified by unit tests **and over a real
+loopback socket** (a hostile raw `ClientWebSocket` replaying a fixed-seq frame is flagged).
+
+---
+
 ## Phase 8 — Anomaly detection + telemetry ✅ DONE (2026-06-10, commit 6c9c2de6)
 
 **Goal:** catch *possible-but-superhuman* cheating (aimbot/triggerbot/wallhack) that validation

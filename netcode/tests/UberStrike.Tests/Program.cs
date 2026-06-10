@@ -996,6 +996,114 @@ var stream10k = RecordStream(10_000);
     Check(!reg.IsAccepted(""), "phase9: empty hash rejected once an allow-list exists");
 }
 
+// ---------------------------------------------------------------------------------------
+// 24. Phase 7.5 — WebSocket frame manipulation: envelope round-trip + TransportGuard.
+// ---------------------------------------------------------------------------------------
+{
+    // envelope round-trips and is order-preserving
+    byte[] payload = Wire.EncodeFire(new FireIntent { EntityId = 1, SessionToken = "t", Slot = 0 });
+    byte[] framed = TransportEnvelope.Wrap(42, payload);
+    Check(framed.Length == payload.Length + TransportEnvelope.PrefixBytes, "ws-guard: envelope adds a 4-byte prefix");
+    Check(TransportEnvelope.TryUnwrap(framed, out uint gotSeq, out byte[] gotPayload) && gotSeq == 42
+        && gotPayload.Length == payload.Length && Wire.TryDecodeFire(gotPayload, out _),
+        "ws-guard: envelope unwraps to the original seq + payload");
+    Check(!TransportEnvelope.TryUnwrap(new byte[] { 1, 2 }, out _, out _), "ws-guard: a too-short frame has no valid envelope");
+
+    // monotonic stream is accepted
+    var g = new TransportGuard();
+    bool allOk = true;
+    for (uint s = 0; s < 100; s++) if (g.Inspect(s, s * 0.01) != FrameVerdict.Ok) allOk = false;
+    Check(allOk && g.Strikes == 0, "ws-guard: a normal monotonic frame stream is accepted with no strikes");
+
+    // exact replay of an already-seen seq is rejected as Replay
+    Check(g.Inspect(50, 1.01) == FrameVerdict.Replay, "ws-guard: replaying a seen frame seq is rejected (Replay)");
+    // a stale/decreasing seq outside the dedup window is rejected as OutOfOrder
+    var g2 = new TransportGuard();
+    for (uint s = 0; s < 400; s++) g2.Inspect(s, s * 0.02); // 50/s, spread over time so no flood
+    Check(g2.Inspect(10, 9.0) == FrameVerdict.OutOfOrder, "ws-guard: a stale reordered seq (past the dedup window) is rejected");
+    // a forged far-future jump is rejected as Gap
+    var g3 = new TransportGuard();
+    g3.Inspect(5, 0.0);
+    Check(g3.Inspect(5 + TransportGuard.MaxForwardGap + 1, 0.01) == FrameVerdict.Gap, "ws-guard: a forged far-future seq jump is rejected (Gap)");
+
+    // a frame-rate flood (many fresh seqs in one second) is DROPPED (Flood) but doesn't disconnect
+    var g4 = new TransportGuard();
+    uint fs = 0; int floods = 0;
+    for (int i = 0; i < (int)TransportGuard.MaxFramesPerSec + 30; i++)
+        if (g4.Inspect(fs++, 0.5) == FrameVerdict.Flood) floods++;   // all within the same 1s window
+    Check(floods > 0, "ws-guard: a single-second frame flood is detected (dropped, not a disconnect)");
+    Check(!g4.ShouldDisconnect, "ws-guard: a burst alone does NOT disconnect (legit catch-up is allowed)");
+
+    // sustained TAMPERING (repeated replays) DOES trip the disconnect threshold
+    var g6 = new TransportGuard();
+    g6.Inspect(100, 0.0);
+    for (int i = 0; i < TransportGuard.StrikeLimit + 2; i++) g6.Inspect(100, 0.001 * (i + 1)); // replay same seq
+    Check(g6.ShouldDisconnect, "ws-guard: sustained replay/tamper trips the disconnect threshold");
+
+    // replay does NOT accumulate state: a legit higher seq after a rejected replay still works
+    var g5 = new TransportGuard();
+    g5.Inspect(0, 0.0); g5.Inspect(1, 0.01);
+    g5.Inspect(1, 0.02); // replay (strike)
+    Check(g5.Inspect(2, 0.03) == FrameVerdict.Ok, "ws-guard: a valid next frame after a rejected replay is still accepted");
+}
+
+// ---------------------------------------------------------------------------------------
+// 25. Phase 7.5 — over a REAL socket: enveloped play works; a raw replayed frame is rejected.
+// ---------------------------------------------------------------------------------------
+{
+    var sw = System.Diagnostics.Stopwatch.StartNew();
+    double Now() => sw.Elapsed.TotalSeconds;
+    async Task<bool> WaitUntil(Func<bool> cond, int ms)
+    {
+        var until = Now() + ms / 1000.0;
+        while (Now() < until) { if (cond()) return true; await Task.Delay(5); }
+        return cond();
+    }
+
+    using var server = new UberStrike.Server.WebSocketServerLink(0, Now);
+    server.Authenticate = tok => tok == "tok-1" ? 1 : (tok == "tok-2" ? 2 : (int?)null);
+    int inputsSeen = 0;
+    server.InputReceived += _ => inputsSeen++;
+    server.Start();
+    var uri = new Uri($"ws://127.0.0.1:{server.Port}/");
+
+    // the normal client wraps every frame with a monotonic seq → handshake + play work
+    var client = new WebSocketClientLink();
+    int ent = -1; client.Welcomed += id => ent = id;
+    bool ok = await client.ConnectAsync(uri, "tok-1");
+    Check(ok && ent == 1, "ws-guard: enveloped Hello completes the handshake (real socket)");
+    client.SendInput(new InputPacket { Cmd = new InputCmd { Seq = 1, MoveDir = new Vector3(0,0,1) } });
+    Check(await WaitUntil(() => inputsSeen >= 1, 1000), "ws-guard: enveloped input is accepted over the real socket");
+    int flaggedBefore = server.FlaggedCount(1);
+    client.Dispose();
+
+    // a hostile client that REPLAYS captured raw frames (a fixed/duplicated seq) is rejected.
+    // We drive a raw ClientWebSocket and resend the SAME enveloped frame many times.
+    var raw = new System.Net.WebSockets.ClientWebSocket();
+    await raw.ConnectAsync(uri, CancellationToken.None);
+    // hello must still be a fresh-seq enveloped frame to get past the handshake
+    uint seq = 0;
+    async Task SendFramed(byte[] body, uint s) {
+        try {
+            byte[] f = TransportEnvelope.Wrap(s, body);
+            await raw.SendAsync(f, System.Net.WebSockets.WebSocketMessageType.Binary, true, CancellationToken.None);
+        } catch { /* server may have dropped the connection — expected under tamper */ }
+    }
+    await SendFramed(Wire.EncodeHello("tok-2"), seq++);
+    var rbuf = new byte[256];
+    try { await raw.ReceiveAsync(rbuf, CancellationToken.None); } catch { }   // welcome
+    int flaggedStart = server.FlaggedCount(2);
+    // capture ONE input frame (seq 10), then REPLAY it with the SAME seq — the classic replay
+    // attack. Stay just under the disconnect threshold so the flag is observable (a real flood of
+    // replays would correctly disconnect, which removes the conn and zeroes FlaggedCount).
+    byte[] inputBody = Wire.EncodeInput(new InputPacket { Cmd = new InputCmd { Seq = 5, MoveDir = new Vector3(1,0,0) } });
+    for (int i = 0; i < TransportGuard.StrikeLimit - 3; i++)   // 1 fresh accept + replays under the limit
+        await SendFramed(inputBody, 10);
+    Check(await WaitUntil(() => server.FlaggedCount(2) > flaggedStart, 1500),
+        $"ws-guard: replayed raw frames (fixed seq) are flagged by the server (flagged={server.FlaggedCount(2)})");
+    try { raw.Dispose(); } catch { }
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;

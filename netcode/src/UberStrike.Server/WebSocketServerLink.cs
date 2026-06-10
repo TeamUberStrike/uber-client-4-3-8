@@ -98,14 +98,18 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
             WebSocket ws = WebSocket.CreateFromStream(stream, isServer: true, subProtocol: null,
                 keepAliveInterval: TimeSpan.FromSeconds(15));
 
-            // --- session handshake: first frame MUST be Hello ---
+            // --- session handshake: first frame MUST be a transport-enveloped Hello ---
             byte[]? first = await ReceiveMessageAsync(ws, ct);
-            if (first is null || !Wire.TryDecodeHello(first, out string token)) { await CloseAsync(ws); return; }
+            if (first is null || !TransportEnvelope.TryUnwrap(first, out uint helloSeq, out byte[] helloPayload))
+            { await CloseAsync(ws); return; }
+            var guard = new TransportGuard();
+            if (guard.Inspect(helloSeq, _now()) != FrameVerdict.Ok) { await CloseAsync(ws); return; }
+            if (!Wire.TryDecodeHello(helloPayload, out string token)) { await CloseAsync(ws); return; }
             int? entityId = Authenticate(token);
             if (entityId is null) { await CloseAsync(ws); return; }
 
             conn = new Conn(entityId.Value, token, ws, _now, InputsPerSec, InputBurst,
-                            FiresPerSec, FireBurst, BytesPerSec, ByteBurst);
+                            FiresPerSec, FireBurst, BytesPerSec, ByteBurst, guard);
             lock (_gate)
             {
                 if (_byEntity.TryGetValue(entityId.Value, out Conn? old)) old.Kill(); // reconnect: drop the old
@@ -132,11 +136,23 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
     {
         while (!ct.IsCancellationRequested && conn.Ws.State == WebSocketState.Open && !conn.Dead)
         {
-            byte[]? msg = await ReceiveMessageAsync(conn.Ws, ct);
-            if (msg is null) break;
+            byte[]? frame = await ReceiveMessageAsync(conn.Ws, ct);
+            if (frame is null) break;
             double now = _now();
 
-            // byte-rate flood guard first (cheap, covers everything)
+            // --- transport anti-manipulation: strip + validate the frame sequence FIRST ---
+            // (replay / reorder / duplicate / forged-jump / frame-flood). A modified client or a
+            // raw-socket script that bypasses the game is caught here, below message validation.
+            if (!TransportEnvelope.TryUnwrap(frame, out uint frameSeq, out byte[] msg)) { conn.Flagged++; continue; }
+            FrameVerdict verdict = conn.Guard.Inspect(frameSeq, now);
+            if (verdict != FrameVerdict.Ok)
+            {
+                conn.Flagged++;
+                if (conn.Guard.ShouldDisconnect) break;   // persistent frame tampering → drop
+                continue;
+            }
+
+            // byte-rate flood guard (cheap, covers everything)
             if (!conn.Bytes.TryConsume(now, msg.Length)) { conn.Flagged++; continue; }
             if (!Wire.PeekType(msg, out MsgType type)) { conn.Flagged++; continue; }
 
@@ -286,13 +302,15 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
         public readonly WebSocket Ws;
         public readonly SnapshotEncoder Encoder = new(); // fresh per connection (reconnect = new baseline)
         public readonly RateLimiter Inputs, Fires, Bytes;
+        public readonly TransportGuard Guard;            // anti replay/reorder/dup/flood
         public int Flagged;
         public bool Dead;
 
         public Conn(int entityId, string token, WebSocket ws, Func<double> now,
-                    double inRate, double inBurst, double fRate, double fBurst, double bRate, double bBurst)
+                    double inRate, double inBurst, double fRate, double fBurst, double bRate, double bBurst,
+                    TransportGuard guard)
         {
-            EntityId = entityId; Token = token; Ws = ws;
+            EntityId = entityId; Token = token; Ws = ws; Guard = guard;
             Inputs = new RateLimiter(inRate, inBurst);
             Fires  = new RateLimiter(fRate, fBurst);
             Bytes  = new RateLimiter(bRate, bBurst);
