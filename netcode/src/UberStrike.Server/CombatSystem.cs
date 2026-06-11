@@ -32,6 +32,14 @@ public sealed class CombatSystem
         _world = world; _players = players; _broadcast = broadcast;
     }
 
+    /// <summary>Fog-of-War system (set by the simulation) — feeds the reveal-reaction aimbot
+    /// signal. Optional: combat works without it (e.g. unit tests without visibility).</summary>
+    public VisibilitySystem? Visibility { get; set; }
+
+    /// <summary>Damage landing faster than this after the victim STARTED streaming to the
+    /// shooter is sub-human (perceive + flick + fire bottoms out well above this).</summary>
+    public const double RevealReactionFloorSeconds = 0.20;
+
     /// <summary>Validated weapon switch: arms the per-weapon switch delay (anti quick-switch-exploit).</summary>
     public void HandleSwitch(PlayerState s, int slot, double serverNow)
     {
@@ -115,6 +123,17 @@ public sealed class CombatSystem
         foreach (var kv in dmgByTarget)
         {
             (PlayerState t, float raw, bool head, Vector3 pt) = kv.Value;
+
+            // Phase 8 — aimbot signal: reveal→damage reaction. The fog-of-war system knows the
+            // exact server time this victim STARTED streaming to the shooter; landing damage
+            // faster than a human can perceive + aim, sustained, is machine assistance.
+            if (Visibility != null)
+            {
+                double revealed = Visibility.RevealedAt(shooter.EntityId, t.EntityId);
+                if (!double.IsNegativeInfinity(revealed))
+                    shooter.Anomaly.RecordRevealReaction(serverNow - revealed < RevealReactionFloorSeconds);
+            }
+
             float dmg = ApplyArmor(t, raw);
             t.Health -= dmg;
             bool killed = t.Health <= 0f;

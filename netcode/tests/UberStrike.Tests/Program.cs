@@ -1104,6 +1104,37 @@ var stream10k = RecordStream(10_000);
     try { raw.Dispose(); } catch { }
 }
 
+// ---------------------------------------------------------------------------------------
+// 26. Phase 8 — reveal-reaction aimbot signal: fog-of-war reveal -> damage faster than human,
+//     sustained, bumps RevealReaction; a continuous sighting does NOT re-arm the reveal clock.
+// ---------------------------------------------------------------------------------------
+{
+    var flat = new FlatCollisionWorld();
+    var vis = new UberStrike.Server.VisibilitySystem(flat);
+    var viewer = new UberStrike.Server.PlayerState { EntityId = 1 };
+    var target = new UberStrike.Server.PlayerState { EntityId = 2 };
+    target.Move.Position = new Vector3(0, 0, 10);
+
+    Check(double.IsNegativeInfinity(vis.RevealedAt(1, 2)), "reveal-reaction: unknown pair has no reveal time");
+    vis.ShouldSend(viewer, target, 10.0);
+    Check(vis.RevealedAt(1, 2) == 10.0, "reveal-reaction: first sighting stamps the reveal time");
+    vis.ShouldSend(viewer, target, 10.1);
+    Check(vis.RevealedAt(1, 2) == 10.0, "reveal-reaction: continuous sighting does NOT re-arm the reveal clock");
+    // long occlusion (beyond the grace window), then seen again -> NEW reveal
+    vis.ShouldSend(viewer, target, 10.1 + GameConstants.VisGraceSeconds + 5.0);
+    Check(vis.RevealedAt(1, 2) > 10.0, "reveal-reaction: re-sighting after occlusion is a fresh reveal");
+
+    // sustained sub-floor reveal->damage samples bump RevealReaction; slow ones never do
+    var bot = new UberStrike.Server.AnomalyTracker();
+    for (int i = 0; i < 6; i++) bot.RecordRevealReaction(true);
+    Check(bot.ScoreOf(UberStrike.Server.AnomalyKind.RevealReaction) > 0f,
+        "reveal-reaction: sustained sub-human reveal->damage reaction bumps the signal");
+    var human = new UberStrike.Server.AnomalyTracker();
+    for (int i = 0; i < 12; i++) human.RecordRevealReaction(false);
+    Check(human.ScoreOf(UberStrike.Server.AnomalyKind.RevealReaction) == 0f,
+        "reveal-reaction: human-speed reactions never bump it");
+}
+
 Console.WriteLine();
 Console.WriteLine(failures == 0 ? "ALL TESTS PASSED" : $"{failures} TEST(S) FAILED");
 return failures == 0 ? 0 : 1;

@@ -237,7 +237,7 @@ The single principle under everything below:
 | Speedhack/teleport/fly | server movement authority | ✅ done (P1) |
 | No-recoil/no-spread | server-side spread | ✅ done |
 | Rapidfire/no-reload/infinite ammo | server weapon state gate | ✅ done |
-| Aimbot | server hit-reg (multi-part) + detection | ⚠️ floor + detection done (P5/P8); threshold tuning = ops |
+| Aimbot | server hit-reg (multi-part) + detection: aim-snap, accuracy, triggerbot dwell, **FoW reveal→damage reaction** | ⚠️ floor + 4 independent detection signals done (P5/P8); threshold tuning = ops |
 | Triggerbot | gate + reaction-time detection | ✅ **done (P5/P8)**; threshold tuning = ops |
 | Wallhack/ESP (seeing) | Fog of War (don't send) | ✅ **done (P5.5)** |
 | Wallbang (firing through walls) | server LOS | ✅ **done (P4)** |

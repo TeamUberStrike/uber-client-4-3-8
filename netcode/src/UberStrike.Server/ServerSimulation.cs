@@ -44,6 +44,7 @@ public sealed class ServerSimulation
         _movement   = new MovementSystem(world);
         _combat     = new CombatSystem(world, () => _players.Values, h => _broadcast(h));
         _visibility = new VisibilitySystem(world);
+        _combat.Visibility = _visibility;   // Phase 8: reveal-reaction aimbot signal
     }
 
     public IEnumerable<PlayerState> Players => _players.Values;

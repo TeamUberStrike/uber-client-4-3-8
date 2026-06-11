@@ -1,6 +1,6 @@
 namespace UberStrike.Server;
 
-public enum AnomalyKind { Teleport, FireRate, WallShot, AimSnap, SchemaViolation, Triggerbot, Accuracy }
+public enum AnomalyKind { Teleport, FireRate, WallShot, AimSnap, SchemaViolation, Triggerbot, Accuracy, RevealReaction }
 
 /// <summary>
 /// Rolling per-player suspicion score plus combat statistics. Validation stops IMPOSSIBLE
@@ -23,6 +23,9 @@ public sealed class AnomalyTracker
 
     // triggerbot: rolling acquire->fire reaction-time window
     private int _reactSamples, _reactFast;
+
+    // aimbot: rolling fog-of-war reveal->damage reaction-time window
+    private int _revealSamples, _revealFast;
 
     // windowed shot stats (bit0 landed, bit1 headshot), last 40 shots
     private readonly byte[] _shotWin = new byte[40];
@@ -111,6 +114,25 @@ public sealed class AnomalyTracker
         }
     }
 
+    /// <summary>
+    /// Aimbot signal: fog-of-war reveal→damage reaction sample (true = sub-human-fast).
+    /// The server knows the exact moment a target STARTED streaming to this player
+    /// (VisibilitySystem reveal transition); landing damage on it faster than a human can
+    /// perceive + aim, sustained over a window, is machine assistance. One fast hit is a
+    /// pre-aimed corner; two-thirds of a window is a machine. Independent of Triggerbot
+    /// (crosshair-dwell) — SuspicionPolicy requires multiple kinds, and this is its own kind.
+    /// </summary>
+    public void RecordRevealReaction(bool fast)
+    {
+        _revealSamples++;
+        if (fast) _revealFast++;
+        if (_revealSamples >= 6)
+        {
+            if (_revealFast * 3 >= _revealSamples * 2) Bump(AnomalyKind.RevealReaction, 0.6f);
+            _revealSamples = 0; _revealFast = 0;
+        }
+    }
+
     public float Accuracy      => Shots > 0 ? (float)Hits / Shots : 0f;
     public float HeadshotRatio => Hits  > 0 ? (float)Headshots / Hits : 0f;
 
@@ -152,6 +174,7 @@ public sealed class AnomalyTracker
         AnomalyKind.SchemaViolation => 2.0f,
         AnomalyKind.Triggerbot      => 1.0f,
         AnomalyKind.Accuracy        => 1.0f,
+        AnomalyKind.RevealReaction  => 1.1f, // server knows the reveal moment exactly — strong signal
         _ => 1.0f,
     };
 }
