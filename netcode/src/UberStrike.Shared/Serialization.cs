@@ -14,6 +14,11 @@ public enum MsgType : byte
 {
     Input = 1, Fire = 2, Switch = 3, Snapshot = 4, Hit = 5,
     Ping = 6, Pong = 7, Hello = 8, Welcome = 9,
+    // Server-initiated RTT heartbeat (Phase 6 server-measured RTT): the server sends SvPing
+    // with an opaque nonce; the client echoes SvPong with the same nonce. The server times the
+    // round-trip on ITS OWN clock — never a client-claimed latency — and feeds the lag-comp
+    // rewind clamp. Distinct from Ping/Pong (client-initiated, for the client's ClockSync).
+    SvPing = 10, SvPong = 11,
 }
 
 /// <summary>
@@ -56,7 +61,7 @@ public static class Wire
         type = default;
         if (data.Length < 2 || data[0] != ProtocolVersion) return false;
         byte t = data[1];
-        if (t < (byte)MsgType.Input || t > (byte)MsgType.Welcome) return false;
+        if (t < (byte)MsgType.Input || t > (byte)MsgType.SvPong) return false;
         type = (MsgType)t;
         return true;
     }
@@ -188,6 +193,34 @@ public static class Wire
             clientSendTime = r.F64(); serverTime = r.F64(); r.End();
             return true;
         }
+        catch (WireException) { return false; }
+    }
+
+    // --- SvPing / SvPong (server-initiated, server-measured RTT) ---------------------------
+    // The nonce is opaque to the client: it can only echo it back. It can DELAY the echo (real
+    // held latency, contained by RttTracker's growth limit + MaxRewind clamp) but cannot forge a
+    // larger round-trip — and a stale/replayed nonce is rejected server-side (PingMeasurement).
+    public static byte[] EncodeSvPing(uint nonce)
+    {
+        var w = new WireWriter(8); w.Header(MsgType.SvPing); w.U32(nonce); return w.ToArray();
+    }
+
+    public static bool TryDecodeSvPing(byte[] data, out uint nonce)
+    {
+        nonce = 0;
+        try { var r = new WireReader(data); r.Header(MsgType.SvPing); nonce = r.U32(); r.End(); return true; }
+        catch (WireException) { return false; }
+    }
+
+    public static byte[] EncodeSvPong(uint nonce)
+    {
+        var w = new WireWriter(8); w.Header(MsgType.SvPong); w.U32(nonce); return w.ToArray();
+    }
+
+    public static bool TryDecodeSvPong(byte[] data, out uint nonce)
+    {
+        nonce = 0;
+        try { var r = new WireReader(data); r.Header(MsgType.SvPong); nonce = r.U32(); r.End(); return true; }
         catch (WireException) { return false; }
     }
 

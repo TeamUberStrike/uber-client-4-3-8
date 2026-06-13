@@ -50,6 +50,9 @@ public sealed class WebSocketClientLink : IClientLink, IDisposable
     public void SendFire(in FireIntent f)   => _ = SendRawAsync(Wire.EncodeFire(f), _cts.Token);
     public void SendSwitch(in SwitchIntent s) => _ = SendRawAsync(Wire.EncodeSwitch(s), _cts.Token);
     public void SendPing(double clientNow)  => _ = SendRawAsync(Wire.EncodePing(clientNow), _cts.Token);
+    /// <summary>Echo the server's RTT heartbeat verbatim so it can measure the round-trip on its
+    /// own clock. The nonce is opaque — the client just bounces it straight back.</summary>
+    public void SendSvPong(uint nonce)      => _ = SendRawAsync(Wire.EncodeSvPong(nonce), _cts.Token);
 
     private async Task ReceiveLoopAsync(CancellationToken ct)
     {
@@ -68,6 +71,10 @@ public sealed class WebSocketClientLink : IClientLink, IDisposable
                     break;
                 case MsgType.Pong:
                     if (Wire.TryDecodePong(msg, out double cs, out double st)) Pong?.Invoke(cs, st);
+                    break;
+                case MsgType.SvPing:
+                    // server-measured RTT heartbeat → bounce the nonce straight back.
+                    if (Wire.TryDecodeSvPing(msg, out uint nonce)) SendSvPong(nonce);
                     break;
                 default: break;
             }

@@ -25,7 +25,12 @@ namespace UberStrike.Server;
 ///
 /// Reconnect/resync: a fresh Hello with the same token rebinds to the existing entity and starts
 /// a NEW SnapshotEncoder, so the next snapshot is a full baseline (the client's delta cache was
-/// lost). Outbound Pong answers Ping for the server-observed RTT (Phase 6).
+/// lost).
+///
+/// RTT (Phase 6): the server runs an SvPing heartbeat (<see cref="RttHeartbeatLoopAsync"/>) and
+/// times the SvPong echo on ITS OWN clock (<see cref="PingMeasurement"/>), raising
+/// <see cref="RttSample"/>. The client's own Ping/Pong is separate (ClockSync only). A client can
+/// only delay the echo (real latency, clamped downstream), never claim a latency.
 ///
 /// NOTE on the browser client: a WebGL/WASM build can't use ClientWebSocket; it uses a JS
 /// WebSocket bridge. The WIRE is identical — only the socket primitive differs. This server
@@ -53,6 +58,8 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
     public double InputsPerSec = 90,  InputBurst = 30;   // 30 Hz tick + slack
     public double FiresPerSec  = 40,  FireBurst  = 20;
     public double BytesPerSec  = 64_000, ByteBurst = 32_000;
+    /// <summary>How often the server sends an RTT heartbeat (SvPing) to each connection.</summary>
+    public double RttPingIntervalSeconds = 0.5;
 
     private readonly TcpListener _listener;
     private readonly CancellationTokenSource _cts = new();
@@ -72,6 +79,30 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
     {
         _listener.Start();
         _ = AcceptLoopAsync(_cts.Token);
+        _ = RttHeartbeatLoopAsync(_cts.Token);
+    }
+
+    /// <summary>
+    /// Phase 6 — periodically send each connection a server-stamped SvPing. The client echoes it
+    /// (SvPong); the receive loop resolves the round-trip on the SERVER clock and raises
+    /// <see cref="RttSample"/>. The host wires that to <c>sim.Get(id)?.ObserveRtt(rtt)</c> so the
+    /// lag-comp rewind window is bounded by server-measured latency, never a client claim.
+    /// </summary>
+    private async Task RttHeartbeatLoopAsync(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            try { await Task.Delay(TimeSpan.FromSeconds(Math.Max(0.02, RttPingIntervalSeconds)), ct); }
+            catch (OperationCanceledException) { break; }
+
+            List<Conn> conns; lock (_gate) { conns = new List<Conn>(_byEntity.Values); }
+            foreach (Conn c in conns)
+            {
+                if (c.Dead || c.Ws.State != WebSocketState.Open) continue;
+                uint nonce; lock (c.PingGate) { nonce = c.Ping.Issue(_now()); }
+                await SendConnAsync(c, Wire.EncodeSvPing(nonce), ct);
+            }
+        }
     }
 
     private async Task AcceptLoopAsync(CancellationToken ct)
@@ -115,7 +146,7 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
                 if (_byEntity.TryGetValue(entityId.Value, out Conn? old)) old.Kill(); // reconnect: drop the old
                 _byEntity[entityId.Value] = conn;
             }
-            await SendRawAsync(ws, Wire.EncodeWelcome(entityId.Value, GameConstants.TickRate), ct);
+            await SendConnAsync(conn, Wire.EncodeWelcome(entityId.Value, GameConstants.TickRate), ct);
             ClientConnected?.Invoke(entityId.Value);
 
             await ReceiveLoopAsync(conn, ct);
@@ -183,15 +214,21 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
                     }
                     break;
                 case MsgType.Ping:
+                    // client-initiated clock-sync ping → answer with the server time (ClockSync).
                     if (Wire.TryDecodePing(msg, out double clientSent))
+                        await SendConnAsync(conn, Wire.EncodePong(clientSent, now), ct);
+                    break;
+                case MsgType.SvPong:
+                    // echo of our server-initiated heartbeat → resolve into a server-MEASURED RTT.
+                    if (Wire.TryDecodeSvPong(msg, out uint nonce))
                     {
-                        await SendRawAsync(conn.Ws, Wire.EncodePong(clientSent, now), ct);
-                        // server-observed RTT: time from when WE last echoed this client's clock.
-                        // (Full RTT needs the client to ping; here we surface the one-way seam.)
-                        RttSample?.Invoke(conn.EntityId, 0d);
+                        bool resolved; double rtt;
+                        lock (conn.PingGate) { resolved = conn.Ping.Resolve(nonce, now, out rtt); }
+                        if (resolved) RttSample?.Invoke(conn.EntityId, rtt);
+                        else conn.Flagged++;   // unknown/replayed/forged nonce
                     }
                     break;
-                default: break; // clients don't send Snapshot/Hit/Welcome
+                default: break; // clients don't send Snapshot/Hit/Welcome/SvPing
             }
         }
     }
@@ -204,14 +241,14 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
         if (conn is null) return;
         byte[] bytes;
         try { bytes = conn.Encoder.Encode(s); } catch { return; }
-        _ = SendRawAsync(conn.Ws, bytes, _cts.Token);
+        _ = SendConnAsync(conn, bytes, _cts.Token);
     }
 
     public void Broadcast(in HitEvent h)
     {
         byte[] bytes = Wire.EncodeHit(h);
         List<Conn> conns; lock (_gate) { conns = new List<Conn>(_byEntity.Values); }
-        foreach (Conn c in conns) _ = SendRawAsync(c.Ws, bytes, _cts.Token);
+        foreach (Conn c in conns) _ = SendConnAsync(c, bytes, _cts.Token);
     }
 
     public int FlaggedCount(int entityId)
@@ -220,6 +257,18 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
     }
 
     // --- low-level WS framing -------------------------------------------------------------
+
+    /// <summary>Serialize all sends on a connection: with the RTT heartbeat there are now
+    /// multiple senders (tick snapshots, broadcasts, Pong, SvPing) and WebSocket.SendAsync
+    /// forbids overlapping sends on the same socket.</summary>
+    private static async Task SendConnAsync(Conn conn, byte[] data, CancellationToken ct)
+    {
+        if (conn.Dead || conn.Ws.State != WebSocketState.Open) return;
+        await conn.Send.WaitAsync(ct);
+        try { await SendRawAsync(conn.Ws, data, ct); }
+        catch (OperationCanceledException) { }
+        finally { try { conn.Send.Release(); } catch { } }
+    }
 
     private static async Task SendRawAsync(WebSocket ws, byte[] data, CancellationToken ct)
     {
@@ -303,6 +352,9 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
         public readonly SnapshotEncoder Encoder = new(); // fresh per connection (reconnect = new baseline)
         public readonly RateLimiter Inputs, Fires, Bytes;
         public readonly TransportGuard Guard;            // anti replay/reorder/dup/flood
+        public readonly SemaphoreSlim Send = new(1, 1);  // serializes outbound sends on this socket
+        public readonly PingMeasurement Ping = new();    // server-measured RTT bookkeeping
+        public readonly object PingGate = new();         // guards Ping (heartbeat issue / echo resolve)
         public int Flagged;
         public bool Dead;
 
@@ -321,6 +373,7 @@ public sealed class WebSocketServerLink : IServerLink, IDisposable
             Dead = true;
             try { Ws.Abort(); } catch { }
             try { Ws.Dispose(); } catch { }
+            try { Send.Dispose(); } catch { }
         }
     }
 }

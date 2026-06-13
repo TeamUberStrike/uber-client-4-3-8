@@ -738,6 +738,24 @@ var stream10k = RecordStream(10_000);
     interp.Sample(5.0, out Vector3 ep2, out _, out _);
     float frozenX = 1f + 10f * GameConstants.MaxExtrapolateSeconds;
     Check(MathF.Abs(ep2.X - frozenX) < 0.01f, $"interp: freezes at the extrapolation cap (x={ep2.X:F2})");
+
+    // (e) PingMeasurement: server-measured RTT bookkeeping (the source the rewind clamp trusts).
+    var pm = new PingMeasurement();
+    uint n1 = pm.Issue(10.0);
+    Check(pm.Resolve(n1, 10.12, out double measured) && Math.Abs(measured - 0.12) < 1e-9,
+        $"rtt: echoed nonce resolves to the server-measured round-trip ({measured:F3}s)");
+    Check(!pm.Resolve(n1, 10.20, out _), "rtt: a REPLAYED nonce yields no second sample (consumed on resolve)");
+    Check(!pm.Resolve(123456u, 10.0, out _), "rtt: an unknown/forged nonce is rejected");
+    // a client that hoards stale nonces can't: the outstanding set is capped + oldest-evicted.
+    var pm2 = new PingMeasurement();
+    uint first = pm2.Issue(0.0);
+    for (int i = 0; i < PingMeasurement.MaxOutstanding + 4; i++) pm2.Issue(1.0 + i);
+    Check(pm2.OutstandingCount <= PingMeasurement.MaxOutstanding, "rtt: outstanding pings are capped (no unbounded growth)");
+    Check(!pm2.Resolve(first, 100.0, out _), "rtt: the oldest stale nonce was evicted → can't echo it for a huge RTT");
+    // clock guard: a non-monotonic 'now' never yields a negative RTT.
+    var pm3 = new PingMeasurement();
+    uint n3 = pm3.Issue(5.0);
+    Check(pm3.Resolve(n3, 4.9, out double neg) && neg == 0d, "rtt: never reports a negative round-trip");
 }
 
 // ---------------------------------------------------------------------------------------
@@ -846,6 +864,9 @@ var stream10k = RecordStream(10_000);
     server.ClientConnected    += _ => connects++;
     server.ClientDisconnected += _ => disconnects++;
     server.InputsPerSec = 90; server.InputBurst = 10;   // tight burst so the flood test trips fast
+    server.RttPingIntervalSeconds = 0.05;               // fast heartbeat so the RTT test is quick
+    int rttSamples = 0; double lastRtt = -1; int lastRttEntity = -1;
+    server.RttSample += (id, rtt) => { rttSamples++; lastRtt = rtt; lastRttEntity = id; };
     server.Start();
     var uri = new Uri($"ws://127.0.0.1:{server.Port}/");
 
@@ -866,6 +887,14 @@ var stream10k = RecordStream(10_000);
     bool ok = await client.ConnectAsync(uri, "tok-1");
     Check(ok && clientEntity == 1, $"ws: valid token completes Hello->Welcome with the server's EntityId ({clientEntity})");
     Check(await WaitUntil(() => connects == 1, 1000), "ws: server raised ClientConnected");
+
+    // (b2) server-MEASURED RTT: the heartbeat SvPing → client SvPong echo round-trips and the
+    // server times it on its own clock (replaces the old always-0 stub). The host wires this to
+    // PlayerState.ObserveRtt → the lag-comp rewind clamp.
+    Check(await WaitUntil(() => rttSamples >= 1, 1500),
+        $"ws: server-initiated heartbeat yields a server-measured RTT sample (n={rttSamples})");
+    Check(lastRttEntity == 1 && lastRtt >= 0 && lastRtt < 0.5,
+        $"ws: measured RTT is attributed to the right entity and is a finite loopback value ({lastRtt:F4}s)");
 
     // (c) inputs/fires flow to the server and get the authenticated EntityId stamped
     InputPacket forged = new() { EntityId = 999, SessionToken = "spoofed", Cmd = new InputCmd { Seq = 1, MoveDir = new Vector3(0,0,1) } };

@@ -222,8 +222,14 @@ for testing; production terminates TLS on HaZard's Linux box / Photon) + `WebSoc
 binds `EntityId↔SessionToken`; every later packet is STAMPED with the authenticated id, so a
 forged body id can't impersonate. Per-connection `RateLimiter` token buckets (inputs/fires/bytes)
 drop+flag floods. Reconnect rebinds the entity with a fresh encoder (full baseline). Verified
-end-to-end over a real `127.0.0.1` socket. **Open decision still on HaZard:** deploy topology —
-.NET authority server vs porting authority into the Node relay (the logic ports 1:1).
+end-to-end over a real `127.0.0.1` socket. **Deploy-topology DECIDED (2026-06-13): the .NET
+`UberStrike.Server` is the authoritative backend on HaZard's Linux host** — .NET is cross-platform,
+so the deterministic sim / combat / lag-comp / Fog of War stay in one language instead of being
+re-derived in JS (which would re-open WASM↔server float-parity risk on the exact code that must
+agree bit-for-bit). Any Node tier is a dumb edge/static host in front of it, never authoritative.
+Server-measured RTT was wired as part of this decision: a server-initiated `SvPing`/`SvPong`
+heartbeat (`PingMeasurement`) times the round-trip on the server clock and feeds `ObserveRtt` →
+the lag-comp clamp, closing the last "RTT source not yet trustworthy" gap.
 
 **Tasks**
 - Server: a WebSocket endpoint (`System.Net.WebSockets` or Photon) implementing `IServerLink`;

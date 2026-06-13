@@ -166,10 +166,15 @@ The single principle under everything below:
   window (`HitboxHistory.Rewind`, `MaxRewindSeconds`).
 - **Why:** an attacker inflating latency to "backtrack" onto where you stood a second ago is capped
   by the clamp; binding to server-measured RTT (not a client field) removes the lever.
-- **Status:** ⚠️ **PARTIAL.** Clamped rewind ✅ (`HitboxHistory` + `MaxRewindSeconds = 0.25s`). The
-  RTT is currently a field on `PlayerState` — it **must be measured server-side** when real transport
-  lands (**Phase 7**); until then the clamp protects but the RTT source isn't yet trustworthy. Noted
-  in the code.
+- **Status:** ✅ **DONE.** Clamped rewind ✅ (`HitboxHistory` + `MaxRewindSeconds = 0.25s`) AND the
+  RTT is now **server-measured**: the transport runs a server-initiated heartbeat (`SvPing` carrying
+  an opaque nonce → client echoes `SvPong`) and times the round-trip on the **server's own clock**
+  (`PingMeasurement` → `RttTracker` → `PlayerState.ObserveRtt` → the rewind clamp). A client can only
+  *delay* the echo (real held latency, contained by `RttTracker`'s growth-rate limit + the hard
+  `MaxRewind` clamp), never *claim* a latency; and a replayed/stale/forged nonce is rejected
+  (consumed-on-resolve + oldest-evicted outstanding set). Verified by tests: deterministic
+  `PingMeasurement` resolve/replay/eviction/clock-guard, plus an end-to-end loopback heartbeat that
+  surfaces a real server-measured sample (the old "always 0" stub is gone).
 
 ## 9. Currency / XP / score injection
 
@@ -258,5 +263,8 @@ sharding). The single remaining partial is **aimbot**: server hit-reg + multi-pa
 bound it and the Phase-8 detection layer flags the residual, but perfect aim is *legal input* —
 no game "solves" aimbot, it detects and tunes against play data (an ops loop, not code). What
 genuinely awaits real deployment, all flagged inline: detection **threshold tuning** against live
-play, the **WASM↔native determinism cross-run** hash check (needs a WASM runtime), and HaZard's
-**deploy-topology** decision (.NET authority vs Node relay). Nothing here is overstated.
+play, and the **WASM↔native determinism cross-run** hash check (needs a WASM runtime). The
+**deploy-topology** question is now **decided — the .NET `UberStrike.Server` is the authoritative
+backend, running on HaZard's Linux host** (it's cross-platform .NET; the deterministic sim, combat,
+lag-comp and Fog of War stay in one language rather than being re-derived in JS). Any Node tier is a
+dumb edge/static host in front of it, never authoritative. Nothing here is overstated.
