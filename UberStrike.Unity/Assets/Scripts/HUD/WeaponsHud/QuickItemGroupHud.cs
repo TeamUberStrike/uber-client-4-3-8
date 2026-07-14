@@ -24,6 +24,13 @@ public class QuickItemGroupHud
         }
     }
 
+    // Screen position of the quick-item group, used by the on-screen touch controls to place
+    // the consumable changer over the quick-item HUD.
+    public Vector2 GetPosition()
+    {
+        return _quickItemsGroup != null ? _quickItemsGroup.Position : Vector2.zero;
+    }
+
     public QuickItemGroupHud()
     {
         if (HudAssets.Exists)
@@ -41,6 +48,19 @@ public class QuickItemGroupHud
 
             ResetQuickItemsTransform();
             ResetQuickItemVisibility();
+
+            // On mobile the 3 Quick Items are the customizable on-screen touch buttons
+            // (TouchInput.QuickItemButtons); the stacked desktop HUD must NOT render. These slots are
+            // persistent MeshGUI meshes (Show() activates the GameObject), so skipping Draw() does NOT hide
+            // them — that's why "Key: 6/7/8" leaked top-left. Disabling each group hides what's shown AND
+            // makes every later Show() a no-op (Animatable2DGroup.Show is gated on IsEnabled). The per-slot
+            // icon is still assigned in ConfigureSlot, so the touch buttons can still read GetSlotIcon().
+            if (ApplicationDataManager.IsMobile)
+            {
+                _quickItemsGroup.IsEnabled = false;
+                foreach (QuickItemHud slot in _quickItemSlots)
+                    slot.Group.IsEnabled = false;
+            }
 
             CmuneEventHandler.AddListener<ScreenResolutionEvent>(OnScreenResolutionChange);
             CmuneEventHandler.AddListener<InputAssignmentEvent>(OnInputAssignmentChange);
@@ -107,6 +127,19 @@ public class QuickItemGroupHud
         {
             return _quickItemSlots[slot];
         }
+        return null;
+    }
+
+    // Mobile on-screen Quick Item buttons read these to mirror the live loadout.
+    public bool IsSlotConfigured(int slot)
+    {
+        return _quickItemSlots != null && slot >= 0 && slot < _quickItemSlots.Count && !_quickItemSlots[slot].IsEmpty;
+    }
+
+    public Texture GetSlotIcon(int slot)
+    {
+        if (_quickItemSlots != null && slot >= 0 && slot < _quickItemSlots.Count)
+            return _quickItemSlots[slot].Icon;
         return null;
     }
 

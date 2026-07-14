@@ -47,18 +47,23 @@ public class ChatPageGUI : PageGUI
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         if (IsOnGUIEnabled)
         {
             GUI.skin = BlueStonez.Skin;
             GUI.depth = (int)GuiDepth.Chat;
 
-            _mainRect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), Screen.width, Screen.height - GlobalUIRibbon.Instance.GetHeight());
+            // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+            _mainRect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
 
             DrawGUI(_mainRect);
 
             if (PopupMenu.Current != null)
                 PopupMenu.Current.Draw();
         }
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void DrawGUI(Rect rect)
@@ -142,7 +147,7 @@ public class ChatPageGUI : PageGUI
         GUI.EndGroup();
 
         if (_checkForPassword)
-            PasswordCheck(new Rect((Screen.width - 280) * 0.5f, (Screen.height - 200) * 0.5f, 280, 200));
+            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth - 280) * 0.5f, (MobileMenuScale.VirtualHeight - 200) * 0.5f, 280, 200));
 
         GuiManager.DrawTooltip();
     }

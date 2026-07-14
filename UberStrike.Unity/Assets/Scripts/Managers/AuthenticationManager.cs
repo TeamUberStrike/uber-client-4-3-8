@@ -47,8 +47,14 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             case ChannelType.OSXStandalone:
             case ChannelType.WindowsStandalone:
             case ChannelType.MacAppStore:
+            case ChannelType.Android:
+            case ChannelType.IPhone:
+            case ChannelType.IPad:
                 {
-                    // Show the login panel
+                    // Show the login panel. Mobile (IPad/IPhone/Android) shares the standalone
+                    // login flow — without these cases LoginByChannel hits the default and logs
+                    // "No login mode defined for unsupported channel: IPad", leaving the player
+                    // stuck on the lobby (forward-ported from mobile-il2cpp).
                     MenuPageManager.Instance.LoadPage(PageType.Login, true);
                     break;
                 }
@@ -135,6 +141,13 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         ApplicationDataManager.ServerDateTime = loginResult.ServerTime;
         CmuneEventHandler.Route(new LoginEvent(loginResult.MemberView.PublicProfile.AccessLevel));
 
+        // Start the Weekly Special promo image download at the EARLIEST point login allows — its data
+        // is already here, but the panel (ItemPromotionView) isn't built until the last step of login,
+        // giving prewarm only ~0.02s before the lobby draws. Kicking the URL off now (TextureLoader
+        // caches by URL) gives it the whole loading screen, so the panel can show as soon as possible.
+        if (loginResult.WeeklySpecial != null && !string.IsNullOrEmpty(loginResult.WeeklySpecial.ImageUrl))
+            TextureLoader.Instance.LoadImage(loginResult.WeeklySpecial.ImageUrl);
+
         _progress.Text = "Loading Friends List";
         _progress.ManualProgress = 0.15f;
         yield return MonoRoutine.Start(CommsManager.Instance.GetContactsByGroups());
@@ -179,6 +192,11 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         {
             case ChannelType.MacAppStore:
             case ChannelType.WindowsStandalone:
+            case ChannelType.Android:
+            case ChannelType.IPhone:
+            case ChannelType.IPad:
+                // Mobile ships HD map assets too (per the mobile-il2cpp build); request HD
+                // map data so the definitions match the baked scenes.
                 mapType = MapType.HighDefinition;
                 break;
         }
@@ -277,6 +295,26 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
 
         GameState.LocalDecorator = AvatarBuilder.Instance.CreateLocalAvatar();
 
+        // Hold the loading screen until the Weekly Special promo image has actually finished downloading,
+        // THEN reveal the lobby — so the panel is already complete on arrival. On device the image
+        // otherwise finishes ~0.3s AFTER the lobby appears (its download is slower than the rest of the
+        // loading flow), so it pops/fills in right as the loading bar ends. The bar is still up here
+        // (HideMessage is below), so this wait is hidden behind the progress UI. The download was already
+        // kicked off right after auth; LoadImage caches by URL so this just reuses that in-flight texture.
+        // Bounded so a slow or dead CDN can never block login.
+        if (loginResult.WeeklySpecial != null && !string.IsNullOrEmpty(loginResult.WeeklySpecial.ImageUrl))
+        {
+            _progress.ManualProgress = 0.95f;
+            _progress.Text = "Loading Featured Item";
+            Texture2D promoTex = TextureLoader.Instance.LoadImage(loginResult.WeeklySpecial.ImageUrl);
+            float promoWait = 0f;
+            while (TextureLoader.Instance.GetState(promoTex) != 1 && promoWait < 2f)
+            {
+                promoWait += Time.deltaTime;
+                yield return null;
+            }
+        }
+
         // If everything went ok, we can load the home scene and show the main menu.
         PopupSystem.HideMessage(_progress);
 
@@ -292,6 +330,9 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         if (loginResult.WeeklySpecial != null)
         {
             ItemPromotionManager.Instance.WeeklySpecial = new ItemPromotionView(loginResult.WeeklySpecial);
+            // Prewarm the promo image during login so the lobby's Weekly Special panel paints with the
+            // image already in place instead of an empty box that fills in ~1s after the lobby appears.
+            ItemPromotionManager.Instance.WeeklySpecial.Texture.Preload();
         }
 
         // Open the tutorial if the player is new

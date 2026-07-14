@@ -45,4 +45,5 @@ public enum GameInputKey
     UseQuickItem = 26,
     ChangeTeam = 27,
     NextQuickItem = 28,
+    PrevQuickItem = 29,
 }

@@ -21,10 +21,14 @@ public class SceneExporter
     public static readonly string Windows64StandaloneFolder = Application.dataPath + "/../Latest/Windows64Standalone";
     public static readonly string OsxStandaloneFolder = Application.dataPath + "/../Latest/OsxStandalone";
     public static readonly string MacAppStoreStandaloneFolder = Application.dataPath + "/../Latest/MacAppStoreStandalone";
+    // iOS build emits an Xcode project (not a finished player) under <project>/iOS/.
+    // Forward-ported from the mobile-il2cpp lineage so this single codebase can target iOS.
+    public static readonly string IOSBuildFolder = Application.dataPath + "/../iOS/";
 
     public const string SceneFolder = "Assets/Scenes/";
     public const string SplashScene = "Splash";
     public const string SplashSceneWeb = "SplashWeb";
+    public const string SplashSceneMobile = "SplashMobile"; // mobile-only splash loader scene
     public const string MainScene = "Latest";
     public const string SpaceshipScene = "LevelSpaceship";
     public const string ClientVersion = "4.3.8";
@@ -43,7 +47,65 @@ public class SceneExporter
         { 7, "LevelSkyGarden" },
         { 8, "LevelCuberStrike" },
         { 10, "LevelSpaceportAlpha" },
+        { 11, "LevelAqualabResearchHub" },
+        { 12, "LevelSuperPRISMReactor" },
      };
+
+    #region iOS
+
+    // Forward-ported from mobile-il2cpp-prep. Entry point: LocalIOSBuild.Run (batch mode).
+    // Produces an Xcode project under <project>/iOS/ which must be compiled on macOS.
+
+    [MenuItem("File/Build UberStrike/Internal Dev/iOS")]
+    public static void BuildiOS()
+    {
+        BuildiOS(true, false);
+    }
+
+    [MenuItem("File/Build UberStrike/Internal Dev/iOS (Main Only)")]
+    public static void BuildiOSMainOnly()
+    {
+        BuildiOS(false, false);
+    }
+
+    public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, BuildOptions buildOptions = BuildOptions.None)
+    {
+        List<string> scenesToBuild = new List<string>();
+
+        if (buildSplashLoader)
+        {
+            scenesToBuild.Add(SceneFolder + SplashSceneMobile + ".unity");
+        }
+
+        scenesToBuild.Add(SceneFolder + MainScene + ".unity");
+        scenesToBuild.Add(SceneFolder + SpaceshipScene + ".unity");
+
+        if (buildAllMaps)
+        {
+            // All maps ship on iOS. The per-map mobile allow-list is enforced at runtime
+            // by LevelManager._mobileSupportedMaps; drop an id from BOTH places to exclude it.
+            scenesToBuild.Add(SceneFolder + MapsToExport[1] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[2] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[3] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[4] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[5] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[6] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[7] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[8] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[10] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[11] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[12] + ".unity");
+        }
+
+        var buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), IOSBuildFolder, BuildTarget.iOS, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
+    }
+
+    #endregion
 
     #region Mac App Store
 

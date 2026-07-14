@@ -10,6 +10,9 @@ public class TeamGameEndEvent
 
 public class OnModeInitializedEvent { }
 
+// Routed when the on-screen mobile "menu/back" button is pressed (re-added for touch controls).
+public class OnMobileBackPressed { }
+
 public class OnMatchStartEvent
 {
     public int MatchCount { get; set; }

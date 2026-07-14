@@ -11,12 +11,17 @@ public class TrainingPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        // Render the training panel (incl. the map list) 1.3x larger than the default menu scale on mobile.
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(1.3f);
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
-        GUI.Box(new Rect(0, 56, Screen.width, Screen.height - 56), string.Empty, BlueStonez.box_grey31);
+        // Anchor against the virtual (scaled) screen size so the panel stays centered/sized under the mobile menu scale.
+        GUI.Box(new Rect(0, 56, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - 56), string.Empty, BlueStonez.box_grey31);
 
         //Stats GUI Panel
-        GUI.BeginGroup(new Rect((Screen.width - 330) * 0.5f, ((Screen.height + 56) - 410) * 0.5f, 330, 410), string.Empty, BlueStonez.window);
+        Rect panelRect = new Rect((MobileMenuScale.VirtualWidth - 330) * 0.5f, ((MobileMenuScale.VirtualHeight + 56) - 410) * 0.5f, 330, 410);
+        GUI.BeginGroup(panelRect, string.Empty, BlueStonez.window);
         {
             GUI.Label(new Rect(10, 20, 300, 48), LocalizedStrings.TrainingCaps, BlueStonez.label_interparkbold_48pt);
             GUI.Label(new Rect(30, 50, 270, 120), LocalizedStrings.TrainingModeDesc, BlueStonez.label_interparkbold_13pt);
@@ -27,7 +32,9 @@ public class TrainingPageGUI : MonoBehaviour
 
             int totalcount = LevelManager.Instance.Count;
             GUI.Box(new Rect(12, 179, 300, 176), string.Empty, BlueStonez.window);
-            _mapScroll = GUI.BeginScrollView(new Rect(0, 179, 312, 176), _mapScroll, new Rect(0, 0, 100, 80 * Mathf.CeilToInt(totalcount * 0.5f)));
+            Rect mapView = new Rect(0, 179, 312, 176);
+            _mapScroll = MobileScroll.Drag(ScrollId.TrainingMaps, mapView, _mapScroll);
+            _mapScroll = GUI.BeginScrollView(mapView, _mapScroll, new Rect(0, 0, 100, 80 * Mathf.CeilToInt(totalcount * 0.5f)));
             {
                 Vector2 s = new Vector2(283, 80);
                 int i = 0;
@@ -89,5 +96,7 @@ public class TrainingPageGUI : MonoBehaviour
         GUI.EndGroup();
 
         GUI.enabled = true;
+
+        MobileMenuScale.End(scaleMatrix);
     }
 }

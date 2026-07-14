@@ -147,7 +147,14 @@ public class AvatarDecorator : MonoBehaviour
 
         HudInformation = GetComponentInChildren<AvatarHudInformation>();
         if (HudInformation)
-            HudInformation.Target = GetBone(BoneIndex.HeadTop);
+        {
+            Transform headTop = GetBone(BoneIndex.HeadTop);
+            HudInformation.Target = headTop;
+            // Stable anchor for the classic lobby name tag: avatar root + rest head height, so the name
+            // sits above the head without bobbing with the idle animation (out-of-game classic lobby only).
+            if (headTop != null)
+                HudInformation.SetStableAnchor(transform, headTop.position.y - transform.position.y);
+        }
 
         _animation = GetComponent<Animation>();
 

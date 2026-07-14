@@ -11,6 +11,12 @@ public class LevelManager : Singleton<LevelManager>
     private MapLoader _loader;
     private UberstrikeMap _initialMap;
 
+    // Per-map mobile allow-list — the platform-dependent map knob (one codebase, gated at runtime).
+    // Every map ships on mobile today; to drop a map from mobile/iOS, remove its id here AND from
+    // the scene list in SceneExporter.BuildiOS. Desktop channels are never filtered by this set.
+    private static readonly HashSet<int> _mobileSupportedMaps =
+        new HashSet<int> { 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12 };
+
     public IEnumerable<UberstrikeMap> AllMaps { get { return mapsById.Values; } }
     public int CurrentLoadingLevelId { get { return _loader.MapToLoad != null ? _loader.MapToLoad.Id : -1; } }
     public float CurrentProgress { get { return _loader.Progress; } }
@@ -188,11 +194,21 @@ public class LevelManager : Singleton<LevelManager>
 
         foreach (var m in maps)
         {
+            // Mobile/iOS gets only allow-listed maps; desktop channels get everything.
+            if (ApplicationDataManager.IsMobile && !_mobileSupportedMaps.Contains(m.MapId))
+                continue;
+
             if (!mapsById.ContainsKey(m.MapId))
             {
                 mapsById.Add(m.MapId, new UberstrikeMap(m));
             }
         }
+
+        // Prewarm every map's icon during the loading screen so the Training/Create-Game map list
+        // paints fully on first open instead of streaming thumbnails in over ~1s. TextureLoader caches
+        // by URL and blacklists dead URLs, so this is cheap and safe for icons that 404 on the CDN.
+        foreach (var map in mapsById.Values)
+            map.Icon.Preload();
 
         return (mapsById.Count > 0);
     }
@@ -226,6 +242,14 @@ public class LevelManager : Singleton<LevelManager>
 
             if (Application.isEditor && !ApplicationDataManager.Instance.LoadMapsUsingWebService)//Instance.IsSimulateWebplayer)
             {
+                yield return Application.LoadLevelAdditiveAsync(MapToLoad.SceneName);
+            }
+            else if (ApplicationDataManager.IsMobile)
+            {
+                // Mobile/iOS bakes every map scene into the build (SceneExporter.BuildiOS), so load
+                // the baked scene directly. Without this branch the player falls to the CDN asset-bundle
+                // download below, which hangs forever -> "StartLoadingMap ... timeout: True" (infinite
+                // loading bar). Forward-ported from mobile-il2cpp.
                 yield return Application.LoadLevelAdditiveAsync(MapToLoad.SceneName);
             }
             else

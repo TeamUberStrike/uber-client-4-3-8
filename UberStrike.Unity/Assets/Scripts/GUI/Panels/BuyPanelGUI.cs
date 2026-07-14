@@ -26,12 +26,17 @@ public class BuyPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.skin = BlueStonez.Skin;
         GUI.depth = (int)GuiDepth.Panel;
 
         Height = TITLE_HEIGHT + _price.Height + 100;
 
-        DrawUnityItem(new Rect((Screen.width - WIDTH) / 2, (Screen.height - Height) / 2, WIDTH, Height));
+        // centre against the virtual screen for mobile menu scale
+        DrawUnityItem(new Rect((MobileMenuScale.VirtualWidth - WIDTH) / 2, (MobileMenuScale.VirtualHeight - Height) / 2, WIDTH, Height));
+
+        MobileMenuScale.End(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }

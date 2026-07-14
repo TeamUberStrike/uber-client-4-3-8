@@ -67,8 +67,16 @@ public class AvatarHudInformation : MonoBehaviour
     {
         if (Camera.main && _target)
         {
-            Vector3 heading = (_target.position + _offset) - Camera.main.transform.position;
-            _screenPosition = Camera.main.WorldToScreenPoint(_target.position + _offset);
+            // Classic ring lobby: anchor the name to the avatar's STATIC root (+ rest head height) instead
+            // of the animated HeadTop bone, so it sits in the same spot but doesn't bob with the idle
+            // animation. Out-of-game lobby only; in-game and the column lobby keep tracking the bone.
+            Vector3 anchorPos = (_stableAnchor != null && !GameState.HasCurrentGame
+                                 && ApplicationDataManager.ApplicationOptions.UseClassicLobby)
+                ? _stableAnchor.position + Vector3.up * _stableHeight
+                : _target.position;
+
+            Vector3 heading = (anchorPos + _offset) - Camera.main.transform.position;
+            _screenPosition = Camera.main.WorldToScreenPoint(anchorPos + _offset);
             _screenPosition.x = Mathf.FloorToInt(_screenPosition.x);
             // get current level data
             //if (LevelFXController.Instance)
@@ -256,6 +264,16 @@ public class AvatarHudInformation : MonoBehaviour
             _textSize = BlueStonez.label_interparkbold_11pt.CalcSize(new GUIContent(_text));
         else
             _textSize = new Vector2(name.Length * 10, 20);
+    }
+
+    // Stable, non-animated anchor for the name tag in the classic lobby (avatar root + rest head height),
+    // used instead of the animated HeadTop bone so the name doesn't bob with the idle animation.
+    private Transform _stableAnchor;
+    private float _stableHeight;
+    public void SetStableAnchor(Transform anchor, float height)
+    {
+        _stableAnchor = anchor;
+        _stableHeight = height;
     }
 
     public void SetHealthBarValue(float value)
