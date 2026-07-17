@@ -208,7 +208,22 @@ public class WeaponFeedbackManager : MonoSingleton<WeaponFeedbackManager>
         {
             //but only if the weapons are actually different
             if (_pickupWeaponState.Weapon != weapon)
+            {
+                // Hide the outgoing weapon's decorator immediately so it doesn't
+                // render on top of the incoming PickUpState pose. Switching guns
+                // routes straight here (WeaponController.PickUp), never through
+                // PutDown(). Non-melee weapons share the same pivot transform, so
+                // without this the prev gun ghosts in roughly the new gun's
+                // position for PutDownDuration (the Vlad / Spiteful Stinger
+                // scope-after-switch bug). PutDownState still runs and its
+                // Finish() redundantly disables on completion, but the decorator
+                // is already disabled so the animated transform has no visual
+                // effect.
+                BaseWeaponDecorator prevDecorator = _pickupWeaponState.Decorator;
                 PutDownWeapon(_pickupWeaponState.Weapon, _pickupWeaponState.Decorator);
+                if ((bool)prevDecorator)
+                    prevDecorator.IsEnabled = false;
+            }
             else
                 return;
         }
