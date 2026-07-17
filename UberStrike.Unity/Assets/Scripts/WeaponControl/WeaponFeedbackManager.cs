@@ -343,7 +343,12 @@ public class WeaponFeedbackManager : MonoSingleton<WeaponFeedbackManager>
         public PickUpState(BaseWeaponLogic weapon, BaseWeaponDecorator decorator)
             : base(weapon, decorator)
         {
-            _transitionTime = Mathf.Max(Instance.WeaponAnimation.PickUpDuration, weapon.Config.SwitchDelayMilliSeconds / 1000);
+            // SwitchDelayMilliSeconds is an int in milliseconds; PickUpDuration is a float in seconds.
+            // The previous `/ 1000` was an integer divide that returned 0 for any value < 1000ms (e.g.
+            // the default _switchDelay = 500 -> 0), making the per-weapon [CustomProperty("SwitchDelay")]
+            // database field functionally dead. Use `/ 1000f` so the float divide is preserved and
+            // server-driven per-weapon switch delays actually take effect.
+            _transitionTime = Mathf.Max(Instance.WeaponAnimation.PickUpDuration, weapon.Config.SwitchDelayMilliSeconds / 1000f);
             if (decorator.IsMelee)
             {
                 _currentRotation = -90;
