@@ -4,9 +4,9 @@
 This project is licensed under the GNU General Public License v3.0 (GPL-3.0). See the LICENSE file for details.
 
 ## Setup
-Install Unity 3.5.5 from https://discussions.unity.com/t/early-unity-versions-downloads/927331
+Install Unity2022 from https://discussions.unity.com/t/early-unity-versions-downloads/927331
 
-This Unity version produces 32bit binaries. This means apart from 64bit, it also runs on 32bit hardware/software supported devices like old Macs.
+This Unity version produces 64-bit binaries and supports modern hardware and operating systems across multiple platforms.
 
 Inside the Unity Editor Latest.unity is used. Outside the Editor, running the application Spaceship.unity is the entry point.
 
@@ -20,3 +20,4 @@ Turn isEnabled on:
 ./UberStrike.Unity/Assets/Scenes/Latest.unity:8131:  _localCommServer:
 ```
 
+# last updated 20260804 - Reloqz
