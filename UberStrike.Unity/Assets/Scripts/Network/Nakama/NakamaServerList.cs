@@ -44,7 +44,7 @@ namespace UberStrike.Realtime.NakamaAdapter
 
         public static string KindOf(string server)
         {
-            return server == Cfg.CommServerAddress ? NakamaPeer.KindComm : NakamaPeer.KindGame;
+            return Cfg.IsCommAddress(server) ? NakamaPeer.KindComm : NakamaPeer.KindGame;
         }
     }
 }

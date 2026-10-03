@@ -35,6 +35,19 @@ namespace UberStrike.Realtime.NakamaAdapter
         public string GameServerAddress { get { return RoomHost + ":" + RoomPortBase.ToString(CultureInfo.InvariantCulture); } }
         public string CommServerAddress { get { return RoomHost + ":" + (RoomPortBase + 88).ToString(CultureInfo.InvariantCulture); } }
 
+        // Comm label by port: the SDK re-renders the host (IPv4 int, hostname -> 0.0.0.0). Game ports skip +88 (Go rooms.Alloc).
+        public bool IsCommAddress(string server)
+        {
+            if (string.IsNullOrEmpty(server))
+                return false;
+            if (server == CommServerAddress)
+                return true;
+            int colon = server.LastIndexOf(':');
+            int port;
+            return colon >= 0 && int.TryParse(server.Substring(colon + 1), NumberStyles.None, CultureInfo.InvariantCulture, out port)
+                && port == RoomPortBase + 88;
+        }
+
         public static NakamaConfig Load(string json, string[] args)
         {
             var c = new NakamaConfig();
