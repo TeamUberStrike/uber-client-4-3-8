@@ -39,6 +39,7 @@ dev token `dev:<cmid>:<access>:<name>` (`-nakamadev`, node `UBER_DEV_AUTH=true`)
 | event 0 / 3,4,5 | match op 0 -> `{101,100,103}`; op 3/4/5 -> `{42:{122\|123: bytes}}` |
 | server time / RTT | RPC `uber_time` every 1 s |
 | liveness in a game room | op 82 `[2][4]` (ServerSyncCenter InitializeRoom no-op) every 3 s; Go kicks after 10 s silence |
+| server kick | match op 89 + UTF-8 reason -> `DisconnectByServerLogic` |
 
 ## Errors
 
@@ -47,8 +48,8 @@ dev token `dev:<cmid>:<access>:<name>` (`-nakamadev`, node `UBER_DEV_AUTH=true`)
 | auth rejected (401/403), no token, unreachable, timeout | `ExceptionOnConnect` (auth: backoff 2..30 s) |
 | TLS failure | `SecurityExceptionOnConnect` then `Disconnect` |
 | socket closed by server (`SessionDisconnect`, ban, network) | `DisconnectByServer` on every attached peer |
-| match op 89 kick notice (Go sends it before `MatchKick`; Nakama never sends the kicked session its leave) | `DisconnectByServerLogic` on that peer only |
-| own presence leaves match (`MatchKick`, match end) | `DisconnectByServerLogic` on that peer only |
+| match op 89 kick notice, payload = reason (`NakamaFraming.MatchOpKicked` = Go `game.OpKicked`, sent before `MatchKick`) | `DisconnectByServerLogic` on that peer only |
+| own presence in a match leave (fallback only: Nakama 3.41 never sends a kicked session its own leave) | `DisconnectByServerLogic` on that peer only |
 | join reject `rc=<n>` | response 88 rc n (1 gone, 2 full, 3 banned, 4 in game) |
 | RPC/transport error | response 66 rc 1 / response 88 rc 5, `DebugMessage` = error |
 | notification `single_socket` (-7) / banned (-8) | `ClientCommCenter.OnDisconnectAndDisablePhoton` (CommRPC 36 path) |

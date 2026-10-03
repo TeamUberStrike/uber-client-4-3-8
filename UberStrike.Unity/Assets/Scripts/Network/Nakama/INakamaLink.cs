@@ -32,7 +32,7 @@ namespace UberStrike.Realtime.NakamaAdapter
     {
         void OnMatchData(string matchId, long opCode, byte[] data);
 
-        // own presence left the match without us asking (MatchKick, match ended)
+        // own leave in a presence event; fallback only (kick = match op 89)
         void OnMatchLeft(string matchId);
 
         // joined game room (not lobby 66 / comm 88): link sends the op 82 [2][4] heartbeat
