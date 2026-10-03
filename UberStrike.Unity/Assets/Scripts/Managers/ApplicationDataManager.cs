@@ -8,6 +8,7 @@ using Cmune.DataCenter.Common.Entities;
 using Cmune.Realtime.Photon.Client.Utils;
 using Cmune.Util;
 using UberStrike.Core.Types;
+using UberStrike.Realtime.NakamaAdapter;
 using UberStrike.DataCenter.Common.Entities;
 using UberStrike.WebService.Unity;
 using UnityEngine;
@@ -367,7 +368,11 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             ApplicationDataManager.IsOnline = true;
 
             // Setup Game Servers
-            if (CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled)
+            if (NakamaServerList.Enabled)
+            {
+                GameServerManager.Instance.AddGameServer(NakamaServerList.GameServer());
+            }
+            else if (CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled)
             {
                 // Setup Local Game Server only if we are in the editor
                 Singleton<GameServerManager>.Instance.AddGameServer(new PhotonView()
@@ -392,7 +397,11 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             }
 
             // Setup Comm Server
-            if (CmuneNetworkConfiguration.Instance.CustomCommServer.IsEnabled)
+            if (NakamaServerList.Enabled)
+            {
+                CmuneNetworkManager.CurrentCommServer = new GameServerView(NakamaServerList.CommServer());
+            }
+            else if (CmuneNetworkConfiguration.Instance.CustomCommServer.IsEnabled)
             {
                 CmuneNetworkManager.CurrentCommServer = new GameServerView(new PhotonView()
                 {
