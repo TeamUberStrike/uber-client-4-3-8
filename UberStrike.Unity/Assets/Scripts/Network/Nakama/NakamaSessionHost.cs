@@ -5,9 +5,9 @@ namespace UberStrike.Realtime.NakamaAdapter
     // Drives NakamaSession: uber_time loop, idle socket close, close on quit.
     public sealed class NakamaSessionHost : MonoBehaviour
     {
-        NakamaSession _session;
+        NakamaLink _session;
 
-        public static void Ensure(NakamaSession session)
+        public static void Ensure(NakamaLink session)
         {
             if (!Application.isPlaying)
                 return;

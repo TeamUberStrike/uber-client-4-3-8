@@ -12,7 +12,21 @@
     <UnityManaged Condition=" '$(UnityManaged)' == '' ">C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\Managed</UnityManaged>
     <AdapterDir>..\UberStrike.Unity\Assets\Scripts\Network\Nakama\</AdapterDir>
     <HasUnity Condition=" '$(TargetFramework)' == 'net8.0' and Exists('$(UnityManaged)\UnityEngine.dll') ">true</HasUnity>
+    <!-- Nakama.dll shipped in nakama-unity 3.22.1 (netstandard 2.1); Unity puts it in PackageCache, CI clones the package -->
+    <NakamaDll Condition=" '$(NakamaDll)' == '' ">..\UberStrike.Unity\Library\PackageCache\com.heroiclabs.nakama-unity@34d764d62d\Runtime\Plugins\Nakama.dll</NakamaDll>
+    <HasNakama Condition=" '$(TargetFramework)' == 'net8.0' and Exists('$(NakamaDll)') ">true</HasNakama>
   </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(HasNakama)' == 'true' ">
+    <DefineConstants>$(DefineConstants);NAKAMA_LINK</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(HasNakama)' == 'true' ">
+    <Compile Include="$(AdapterDir)NakamaLink.cs" Link="Adapter\NakamaLink.cs" />
+    <Reference Include="Nakama">
+      <HintPath>$(NakamaDll)</HintPath>
+    </Reference>
+  </ItemGroup>
 
   <!-- Unity 2022 UnityEngine.dll is netstandard 2.1: the real-SDK tests run on net8.0 only -->
   <PropertyGroup Condition=" '$(HasUnity)' == 'true' ">

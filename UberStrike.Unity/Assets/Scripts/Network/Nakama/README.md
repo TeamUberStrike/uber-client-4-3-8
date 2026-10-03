@@ -6,9 +6,11 @@ Photon is gone. `UberStrike.UnitySdk.dll` (uber-server-4-3-8 `nakama-sdk`) drive
 | File | What |
 |---|---|
 | `NakamaBootstrap` | sets `PeerFactory.Create` before any manager `Awake`; config; kill switch |
-| `NakamaSession` | one `IClient`/`ISession`/`ISocket` (`NewSocket(useMainThread: true)`), auth, `uber_time` clock, routing by match id |
+| `NakamaSession` | Unity side: game-wide `NakamaLink`, `UnityWebRequestAdapter`, `NewSocket(useMainThread: true)`, token hooks |
+| `NakamaLink` | one `IClient`/`ISession`/`ISocket`: auth, shared socket, `uber_time` clock, routing by match id, idle close (no UnityEngine) |
+| `NakamaSessionHost` | `Update` -> `NakamaLink.Tick`, quit -> close |
 | `NakamaPeer` | one per `PhotonClient` (Comm, Lobby, Game, probes); Photon op/status/event semantics |
-| `NakamaFraming` | byte + JSON framing, no Unity/Nakama (tests: `/NakamaTests`) |
+| `NakamaFraming` | byte + JSON framing, BCL only (tests: `/NakamaTests`) |
 | `NakamaClock` | min-RTT offset, slew, int31 server ms |
 | `NakamaConfig` | endpoint, key, dev auth, room address labels |
 | `NakamaServerList` | Play page rows for the node |
