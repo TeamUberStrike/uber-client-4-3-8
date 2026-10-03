@@ -11,6 +11,7 @@
     <PathMap>$(MSBuildThisFileDirectory)..\=/_/</PathMap>
     <UnityManaged Condition=" '$(UnityManaged)' == '' ">C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\Managed</UnityManaged>
     <AdapterDir>..\UberStrike.Unity\Assets\Scripts\Network\Nakama\</AdapterDir>
+    <DefaultItemExcludes>$(DefaultItemExcludes);e2e\**;contract\**</DefaultItemExcludes>
     <HasUnity Condition=" '$(TargetFramework)' == 'net8.0' and Exists('$(UnityManaged)\UnityEngine.dll') ">true</HasUnity>
     <!-- Nakama.dll shipped in nakama-unity 3.22.1 (netstandard 2.1); Unity puts it in PackageCache, CI clones the package -->
     <NakamaDll Condition=" '$(NakamaDll)' == '' ">..\UberStrike.Unity\Library\PackageCache\com.heroiclabs.nakama-unity@34d764d62d\Runtime\Plugins\Nakama.dll</NakamaDll>
