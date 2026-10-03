@@ -178,6 +178,45 @@ namespace ClientE2E
             int skew = Math.Abs(la.ServerTimeMs - lb.ServerTimeMs);
             Check("two sockets agree on ServerTimeTicks within 20 ms", skew <= 20, skew + " ms");
 
+            // Go kick = match op 89 notice + MatchKick; Nakama never sends the kicked session its own leave
+            var pm = new Platform(new NakamaIdentity { Cmid = cmidA + 3, Access = 4, Name = "e2e mod" });
+            var lm = new NakamaLink(Config(), pm);
+            pm.Link = lm;
+            var mod = new TestPeer("mod", lm);
+            Check("moderator: connect", mod.Connect("127.0.0.1:20000", cmidA + 3) && await mod.WaitStatus(StatusCode.Connect, 15000), mod.LastStatus);
+            OperationResponse kick = await mod.Op66(22, Tagged(cmidB, number, 0));
+            Check("op66/22 moderator kicks B (access 4)", kick != null && kick.ReturnCode == 0, Describe(kick));
+            sw.Restart();
+            bool kicked = await gameB.WaitStatus(StatusCode.DisconnectByServerLogic, 5000);
+            Check("kicked B: op 89 notice -> DisconnectByServerLogic", kicked, gameB.LastStatus);
+            Line("  kick op66 reply -> B status: " + sw.ElapsedMilliseconds + " ms");
+            Check("kicked B: peer down, no match", gameB.Peer.PeerState == PeerStateValue.Disconnected && gameB.Peer.MatchId == null, gameB.Peer.PeerState + " " + gameB.Peer.MatchId);
+            Check("kicked B: reason logged", gameB.Debugs.Exists(d => d.Contains("kicked: ")), string.Join(" | ", gameB.Debugs));
+            Check("kicked B: sends refused", !gameB.Send(83, 100, 89, Tagged(1)), "");
+            Check("A not kicked", gameA.Peer.PeerState == PeerStateValue.Connected && !gameA.Statuses.Contains(StatusCode.DisconnectByServerLogic), gameA.LastStatus);
+
+            gameB = new TestPeer("B game again", lb);
+            Check("kick is not a ban: B reconnects", gameB.Connect("127.0.0.1:20000", cmidB) && await gameB.WaitStatus(StatusCode.Connect, 15000), gameB.LastStatus);
+            jb = await gameB.Join(meta ?? new byte[] { 0 });
+            Check("kick is not a ban: B rejoins A's game", jb != null && jb.ReturnCode == 0 && NakamaFraming.ReadInt32((byte[])jb.Parameters[4], 2) == number, Describe(jb));
+
+            // silence kick: heartbeat (op 82 [2][4]) marks the session, 10 s without data = kick
+            var pc = new Platform(new NakamaIdentity { Cmid = cmidA + 5, Access = 0, Name = "e2e quiet" });
+            var lc = new NakamaLink(Config(), pc);
+            pc.Link = lc;
+            var quiet = new TestPeer("C game", lc);
+            Check("quiet C: connect", quiet.Connect("127.0.0.1:20000", cmidA + 5) && await quiet.WaitStatus(StatusCode.Connect, 15000), quiet.LastStatus);
+            OperationResponse jq = await quiet.Join(Hex(GameCreate));
+            Check("quiet C: creates a game", jq != null && jq.ReturnCode == 0, Describe(jq));
+            await Wait(NakamaLink.HeartbeatMs + 500);
+            Check("quiet C: heartbeats keep it in (no kick)", quiet.Peer.PeerState == PeerStateValue.Connected, quiet.LastStatus);
+            pc.Paused = true;
+            sw.Restart();
+            bool silent = await quiet.WaitStatus(StatusCode.DisconnectByServerLogic, 16000);
+            Check("quiet C: link stops beating -> silence kick -> DisconnectByServerLogic", silent && quiet.Debugs.Exists(d => d.Contains("no data for 10 s")), quiet.LastStatus + " " + string.Join(" | ", quiet.Debugs));
+            Line("  heartbeats stopped -> silence kick: " + sw.ElapsedMilliseconds + " ms");
+            pc.Paused = false;
+
             // leave + disconnect
             OperationResponse lv = await gameB.Leave();
             Check("op89 leave -> response 89", lv != null, "");
@@ -195,6 +234,8 @@ namespace ClientE2E
 
             la.Shutdown();
             lb.Shutdown();
+            lm.Shutdown();
+            lc.Shutdown();
             await Wait(200);
             Check("shutdown -> attached peers see Disconnect", comm.Statuses.Contains(StatusCode.Disconnect) || comm.Peer.PeerState == PeerStateValue.Disconnected, comm.LastStatus);
         }
@@ -212,6 +253,7 @@ namespace ClientE2E
             public readonly NakamaPeer Peer_;
             public readonly NakamaLink Link;
             public readonly List<StatusCode> Statuses = new List<StatusCode>();
+            public readonly List<string> Debugs = new List<string>();
             readonly List<OperationResponse> _responses = new List<OperationResponse>();
             readonly List<EventData> _events = new List<EventData>();
             short _invoc = 100;
@@ -295,7 +337,7 @@ namespace ClientE2E
                     while (Peer_.DispatchIncomingCommands()) { }
             }
 
-            public void DebugReturn(DebugLevel level, string message) { Line("  [" + Name + "] " + level + " " + message); }
+            public void DebugReturn(DebugLevel level, string message) { Debugs.Add(message); Line("  [" + Name + "] " + level + " " + message); }
             public void OnOperationResponse(OperationResponse r) { _responses.Add(r); }
             public void OnStatusChanged(StatusCode s) { Statuses.Add(s); }
             public void OnEvent(EventData e) { _events.Add(e); }
@@ -311,7 +353,8 @@ namespace ClientE2E
                 foreach (TestPeer p in All)
                     p.Pump();
                 foreach (Platform pl in Platform.AllPlatforms)
-                    pl.Link.Tick();
+                    if (!pl.Paused)
+                        pl.Link.Tick();
                 if (cond())
                     return true;
                 if (sw.ElapsedMilliseconds > ms)
@@ -332,6 +375,7 @@ namespace ClientE2E
             readonly Stopwatch _watch = Stopwatch.StartNew();
             readonly SynchronizationContext _ctx = SynchronizationContext.Current;
             public NakamaLink Link;
+            public bool Paused;
 
             public Platform(NakamaIdentity id)
             {
