@@ -76,10 +76,11 @@ namespace ClientE2E
             Check("dm D: MatchStart", await gd.WaitEvent(e => Ev(e, ClassDM, GMatchStart), 5000) != null, "");
             Check("dm C: sees D join", await gc.WaitEvent(e => Ev(e, ClassDM, GJoin), 5000) != null, "");
 
-            // positions: D at 20 Hz -> C gets aggregated op 83
+            // positions: C (x 0) + D at 20 Hz -> C gets aggregated op 83 (sync needs > 1 sample)
             gc.Clear();
             for (short i = 1; i <= 10; i++)
             {
+                gc.Send(82, ClassDM, GPosition, Args(Position(actorC, 0)));
                 gd.Send(82, ClassDM, GPosition, Args(Position(actorD, i)));
                 await Wait(50);
             }
@@ -102,6 +103,7 @@ namespace ClientE2E
             bool dOk = !gd.Statuses.Any(Dropped) && gd.Peer.PeerState == PeerStateValue.Connected;
             Check("heartbeat: idle 13 s in game room, C + D still connected", cOk && dOk, gc.LastStatus + " / " + gd.LastStatus);
             gc.Clear();
+            gc.Send(82, ClassDM, GPosition, Args(Position(actorC, 0)));
             gd.Send(82, ClassDM, GPosition, Args(Position(actorD, 77)));
             Check("heartbeat: room still live after idle (position sync)", await gc.WaitEvent(e => Ev(e, ClassDM, GPosition) && PosHasX(e), 3000) != null, "");
 
