@@ -3,6 +3,7 @@ using UberStrike.Realtime.Common.IO;
 using Cmune.Realtime.Common;
 using Cmune.Realtime.Common.IO;
 using Cmune.Realtime.Photon.Client;
+using UberStrike.Realtime.NakamaAdapter;
 using UnityEngine;
 
 public class CmuneNetworkConfiguration : MonoSingleton<CmuneNetworkConfiguration>
@@ -67,8 +68,8 @@ public class CmuneNetworkConfiguration : MonoSingleton<CmuneNetworkConfiguration
         }
 #endif
 
-        CmuneNetworkManager.CurrentGameServer = new GameServerView(_localGameServer.Address, PhotonUsageType.All);
-        CmuneNetworkManager.CurrentCommServer = new GameServerView(_localCommServer.Address, PhotonUsageType.CommServer);
+        CmuneNetworkManager.CurrentGameServer = new GameServerView(NakamaServerList.Enabled ? NakamaServerList.GameAddress : _localGameServer.Address, PhotonUsageType.All);
+        CmuneNetworkManager.CurrentCommServer = new GameServerView(NakamaServerList.Enabled ? NakamaServerList.CommAddress : _localCommServer.Address, PhotonUsageType.CommServer);
         CmuneNetworkManager.UseLocalCommServer = _localCommServer.IsEnabled;
     }
 }
