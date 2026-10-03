@@ -244,6 +244,38 @@ namespace NakamaTests
             A.Eq(2, link.SyncRequests, "FetchServerTimestamp -> resync");
         }
 
+        // Go moderation kick: RMI 101 KickFromGame (event 0), then match op 89 notice, then MatchKick (no own leave)
+        [Test]
+        static void ModerationKickRmiThenNoticeDisconnectsListener()
+        {
+            var link = new FakeLink();
+            NakamaPeer peer;
+            PhotonPeerListener l = Connected(link, out peer, "127.0.0.1:20101");
+            Join(l, link, peer, new RoomMetaData(101, "x", "127.0.0.1:20101"), "g.n1", Ack(2, 101, "127.0.0.1:20101"));
+            A.True(l.HasJoinedRoom, "in game");
+
+            var order = new List<string>();
+            l.SetMessageCallback((n, mth, a) => order.Add("rmi " + mth + " " + a[0]));
+            l.SubscribeToEvents(e => order.Add("event " + e.Type));
+
+            byte[] args = RealtimeSerialization.ToBytes("You were kicked from this game!").ToArray();
+            byte[] ev = new byte[3 + args.Length];
+            ev[0] = 100; ev[2] = 101;
+            Buffer.BlockCopy(args, 0, ev, 3, args.Length);
+            link.Deliver("g.n1", 0, ev);
+            link.Deliver("g.n1", NakamaFraming.MatchOpKicked, System.Text.Encoding.UTF8.GetBytes("kicked by a moderator"));
+            Pump(peer);
+
+            A.Eq("rmi 101 You were kicked from this game!", order.FirstOrDefault(), "KickFromGame RMI first");
+            A.Eq(NetworkState.STATE_DISCONNECTED, l.ConnectionState, "STATE_DISCONNECTED");
+            A.Eq(PeerStateValue.Disconnected, l.PeerState, "PeerState 0 ends PhotonClient spin");
+            var q = typeof(PhotonPeerListener).GetField("_connectionEvents", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(l) as Queue<PhotonPeerListener.ConnectionEvent>;
+            A.True(q.Any(e => e.Type == PhotonPeerListener.ConnectionEventType.Disconnected), "Disconnected queued (GameConnectionManager / PhotonClient STOPPED)");
+            A.Eq(0, link.Leaves.Count, "no LeaveMatchAsync: Nakama already dropped the session");
+            A.True(!link.Attached.Contains(peer), "peer detached from the link");
+            A.True(!peer.SendOperation(83, new Dictionary<byte, object> { { 101, (short)100 }, { 100, (byte)89 }, { 103, new byte[0] } }, false), "sends refused after kick");
+        }
+
         [Test]
         static void SocketDropDisconnectsListener()
         {

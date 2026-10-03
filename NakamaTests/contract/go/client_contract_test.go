@@ -10,6 +10,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/TeamUberStrike/photon-migration/nakama/server/go/internal/game"
 	"github.com/TeamUberStrike/photon-migration/nakama/server/go/internal/rmi"
 	"github.com/TeamUberStrike/photon-migration/nakama/server/go/internal/roomcore"
 	"github.com/TeamUberStrike/photon-migration/nakama/server/go/rpc"
@@ -49,6 +50,11 @@ type csVectors struct {
 		Server   string `json:"server"`
 		Hex      string `json:"hex"`
 	} `json:"joinAck"`
+	MatchOps  map[string]int64 `json:"matchOps"`
+	Heartbeat struct {
+		Op  int64  `json:"op"`
+		Hex string `json:"hex"`
+	} `json:"heartbeat"`
 }
 
 func unhex(t *testing.T, s string) []byte {
@@ -127,6 +133,28 @@ func TestClientVectors(t *testing.T) {
 		if got := hex.EncodeToString(j.Bytes()); got != c.Hex {
 			t.Fatalf("join ack Go %s != client layout %s", got, c.Hex)
 		}
+	}
+
+	ops := map[string]int64{
+		"event":           rmi.OpEvent,
+		"gameListInit":    rmi.OpGameListInit,
+		"gameListUpdate":  rmi.OpGameListUpd,
+		"gameListRemoval": rmi.OpGameListDel,
+		"joinAck":         rmi.OpJoinAck,
+		"kicked":          game.OpKicked,
+		"roomLobby":       int64(rmi.RoomLobby),
+		"roomComm":        int64(rmi.RoomComm),
+	}
+	for name, want := range ops {
+		got, ok := v.MatchOps[name]
+		if !ok || got != want {
+			t.Fatalf("match op %s: client %d (sent %v), Go %d", name, got, ok, want)
+		}
+	}
+
+	hb, err := rmi.ParseEnvelope(v.Heartbeat.Op, unhex(t, v.Heartbeat.Hex))
+	if err != nil || v.Heartbeat.Op != rmi.OpToServer || hb.NetworkID != rmi.ClassServerSync || hb.MethodID != roomcore.SyncInitRoom || len(hb.Args) != 0 {
+		t.Fatalf("heartbeat op %d %s -> %+v %v", v.Heartbeat.Op, v.Heartbeat.Hex, hb, err)
 	}
 }
 
