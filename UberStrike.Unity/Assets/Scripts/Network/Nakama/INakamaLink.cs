@@ -35,6 +35,9 @@ namespace UberStrike.Realtime.NakamaAdapter
         // own presence left the match without us asking (MatchKick, match ended)
         void OnMatchLeft(string matchId);
 
+        // joined game room (not lobby 66 / comm 88): link sends the op 82 [2][4] heartbeat
+        bool InGameRoom(string matchId);
+
         // socket gone; byServer = not closed by us
         void OnLinkClosed(bool byServer, string reason);
     }

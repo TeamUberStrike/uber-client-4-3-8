@@ -229,6 +229,7 @@ namespace NakamaTests
         public string Web;
         public readonly List<string> Replaced = new List<string>();
         public readonly List<string> Logs = new List<string>();
+        public readonly List<ISocket> Released = new List<ISocket>();
         public int Clients;
 
         public FakeSocket Socket { get { return Sockets[Sockets.Count - 1]; } }
@@ -242,6 +243,7 @@ namespace NakamaTests
             return s.Socket;
         }
 
+        public void ReleaseSocket(ISocket socket) { Released.Add(socket); }
         public void Post(Action action) { action(); }
         public long NowMs() { return Now; }
         public NakamaIdentity Identity() { return Id; }
@@ -258,10 +260,12 @@ namespace NakamaTests
         public readonly List<Tuple<string, long, byte[]>> Data = new List<Tuple<string, long, byte[]>>();
         public readonly List<string> Left = new List<string>();
         public readonly List<Tuple<bool, string>> Closed = new List<Tuple<bool, string>>();
+        public readonly HashSet<string> GameRooms = new HashSet<string>();
 
         public Action<LinkResult> OnReady { get { return r => Ready.Add(r); } }
         public void OnMatchData(string matchId, long opCode, byte[] data) { Data.Add(Tuple.Create(matchId, opCode, data)); }
         public void OnMatchLeft(string matchId) { Left.Add(matchId); }
+        public bool InGameRoom(string matchId) { return GameRooms.Contains(matchId); }
         public void OnLinkClosed(bool byServer, string reason) { Closed.Add(Tuple.Create(byServer, reason)); }
     }
 }

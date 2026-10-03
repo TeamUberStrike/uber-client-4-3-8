@@ -31,6 +31,7 @@ namespace UberStrike.Realtime.NakamaAdapter
         string _server;
         string _kind = KindGame;
         string _matchId;
+        int _room;
         bool _joining;
         bool _stopped;
         long _bytesIn;
@@ -68,6 +69,7 @@ namespace UberStrike.Realtime.NakamaAdapter
             _server = serverAddress;
             _kind = _kindOf != null ? (_kindOf(serverAddress) ?? KindGame) : KindGame;
             _matchId = null;
+            _room = 0;
             _joining = false;
 
             int gen = _gen;
@@ -181,6 +183,12 @@ namespace UberStrike.Realtime.NakamaAdapter
                 _link.Detach(this);
                 return Status(StatusCode.DisconnectByServerLogic);
             });
+        }
+
+        public bool InGameRoom(string matchId)
+        {
+            return _state == PeerStateValue.Connected && !_joining && matchId != null && matchId == _matchId
+                && _room > 0 && _room != NakamaFraming.RoomLobby && _room != NakamaFraming.RoomComm;
         }
 
         public void OnLinkClosed(bool byServer, string reason)
@@ -315,10 +323,11 @@ namespace UberStrike.Realtime.NakamaAdapter
                 return Response(NakamaFraming.OpJoin, r.ReturnCode, r.Message, null);
             }
 
-            if (r.Number == 88)
+            if (r.Number == NakamaFraming.RoomComm)
                 _kind = KindComm;
-            else if (r.Number == 66)
+            else if (r.Number == NakamaFraming.RoomLobby)
                 _kind = KindLobby;
+            _room = r.Number;
 
             string match = r.MatchId;
             _matchId = match;
@@ -396,6 +405,16 @@ namespace UberStrike.Realtime.NakamaAdapter
                 if (!NakamaFraming.TryParseJoinAck(data, out ack))
                     return Response(NakamaFraming.OpJoin, NakamaFraming.RcTransport, "nakama: bad join ack", null);
                 return Response(NakamaFraming.OpJoin, 0, null, NakamaFraming.JoinParams(ack));
+            }
+
+            if (op == NakamaFraming.MatchOpKicked)
+            {
+                // Nakama never sends the kicked session its own leave: this notice is the kick
+                _matchId = null;
+                _joining = false;
+                _link.Detach(this);
+                Debug(TDebugLevel.WARNING, "kicked: " + NakamaFraming.Utf8(data), false);
+                return Status(StatusCode.DisconnectByServerLogic);
             }
 
             if (_joining)

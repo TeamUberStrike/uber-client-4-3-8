@@ -19,6 +19,9 @@ namespace UberStrike.Realtime.NakamaAdapter
         IClient NewClient(NakamaConfig cfg);
         ISocket NewSocket(IClient client);
 
+        // socket closed and dropped by the link (Unity: destroy its [Nakama Socket] GameObject)
+        void ReleaseSocket(ISocket socket);
+
         // runs socket events on the thread that owns the link (Unity: already main thread)
         void Post(Action action);
 
@@ -41,6 +44,8 @@ namespace UberStrike.Realtime.NakamaAdapter
         public const int NotificationSingleSocket = -7;
         public const int NotificationUserBanned = -8;
         public const int FirstSyncTimeoutMs = 2000;
+        // game match kicks heartbeat members after 10 s silence (Go game.SilenceTicks)
+        public const int HeartbeatMs = 3000;
 
         readonly NakamaConfig _cfg;
         readonly INakamaPlatform _platform;
@@ -48,6 +53,7 @@ namespace UberStrike.Realtime.NakamaAdapter
         readonly HashSet<ILinkPeer> _peers = new HashSet<ILinkPeer>();
         readonly Dictionary<ILinkPeer, Action<LinkResult>> _waiting = new Dictionary<ILinkPeer, Action<LinkResult>>();
         readonly Dictionary<string, ILinkPeer> _routes = new Dictionary<string, ILinkPeer>();
+        readonly HashSet<ISocket> _live = new HashSet<ISocket>();
 
         IClient _client;
         ISession _session;
@@ -58,6 +64,7 @@ namespace UberStrike.Realtime.NakamaAdapter
         bool _connecting;
         bool _pingInFlight;
         long _nextPing;
+        long _nextBeat;
         long _emptySince = -1;
         long _authRetryAt;
         int _authFailures;
@@ -74,6 +81,7 @@ namespace UberStrike.Realtime.NakamaAdapter
         public bool IsReady { get { return _socket != null && _socket.IsConnected && !_connecting; } }
         public bool IsConnecting { get { return _connecting; } }
         public int AttachedPeers { get { return _peers.Count; } }
+        public int LiveSockets { get { return _live.Count; } }
         public int AuthenticatedCmid { get { return _authCmid; } }
         public NakamaClock Clock { get { return _clock; } }
         public ISession Session { get { return _session; } }
@@ -191,6 +199,12 @@ namespace UberStrike.Realtime.NakamaAdapter
             if (!_pingInFlight && now >= _nextPing)
                 Ping();
 
+            if (now >= _nextBeat)
+            {
+                _nextBeat = now + HeartbeatMs;
+                Heartbeat();
+            }
+
             if (_peers.Count == 0 && _emptySince >= 0 && now - _emptySince >= _cfg.CloseGraceMs)
             {
                 _emptySince = -1;
@@ -257,11 +271,12 @@ namespace UberStrike.Realtime.NakamaAdapter
                 }
 
                 socket = _platform.NewSocket(_client);
+                _live.Add(socket);
                 Wire(socket);
                 await socket.ConnectAsync(_session, false, _cfg.ConnectTimeoutSec);
                 if (epoch != _epoch)
                 {
-                    Observe(socket.CloseAsync(), "close stale socket");
+                    CloseAndRelease(socket, "close stale socket");
                     return;
                 }
 
@@ -285,7 +300,7 @@ namespace UberStrike.Realtime.NakamaAdapter
                 if (socket != null && _socket == socket)
                     _socket = null;
                 if (socket != null)
-                    Observe(socket.CloseAsync(), "close failed socket");
+                    CloseAndRelease(socket, "close failed socket");
                 _platform.Warn("[nakama] connect to " + _cfg.Endpoint + " failed (" + result.Failure + "): " + result.Message);
             }
 
@@ -398,6 +413,7 @@ namespace UberStrike.Realtime.NakamaAdapter
 
             _socket = null;
             _platform.Log("[nakama] socket closed by server: " + reason);
+            Release(s);
             DropPeers(true, reason);
 
             if (_waiting.Count > 0 && !_connecting)
@@ -548,8 +564,42 @@ namespace UberStrike.Realtime.NakamaAdapter
             ++_epoch;
             _connecting = false;
             _platform.Log("[nakama] closing socket: " + why);
-            Observe(s.CloseAsync(), "close");
+            CloseAndRelease(s, "close");
             DropPeers(false, why);
+        }
+
+        // op 82 [2][4] to every joined game room
+        void Heartbeat()
+        {
+            List<string> rooms = null;
+            foreach (KeyValuePair<string, ILinkPeer> r in _routes)
+                if (r.Value.InGameRoom(r.Key))
+                    (rooms ?? (rooms = new List<string>())).Add(r.Key);
+            if (rooms != null)
+                foreach (string m in rooms)
+                    Send(m, NakamaFraming.OpToServer, NakamaFraming.Heartbeat());
+        }
+
+        // one ReleaseSocket per NewSocket, after close (continuation on the owner thread)
+        async void CloseAndRelease(ISocket s, string what)
+        {
+            try
+            {
+                await s.CloseAsync();
+            }
+            catch (Exception e)
+            {
+                _platform.Warn("[nakama] " + what + " failed: " + Message(e));
+            }
+            Release(s);
+        }
+
+        void Release(ISocket s)
+        {
+            if (!_live.Remove(s))
+                return;
+            try { _platform.ReleaseSocket(s); }
+            catch (Exception e) { _platform.Warn("[nakama] release socket: " + Message(e)); }
         }
 
         void Observe(Task t, string what)

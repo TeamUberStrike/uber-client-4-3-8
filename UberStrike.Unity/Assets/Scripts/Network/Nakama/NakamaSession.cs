@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using Nakama;
 using UnityEngine;
 using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace UberStrike.Realtime.NakamaAdapter
 {
-    // Game-wide NakamaLink on Unity: UnityWebRequestAdapter, NewSocket(useMainThread: true), Debug log.
+    // Game-wide NakamaLink on Unity: UnityWebRequestAdapter, main-thread UnitySocket (destroyed on release), Debug log.
     public static class NakamaSession
     {
         // Q2: web login token. 4.3.8 login has none yet; the login flow sets this once the web mints one.
@@ -47,6 +48,7 @@ namespace UberStrike.Realtime.NakamaAdapter
         sealed class UnityPlatform : INakamaPlatform
         {
             readonly Stopwatch _watch = Stopwatch.StartNew();
+            readonly Dictionary<ISocket, UnitySocket> _adapters = new Dictionary<ISocket, UnitySocket>();
 
             public IClient NewClient(NakamaConfig cfg)
             {
@@ -55,9 +57,28 @@ namespace UberStrike.Realtime.NakamaAdapter
                 return c;
             }
 
+            // = client.NewSocket(true), keeping the UnitySocket so ReleaseSocket can destroy its GameObject
             public ISocket NewSocket(IClient client)
             {
-                return client.NewSocket(true);
+#if UNITY_WEBGL && !UNITY_EDITOR
+                ISocketAdapter inner = new JsWebSocketAdapter();
+#else
+                ISocketAdapter inner = new WebSocketStdlibAdapter();
+#endif
+                UnitySocket adapter = UnitySocket.Create(inner);
+                ISocket socket = Socket.From(client, adapter);
+                _adapters[socket] = adapter;
+                return socket;
+            }
+
+            public void ReleaseSocket(ISocket socket)
+            {
+                UnitySocket adapter;
+                if (socket == null || !_adapters.TryGetValue(socket, out adapter))
+                    return;
+                _adapters.Remove(socket);
+                if (adapter != null)
+                    UnityEngine.Object.Destroy(adapter.gameObject);
             }
 
             public void Post(Action action)

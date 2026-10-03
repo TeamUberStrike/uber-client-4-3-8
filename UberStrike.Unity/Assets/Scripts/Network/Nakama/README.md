@@ -13,7 +13,7 @@ Photon is gone. `UberStrike.UnitySdk.dll` (uber-server-4-3-8 `nakama-sdk`) drive
 | `NakamaFraming` | byte + JSON framing, BCL only (tests: `/NakamaTests`) |
 | `NakamaClock` | min-RTT offset, slew, int31 server ms |
 | `NakamaConfig` | endpoint, key, dev auth, room address labels |
-| `NakamaServerList` | Play page rows for the node |
+| `NakamaServerList` | Play page rows for the node; comm peer kind by label port (`NakamaConfig.IsCommAddress`) |
 
 ## Run against a node
 
@@ -38,6 +38,7 @@ dev token `dev:<cmid>:<access>:<name>` (`-nakamadev`, node `UBER_DEV_AUTH=true`)
 | op 80/81/82/83 | match data, `[i16 netId][u8 method][i32 target, 80 only][args]` |
 | event 0 / 3,4,5 | match op 0 -> `{101,100,103}`; op 3/4/5 -> `{42:{122\|123: bytes}}` |
 | server time / RTT | RPC `uber_time` every 1 s |
+| liveness in a game room | op 82 `[2][4]` (ServerSyncCenter InitializeRoom no-op) every 3 s; Go kicks after 10 s silence |
 
 ## Errors
 
@@ -46,12 +47,14 @@ dev token `dev:<cmid>:<access>:<name>` (`-nakamadev`, node `UBER_DEV_AUTH=true`)
 | auth rejected (401/403), no token, unreachable, timeout | `ExceptionOnConnect` (auth: backoff 2..30 s) |
 | TLS failure | `SecurityExceptionOnConnect` then `Disconnect` |
 | socket closed by server (`SessionDisconnect`, ban, network) | `DisconnectByServer` on every attached peer |
+| match op 89 kick notice (Go sends it before `MatchKick`; Nakama never sends the kicked session its leave) | `DisconnectByServerLogic` on that peer only |
 | own presence leaves match (`MatchKick`, match end) | `DisconnectByServerLogic` on that peer only |
 | join reject `rc=<n>` | response 88 rc n (1 gone, 2 full, 3 banned, 4 in game) |
 | RPC/transport error | response 66 rc 1 / response 88 rc 5, `DebugMessage` = error |
 | notification `single_socket` (-7) / banned (-8) | `ClientCommCenter.OnDisconnectAndDisablePhoton` (CommRPC 36 path) |
 
 One socket for all peers: a socket drop stops Comm, Lobby and Game together (Comm reconnects every 5 s as before).
+Every socket is released after close (`INakamaPlatform.ReleaseSocket`: Unity destroys its `[Nakama Socket]` GameObject).
 Reconnect reuses the session; expired token -> `SessionRefreshAsync`, then fresh login. Identity = `cmid` from the session vars (Go hook).
 Kill switch unchanged: CommRPC 36 / `CheatDetection` -> `OnDisconnectAndDisablePhoton` -> `IsPhotonEnabled = false` -> no reconnect; socket closes when idle.
 Relays (ops 80/83) are handled in the room's `MatchLoop`: up to one tick (50 ms at 20 Hz) added vs Photon's immediate relay.

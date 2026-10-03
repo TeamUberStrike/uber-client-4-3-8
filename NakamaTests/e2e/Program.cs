@@ -345,6 +345,7 @@ namespace ClientE2E
             }
 
             public ISocket NewSocket(IClient client) { return Socket.From(client, new WebSocketStdlibAdapter()); }
+            public void ReleaseSocket(ISocket socket) { }
             public void Post(Action action) { _ctx.Post(_ => action(), null); }
             public long NowMs() { return _watch.ElapsedMilliseconds; }
             public NakamaIdentity Identity() { return _id; }

@@ -16,6 +16,16 @@ namespace UberStrike.Realtime.NakamaAdapter
         public const byte OpJoin = 88;
         public const byte OpLeave = 89;
 
+        // server -> client match op: kick notice before MatchKick, payload = reason (Go game.OpKicked)
+        public const long MatchOpKicked = 89;
+
+        // ServerSyncCenter InitializeRoom no-op = game room liveness (Go roomcore.SyncInitRoom)
+        public const int RoomLobby = 66;
+        public const int RoomComm = 88;
+
+        public const short ClassServerSync = 2;
+        public const byte SyncInitRoom = 4;
+
         public const byte EvStandard = 0;
         public const byte EvGameListInit = 3;
         public const byte EvGameListUpdate = 4;
@@ -73,6 +83,17 @@ namespace UberStrike.Realtime.NakamaAdapter
                 WriteInt32(b, 3, Get<int>(p, KeyActorId));
             Buffer.BlockCopy(args, 0, b, head, args.Length);
             return b;
+        }
+
+        public static string Utf8(byte[] b)
+        {
+            return b == null || b.Length == 0 ? "" : System.Text.Encoding.UTF8.GetString(b);
+        }
+
+        // op 82 [2][4], no args
+        public static byte[] Heartbeat()
+        {
+            return new byte[] { (byte)ClassServerSync, (byte)(ClassServerSync >> 8), SyncInitRoom };
         }
 
         // match data op 0 -> event 0 {101 short, 100 byte, 103 byte[]}

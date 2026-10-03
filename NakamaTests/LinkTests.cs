@@ -369,6 +369,126 @@ namespace NakamaTests
         }
 
         [Test]
+        static void HeartbeatEvery3sGameRoomsOnly()
+        {
+            var p = new FakePlatform();
+            var a = new LinkPeer();
+            var b = new LinkPeer();
+            NakamaLink link = Ready(p, a);
+            link.Attach(b, "1234", b.OnReady);
+            link.JoinMatch(a, "g1", e => { });
+            link.JoinMatch(b, "lob", e => { });
+            a.GameRooms.Add("g1");
+            Func<int> beats = () => p.Socket.Sent.Count(s => s.Item1 == "g1" && s.Item2 == 82);
+
+            link.Tick();
+            A.Eq(1, beats(), "first beat");
+            A.Bytes(new byte[] { 2, 0, 4 }, p.Socket.Sent.Last().Item3, "op 82 [2][4] no args");
+            A.Eq(0, p.Socket.Sent.Count(s => s.Item1 == "lob"), "no beat to lobby");
+
+            p.Now += NakamaLink.HeartbeatMs - 1;
+            link.Tick();
+            A.Eq(1, beats(), "not before 3 s");
+            p.Now += 1;
+            link.Tick();
+            A.Eq(2, beats(), "every 3 s");
+            for (int i = 0; i < 4; i++)
+            {
+                p.Now += NakamaLink.HeartbeatMs;
+                link.Tick();
+            }
+            A.Eq(6, beats(), "cadence holds");
+            A.True(NakamaLink.HeartbeatMs * 3 < 10000, "3 beats inside the 10 s kick window");
+
+            a.GameRooms.Clear();
+            p.Now += NakamaLink.HeartbeatMs;
+            link.Tick();
+            A.Eq(6, beats(), "left game room: no beat");
+            A.Eq(6, p.Socket.Sent.Count, "nothing else sent");
+        }
+
+        [Test]
+        static void HeartbeatFromRealPeerInGameRoom()
+        {
+            var p = new FakePlatform();
+            var link = new NakamaLink(Cfg(), p);
+            var peer = new NakamaPeer(link);
+            var l = new RecordingListener { Peer = peer };
+            peer.Listener = l;
+            peer.Connect("127.0.0.1:20000", "1234");
+            p.Socket.Open();
+            l.Pump(peer);
+
+            link.Tick();
+            A.Eq(0, p.Socket.Sent.Count, "no room: no beat");
+
+            peer.SendOperation(88, new Dictionary<byte, object> { { 103, new byte[] { 0x67 } }, { 206, 1234 }, { 205, 0 } }, true);
+            p.Socket.LastRpc("uber_room_join").Item3.SetResult(N.Rpc("uber_room_join", "{\"rc\":0,\"match\":\"g.n\",\"number\":101}"));
+            l.Pump(peer);
+            p.Socket.Joins.Single().Item2.SetResult(N.Match("g.n", "sess-9"));
+            p.Now += NakamaLink.HeartbeatMs;
+            link.Tick();
+            A.Eq(0, p.Socket.Sent.Count, "joining: no beat");
+
+            byte[] ack = { 1, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0, 0, 1, 7, 88, 0, 0, 0, 127, 0, 0, 1, 0x78, 0x4e };
+            p.Socket.Deliver(N.State("g.n", 88, ack));
+            l.Pump(peer);
+            p.Now += NakamaLink.HeartbeatMs;
+            link.Tick();
+            A.Eq(1, p.Socket.Sent.Count, "joined game room: beat");
+            A.Bytes(new byte[] { 2, 0, 4 }, p.Socket.Sent[0].Item3, "beat bytes");
+
+            p.Socket.Deliver(N.State("g.n", 89, System.Text.Encoding.UTF8.GetBytes("no data for 10 s")));
+            l.Pump(peer);
+            A.Eq(StatusCode.DisconnectByServerLogic, l.Statuses.Last(), "op 89 over the link");
+            p.Now += NakamaLink.HeartbeatMs;
+            link.Tick();
+            A.Eq(1, p.Socket.Sent.Count, "kicked: no beat");
+        }
+
+        [Test]
+        static void EverySocketReleasedOnceAfterClose()
+        {
+            var p = new FakePlatform();
+            var a = new LinkPeer();
+            NakamaLink link = Ready(p, a);
+            A.Eq(1, link.LiveSockets, "one live");
+
+            p.Socket.ServerClose("gone");
+            A.Eq(1, p.Released.Count, "server close releases");
+            A.True(p.Released[0] == p.Sockets[0].Socket, "the closed one");
+
+            for (int i = 0; i < 3; i++)
+            {
+                var r = new LinkPeer();
+                link.Attach(r, "1234", r.OnReady);
+                p.Socket.ConnectTcs.SetException(new System.Net.Sockets.SocketException(10061));
+                A.Eq(LinkFailure.Unreachable, r.Ready.Single().Failure, "retry " + i + " fails");
+            }
+            A.Eq(4, p.Sockets.Count, "socket per attempt");
+            A.Eq(4, p.Released.Count, "failed attempts released");
+
+            var c = new LinkPeer();
+            link.Attach(c, "1234", c.OnReady);
+            p.Socket.Open();
+            A.True(c.Ready.Single().Ok, "up again");
+            A.Eq(1, link.LiveSockets, "only the live one kept");
+            link.Detach(c);
+            p.Now += link.Config.CloseGraceMs;
+            link.Tick();
+            A.Eq(5, p.Released.Count, "idle close releases");
+
+            var d = new LinkPeer();
+            link.Attach(d, "1234", d.OnReady);
+            p.Socket.Open();
+            link.Shutdown();
+            p.Socket.ServerClose("late close event");
+            A.Eq(6, p.Released.Count, "shutdown releases, late event no double release");
+            A.Eq(p.Sockets.Count, p.Released.Distinct().Count(), "each socket exactly once");
+            A.Eq(0, link.LiveSockets, "none live");
+        }
+
+        [Test]
         static void ShutdownClosesByClient()
         {
             var p = new FakePlatform();

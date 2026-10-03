@@ -426,6 +426,118 @@ namespace NakamaTests
             A.Eq(0, b.Pump(), "leave of another match ignored");
         }
 
+        static Rig Twin(Rig a)
+        {
+            var b = new Rig();
+            b.Link = a.Link;
+            b.Peer = new NakamaPeer(a.Link);
+            b.Peer.Listener = b.L;
+            b.L.Peer = b.Peer;
+            return b;
+        }
+
+        [Test]
+        static void KickNoticeOp89OnlyHitsThatPeer()
+        {
+            var a = new Rig();
+            var b = Twin(a);
+            a.Connected();
+            b.Connected();
+            a.Joined("m1");
+            b.Joined("m2");
+
+            a.Link.Deliver("m1", 89, System.Text.Encoding.UTF8.GetBytes("no data for 10 s"));
+            a.Pump();
+            b.Pump();
+            A.Eq(StatusCode.DisconnectByServerLogic, a.L.Statuses[a.L.Statuses.Count - 1], "op 89 -> DisconnectByServerLogic");
+            A.Eq(PeerStateValue.Disconnected, a.Peer.PeerState, "a down");
+            A.True(a.L.Debug.Exists(d => d.Contains("kicked: no data for 10 s")), "reason logged");
+            A.True(!a.Link.Attached.Contains(a.Peer), "a detached");
+            A.Eq(PeerStateValue.Connected, b.Peer.PeerState, "b untouched");
+            A.True(a.Link.Attached.Contains(b.Peer), "b attached");
+            A.True(!b.L.Statuses.Contains(StatusCode.DisconnectByServerLogic), "b no status");
+
+            b.Peer.OnMatchData("m1", 89, new byte[0]);
+            A.Eq(0, b.Pump(), "op 89 of another match ignored");
+            A.Eq(PeerStateValue.Connected, b.Peer.PeerState, "b still up");
+
+            a.Peer.OnMatchLeft("m1");
+            A.Eq(0, a.Pump(), "later MatchLeave is a no-op");
+
+            b.Link.Deliver("m2", 89, null);
+            b.Pump();
+            A.Eq(StatusCode.DisconnectByServerLogic, b.L.Statuses[b.L.Statuses.Count - 1], "empty reason still kicks");
+        }
+
+        [Test]
+        static void KickNoticeWhileJoining()
+        {
+            var r = new Rig();
+            r.Connected();
+            r.Send(88, JoinParams());
+            r.Link.LastRpc("uber_room_join").Done("{\"rc\":0,\"match\":\"m1\",\"number\":101}", null);
+            r.Pump();
+            r.Link.Deliver("m1", 89, new byte[] { 0x78 });
+            r.Pump();
+            A.Eq(StatusCode.DisconnectByServerLogic, r.L.Statuses[r.L.Statuses.Count - 1], "kick before ack");
+            A.Eq(PeerStateValue.Disconnected, r.Peer.PeerState, "down");
+        }
+
+        [Test]
+        static void InGameRoomOnlyForJoinedGameRooms()
+        {
+            var r = new Rig();
+            A.True(!r.Peer.InGameRoom("m1"), "not connected");
+            r.Connected();
+            r.Send(88, JoinParams());
+            r.Link.LastRpc("uber_room_join").Done("{\"rc\":0,\"match\":\"m1\",\"number\":101}", null);
+            r.Pump();
+            A.True(!r.Peer.InGameRoom("m1"), "not while joining");
+            r.Link.Deliver("m1", 88, Ack88);
+            r.Pump();
+            A.True(r.Peer.InGameRoom("m1"), "game room 101");
+            A.True(!r.Peer.InGameRoom("m2") && !r.Peer.InGameRoom(null), "other match");
+            r.Send(89, new Dictionary<byte, object>());
+            A.True(!r.Peer.InGameRoom("m1"), "after leave");
+
+            var lobby = new Rig();
+            lobby.Connected();
+            lobby.Joined("lob", 66);
+            A.True(!lobby.Peer.InGameRoom("lob"), "lobby 66");
+
+            var comm = new Rig();
+            comm.Connected(CommAddr);
+            comm.Joined("comm", 88);
+            A.True(!comm.Peer.InGameRoom("comm"), "comm 88");
+        }
+
+        [Test]
+        static void PeerKindWithHostnameRoomHost()
+        {
+            NakamaConfig cfg = NakamaConfig.Load("{\"roomHost\":\"rooms.uber.example\",\"roomPortBase\":21000}", new string[0]);
+            A.Eq("rooms.uber.example:21088", cfg.CommServerAddress, "label");
+            A.True(cfg.IsCommAddress("rooms.uber.example:21088"), "as configured");
+            A.True(cfg.IsCommAddress("0.0.0.0:21088"), "sdk lost the hostname (ConnectionAddress.ToInteger)");
+            A.True(cfg.IsCommAddress("127.0.0.1:21088"), "loopback");
+            A.True(!cfg.IsCommAddress("0.0.0.0:21000"), "node row");
+            A.True(!cfg.IsCommAddress("rooms.uber.example:21101"), "game room");
+            A.True(!cfg.IsCommAddress("rooms.uber.example:21066"), "lobby label");
+            A.True(!cfg.IsCommAddress(null) && !cfg.IsCommAddress("") && !cfg.IsCommAddress("nonsense") && !cfg.IsCommAddress("h:x88"), "garbage");
+
+            NakamaConfig local = NakamaConfig.Load("{\"roomHost\":\"localhost\"}", new string[0]);
+            A.True(local.IsCommAddress("127.0.0.1:20088"), "localhost label vs 127.0.0.1 dial");
+
+            var r = new Rig(addr => cfg.IsCommAddress(addr) ? NakamaPeer.KindComm : NakamaPeer.KindGame);
+            r.Connected("0.0.0.0:21088");
+            r.Send(66, new Dictionary<byte, object> { { 100, (byte)21 }, { 61, (short)1 }, { 103, new byte[0] } });
+            A.Eq("comm", (string)NakamaJson.ParseObject(r.Link.LastRpc("uber_op66").Payload)["p"], "comm op 66 before join");
+
+            var g = new Rig(addr => cfg.IsCommAddress(addr) ? NakamaPeer.KindComm : NakamaPeer.KindGame);
+            g.Connected("0.0.0.0:21000");
+            g.Send(66, new Dictionary<byte, object> { { 100, (byte)1 }, { 61, (short)1 }, { 103, new byte[0] } });
+            A.Eq("game", (string)NakamaJson.ParseObject(g.Link.LastRpc("uber_op66").Payload)["p"], "game op 66");
+        }
+
         [Test]
         static void SocketCloseMapping()
         {
