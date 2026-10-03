@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Plain .NET tests for the Nakama adapter, outside the Unity project. See README.md. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net48;net8.0</TargetFrameworks>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+    <PathMap>$(MSBuildThisFileDirectory)..\=/_/</PathMap>
+    <UnityManaged Condition=" '$(UnityManaged)' == '' ">C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\Managed</UnityManaged>
+    <AdapterDir>..\UberStrike.Unity\Assets\Scripts\Network\Nakama\</AdapterDir>
+    <HasUnity Condition=" '$(TargetFramework)' == 'net8.0' and Exists('$(UnityManaged)\UnityEngine.dll') ">true</HasUnity>
+  </PropertyGroup>
+
+  <!-- Unity 2022 UnityEngine.dll is netstandard 2.1: the real-SDK tests run on net8.0 only -->
+  <PropertyGroup Condition=" '$(HasUnity)' == 'true' ">
+    <DefineConstants>$(DefineConstants);UNITY_MANAGED</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(AdapterDir)NakamaFraming.cs" Link="Adapter\NakamaFraming.cs" />
+    <Compile Include="$(AdapterDir)NakamaClock.cs" Link="Adapter\NakamaClock.cs" />
+    <Compile Include="$(AdapterDir)INakamaLink.cs" Link="Adapter\INakamaLink.cs" />
+    <Compile Include="$(AdapterDir)NakamaPeer.cs" Link="Adapter\NakamaPeer.cs" />
+    <Compile Include="$(AdapterDir)NakamaConfig.cs" Link="Adapter\NakamaConfig.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UberStrike.UnitySdk">
+      <HintPath>..\UberStrike.Unity\Assets\Plugins\UberStrike.UnitySdk.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(HasUnity)' == 'true' ">
+    <Reference Include="UnityEngine">
+      <HintPath>$(UnityManaged)\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
