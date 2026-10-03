@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cmune.Core.Models.Views;
 using Cmune.Realtime.Common;
+using UberStrike.Realtime.NakamaAdapter;
 using UnityEngine;
 
 public class GameServerManager : Singleton<GameServerManager>
@@ -77,8 +78,18 @@ public class GameServerManager : Singleton<GameServerManager>
         //return server;
     }
 
+    // Nakama: rooms are labelled host:(base+number), the node row is host:base
+    string NodeRow(string connection)
+    {
+        GameServerView node;
+        if (NakamaServerList.Enabled && _gameServers.TryGetValue(NakamaServerList.GameServerId, out node))
+            return node.ConnectionString;
+        return connection;
+    }
+
     internal string GetServerName(string connection)
     {
+        connection = NodeRow(connection);
         string server = string.Empty;
         foreach (var gs in _gameServers.Values)
         {
@@ -130,6 +141,7 @@ public class GameServerManager : Singleton<GameServerManager>
     /// <returns></returns>
     public int GetServerLatency(string connection)
     {
+        connection = NodeRow(connection);
         foreach (GameServerView info in _gameServers.Values)
         {
             if (info.ConnectionString == connection)
