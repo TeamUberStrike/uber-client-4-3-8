@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.heroiclabs.nakama-unity": "https://github.com/heroiclabs/nakama-unity.git?path=/Packages/Nakama#v3.22.1",
     "com.unity.toolchain.linux-x86_64": "2.0.11",
     "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.11",
     "com.unity.modules.ai": "1.0.0",
