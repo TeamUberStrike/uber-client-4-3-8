@@ -54,7 +54,17 @@ namespace NakamaTests
             NakamaFraming.JoinAck parsed;
             A.True(NakamaFraming.TryParseJoinAck(ack, out parsed) && parsed.ActorId == 7 && parsed.InitRoom, "self-check");
             sb.Append("{\"actor\":7,\"count\":3,\"serverMs\":99,\"init\":true,\"number\":101,\"server\":\"127.0.0.1:20101\",\"hex\":\"").Append(NakamaFraming.Hex(ack)).Append("\"}");
-            sb.Append("\n]\n}\n");
+            sb.Append("\n],\n\"matchOps\":{");
+            sb.Append("\"event\":").Append(NakamaFraming.EvStandard);
+            sb.Append(",\"gameListInit\":").Append(NakamaFraming.EvGameListInit);
+            sb.Append(",\"gameListUpdate\":").Append(NakamaFraming.EvGameListUpdate);
+            sb.Append(",\"gameListRemoval\":").Append(NakamaFraming.EvGameListRemoval);
+            sb.Append(",\"joinAck\":").Append(NakamaFraming.OpJoin);
+            sb.Append(",\"kicked\":").Append(NakamaFraming.MatchOpKicked);
+            sb.Append(",\"roomLobby\":").Append(NakamaFraming.RoomLobby);
+            sb.Append(",\"roomComm\":").Append(NakamaFraming.RoomComm);
+            sb.Append("},\n\"heartbeat\":{\"op\":").Append(NakamaFraming.OpToServer).Append(",\"hex\":\"").Append(NakamaFraming.Hex(NakamaFraming.Heartbeat())).Append("\"}");
+            sb.Append("\n}\n");
 
             File.WriteAllText(path, sb.ToString());
             Console.WriteLine("emitted " + path);
