@@ -15,7 +15,7 @@ namespace ClientE2E
 {
     // Live run: NakamaPeer + NakamaLink (the code the game ships) over nakama-dotnet's stdlib socket
     // against Nakama 3.41.0 + the uber Go module (UBER_DEV_AUTH=true). Single thread, like Unity's main thread.
-    static class Program
+    static partial class Program
     {
         // golden.json (real SDK serializer): RoomMetaData comm 88 / lobby 66, GameMetaData new room, peer spec args
         const string RoomComm = "280e540068006500200043006f006d006d00530065007200760065007200000000000107580000007f000001bf13";
@@ -184,6 +184,9 @@ namespace ClientE2E
             gameB.Peer.Disconnect();
             Check("Disconnect -> StatusCode.Disconnect", await gameB.WaitStatus(StatusCode.Disconnect, 3000) && gameB.Peer.PeerState == PeerStateValue.Disconnected, gameB.LastStatus);
 
+            // S2/S3 real flows: comm chat, lobby list, DM, heartbeat, kick
+            await RealFlows(la, lb, comm, lobby, jl != null && jl.ReturnCode == 0 ? (int)jl.Parameters[9] : -1, actorA, cmidA, cmidB, Hex(roomId));
+
             // bad server key -> auth rejected -> ExceptionOnConnect
             var pbad = new Platform(new NakamaIdentity { Cmid = cmidA + 7, Access = 0, Name = "bad" });
             var cbad = Config();
@@ -288,6 +291,8 @@ namespace ClientE2E
                 await Until(() => { e = _events.FirstOrDefault(match); if (e != null) _events.Remove(e); return e != null; }, ms);
                 return e;
             }
+
+            public void Clear() { _events.Clear(); }
 
             public void Pump()
             {
