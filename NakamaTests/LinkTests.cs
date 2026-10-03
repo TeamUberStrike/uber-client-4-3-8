@@ -220,6 +220,62 @@ namespace NakamaTests
         }
 
         [Test]
+        static void ReconnectRefreshesExpiredSession()
+        {
+            var p = new FakePlatform();
+            p.Client.Next = () => Task.FromResult(N.Session(expired: true));
+            var a = new LinkPeer();
+            NakamaLink link = Ready(p, a);
+            p.Socket.ServerClose("network");
+            var b = new LinkPeer();
+            link.Attach(b, "1234", b.OnReady);
+            A.Eq(1, p.Client.Refreshes, "SessionRefreshAsync");
+            A.Eq(1, p.Client.Auths.Count, "no second login");
+            p.Socket.Open();
+            A.True(b.Ready.Single().Ok, "reconnected on refreshed session");
+        }
+
+        [Test]
+        static void RefreshExpiredOrFailingLogsInAgain()
+        {
+            var p = new FakePlatform();
+            p.Client.Next = () => Task.FromResult(N.Session(expired: true, refreshExpired: true));
+            var a = new LinkPeer();
+            NakamaLink link = Ready(p, a);
+            p.Socket.ServerClose("network");
+            link.Attach(new LinkPeer(), "1234", r => { });
+            A.Eq(0, p.Client.Refreshes, "refresh token expired: no refresh");
+            A.Eq(2, p.Client.Auths.Count, "login again");
+
+            p = new FakePlatform();
+            p.Client.Next = () => Task.FromResult(N.Session(expired: true));
+            p.Client.Refresh = () => Task.FromException<ISession>(new ApiResponseException(401, "refresh token invalid", 16));
+            a = new LinkPeer();
+            link = Ready(p, a);
+            p.Socket.ServerClose("network");
+            link.Attach(new LinkPeer(), "1234", r => { });
+            A.Eq(1, p.Client.Refreshes, "tried refresh");
+            A.Eq(2, p.Client.Auths.Count, "fell back to login");
+        }
+
+        [Test]
+        static void WebTokenIdentityComesFromSessionVars()
+        {
+            var p = new FakePlatform { Web = "web-tok", Id = new NakamaIdentity() };
+            p.Client.Next = () => Task.FromResult(N.Session(varsCmid: 4242));
+            var link = new NakamaLink(Cfg(false), p);
+            var a = new LinkPeer();
+            link.Attach(a, "0", a.OnReady);
+            p.Socket.Open();
+            A.True(a.Ready.Single().Ok, "web token login");
+            A.Eq(4242, link.AuthenticatedCmid, "cmid from server-checked session vars");
+            var b = new LinkPeer();
+            link.Attach(b, "4242", b.OnReady);
+            A.True(b.Ready.Single().Ok, "same identity: no reconnect");
+            A.Eq(1, p.Sockets.Count, "one socket");
+        }
+
+        [Test]
         static void IdleSocketClosesAfterGrace()
         {
             var p = new FakePlatform();

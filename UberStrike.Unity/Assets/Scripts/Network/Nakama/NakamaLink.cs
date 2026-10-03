@@ -220,20 +220,39 @@ namespace UberStrike.Realtime.NakamaAdapter
 
                 NakamaIdentity id = Identity();
                 int cmid = cmidHint > 0 ? cmidHint : id.Cmid;
-                string token = ResolveToken(cmid, id);
 
                 if (_client == null)
                     _client = _platform.NewClient(_cfg);
 
-                if (_session == null || _authCmid != cmid || _session.HasExpired(DateTime.UtcNow.AddMinutes(1)))
+                DateTime soon = DateTime.UtcNow.AddMinutes(1);
+                if (_session != null && (cmid <= 0 || _authCmid == cmid) && _session.HasExpired(soon) && !_session.HasRefreshExpired(soon))
                 {
+                    try
+                    {
+                        ISession refreshed = await _client.SessionRefreshAsync(_session, null, new RetryConfiguration(250, 1));
+                        if (epoch != _epoch)
+                            return;
+                        _session = refreshed;
+                    }
+                    catch (Exception e)
+                    {
+                        _platform.Warn("[nakama] session refresh failed, logging in again: " + Message(e));
+                        _session = null;
+                    }
+                }
+
+                if (_session == null || (cmid > 0 && _authCmid != cmid) || _session.HasExpired(soon))
+                {
+                    if (cmid <= 0)
+                        cmid = _authCmid;
+                    string token = ResolveToken(cmid, id);
                     _session = null;
                     var vars = new Dictionary<string, string> { { "token", token } };
                     ISession session = await _client.AuthenticateCustomAsync(token, null, true, vars, new RetryConfiguration(250, 1));
                     if (epoch != _epoch)
                         return;
                     _session = session;
-                    _authCmid = cmid;
+                    _authCmid = SessionCmid(session, cmid);
                     _authFailures = 0;
                 }
 
@@ -343,6 +362,16 @@ namespace UberStrike.Realtime.NakamaAdapter
         {
             try { return _platform.Identity(); }
             catch (Exception) { return new NakamaIdentity(); }
+        }
+
+        // cmid the Go auth hook put in the session vars (server-checked), else what we asked for
+        static int SessionCmid(ISession s, int fallback)
+        {
+            string v;
+            int cmid;
+            if (s != null && s.Vars != null && s.Vars.TryGetValue("cmid", out v) && int.TryParse(v, out cmid) && cmid > 0)
+                return cmid;
+            return fallback;
         }
 
         static int ParseCmid(string appName)

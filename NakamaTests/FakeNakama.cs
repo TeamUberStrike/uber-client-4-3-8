@@ -75,13 +75,16 @@ namespace NakamaTests
             return Proxy<IApiNotification>.Props(new Dictionary<string, object> { { "Code", code }, { "Subject", subject } });
         }
 
-        public static ISession Session(bool expired = false)
+        public static ISession Session(bool expired = false, bool refreshExpired = false, int varsCmid = 0)
         {
+            IDictionary<string, string> vars = varsCmid > 0 ? new Dictionary<string, string> { { "cmid", varsCmid.ToString() }, { "access", "0" } } : null;
             return Proxy<ISession>.Make((m, a) =>
             {
                 switch (m.Name)
                 {
                     case "HasExpired": return expired;
+                    case "HasRefreshExpired": return refreshExpired;
+                    case "get_Vars": return vars;
                     case "get_AuthToken": return "jwt";
                     case "get_UserId": return "user-1";
                     default: throw new NotImplementedException("ISession." + m.Name);
@@ -192,6 +195,8 @@ namespace NakamaTests
         public readonly IClient Client;
         public readonly List<Tuple<string, Dictionary<string, string>>> Auths = new List<Tuple<string, Dictionary<string, string>>>();
         public Func<Task<ISession>> Next = () => Task.FromResult(N.Session());
+        public Func<Task<ISession>> Refresh = () => Task.FromResult(N.Session());
+        public int Refreshes;
 
         public FakeClient()
         {
@@ -202,6 +207,9 @@ namespace NakamaTests
                     case "AuthenticateCustomAsync":
                         Auths.Add(Tuple.Create((string)a[0], (Dictionary<string, string>)a[3]));
                         return Next();
+                    case "SessionRefreshAsync":
+                        Refreshes++;
+                        return Refresh();
                     case "set_Timeout":
                         return null;
                     default:

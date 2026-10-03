@@ -52,3 +52,6 @@ dev token `dev:<cmid>:<access>:<name>` (`-nakamadev`, node `UBER_DEV_AUTH=true`)
 | notification `single_socket` (-7) / banned (-8) | `ClientCommCenter.OnDisconnectAndDisablePhoton` (CommRPC 36 path) |
 
 One socket for all peers: a socket drop stops Comm, Lobby and Game together (Comm reconnects every 5 s as before).
+Reconnect reuses the session; expired token -> `SessionRefreshAsync`, then fresh login. Identity = `cmid` from the session vars (Go hook).
+Kill switch unchanged: CommRPC 36 / `CheatDetection` -> `OnDisconnectAndDisablePhoton` -> `IsPhotonEnabled = false` -> no reconnect; socket closes when idle.
+Relays (ops 80/83) are handled in the room's `MatchLoop`: up to one tick (50 ms at 20 Hz) added vs Photon's immediate relay.
