@@ -1,12 +1,12 @@
 # NakamaTests
 
 Plain .NET tests for `UberStrike.Unity/Assets/Scripts/Network/Nakama` (outside the Unity project).
-Compiles the BCL-only adapter files (`NakamaFraming`, `NakamaClock`, `INakamaLink`, `NakamaPeer`, `NakamaConfig`)
+Compiles the BCL-only adapter files (`NakamaFraming`, `NakamaClock`, `INakamaLink`, `NakamaPeer`, `NakamaConfig`, `NakamaNodeRows`)
 against `Assets/Plugins/UberStrike.UnitySdk.dll`.
 
 ```
 dotnet build NakamaTests\NakamaTests.csproj -c Release
-NakamaTests\bin\Release\net48\NakamaTests.exe        framing, clock, config, peer contract
+NakamaTests\bin\Release\net48\NakamaTests.exe        framing, clock, config, server list, peer contract
 dotnet NakamaTests\bin\Release\net8.0\NakamaTests.dll + real SDK PhotonPeerListener over NakamaPeer
 ```
 

@@ -44,7 +44,7 @@ namespace NakamaTests
             while (p.DispatchIncomingCommands()) { }
         }
 
-        static PhotonPeerListener Connected(FakeLink link, out NakamaPeer peer, string server = "127.0.0.1:20088")
+        static PhotonPeerListener Connected(FakeLink link, out NakamaPeer peer, string server = "127.0.0.1:7350")
         {
             PhotonPeerListener l = NewListener(link, out peer);
             A.True(l.Connect(server, 1234), "listener Connect");
@@ -95,7 +95,7 @@ namespace NakamaTests
             var link = new FakeLink();
             NakamaPeer peer;
             PhotonPeerListener l = NewListener(link, out peer);
-            A.True(l.Connect("127.0.0.1:20088", 1234), "Connect");
+            A.True(l.Connect("127.0.0.1:7350", 1234), "Connect");
             A.True(l.IsConnecting, "STATE_CONNECTING while link works");
             A.Eq("1234", link.AppNames[0], "cmid as appName");
             link.Complete(peer, LinkResult.Success);
@@ -144,11 +144,11 @@ namespace NakamaTests
             object[] gotArgs = null;
             l.SetMessageCallback((n, mth, a) => { gotNet = n; gotMethod = mth; gotArgs = a; });
 
-            Join(l, link, peer, new RoomMetaData(88, "The CommServer", "127.0.0.1:20088"), "comm.n1", Ack(3, 88, "127.0.0.1:20088"));
+            Join(l, link, peer, new RoomMetaData(88, "The CommServer", "127.0.0.1:7350"), "comm.n1", Ack(3, 88, "127.0.0.1:7350"));
             A.True(l.HasJoinedRoom, "HasJoinedRoom");
             A.Eq(3, l.ActorId, "ActorId from ack");
             A.Eq(88, l.CurrentRoom.Number, "CurrentRoom number");
-            A.Eq("127.0.0.1:20088", l.CurrentRoom.Server, "CurrentRoom label address");
+            A.Eq("127.0.0.1:7350", l.CurrentRoom.Server, "CurrentRoom label address");
 
             byte[] args = RealtimeSerialization.ToBytes(5, "hi").ToArray();
             byte[] ev = new byte[3 + args.Length];
@@ -187,8 +187,8 @@ namespace NakamaTests
         {
             var link = new FakeLink();
             NakamaPeer peer;
-            PhotonPeerListener l = Connected(link, out peer, "127.0.0.1:20000");
-            Join(l, link, peer, new RoomMetaData(66, "The Lobby", "127.0.0.1:20000"), "lobby.n1", Ack(1, 66, "127.0.0.1:20066"));
+            PhotonPeerListener l = Connected(link, out peer, "127.0.0.1:7350");
+            Join(l, link, peer, new RoomMetaData(66, "The Lobby", "127.0.0.1:7350"), "lobby.n1", Ack(1, 66, "127.0.0.1:7350"));
             A.True(l.HasJoinedRoom, "in lobby");
 
             link.Deliver("lobby.n1", 3, A.FromHex(RoomList));

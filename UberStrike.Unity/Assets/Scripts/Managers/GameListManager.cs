@@ -3,7 +3,6 @@ using Cmune.Realtime.Common;
 using Cmune.Realtime.Photon.Client;
 using Cmune.Util;
 using UberStrike.Realtime.Common;
-using UberStrike.Realtime.NakamaAdapter;
 
 public static class GameListManager
 {
@@ -59,7 +58,7 @@ public static class GameListManager
         //update game list
         foreach (GameMetaData room in _gameList.Values)
         {
-            if (NakamaServerList.Enabled || room.ServerConnection == serverConnection)
+            if (room.ServerConnection == serverConnection || GameServerManager.Instance.PhotonServerCount == 1)
                 room.Latency = GameServerManager.Instance.GetServerLatency(room.ServerConnection);
         }
     }

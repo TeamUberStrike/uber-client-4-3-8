@@ -32,7 +32,7 @@ namespace UberStrike.Realtime.NakamaAdapter
 
         public static INetworkPeer CreatePeer()
         {
-            return new NakamaPeer(NakamaSession.Instance, NakamaServerList.KindOf);
+            return new NakamaPeer(NakamaSession.Instance);
         }
 
         public static NakamaConfig LoadConfig()

@@ -234,7 +234,9 @@ namespace NakamaTests
 
         public FakeSocket Socket { get { return Sockets[Sockets.Count - 1]; } }
 
-        public IClient NewClient(NakamaConfig cfg) { Clients++; return Client.Client; }
+        public readonly List<string> Endpoints = new List<string>();
+
+        public IClient NewClient(NakamaConfig cfg) { Clients++; Endpoints.Add(cfg.Endpoint); return Client.Client; }
 
         public ISocket NewSocket(IClient client)
         {

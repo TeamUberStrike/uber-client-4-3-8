@@ -300,6 +300,63 @@ namespace NakamaTests
         }
 
         [Test]
+        static void WebRowRetargetsBeforeAndAfterSocket()
+        {
+            var p = new FakePlatform();
+            NakamaConfig cfg = Cfg();
+            var link = new NakamaLink(cfg, p);
+
+            cfg.ApplyNode("203.0.113.7", 7350, null, "web row #7");
+            link.Retarget();
+            A.True(p.Logs.Contains("[nakama] endpoint http://203.0.113.7:7350 (web row #7)"), "endpoint logged: " + string.Join(" | ", p.Logs));
+            int logs = p.Logs.Count;
+            link.Retarget();
+            A.Eq(logs, p.Logs.Count, "logged once");
+
+            var a = new LinkPeer();
+            link.Attach(a, "1234", a.OnReady);
+            p.Socket.Open();
+            A.True(a.Ready.Single().Ok, "ready");
+            A.Eq("http://203.0.113.7:7350", p.Endpoints.Single(), "first client dials the row");
+
+            // DB port moved while connected: open socket keeps its node
+            cfg.ApplyNode("203.0.113.7", 7450, null, "web row #7");
+            link.Retarget();
+            A.Eq(1, p.Clients, "no new client while the socket is open");
+            A.True(link.IsReady, "still connected");
+
+            link.Detach(a);
+            p.Now += cfg.CloseGraceMs;
+            link.Tick();
+            A.True(!link.IsReady, "idle close");
+
+            var b = new LinkPeer();
+            link.Attach(b, "1234", b.OnReady);
+            A.Eq(2, p.Clients, "new client for the new endpoint");
+            A.Eq("http://203.0.113.7:7450", p.Endpoints[1], "reconnect dials the moved port");
+            A.Eq(2, p.Client.Auths.Count, "session from the old node dropped, fresh login");
+            p.Socket.Open();
+            A.True(b.Ready.Single().Ok, "ready on new port");
+
+            // unused client dropped at once
+            var q = new FakePlatform();
+            NakamaConfig c2 = Cfg();
+            var idle = new NakamaLink(c2, q);
+            var x = new LinkPeer();
+            idle.Attach(x, "1234", x.OnReady);
+            q.Socket.Open();
+            idle.Detach(x);
+            q.Now += c2.CloseGraceMs;
+            idle.Tick();
+            c2.ApplyNode("198.51.100.4", 443, "web.example", "web row #9");
+            idle.Retarget();
+            A.Eq(null, idle.Session, "unused session dropped on retarget");
+            var y = new LinkPeer();
+            idle.Attach(y, "1234", y.OnReady);
+            A.Eq("https://web.example:443", q.Endpoints[1], "443 row -> https web host");
+        }
+
+        [Test]
         static void IdentityChangeReconnects()
         {
             var p = new FakePlatform();
@@ -415,7 +472,7 @@ namespace NakamaTests
             var peer = new NakamaPeer(link);
             var l = new RecordingListener { Peer = peer };
             peer.Listener = l;
-            peer.Connect("127.0.0.1:20000", "1234");
+            peer.Connect("127.0.0.1:7350", "1234");
             p.Socket.Open();
             l.Pump(peer);
 
@@ -508,7 +565,7 @@ namespace NakamaTests
             var l = new RecordingListener { Peer = peer };
             peer.Listener = l;
 
-            A.True(peer.Connect("127.0.0.1:20088", "1234"), "Connect");
+            A.True(peer.Connect("127.0.0.1:7350", "1234"), "Connect");
             p.Socket.Open();
             l.Pump(peer);
             A.Eq(StatusCode.Connect, l.Statuses.Single(), "Connect status after link ready");

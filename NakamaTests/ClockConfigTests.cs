@@ -85,34 +85,48 @@ namespace NakamaTests
     static class ConfigTests
     {
         [Test]
-        static void DefaultsAreQ3()
+        static void Defaults()
         {
             NakamaConfig c = NakamaConfig.Load(null, new string[0]);
             A.Eq("http://127.0.0.1:7350", c.Endpoint, "endpoint");
             A.Eq("defaultkey", c.ServerKey, "key");
             A.Eq(false, c.DevAuth, "dev auth off by default");
-            A.Eq("127.0.0.1:20000", c.GameServerAddress, "game row = Go UBER_ROOM_PORT_BASE");
-            A.Eq("127.0.0.1:20088", c.CommServerAddress, "comm row = base + 88 (Go Address.For(88))");
-            A.Eq(true, c.ReplaceServerList, "replace list");
+            A.Eq(false, c.Pinned, "not pinned: web row decides");
+            A.Eq(false, c.ReplaceServerList, "web list by default");
+            A.Eq("127.0.0.1:7350", c.Label, "label = default endpoint");
             A.Eq("default", c.Source, "source");
+            A.Eq("default", c.Origin, "origin");
         }
 
         [Test]
         static void JsonThenArgs()
         {
-            string json = "{\"scheme\":\"https\",\"host\":\"uber.example\",\"port\":443,\"serverKey\":\"k1\",\"devAuth\":true,\"roomHost\":\"10.0.0.5\",\"roomPortBase\":30000,\"replaceServerList\":false}";
+            string json = "{\"scheme\":\"https\",\"host\":\"uber.example\",\"port\":443,\"serverKey\":\"k1\",\"devAuth\":true,\"roomHost\":\"10.0.0.5\",\"roomPortBase\":30000,\"replaceServerList\":true}";
             NakamaConfig c = NakamaConfig.Load(json, new string[0]);
             A.Eq("https://uber.example:443", c.Endpoint, "json endpoint");
             A.Eq("k1", c.ServerKey, "json key");
             A.Eq(true, c.DevAuth, "json dev");
-            A.Eq("10.0.0.5:30088", c.CommServerAddress, "json rooms");
-            A.Eq(false, c.ReplaceServerList, "json replace");
+            A.Eq(true, c.ReplaceServerList, "json replace");
+            A.Eq(true, c.Pinned, "json host pins");
+            A.Eq("nakama.json", c.Origin, "origin json");
+            A.Eq("127.0.0.1:443", c.Label, "hostname -> loopback label (old roomHost ignored)");
 
             c = NakamaConfig.Load(json, new[] { "UberStrike.exe", "-nakama", "http://192.168.1.9:7350", "-NakamaKey", "k2", "-nakamatoken", "tok" });
             A.Eq("http://192.168.1.9:7350", c.Endpoint, "args win");
             A.Eq("k2", c.ServerKey, "args key");
             A.Eq("tok", c.Token, "token");
             A.Eq("nakama.json + command line", c.Source, "source");
+            A.Eq("command line", c.Origin, "origin args");
+            A.Eq("192.168.1.9:7350", c.Label, "ip label");
+
+            c = NakamaConfig.Load("{\"serverKey\":\"k\",\"devAuth\":true,\"tlsHost\":\"nk.example\"}", new string[0]);
+            A.Eq(false, c.Pinned, "key/dev/tlsHost do not pin");
+            A.Eq("default", c.Origin, "origin stays default");
+            A.Eq("nk.example", c.TlsHost, "tlsHost");
+
+            A.Eq(true, NakamaConfig.Load("{\"endpoint\":\"http://10.1.1.1:7350\"}", null).Pinned, "json endpoint pins");
+            A.Eq(true, NakamaConfig.Load("{\"port\":7351}", null).Pinned, "json port pins");
+            A.Eq(false, NakamaConfig.Load(null, new[] { "-nakama", "bad" }).Pinned, "bad -nakama ignored");
         }
 
         [Test]
@@ -137,7 +151,73 @@ namespace NakamaTests
             A.Eq(true, c.DevAuth, "-nakamadev");
             A.Eq(7350, c.Port, "port fixed");
             A.Eq(100, c.TimePingMs, "ping floor");
-            A.Eq(20000, c.RoomPortBase, "room base fixed");
+        }
+
+        [Test]
+        static void ApplyNodeFromWebRow()
+        {
+            NakamaConfig c = NakamaConfig.Load(null, null);
+            A.True(c.ApplyNode("203.0.113.7", 7350, "web.example", "web row #3"), "7350");
+            A.Eq("http://203.0.113.7:7350", c.Endpoint, "plain port -> http to the row ip");
+            A.Eq("203.0.113.7:7350", c.Label, "label = row");
+            A.Eq("web row #3", c.Origin, "origin");
+
+            A.True(c.ApplyNode("203.0.113.7", 7450, "web.example", "web row #3"), "port moved");
+            A.Eq("http://203.0.113.7:7450", c.Endpoint, "port change in DB -> client follows");
+            A.Eq("203.0.113.7:7450", c.Label, "label follows");
+
+            A.True(c.ApplyNode("203.0.113.7", 443, "web.example", "web row #3"), "443");
+            A.Eq("https://web.example:443", c.Endpoint, "443 -> https, web host name");
+
+            c = NakamaConfig.Load("{\"tlsHost\":\"nk.example\"}", null);
+            c.ApplyNode("203.0.113.7", 443, "web.example", "web row #3");
+            A.Eq("https://nk.example:443", c.Endpoint, "tlsHost beats web host");
+
+            c = NakamaConfig.Load(null, null);
+            c.ApplyNode("203.0.113.7", 443, "198.51.100.2", "web row #3");
+            A.Eq("https://203.0.113.7:443", c.Endpoint, "web url is an ip -> row ip");
+            c.ApplyNode("203.0.113.7", 443, null, "web row #3");
+            A.Eq("https://203.0.113.7:443", c.Endpoint, "no web url -> row ip");
+
+            c = NakamaConfig.Load(null, null);
+            A.True(!c.ApplyNode("rooms.example", 7350, null, "x"), "hostname row rejected");
+            A.True(!c.ApplyNode("0.1.2.3", 7350, null, "x"), "first octet 0");
+            A.True(!c.ApplyNode("1.2.3", 7350, null, "x"), "3 octets");
+            A.True(!c.ApplyNode("1.2.3.4", 0, null, "x"), "port 0");
+            A.True(!c.ApplyNode("1.2.3.4", 70000, null, "x"), "port > 65535");
+            A.Eq("http://127.0.0.1:7350", c.Endpoint, "bad rows change nothing");
+            A.Eq("default", c.Origin, "origin unchanged");
+        }
+
+        [Test]
+        static void DevOverrideBeatsWebRow()
+        {
+            NakamaConfig c = NakamaConfig.Load(null, new[] { "-nakama", "http://10.0.0.9:7350" });
+            A.True(c.ApplyNode("203.0.113.7", 7450, "web.example", "web row #3"), "row accepted");
+            A.Eq("http://10.0.0.9:7350", c.Endpoint, "-nakama pins the dial target");
+            A.Eq("command line", c.Origin, "origin stays");
+            A.Eq("203.0.113.7:7450", c.Label, "room label still = row (node stamps it)");
+
+            c = NakamaConfig.Load("{\"endpoint\":\"https://dev.example:7350\"}", null);
+            c.ApplyNode("203.0.113.7", 443, "web.example", "web row #3");
+            A.Eq("https://dev.example:7350", c.Endpoint, "json endpoint pins");
+
+            c = NakamaConfig.Load("{\"scheme\":\"https\"}", null);
+            A.Eq(false, c.Pinned, "scheme alone does not pin");
+            c.ApplyNode("203.0.113.7", 7350, "web.example", "web row #3");
+            A.Eq("https://web.example:7350", c.Endpoint, "pinned scheme kept, tls -> host name");
+        }
+
+        [Test]
+        static void UrlHostAndIPv4()
+        {
+            A.Eq("web.example", NakamaConfig.UrlHost("http://web.example:5000/UberStrike/"), "host:port/path");
+            A.Eq("web.example", NakamaConfig.UrlHost("https://web.example"), "bare");
+            A.Eq("10.0.0.1", NakamaConfig.UrlHost("http://10.0.0.1/"), "ip");
+            A.Eq(null, NakamaConfig.UrlHost(""), "empty");
+            A.True(NakamaConfig.IsIPv4("127.0.0.1") && NakamaConfig.IsIPv4("255.255.255.255"), "ipv4");
+            A.True(!NakamaConfig.IsIPv4("localhost") && !NakamaConfig.IsIPv4("1.2.3.256") && !NakamaConfig.IsIPv4("1.2.3.4.5")
+                && !NakamaConfig.IsIPv4("1..3.4") && !NakamaConfig.IsIPv4("+1.2.3.4") && !NakamaConfig.IsIPv4(null), "not ipv4");
         }
     }
 }

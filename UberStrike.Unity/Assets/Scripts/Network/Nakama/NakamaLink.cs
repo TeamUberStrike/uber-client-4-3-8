@@ -56,6 +56,8 @@ namespace UberStrike.Realtime.NakamaAdapter
         readonly HashSet<ISocket> _live = new HashSet<ISocket>();
 
         IClient _client;
+        string _clientEndpoint;
+        string _loggedEndpoint;
         ISession _session;
         ISocket _socket;
         string _selfSession;
@@ -218,6 +220,22 @@ namespace UberStrike.Realtime.NakamaAdapter
             CloseSocket("quit");
         }
 
+        // config endpoint changed (web row): unused client/session dropped, open socket keeps its node until it closes
+        public void Retarget()
+        {
+            string ep = _cfg.Endpoint;
+            if (ep != _loggedEndpoint)
+            {
+                _loggedEndpoint = ep;
+                _platform.Log("[nakama] endpoint " + ep + " (" + _cfg.Origin + ")");
+            }
+            if (_client == null || ep == _clientEndpoint || _socket != null || _connecting)
+                return;
+            _client = null;
+            _clientEndpoint = null;
+            _session = null;
+        }
+
         // connect
 
         async void Connect(int cmidHint)
@@ -235,8 +253,13 @@ namespace UberStrike.Realtime.NakamaAdapter
                 NakamaIdentity id = Identity();
                 int cmid = cmidHint > 0 ? cmidHint : id.Cmid;
 
-                if (_client == null)
+                if (_client == null || _clientEndpoint != _cfg.Endpoint)
+                {
+                    if (_client != null)
+                        _session = null;
                     _client = _platform.NewClient(_cfg);
+                    _clientEndpoint = _cfg.Endpoint;
+                }
 
                 DateTime soon = DateTime.UtcNow.AddMinutes(1);
                 if (_session != null && (cmid <= 0 || _authCmid == cmid) && _session.HasExpired(soon) && !_session.HasRefreshExpired(soon))

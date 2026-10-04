@@ -1,50 +1,53 @@
 using Cmune.Core.Models.Views;
-using Cmune.DataCenter.Common.Entities;
+using UberStrike.DataCenter.Common.Entities;
+using UnityEngine;
 
 namespace UberStrike.Realtime.NakamaAdapter
 {
-    // Play page rows for the Nakama node. Addresses are labels (CmuneRoomID needs IPv4:port); peers dial NakamaConfig.
+    // AuthenticateApplication -> endpoint + Play page + comm row. Truth = web DB CommServer row.
     public static class NakamaServerList
     {
-        public const int GameServerId = 1;
-        public const int CommServerId = 2;
-
         static NakamaConfig Cfg
         {
             get { return NakamaConfig.Current ?? (NakamaConfig.Current = NakamaBootstrap.LoadConfig()); }
         }
 
-        public static bool Enabled { get { return Cfg.ReplaceServerList; } }
-        public static string GameAddress { get { return Cfg.GameServerAddress; } }
-        public static string CommAddress { get { return Cfg.CommServerAddress; } }
+        // placeholder CmuneRoomID address until the web row arrives
+        public static string Label { get { return Cfg.Label; } }
 
-        public static PhotonView GameServer()
+        public static void Apply(AuthenticateApplicationView ev)
         {
-            return new PhotonView
+            NakamaConfig cfg = Cfg;
+#if UNITY_ANDROID || UNITY_IPHONE
+            const bool mobile = true;
+#else
+            const bool mobile = false;
+#endif
+            NakamaNodeRows rows = null;
+            if (!cfg.ReplaceServerList)
             {
-                PhotonId = GameServerId,
-                IP = Cfg.RoomHost,
-                Port = Cfg.RoomPortBase,
-                Name = "Nakama " + Cfg.Host + ":" + Cfg.Port,
-                UsageType = PhotonUsageType.All,
-            };
-        }
+                rows = NakamaNodeRows.Pick(ev != null ? ev.CommServer : null, ev != null ? ev.GameServers : null, mobile);
+                foreach (string w in rows.Warnings)
+                    Debug.LogWarning("[nakama] " + w);
+                if (rows.Node == null)
+                {
+                    Debug.LogError("[nakama] " + rows.Error + ". Fix the PhotonServers row. Using " + cfg.Endpoint + " (" + cfg.Origin + ")");
+                    rows = null;
+                }
+                else if (!cfg.ApplyNode(rows.Node.IP, rows.Node.Port, NakamaConfig.UrlHost(global::UberStrike.WebService.Unity.Configuration.WebserviceBaseUrl), "web row #" + rows.Node.PhotonId))
+                {
+                    Debug.LogError("[nakama] bad node row " + rows.Address);
+                    rows = null;
+                }
+            }
+            if (rows == null)
+                rows = NakamaNodeRows.FromConfig(cfg);
 
-        public static PhotonView CommServer()
-        {
-            return new PhotonView
-            {
-                PhotonId = CommServerId,
-                IP = Cfg.RoomHost,
-                Port = Cfg.RoomPortBase + 88,
-                Name = "Nakama Comm " + Cfg.Host + ":" + Cfg.Port,
-                UsageType = PhotonUsageType.CommServer,
-            };
-        }
+            NakamaSession.Instance.Retarget();
 
-        public static string KindOf(string server)
-        {
-            return Cfg.IsCommAddress(server) ? NakamaPeer.KindComm : NakamaPeer.KindGame;
+            foreach (PhotonView v in rows.Game)
+                GameServerManager.Instance.AddGameServer(v);
+            CmuneNetworkManager.CurrentCommServer = new GameServerView(rows.Node);
         }
     }
 }

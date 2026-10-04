@@ -7,8 +7,9 @@ namespace NakamaTests
 {
     static class PeerTests
     {
-        const string GameAddr = "127.0.0.1:20000";
-        const string CommAddr = "127.0.0.1:20088";
+        // node row = every room's address (comm, lobby, games)
+        const string GameAddr = "127.0.0.1:7350";
+        const string CommAddr = GameAddr;
 
         static readonly byte[] Ack88 = { 3, 0, 0, 0, 2, 0, 0, 0, 4, 3, 2, 1, 0, 1, 7, 88, 0, 0, 0, 127, 0, 0, 1, 0x78, 0x4e };
 
@@ -18,9 +19,9 @@ namespace NakamaTests
             public RecordingListener L = new RecordingListener();
             public NakamaPeer Peer;
 
-            public Rig(Func<string, string> kindOf = null)
+            public Rig()
             {
-                Peer = new NakamaPeer(Link, kindOf);
+                Peer = new NakamaPeer(Link);
                 Peer.Listener = L;
                 L.Peer = Peer;
             }
@@ -512,30 +513,40 @@ namespace NakamaTests
         }
 
         [Test]
-        static void PeerKindWithHostnameRoomHost()
+        static void KindByJoinNotAddress()
         {
-            NakamaConfig cfg = NakamaConfig.Load("{\"roomHost\":\"rooms.uber.example\",\"roomPortBase\":21000}", new string[0]);
-            A.Eq("rooms.uber.example:21088", cfg.CommServerAddress, "label");
-            A.True(cfg.IsCommAddress("rooms.uber.example:21088"), "as configured");
-            A.True(cfg.IsCommAddress("0.0.0.0:21088"), "sdk lost the hostname (ConnectionAddress.ToInteger)");
-            A.True(cfg.IsCommAddress("127.0.0.1:21088"), "loopback");
-            A.True(!cfg.IsCommAddress("0.0.0.0:21000"), "node row");
-            A.True(!cfg.IsCommAddress("rooms.uber.example:21101"), "game room");
-            A.True(!cfg.IsCommAddress("rooms.uber.example:21066"), "lobby label");
-            A.True(!cfg.IsCommAddress(null) && !cfg.IsCommAddress("") && !cfg.IsCommAddress("nonsense") && !cfg.IsCommAddress("h:x88"), "garbage");
+            var c = new Rig();
+            c.Connected(CommAddr);
+            A.Eq(NakamaPeer.KindGame, c.Peer.Kind, "pre-join = game (comm shares the node address)");
+            c.Send(66, new Dictionary<byte, object> { { 100, (byte)1 }, { 61, (short)1 }, { 103, new byte[0] } });
+            A.Eq("game", (string)NakamaJson.ParseObject(c.Link.LastRpc("uber_op66").Payload)["p"], "pre-join probe op 66 = game");
+            c.Joined("comm", 88);
+            A.Eq(NakamaPeer.KindComm, c.Peer.Kind, "join 88 -> comm");
+            c.Send(66, new Dictionary<byte, object> { { 100, (byte)21 }, { 61, (short)2 }, { 103, new byte[0] } });
+            A.Eq("comm", (string)NakamaJson.ParseObject(c.Link.LastRpc("uber_op66").Payload)["p"], "comm op 66 after join");
 
-            NakamaConfig local = NakamaConfig.Load("{\"roomHost\":\"localhost\"}", new string[0]);
-            A.True(local.IsCommAddress("127.0.0.1:20088"), "localhost label vs 127.0.0.1 dial");
+            var l = new Rig();
+            l.Connected("10.20.30.40:7450");
+            A.Eq(NakamaPeer.KindGame, l.Peer.Kind, "any address: game");
+            l.Joined("lob", 66);
+            A.Eq(NakamaPeer.KindLobby, l.Peer.Kind, "join 66 -> lobby");
 
-            var r = new Rig(addr => cfg.IsCommAddress(addr) ? NakamaPeer.KindComm : NakamaPeer.KindGame);
-            r.Connected("0.0.0.0:21088");
-            r.Send(66, new Dictionary<byte, object> { { 100, (byte)21 }, { 61, (short)1 }, { 103, new byte[0] } });
-            A.Eq("comm", (string)NakamaJson.ParseObject(r.Link.LastRpc("uber_op66").Payload)["p"], "comm op 66 before join");
+            var g = new Rig();
+            g.Connected();
+            g.Joined("m9", 101);
+            A.Eq(NakamaPeer.KindGame, g.Peer.Kind, "join 101 -> game");
+        }
 
-            var g = new Rig(addr => cfg.IsCommAddress(addr) ? NakamaPeer.KindComm : NakamaPeer.KindGame);
-            g.Connected("0.0.0.0:21000");
-            g.Send(66, new Dictionary<byte, object> { { 100, (byte)1 }, { 61, (short)1 }, { 103, new byte[0] } });
-            A.Eq("game", (string)NakamaJson.ParseObject(g.Link.LastRpc("uber_op66").Payload)["p"], "game op 66");
+        [Test]
+        static void RoundTripTimeClamp()
+        {
+            var r = new Rig();
+            r.Link.RoundTripTime = 0;
+            A.Eq(0, r.Peer.RoundTripTime, "disconnected: raw 0");
+            r.Connected();
+            A.Eq(1, r.Peer.RoundTripTime, "connected: >= 1 (GetBestServer skips 0)");
+            r.Link.RoundTripTime = 42;
+            A.Eq(42, r.Peer.RoundTripTime, "real rtt");
         }
 
         [Test]
@@ -624,20 +635,6 @@ namespace NakamaTests
             A.True(!r.Link.Attached.Contains(r.Peer), "detached");
             r.Pump();
             A.True(!r.Peer.Connect(GameAddr, "1"), "no reconnect after StopThread");
-        }
-
-        [Test]
-        static void PeerKind()
-        {
-            var r = new Rig(addr => addr == CommAddr ? NakamaPeer.KindComm : NakamaPeer.KindGame);
-            r.Connected(CommAddr);
-            r.Send(66, new Dictionary<byte, object> { { 100, (byte)21 }, { 61, (short)1 }, { 103, new byte[0] } });
-            A.Eq("comm", (string)NakamaJson.ParseObject(r.Link.LastRpc("uber_op66").Payload)["p"], "comm by address");
-
-            var l = new Rig();
-            l.Connected();
-            l.Joined("lob", 66);
-            A.Eq(NakamaPeer.KindLobby, l.Peer.Kind, "room 66 -> lobby");
         }
 
         [Test]

@@ -72,13 +72,13 @@ namespace ClientE2E
             // S1: connect, peer spec, server load, clock
             var comm = new TestPeer("A comm", la);
             var sw = Stopwatch.StartNew();
-            Check("connect: Connect status", comm.Connect("127.0.0.1:20088", cmidA) && await comm.WaitStatus(StatusCode.Connect, 15000), comm.LastStatus);
+            Check("connect: Connect status", comm.Connect("127.0.0.1:7350", cmidA) && await comm.WaitStatus(StatusCode.Connect, 15000), comm.LastStatus);
             Line("  connect (auth + socket + first uber_time): " + sw.ElapsedMilliseconds + " ms");
             Check("connect: clock synced", la.Clock.Synced, "samples " + la.Clock.Samples);
 
             var probe = new TestPeer("A probe", la);
             sw.Restart();
-            Check("probe: shares socket", probe.Connect("127.0.0.1:20000", 0) && await probe.WaitStatus(StatusCode.Connect, 3000), probe.LastStatus);
+            Check("probe: shares socket", probe.Connect("127.0.0.1:7350", 0) && await probe.WaitStatus(StatusCode.Connect, 3000), probe.LastStatus);
             Line("  second peer on shared socket: " + sw.ElapsedMilliseconds + " ms");
 
             OperationResponse spec = await probe.Op66(1, Hex(PeerSpec));
@@ -108,20 +108,20 @@ namespace ClientE2E
             Check("op82 register with spoofed actor id -> ignored (Q5)", none == null, "");
 
             var lobby = new TestPeer("A lobby", la);
-            Check("lobby: connect", lobby.Connect("127.0.0.1:20000", cmidA) && await lobby.WaitStatus(StatusCode.Connect, 3000), lobby.LastStatus);
+            Check("lobby: connect", lobby.Connect("127.0.0.1:7350", cmidA) && await lobby.WaitStatus(StatusCode.Connect, 3000), lobby.LastStatus);
             OperationResponse jl = await lobby.Join(Hex(RoomLobby));
             Check("op88 lobby 66: joined", jl != null && jl.ReturnCode == 0 && lobby.Peer.Kind == NakamaPeer.KindLobby, Describe(jl));
 
             // S3 plumbing: create a game, second user finds it via RoomRequest and joins, relays
             var gameA = new TestPeer("A game", la);
-            Check("game A: connect", gameA.Connect("127.0.0.1:20000", cmidA) && await gameA.WaitStatus(StatusCode.Connect, 3000), gameA.LastStatus);
+            Check("game A: connect", gameA.Connect("127.0.0.1:7350", cmidA) && await gameA.WaitStatus(StatusCode.Connect, 3000), gameA.LastStatus);
             OperationResponse jg = await gameA.Join(Hex(GameCreate));
             int number = jg != null && jg.ReturnCode == 0 ? NakamaFraming.ReadInt32((byte[])jg.Parameters[4], 2) : -1;
             int gameActorA = jg != null && jg.ReturnCode == 0 ? (int)jg.Parameters[9] : -1;
             Check("op88 room 0 creates a game (number >= 101)", number >= 101, Describe(jg) + " number " + number);
 
             var gameB = new TestPeer("B game", lb);
-            Check("game B: second user connects", gameB.Connect("127.0.0.1:20000", cmidB) && await gameB.WaitStatus(StatusCode.Connect, 15000), gameB.LastStatus);
+            Check("game B: second user connects", gameB.Connect("127.0.0.1:7350", cmidB) && await gameB.WaitStatus(StatusCode.Connect, 15000), gameB.LastStatus);
             OperationResponse rr = await gameB.Op66(21, Tagged(number));
             byte[] meta = rr != null && rr.Parameters.ContainsKey(42) ? (byte[])rr.Parameters[42] : null;
             Check("op66/21 RoomRequest -> tagged GameMetaData", rr != null && rr.ReturnCode == 0 && meta != null && meta[0] == 0x67, Describe(rr));
@@ -132,7 +132,7 @@ namespace ClientE2E
             Check("B sees same room number", jb != null && jb.ReturnCode == 0 && NakamaFraming.ReadInt32((byte[])jb.Parameters[4], 2) == number, "");
 
             var other = new TestPeer("A game2", la);
-            Check("game2: connect", other.Connect("127.0.0.1:20000", cmidA) && await other.WaitStatus(StatusCode.Connect, 3000), other.LastStatus);
+            Check("game2: connect", other.Connect("127.0.0.1:7350", cmidA) && await other.WaitStatus(StatusCode.Connect, 3000), other.LastStatus);
             OperationResponse j2 = await other.Join(Hex(GameCreate));
             Check("join a 2nd game while in one -> rc 4 (MatchJoinAttempt reason rc=4)", j2 != null && j2.ReturnCode == 4, Describe(j2));
             other.Peer.Disconnect();
@@ -183,7 +183,7 @@ namespace ClientE2E
             var lm = new NakamaLink(Config(), pm);
             pm.Link = lm;
             var mod = new TestPeer("mod", lm);
-            Check("moderator: connect", mod.Connect("127.0.0.1:20000", cmidA + 3) && await mod.WaitStatus(StatusCode.Connect, 15000), mod.LastStatus);
+            Check("moderator: connect", mod.Connect("127.0.0.1:7350", cmidA + 3) && await mod.WaitStatus(StatusCode.Connect, 15000), mod.LastStatus);
             OperationResponse kick = await mod.Op66(22, Tagged(cmidB, number, 0));
             Check("op66/22 moderator kicks B (access 4)", kick != null && kick.ReturnCode == 0, Describe(kick));
             sw.Restart();
@@ -196,7 +196,7 @@ namespace ClientE2E
             Check("A not kicked", gameA.Peer.PeerState == PeerStateValue.Connected && !gameA.Statuses.Contains(StatusCode.DisconnectByServerLogic), gameA.LastStatus);
 
             gameB = new TestPeer("B game again", lb);
-            Check("kick is not a ban: B reconnects", gameB.Connect("127.0.0.1:20000", cmidB) && await gameB.WaitStatus(StatusCode.Connect, 15000), gameB.LastStatus);
+            Check("kick is not a ban: B reconnects", gameB.Connect("127.0.0.1:7350", cmidB) && await gameB.WaitStatus(StatusCode.Connect, 15000), gameB.LastStatus);
             jb = await gameB.Join(meta ?? new byte[] { 0 });
             Check("kick is not a ban: B rejoins A's game", jb != null && jb.ReturnCode == 0 && NakamaFraming.ReadInt32((byte[])jb.Parameters[4], 2) == number, Describe(jb));
 
@@ -205,7 +205,7 @@ namespace ClientE2E
             var lc = new NakamaLink(Config(), pc);
             pc.Link = lc;
             var quiet = new TestPeer("C game", lc);
-            Check("quiet C: connect", quiet.Connect("127.0.0.1:20000", cmidA + 5) && await quiet.WaitStatus(StatusCode.Connect, 15000), quiet.LastStatus);
+            Check("quiet C: connect", quiet.Connect("127.0.0.1:7350", cmidA + 5) && await quiet.WaitStatus(StatusCode.Connect, 15000), quiet.LastStatus);
             OperationResponse jq = await quiet.Join(Hex(GameCreate));
             Check("quiet C: creates a game", jq != null && jq.ReturnCode == 0, Describe(jq));
             await Wait(NakamaLink.HeartbeatMs + 500);
@@ -233,7 +233,7 @@ namespace ClientE2E
             var lbad = new NakamaLink(cbad, pbad);
             pbad.Link = lbad;
             var bad = new TestPeer("bad key", lbad);
-            Check("wrong server key -> ExceptionOnConnect", bad.Connect("127.0.0.1:20000", cmidA + 7) && await bad.WaitStatus(StatusCode.ExceptionOnConnect, 15000), bad.LastStatus);
+            Check("wrong server key -> ExceptionOnConnect", bad.Connect("127.0.0.1:7350", cmidA + 7) && await bad.WaitStatus(StatusCode.ExceptionOnConnect, 15000), bad.LastStatus);
 
             la.Shutdown();
             lb.Shutdown();

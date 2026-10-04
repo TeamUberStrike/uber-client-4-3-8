@@ -68,8 +68,9 @@ public class CmuneNetworkConfiguration : MonoSingleton<CmuneNetworkConfiguration
         }
 #endif
 
-        CmuneNetworkManager.CurrentGameServer = new GameServerView(NakamaServerList.Enabled ? NakamaServerList.GameAddress : _localGameServer.Address, PhotonUsageType.All);
-        CmuneNetworkManager.CurrentCommServer = new GameServerView(NakamaServerList.Enabled ? NakamaServerList.CommAddress : _localCommServer.Address, PhotonUsageType.CommServer);
+        // placeholder until AuthenticateApplication (NakamaServerList.Apply)
+        CmuneNetworkManager.CurrentGameServer = new GameServerView(NakamaServerList.Label, PhotonUsageType.All);
+        CmuneNetworkManager.CurrentCommServer = new GameServerView(NakamaServerList.Label, PhotonUsageType.CommServer);
         CmuneNetworkManager.UseLocalCommServer = _localCommServer.IsEnabled;
     }
 }

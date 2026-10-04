@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Cmune.Core.Models.Views;
 using Cmune.Realtime.Common;
-using UberStrike.Realtime.NakamaAdapter;
 using UnityEngine;
 
 public class GameServerManager : Singleton<GameServerManager>
@@ -78,12 +77,13 @@ public class GameServerManager : Singleton<GameServerManager>
         //return server;
     }
 
-    // Nakama: rooms are labelled host:(base+number), the node row is host:base
+    // Nakama: one node row. Exact match, else the single row (old node labels).
     string NodeRow(string connection)
     {
-        GameServerView node;
-        if (NakamaServerList.Enabled && _gameServers.TryGetValue(NakamaServerList.GameServerId, out node))
-            return node.ConnectionString;
+        if (_gameServers.Count != 1)
+            return connection;
+        foreach (GameServerView gs in _gameServers.Values)
+            return gs.ConnectionString;
         return connection;
     }
 

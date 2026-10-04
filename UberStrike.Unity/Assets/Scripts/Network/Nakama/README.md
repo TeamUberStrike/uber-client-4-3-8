@@ -12,16 +12,32 @@ Photon is gone. `UberStrike.UnitySdk.dll` (uber-server-4-3-8 `nakama-sdk`) drive
 | `NakamaPeer` | one per `PhotonClient` (Comm, Lobby, Game, probes); Photon op/status/event semantics |
 | `NakamaFraming` | byte + JSON framing, BCL only (tests: `/NakamaTests`) |
 | `NakamaClock` | min-RTT offset, slew, int31 server ms |
-| `NakamaConfig` | endpoint, key, dev auth, room address labels |
-| `NakamaServerList` | Play page rows for the node; comm peer kind by label port (`NakamaConfig.IsCommAddress`) |
+| `NakamaConfig` | endpoint, key, dev auth; `ApplyNode` = web row -> dial target |
+| `NakamaNodeRows` | web rows -> node + Play page rows (no UnityEngine, tests) |
+| `NakamaServerList` | `Apply(AuthenticateApplicationView)`: endpoint, Play page, comm row |
 
-## Run against a node
+## Endpoint
+
+Truth = web DB `PhotonServers` CommServer row (UsageType 6) in the group of the client's `ApplicationVersions` row.
+`AuthenticateApplication` -> `NakamaServerList.Apply`:
+
+- dial `IP:Port` of the row; port 443 = https/wss to `tlsHost`, else the web URL host name, else the row IP
+- Play page = game rows at the same `IP:Port`, else one clone of the row; rows at other addresses skipped (warning)
+- every `CmuneRoomID` = row `IP:Port`; rooms told apart by number. Peer kind = game until join (88 comm, 66 lobby)
+- no valid row -> error log, config endpoint used
+
+Change host/port: fix the row (admin Deployment > Photons or `setNakamaEndpoint.sql`), recycle the web app pool.
+Node side + full knob list: photon-migration `nakama/CONFIG.md`.
+
+## Dev overrides (not for release)
 
 Defaults: `http://127.0.0.1:7350`, key `defaultkey`, no dev auth.
 
-- command line: `-nakama https://host:7350 -nakamakey <key>`; dev login `-nakamadev`; web token `-nakamatoken <t>`
-- or `StreamingAssets/nakama.json`: `{"endpoint":"http://host:7350","serverKey":"...","devAuth":false,"roomHost":"127.0.0.1","roomPortBase":20000}`
-- `roomHost`/`roomPortBase` = Go `UBER_ROOM_HOST`/`UBER_ROOM_PORT_BASE` (IPv4 labels in `CmuneRoomID`, never dialed)
+- command line: `-nakama https://host:7350` (pins the dial target, DB row ignored), `-nakamakey <key>`, dev login `-nakamadev`, web token `-nakamatoken <t>`
+- or `StreamingAssets/nakama.json`: `{"endpoint":"http://host:7350","serverKey":"...","devAuth":false,"tlsHost":"nk.example","replaceServerList":false}`
+- `endpoint`/`host`/`port` pin the dial target; `scheme` alone only fixes the scheme; `tlsHost` = TLS name for a 443 row
+- `replaceServerList: true` = Play page from config, no DB row needed
+- `roomHost`/`roomPortBase` gone (ignored)
 
 Login (Q2): custom id = token, `vars.token` = token. Token source order: `NakamaSession.TokenProvider`,
 dev token `dev:<cmid>:<access>:<name>` (`-nakamadev`, node `UBER_DEV_AUTH=true`), `NakamaSession.WebToken`, `-nakamatoken`.

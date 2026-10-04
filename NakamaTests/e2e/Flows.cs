@@ -23,7 +23,7 @@ namespace ClientE2E
             Check("comm A: CommRPC Join -> FullList", await CommJoin(commA, actorA, cmidA, "e2e A", Hex(roomIdComm)), "");
 
             var commB = new TestPeer("B comm", lb);
-            Check("comm B: connect", commB.Connect("127.0.0.1:20088", cmidB) && await commB.WaitStatus(StatusCode.Connect, 5000), commB.LastStatus);
+            Check("comm B: connect", commB.Connect("127.0.0.1:7350", cmidB) && await commB.WaitStatus(StatusCode.Connect, 5000), commB.LastStatus);
             OperationResponse jcb = await commB.Join(Hex(RoomComm));
             int actorB = jcb != null && jcb.ReturnCode == 0 ? (int)jcb.Parameters[9] : -1;
             Check("comm B: joined comm 88", actorB > 0 && actorB != actorA, Describe(jcb));
@@ -54,8 +54,8 @@ namespace ClientE2E
             NakamaLink ld = NewLink(cmidD, 0, "e2e D");
             var gc = new TestPeer("C dm", lc);
             var gd = new TestPeer("D dm", ld);
-            Check("dm C: connect", gc.Connect("127.0.0.1:20000", cmidC) && await gc.WaitStatus(StatusCode.Connect, 15000), gc.LastStatus);
-            Check("dm D: connect", gd.Connect("127.0.0.1:20000", cmidD) && await gd.WaitStatus(StatusCode.Connect, 15000), gd.LastStatus);
+            Check("dm C: connect", gc.Connect("127.0.0.1:7350", cmidC) && await gc.WaitStatus(StatusCode.Connect, 15000), gc.LastStatus);
+            Check("dm D: connect", gd.Connect("127.0.0.1:7350", cmidD) && await gd.WaitStatus(StatusCode.Connect, 15000), gd.LastStatus);
 
             string name = "e2e dm " + DateTime.UtcNow.Ticks % 1000000;
             OperationResponse jc = await gc.Join(GameMeta(name, 0));
@@ -109,14 +109,14 @@ namespace ClientE2E
 
             // moderation: non-mod refused, mod kick -> op 89 -> DisconnectByServerLogic on D only
             var probeC = new TestPeer("C probe", lc);
-            Check("probe C: connect", probeC.Connect("127.0.0.1:20000", cmidC) && await probeC.WaitStatus(StatusCode.Connect, 3000), probeC.LastStatus);
+            Check("probe C: connect", probeC.Connect("127.0.0.1:7350", cmidC) && await probeC.WaitStatus(StatusCode.Connect, 3000), probeC.LastStatus);
             OperationResponse deny = await probeC.Op66(22, Args(cmidD, number, 0));
             Check("op66/22 kick by non-moderator -> rc 1", deny != null && deny.ReturnCode == 1, Describe(deny));
 
             int cmidM = cmidA + 400000;
             NakamaLink lm = NewLink(cmidM, 4, "e2e mod");
             var mod = new TestPeer("mod", lm);
-            Check("mod: connect", mod.Connect("127.0.0.1:20000", cmidM) && await mod.WaitStatus(StatusCode.Connect, 15000), mod.LastStatus);
+            Check("mod: connect", mod.Connect("127.0.0.1:7350", cmidM) && await mod.WaitStatus(StatusCode.Connect, 15000), mod.LastStatus);
             gc.Clear();
             OperationResponse kick = await mod.Op66(22, Args(cmidD, number, 0));
             Check("op66/22 moderator kick -> rc 0", kick != null && kick.ReturnCode == 0, Describe(kick));

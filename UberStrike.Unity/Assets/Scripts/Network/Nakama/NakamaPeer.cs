@@ -23,7 +23,6 @@ namespace UberStrike.Realtime.NakamaAdapter
         }
 
         readonly INakamaLink _link;
-        readonly Func<string, string> _kindOf;
         readonly ConcurrentQueue<Item> _queue = new ConcurrentQueue<Item>();
 
         volatile int _gen;
@@ -38,17 +37,18 @@ namespace UberStrike.Realtime.NakamaAdapter
         long _bytesOut;
         int _inFlight;
 
-        public NakamaPeer(INakamaLink link, Func<string, string> kindOf = null)
+        // every room shares the node address; kind = game until the join reply (88 comm, 66 lobby)
+        public NakamaPeer(INakamaLink link)
         {
             if (link == null)
                 throw new ArgumentNullException("link");
             _link = link;
-            _kindOf = kindOf;
         }
 
         public INetworkPeerListener Listener { get; set; }
         public PeerStateValue PeerState { get { return _state; } }
-        public int RoundTripTime { get { return _link.RoundTripTime; } }
+        // >= 1 while connected: GetBestServer skips latency 0
+        public int RoundTripTime { get { return _state == PeerStateValue.Connected ? Math.Max(1, _link.RoundTripTime) : _link.RoundTripTime; } }
         public int RoundTripTimeVariance { get { return _link.RoundTripTimeVariance; } }
         public long BytesIn { get { return Interlocked.Read(ref _bytesIn); } }
         public long BytesOut { get { return Interlocked.Read(ref _bytesOut); } }
@@ -67,7 +67,7 @@ namespace UberStrike.Realtime.NakamaAdapter
             NewGeneration();
             _state = PeerStateValue.Connecting;
             _server = serverAddress;
-            _kind = _kindOf != null ? (_kindOf(serverAddress) ?? KindGame) : KindGame;
+            _kind = KindGame;
             _matchId = null;
             _room = 0;
             _joining = false;
