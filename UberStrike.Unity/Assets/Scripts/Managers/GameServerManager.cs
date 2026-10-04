@@ -77,8 +77,19 @@ public class GameServerManager : Singleton<GameServerManager>
         //return server;
     }
 
+    // Nakama: one node row. Exact match, else the single row (old node labels).
+    string NodeRow(string connection)
+    {
+        if (_gameServers.Count != 1)
+            return connection;
+        foreach (GameServerView gs in _gameServers.Values)
+            return gs.ConnectionString;
+        return connection;
+    }
+
     internal string GetServerName(string connection)
     {
+        connection = NodeRow(connection);
         string server = string.Empty;
         foreach (var gs in _gameServers.Values)
         {
@@ -130,6 +141,7 @@ public class GameServerManager : Singleton<GameServerManager>
     /// <returns></returns>
     public int GetServerLatency(string connection)
     {
+        connection = NodeRow(connection);
         foreach (GameServerView info in _gameServers.Values)
         {
             if (info.ConnectionString == connection)
