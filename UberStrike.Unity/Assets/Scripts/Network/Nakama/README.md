@@ -21,7 +21,7 @@ Photon is gone. `UberStrike.UnitySdk.dll` (uber-server-4-3-8 `nakama-sdk`) drive
 Truth = web DB `PhotonServers` CommServer row (UsageType 6) in the group of the client's `ApplicationVersions` row.
 `AuthenticateApplication` -> `NakamaServerList.Apply`:
 
-- dial `IP:Port` of the row; port 443 = https/wss to `tlsHost`, else the web URL host name, else the row IP
+- dial `IP:Port` of the row; port 443 = https/wss to `tlsHost`, else the web URL host name, else the row IP (log names which)
 - Play page = game rows at the same `IP:Port`, else one clone of the row; rows at other addresses skipped (warning)
 - every `CmuneRoomID` = row `IP:Port`; rooms told apart by number. Peer kind = game until join (88 comm, 66 lobby)
 - no valid row -> error log, config endpoint used
@@ -29,13 +29,20 @@ Truth = web DB `PhotonServers` CommServer row (UsageType 6) in the group of the 
 Change host/port: fix the row (admin Deployment > Photons or `setNakamaEndpoint.sql`), recycle the web app pool.
 Node side + full knob list: photon-migration `nakama/CONFIG.md`.
 
+## Release setting: `tlsHost`
+
+Row port 443 only. Row holds an IPv4, TLS needs a name: `tlsHost`, else the web URL host, else the row IP.
+Nakama (nginx 443) not under the web host name, e.g. another box: ship `StreamingAssets/nakama.json` with only
+`{"tlsHost":"rt.example.com"}` (= nginx `server_name`, cert covers it). Does not pin: host/port still from the row.
+Same host name as the web: ship nothing. Open owner question (photon-migration `nakama/HANDOFF.md` Q3, `CONFIG.md`).
+
 ## Dev overrides (not for release)
 
 Defaults: `http://127.0.0.1:7350`, key `defaultkey`, no dev auth.
 
 - command line: `-nakama https://host:7350` (pins the dial target, DB row ignored), `-nakamakey <key>`, dev login `-nakamadev`, web token `-nakamatoken <t>`
 - or `StreamingAssets/nakama.json`: `{"endpoint":"http://host:7350","serverKey":"...","devAuth":false,"tlsHost":"nk.example","replaceServerList":false}`
-- `endpoint`/`host`/`port` pin the dial target; `scheme` alone only fixes the scheme; `tlsHost` = TLS name for a 443 row
+- `endpoint`/`host`/`port` pin the dial target; `scheme` alone only fixes the scheme; `tlsHost` = release setting above
 - `replaceServerList: true` = Play page from config, no DB row needed
 - `roomHost`/`roomPortBase` gone (ignored)
 

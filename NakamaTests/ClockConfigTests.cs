@@ -190,6 +190,33 @@ namespace NakamaTests
         }
 
         [Test]
+        static void NodeOnOtherBoxThanWeb()
+        {
+            // web on web.example, Nakama + nginx on rt.example (row 203.0.113.7:443): release ships nakama.json tlsHost
+            NakamaConfig c = NakamaConfig.Load("{\"tlsHost\":\"rt.example\"}", null);
+            A.Eq(false, c.Pinned, "release nakama.json (tlsHost only) does not pin");
+            A.True(c.ApplyNode("203.0.113.7", 443, "web.example", "web row #3"), "443 row");
+            A.Eq("https://rt.example:443", c.Endpoint, "dials tlsHost, not the web host");
+            A.Eq("tlsHost", c.TlsFrom, "tls from");
+            A.Eq("web row #3, TLS name from tlsHost", c.Origin, "origin names the source");
+            A.Eq("203.0.113.7:443", c.Label, "room label = row");
+
+            A.True(c.ApplyNode("203.0.113.7", 7350, "web.example", "web row #3"), "row moved off 443");
+            A.Eq("http://203.0.113.7:7350", c.Endpoint, "plain port: row ip, tlsHost unused");
+            A.Eq(null, c.TlsFrom, "no tls");
+            A.Eq("web row #3", c.Origin, "origin plain");
+
+            // no tlsHost: web URL host assumed to front Nakama (same box / same name)
+            c = NakamaConfig.Load(null, null);
+            c.ApplyNode("203.0.113.7", 443, "web.example", "web row #3");
+            A.Eq("https://web.example:443", c.Endpoint, "fallback = web host");
+            A.Eq("web URL host", c.TlsFrom, "fallback named");
+            A.Eq("web row #3, TLS name from web URL host", c.Origin, "origin names the fallback");
+            c.ApplyNode("203.0.113.7", 443, null, "web row #3");
+            A.Eq("row IP", c.TlsFrom, "no web host -> row ip");
+        }
+
+        [Test]
         static void DevOverrideBeatsWebRow()
         {
             NakamaConfig c = NakamaConfig.Load(null, new[] { "-nakama", "http://10.0.0.9:7350" });

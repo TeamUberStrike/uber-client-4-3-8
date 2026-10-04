@@ -39,6 +39,11 @@ namespace UberStrike.Realtime.NakamaAdapter
                     Debug.LogError("[nakama] bad node row " + rows.Address);
                     rows = null;
                 }
+                else if (cfg.TlsFrom != null)
+                {
+                    Debug.Log("[nakama] row " + rows.Address + " -> " + cfg.Endpoint + " (TLS name from " + cfg.TlsFrom
+                        + "). Nakama not under the web host name: set tlsHost in StreamingAssets/nakama.json");
+                }
             }
             if (rows == null)
                 rows = NakamaNodeRows.FromConfig(cfg);

@@ -5,6 +5,7 @@ using System.Globalization;
 namespace UberStrike.Realtime.NakamaAdapter
 {
     // Endpoint truth = web DB CommServer row (ApplyNode at AuthenticateApplication).
+    // Release: nakama.json tlsHost (443 row, Nakama not under the web host name).
     // Dev overrides: defaults < StreamingAssets/nakama.json < command line (-nakama, -nakamakey, -nakamadev, -nakamatoken).
     public sealed class NakamaConfig
     {
@@ -29,8 +30,11 @@ namespace UberStrike.Realtime.NakamaAdapter
         // json scheme: kept by ApplyNode
         public bool SchemePinned;
 
-        // TLS name when the row port is 443 (row holds an IPv4 only)
+        // RELEASE: TLS name when the row port is 443 (row holds an IPv4 only). Unset = web URL host name.
         public string TlsHost;
+
+        // where the https host came from: "tlsHost", "web URL host", "row IP"; null = http
+        public string TlsFrom;
 
         // dev: Play page from this config, no DB row needed
         public bool ReplaceServerList;
@@ -87,10 +91,18 @@ namespace UberStrike.Realtime.NakamaAdapter
                 return true;
 
             bool tls = SchemePinned ? Scheme == "https" : port == 443;
+            string host = ip;
+            TlsFrom = null;
+            if (tls)
+            {
+                string web = HostName(webHost);
+                host = NonEmpty(TlsHost) ?? web ?? ip;
+                TlsFrom = NonEmpty(TlsHost) != null ? "tlsHost" : web != null ? "web URL host" : "row IP";
+            }
             Scheme = tls ? "https" : "http";
-            Host = tls ? (NonEmpty(TlsHost) ?? HostName(webHost) ?? ip) : ip;
+            Host = host;
             Port = port;
-            Origin = origin ?? "web row";
+            Origin = (origin ?? "web row") + (TlsFrom != null ? ", TLS name from " + TlsFrom : "");
             return true;
         }
 
