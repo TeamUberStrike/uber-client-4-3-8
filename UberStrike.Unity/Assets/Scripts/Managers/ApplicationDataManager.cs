@@ -28,6 +28,25 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public const int MinimalHeight = 560;
 
     public static ChannelType Channel { get; set; }
+
+    // Canonical "is this a mobile build?" gate. The client reports its platform
+    // via the ChannelType in the client configuration XML (Android / IPhone /
+    // IPad), NOT via Unity's UNITY_IPHONE/#if compile symbols — so all
+    // platform-dependent code in this project keys off Channel, not #if. Route
+    // every mobile/desktop branch through this one property so mobile-only
+    // behaviour can never accidentally leak into a PC build, and vice-versa.
+    // NOTE: the WebGL build reports the IPad channel (to pass the dev version
+    // gate), so IsMobile is also true in the browser build; desktop standalone
+    // is the only target where this is false.
+    public static bool IsMobile
+    {
+        get
+        {
+            return Channel == ChannelType.Android
+                || Channel == ChannelType.IPad
+                || Channel == ChannelType.IPhone;
+        }
+    }
     public static string VersionLong = string.Empty;
     public static string VersionShort = string.Empty;
     public static BuildType BuildType;
@@ -38,6 +57,26 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static readonly Dictionary<int, int> XpByLevel = new Dictionary<int, int>();
     private string clientConfigurationXml = string.Empty;
     private static float applicationDateTime = 0f;
+
+#if UNITY_IPHONE || UNITY_ANDROID
+    // Mobile loads its client configuration from this embedded XML, NOT from a file:
+    // GetConfigurationXmlFilePath() has no mobile case (returns empty -> "problem loading
+    // UberStrike"). Forward-ported from the mobile-il2cpp branch (which booted to lobby with
+    // exactly this). ChannelType=IPad on purpose — the dev server whitelists the iOS channel
+    // for 4.3.8 (an Android-channel client reads as "version out of date"); per HaZard the
+    // Android build also reports the iOS channel. Edit WebServiceBaseUrl/ContentBaseUrl here
+    // if the backend moves.
+    private readonly string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
+                                    <UberStrike>
+                                    <Application
+                                        BuildType=""Dev""
+                                        DebugLevel=""Debug""
+                                        Version=""4.3.8""
+                                        WebServiceBaseUrl=""https://ws-dev.uberforever.eu/""
+                                        ContentBaseUrl=""http://client-dev.uberforever.eu/""
+                                        ChannelType=""IPad"" />
+                                    </UberStrike>";
+#endif
     private static DateTime serverDateTime = DateTime.Now;
     private static ProgressPopupDialog initApplicationProgressPopup;
 
@@ -102,7 +141,13 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
 #endif
 
+#if UNITY_IPHONE || UNITY_ANDROID
+        // Mobile has no on-disk/remote config file to fetch; use the embedded config.
+        CmuneDebug.LogWarning("Loading Android/iOS XML Configuration from internal settings.");
+        clientConfigurationXml = mobileConfigXml;
+#else
         yield return StartCoroutine(LoadConfigurationXml(GetConfigurationXmlFilePath()));
+#endif
         initApplicationProgressPopup.ManualProgress = 0.3f;
 
         if (string.IsNullOrEmpty(clientConfigurationXml))
@@ -150,6 +195,13 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 {
                     QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
                 }
+
+                // Apply Max Queued Frames + Texture Quality at boot regardless of the quality preset, so the
+                // defaults (Max Queued Frames 10, Texture Quality 5 = full-res) and any saved values actually
+                // take effect and show correctly in Options ▸ Video. maxQueuedFrames was not applied at boot
+                // at all before; the texture limit was only applied for custom configs.
+                QualitySettings.maxQueuedFrames = applicationOptions.VideoMaxQueuedFrames;
+                QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
 
                 // Set the initial Audio options based on Cmune Prefs
                 SfxManager.EnableAudio(ApplicationOptions.AudioEnabled);

@@ -315,27 +315,35 @@ public abstract class BaseWeaponDecorator : MonoBehaviour
         Vector3 normal = hit.normal;
         SurfaceEffectType t = SurfaceEffectType.Default;
 
-        if (_effectMap.TryGetValue(tag, out t))
+        // Recognised surface tag -> its specific impact effect. The ported HD mobile maps frequently have
+        // UNTAGGED colliders, so the old "skip if not in _effectMap" gate showed NO impact at all on
+        // walls/ground/buildings (issue #64). On mobile, fall back to the Default impact so something still
+        // sparks; desktop keeps its exact behaviour (no impact on unknown tags) to avoid any regression.
+        if (!_effectMap.TryGetValue(tag, out t))
         {
-            if (GameState.HasCurrentSpace && GameState.CurrentSpace.HasWaterPlane &&
-            ((_muzzlePosition.position.y > GameState.CurrentSpace.WaterPlaneHeight && point.y < GameState.CurrentSpace.WaterPlaneHeight) ||
-            (_muzzlePosition.position.y < GameState.CurrentSpace.WaterPlaneHeight && point.y > GameState.CurrentSpace.WaterPlaneHeight)))
-            {
-                t = SurfaceEffectType.WaterEffect;
-                tag = "Water";
-                normal = Vector3.up;
-                point.y = GameState.CurrentSpace.WaterPlaneHeight;
-
-                /* use the hit point & direction to calculate the water hit position */
-                if (!Mathf.Approximately(direction.y, 0))
-                {
-                    point.x = (GameState.CurrentSpace.WaterPlaneHeight - hit.point.y) / direction.y * direction.x + hit.point.x;
-                    point.z = (GameState.CurrentSpace.WaterPlaneHeight - hit.point.y) / direction.y * direction.z + hit.point.z;
-                }
-            }
-
-            ParticleEffectController.ShowHitEffect(_effectType, t, direction, point, normal, muzzlePosition, distance, ref _trailRenderer, _parent);
+            if (!ApplicationDataManager.IsMobile)
+                return;
+            t = SurfaceEffectType.Default;
         }
+
+        if (GameState.HasCurrentSpace && GameState.CurrentSpace.HasWaterPlane &&
+        ((_muzzlePosition.position.y > GameState.CurrentSpace.WaterPlaneHeight && point.y < GameState.CurrentSpace.WaterPlaneHeight) ||
+        (_muzzlePosition.position.y < GameState.CurrentSpace.WaterPlaneHeight && point.y > GameState.CurrentSpace.WaterPlaneHeight)))
+        {
+            t = SurfaceEffectType.WaterEffect;
+            tag = "Water";
+            normal = Vector3.up;
+            point.y = GameState.CurrentSpace.WaterPlaneHeight;
+
+            /* use the hit point & direction to calculate the water hit position */
+            if (!Mathf.Approximately(direction.y, 0))
+            {
+                point.x = (GameState.CurrentSpace.WaterPlaneHeight - hit.point.y) / direction.y * direction.x + hit.point.x;
+                point.z = (GameState.CurrentSpace.WaterPlaneHeight - hit.point.y) / direction.y * direction.z + hit.point.z;
+            }
+        }
+
+        ParticleEffectController.ShowHitEffect(_effectType, t, direction, point, normal, muzzlePosition, distance, ref _trailRenderer, _parent);
     }
 
     public void SetMuzzlePosition(Transform muzzle)

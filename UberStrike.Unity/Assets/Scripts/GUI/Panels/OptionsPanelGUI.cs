@@ -97,8 +97,13 @@ public class OptionsPanelGUI : PanelGuiBase
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.Panel - 100;
+        // Options dialog renders 1.4x larger than the default menu scale on mobile (matches the enlarged
+        // login/training screens). Mobile-only; desktop keeps its authored size.
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(1.4f);
 
-        _rect = new Rect((Screen.width - 528) / 2, (Screen.height - 300) / 2, 528, 300);
+        // Centre against the virtual (scaled) screen size so the panel stays centred under the mobile
+        // menu scale; everything else is drawn relative to _rect and scales with it.
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 528) / 2, (MobileMenuScale.VirtualHeight - 300) / 2, 528, 300);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
@@ -109,6 +114,7 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
+        MobileMenuScale.End(scaleMatrix);
         GuiManager.DrawTooltip();
     }
 
@@ -217,13 +223,14 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         float height = 100;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, width, 85), LocalizedStrings.Misc, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20, width, 85));
             {
                 ApplicationDataManager.ApplicationOptions.GameplayAutoPickupEnabled = GUI.Toggle(new Rect(12, 15, 200, 20), ApplicationDataManager.ApplicationOptions.GameplayAutoPickupEnabled, LocalizedStrings.AutoPickupWeapons, BlueStonez.toggle);
                 ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled = GUI.Toggle(new Rect(12, 35, 200, 20), ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled, LocalizedStrings.AutoEquipWeapons, BlueStonez.toggle);
+                ApplicationDataManager.ApplicationOptions.UseClassicLobby = GUI.Toggle(new Rect(12, 55, 320, 20), ApplicationDataManager.ApplicationOptions.UseClassicLobby, " Classic lobby HUD (4.3.10.1 style)", BlueStonez.toggle);
             }
             GUI.EndGroup();
         }
@@ -383,6 +390,7 @@ public class OptionsPanelGUI : PanelGuiBase
             contentRect.height += _screenResText.Length * 16;
         }
 
+        _scrollVideo = MobileScroll.Drag(ScrollId.OptionsVideo, videoRect, _scrollVideo);
         _scrollVideo = GUI.BeginScrollView(videoRect, _scrollVideo, contentRect);
         {
             GUI.enabled = true;
@@ -510,7 +518,7 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         float height = 130;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, width, 130), LocalizedStrings.Volume, BlueStonez.label_group_interparkbold_18pt);
             GUI.BeginGroup(new Rect(GroupMarginX, 20, width, 130));
@@ -568,10 +576,17 @@ public class OptionsPanelGUI : PanelGuiBase
         GUI.enabled = _targetMap == null;
 
         GUI.skin = BlueStonez.Skin;
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21)); //720 + 15));
+        // On mobile, reserve space at the top of the Controls tab for the touch-controls group.
+        // Active (not IsMobile) so the touch-controls group reserves its space + renders under the Editor
+        // "Preview Menu Scale" toggle too. On a real device IsMobile == Active, so this is device-identical.
+        int touchY = MobileMenuScale.Active ? 330 : 0;
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21 + touchY)); //720 + 15));
         {
-            DrawGroupControl(new Rect(GroupMarginX, 20, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
-            GUI.BeginGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 65));
+            if (MobileMenuScale.Active)
+                DrawTouchControlsGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 310));
+
+            DrawGroupControl(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
+            GUI.BeginGroup(new Rect(GroupMarginX, 20 + touchY, _rect.width - 65, 65));
             {
                 GUI.Label(new Rect(15, 10, 130, 30), LocalizedStrings.MouseSensitivity, BlueStonez.label_interparkbold_11pt_left);
                 float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 1, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
@@ -590,7 +605,7 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             GUI.EndGroup();
 
-            int yOffset = 105;
+            int yOffset = 105 + touchY;
             if (Input.GetJoystickNames().Length > 0)
             {
                 DrawGroupControl(new Rect(GroupMarginX, 105, _rect.width - 65, 50), LocalizedStrings.Gamepad, BlueStonez.label_group_interparkbold_18pt);
@@ -622,13 +637,106 @@ public class OptionsPanelGUI : PanelGuiBase
         GUITools.PopGUIState();
     }
 
+    // Mobile-only: touch input settings + the entry point to the customizable on-screen layout editor.
+    private void DrawTouchControlsGroup(Rect area)
+    {
+        DrawGroupControl(area, "TOUCH CONTROLS", BlueStonez.label_group_interparkbold_18pt);
+        GUI.BeginGroup(area);
+        {
+            ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
+
+            // Movement style — a clear two-way choice (drives UseMultiTouch, which the TouchInput state
+            // machine reads to swap control schemes):
+            //   • Joystick      = single-touch: floating joystick + on-screen Fire button (current default)
+            //   • D-Pad (Classic) = original UberStrike multi-touch: twisted direction pad + its own Jump/
+            //                       Crouch buttons, drag to aim, tap a 2nd finger to fire (no Fire button).
+            GUI.Label(new Rect(15, 6, 200, 22), "Movement Style", BlueStonez.label_interparkbold_11pt_left);
+            bool joyWas = !opt.UseMultiTouch;
+            bool joyNow = GUI.Toggle(new Rect(15, 28, 150, 26), joyWas, " Joystick", BlueStonez.toggle);
+            bool dpadWas = opt.UseMultiTouch;
+            bool dpadNow = GUI.Toggle(new Rect(170, 28, 200, 26), dpadWas, " D-Pad (Classic)", BlueStonez.toggle);
+            if (joyNow && !joyWas) opt.UseMultiTouch = false;
+            else if (dpadNow && !dpadWas) opt.UseMultiTouch = true;
+
+            GUI.color = Color.white.SetAlpha(0.7f);
+            GUI.Label(new Rect(15, 55, 420, 20),
+                opt.UseMultiTouch ? "D-Pad to move  ·  drag to aim  ·  tap 2nd finger to fire"
+                                  : "Joystick to move  ·  drag to aim  ·  on-screen Fire button",
+                BlueStonez.label_interparkbold_11pt_left);
+            GUI.color = Color.white;
+
+            GUI.Label(new Rect(15, 82, 130, 24), "Look Sensitivity", BlueStonez.label_interparkbold_11pt_left);
+            float look = GUI.HorizontalSlider(new Rect(155, 88, 200, 24), opt.TouchLookSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 82, 60, 24), look.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            if (look != opt.TouchLookSensitivity) opt.TouchLookSensitivity = look;
+
+            GUI.Label(new Rect(15, 110, 130, 24), "Move Sensitivity", BlueStonez.label_interparkbold_11pt_left);
+            float move = GUI.HorizontalSlider(new Rect(155, 116, 200, 24), opt.TouchMoveSensitivity, 0.5f, 3f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 110, 60, 24), move.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            if (move != opt.TouchMoveSensitivity) opt.TouchMoveSensitivity = move;
+
+            if (GUI.Button(new Rect(15, 142, 260, 30), "Customize On-Screen Controls", BlueStonez.button))
+            {
+                opt.SaveApplicationOptions();
+                MobileControlLayout.EditMode = true;
+                PanelManager.Instance.ClosePanel(PanelType.Options);
+            }
+
+            // --- Gyroscope aim (scope-only) ----------------------------------------------------------
+            GUI.color = Color.white.SetAlpha(0.85f);
+            GUI.Label(new Rect(15, 182, 430, 20), "GYROSCOPE AIMING  —  active only while scoped", BlueStonez.label_interparkbold_11pt_left);
+            GUI.color = Color.white;
+
+            // Three toggles on one row, each bar trimmed to hug its label with a ~16px gap between them
+            // (so they don't read as one merged strip). x: 12 -> 128 -> 268.
+            bool gyroOn = GUI.Toggle(new Rect(12, 206, 100, 26), opt.GyroAimEnabled, " Gyroscope", BlueStonez.toggle);
+            if (gyroOn != opt.GyroAimEnabled) opt.GyroAimEnabled = gyroOn;
+
+            bool gyroInvY = GUI.Toggle(new Rect(128, 206, 124, 26), opt.GyroInvertY, " Invert Vertical", BlueStonez.toggle);
+            if (gyroInvY != opt.GyroInvertY) opt.GyroInvertY = gyroInvY;
+
+            bool gyroInvX = GUI.Toggle(new Rect(268, 206, 145, 26), opt.GyroInvertX, " Invert Horizontal", BlueStonez.toggle);
+            if (gyroInvX != opt.GyroInvertX) opt.GyroInvertX = gyroInvX;
+
+            GUI.Label(new Rect(15, 236, 130, 24), "Strength", BlueStonez.label_interparkbold_11pt_left);
+            float gyroStr = GUI.HorizontalSlider(new Rect(155, 242, 200, 24), opt.GyroStrength, 0.2f, 4f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 236, 60, 24), gyroStr.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            if (gyroStr != opt.GyroStrength) opt.GyroStrength = gyroStr;
+
+            // Preview the gyro in the shooting range, exactly like Shop ▸ "Try your weapons". Enable the
+            // gyro option first so scoping there actually drives the view (the whole point of the preview),
+            // save, close Options, then load the Try-Weapon range. Scope a zoom weapon to feel the strength.
+            if (GUI.Button(new Rect(15, 270, 260, 30), "Try Gyroscope", BlueStonez.button))
+            {
+                opt.GyroAimEnabled = true;
+                opt.SaveApplicationOptions();
+                PanelManager.Instance.ClosePanel(PanelType.Options);
+                // Defer the range entry a couple frames (see EnterGyroTryRange): transitioning the game
+                // state synchronously from this button handler — while the Options panel is still closing —
+                // tripped a pause-on-spawn that bounced straight back to the Shop instead of the range.
+                CoroutineManager.StartCoroutine(EnterGyroTryRange);
+            }
+        }
+        GUI.EndGroup();
+    }
+
+    // Enter the Try-Weapon shooting range for the gyroscope preview, but only AFTER the Options panel has
+    // fully closed and the menu/GUI-lock state has settled. Entering synchronously from the button handler
+    // quit straight to the Shop (OnPlayerPause fired as the player spawned mid-panel-close).
+    private System.Collections.IEnumerator EnterGyroTryRange()
+    {
+        yield return null;   // let Hide() take effect
+        yield return null;   // let PanelManager release the GUI lock on the next Layout pass
+        GameStateController.Instance.LoadTryWeaponMode();
+    }
+
     private void DoSysInfoGroup()
     {
         GUI.skin = BlueStonez.Skin;
         float height = 1450 + ((GameServerManager.Instance.PhotonServerCount > 0) ? (GameServerManager.Instance.PhotonServerCount * 20) + 60 : 80);
         float width = Mathf.Max(_rect.width, BlueStonez.label_interparkbold_11pt_left.CalcSize(new GUIContent("Absolute URL : " + ApplicationDataManager.Instance.LocalSystemInfo.AbsoluteURL)).x) + 100;
 
-        _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, width + 15, height));//new Rect(0, 0, _rect.width - 50, height));
+        _scrollControls = MobileScroll.Drag(ScrollId.OptionsControls, new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls); _scrollControls = GUI.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, width + 15, height));//new Rect(0, 0, _rect.width - 50, height));
         {
             //System
             Rect systemGroupRect = new Rect(8, 20, width, 340);

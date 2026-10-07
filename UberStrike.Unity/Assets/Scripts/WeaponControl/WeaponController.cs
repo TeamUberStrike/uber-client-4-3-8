@@ -230,6 +230,13 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         return _weapons[1];
     }
 
+    // Returns the currently-equipped weapon slot (not just the primary). Re-added for the
+    // on-screen touch controls (weapon changer / fire-mode), which need the live weapon.
+    public WeaponSlot GetCurrentWeapon()
+    {
+        return _weapon;
+    }
+
     public void InitializeAllWeapons(Transform _weaponAttachPoint)
     {
         for (int i = 0; i < _weapons.Length; i++)

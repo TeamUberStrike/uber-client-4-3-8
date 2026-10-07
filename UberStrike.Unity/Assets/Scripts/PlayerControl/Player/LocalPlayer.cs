@@ -408,6 +408,16 @@ public class LocalPlayer : MonoBehaviour
                 Decorator.UpdateLayers();
                 Decorator.MeshRenderer.enabled = false;
                 Decorator.HudInformation.enabled = false;
+
+                // Re-show the current weapon now that FirstPerson is fully configured (camera target / eye
+                // position / WeaponCamera all set by SetPlayerControlState above). InitializeAllWeapons()
+                // showed the weapon EARLIER — before that setup — so WeaponFeedbackManager.PickUp positioned
+                // the held gun against an unready camera and baked in a wrong position; on the first spawn
+                // the gun rendered clipped ("cut in half") until a manual weapon switch re-ran PickUp.
+                // Re-running the show here, with the camera ready, fixes the first-spawn render. (The earlier
+                // PickUp's transition is superseded in the same frame, so only one equip plays.)
+                if (GameState.LocalCharacter != null)
+                    WeaponController.Instance.Reset();
             }
 
             IsDead = false;

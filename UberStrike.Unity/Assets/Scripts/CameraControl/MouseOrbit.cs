@@ -8,6 +8,7 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
     private Transform target;
 
     private const float zoomSpeedFactor = 15;
+    private const float pinchZoomSpeedFactor = 0.015f; // mobile: two-finger pinch distance (px) → zoom amount
     private const float zoomMin = 1.3f;
     private const float zoomMax = 5;
     private float zoomDistance = 5;
@@ -55,6 +56,18 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
     {
         if (!PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen)
         {
+            // Mobile two-finger pinch-to-zoom — mirrors the desktop scroll-wheel zoom below. While
+            // pinching, the single-finger drag-orbit is suppressed so the camera doesn't spin as you zoom.
+            bool pinching = Input.touchCount == 2;
+            if (pinching)
+            {
+                Touch pt0 = Input.GetTouch(0);
+                Touch pt1 = Input.GetTouch(1);
+                float prevDist = ((pt0.position - pt0.deltaPosition) - (pt1.position - pt1.deltaPosition)).magnitude;
+                float curDist = (pt0.position - pt1.position).magnitude;
+                zoomTarget = Mathf.Clamp(zoomDistance - (curDist - prevDist) * pinchZoomSpeedFactor, zoomMin, zoomMax);
+            }
+
             // Scroll wheel zoom
             if (GetComponent<Camera>().pixelRect.Contains(Input.mousePosition) && Input.GetAxis("Mouse ScrollWheel") != 0)
             {
@@ -64,7 +77,7 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
             zoomDistance = Mathf.Lerp(zoomDistance, zoomTarget, Time.deltaTime * 5);
 
             // Check if click was within the cameras view
-            if (Input.GetMouseButtonDown(0))
+            if (!pinching && Input.GetMouseButtonDown(0))
             {
                 if (GameState.HasCurrentSpace && GameState.CurrentSpace.Camera.pixelRect.Contains(Input.mousePosition))
                 {
@@ -92,8 +105,8 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 
             mousePos = Input.mousePosition;
 
-            // Rotate camera based on mouse drag
-            if (isMouseDraging && Input.GetMouseButton(0))
+            // Rotate camera based on mouse drag (single finger / mouse only — not while pinching)
+            if (!pinching && isMouseDraging && Input.GetMouseButton(0))
             {
                 xOrbit += Input.GetAxis("Mouse X") * orbitSpeedFactor;
                 yOrbit -= Input.GetAxis("Mouse Y") * orbitSpeedFactor;

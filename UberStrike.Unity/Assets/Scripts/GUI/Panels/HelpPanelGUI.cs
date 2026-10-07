@@ -14,14 +14,21 @@ public class HelpPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        int height = Mathf.RoundToInt((Screen.height - 56) * 0.75f);
-        _rect = new Rect((Screen.width - 630) * 0.5f, GlobalUIRibbon.Instance.GetHeight(), 630, height);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        // Size against the VIRTUAL (scaled) height, not raw Screen.height — otherwise on mobile the panel
+        // is drawn ~Scale× too tall and its OK button falls below the screen (the bug: "no way to close Help").
+        int height = Mathf.RoundToInt((MobileMenuScale.VirtualHeight - 56) * 0.75f);
+        // centre x against the virtual screen for mobile menu scale (y stays anchored to the ribbon)
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 630) * 0.5f, GlobalUIRibbon.Instance.GetHeight(), 630, height);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
             DrawHelpPanel();
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DrawHelpPanel()
@@ -103,7 +110,9 @@ public class HelpPanelGUI : PanelGuiBase
     {
         GUI.skin = BlueStonez.Skin;
         int height = 490;
-        _scrollBasics = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollBasics, new Rect(0, 0, WIDTH + 60, height));
+        Rect view = new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50);
+        _scrollBasics = MobileScroll.Drag(ScrollId.HelpGeneral, view, _scrollBasics);
+        _scrollBasics = GUI.BeginScrollView(view, _scrollBasics, new Rect(0, 0, WIDTH + 60, height));
         {
             //System
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30); // 508
@@ -126,7 +135,9 @@ public class HelpPanelGUI : PanelGuiBase
     {
         GUI.skin = BlueStonez.Skin;
         int height = 950;
-        _scrollGameplay = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollGameplay, new Rect(0, 0, WIDTH + 60, height));
+        Rect view = new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50);
+        _scrollGameplay = MobileScroll.Drag(ScrollId.HelpGameplay, view, _scrollGameplay);
+        _scrollGameplay = GUI.BeginScrollView(view, _scrollGameplay, new Rect(0, 0, WIDTH + 60, height));
         {
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30);
             DrawGroupControl(systemGroupRect, LocalizedStrings.Gameplay, BlueStonez.label_group_interparkbold_18pt);
@@ -156,7 +167,9 @@ public class HelpPanelGUI : PanelGuiBase
     {
         GUI.skin = BlueStonez.Skin;
         int height = 690;
-        _scrollItems = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
+        Rect view = new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50);
+        _scrollItems = MobileScroll.Drag(ScrollId.HelpItems, view, _scrollItems);
+        _scrollItems = GUI.BeginScrollView(view, _scrollItems, new Rect(0, 0, WIDTH + 60, height));
         {
             //System
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30);
@@ -182,7 +195,9 @@ public class HelpPanelGUI : PanelGuiBase
     {
         GUI.skin = BlueStonez.Skin;
         int height = 360;
-        _scrollItems = GUI.BeginScrollView(new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50), _scrollItems, new Rect(0, 0, WIDTH + 60, height));
+        Rect view = new Rect(1, 2, _rect.width - 33, _rect.height - 54 - 50);
+        _scrollItems = MobileScroll.Drag(ScrollId.HelpItems, view, _scrollItems);
+        _scrollItems = GUI.BeginScrollView(view, _scrollItems, new Rect(0, 0, WIDTH + 60, height));
         {
             //System
             Rect systemGroupRect = new Rect(14, 16, WIDTH + 30, height - 30);

@@ -64,8 +64,12 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
     {
         if (ButtonEnabled)
         {
-            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 100,
-                Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 200, 50),
+            // Bigger tap target on mobile (the desktop 200×50 is too small to hit reliably on a phone).
+            float btnW = ApplicationDataManager.IsMobile ? 380f : 200f;
+            float btnH = ApplicationDataManager.IsMobile ? 104f : 50f;
+            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(
+                Screen.width * CameraRectController.Instance.Width * 0.5f - btnW * 0.5f,
+                Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), btnW, btnH),
                     new GUIContent(ButtonCaption), _buttonGuiStyle))
             {
                 if (OnButtonClicked != null)

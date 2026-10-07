@@ -32,6 +32,8 @@ public abstract class LotteryWinningPopup : IPopupDialog
 
     public void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         Rect rect = GetPosition();
 
         GUI.Box(rect, GUIContent.none, BlueStonez.window);
@@ -93,6 +95,8 @@ public abstract class LotteryWinningPopup : IPopupDialog
         GUI.EndGroup();
 
         _tooltip.OnGui();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public void OnHide()
@@ -108,8 +112,9 @@ public abstract class LotteryWinningPopup : IPopupDialog
 
     private Rect GetPosition()
     {
-        float offsetX = (Screen.width - Width) * 0.5f;
-        float offsetY = GlobalUIRibbon.HEIGHT + (Screen.height - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
+        //center against the virtual (scaled) screen
+        float offsetX = (MobileMenuScale.VirtualWidth - Width) * 0.5f;
+        float offsetY = GlobalUIRibbon.HEIGHT + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
 
         return new Rect(offsetX, offsetY - _deltaY, Width, Height);
     }

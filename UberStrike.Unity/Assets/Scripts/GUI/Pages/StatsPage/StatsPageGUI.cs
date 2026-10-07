@@ -134,10 +134,13 @@ public class StatsPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
 
-        statsPage = new Rect(Screen.width - statsPositionX, GlobalUIRibbon.Instance.GetHeight(), statsPositionX, Screen.height - GlobalUIRibbon.Instance.GetHeight());
+        // Right-anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+        statsPage = new Rect(MobileMenuScale.VirtualWidth - statsPositionX, GlobalUIRibbon.Instance.GetHeight(), statsPositionX, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
 
         //Stats GUI Panel
         GUI.BeginGroup(statsPage, GUIContent.none, BlueStonez.window_standard_grey38);
@@ -174,6 +177,8 @@ public class StatsPageGUI : MonoBehaviour
             GUI.EndGroup();
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void OnEnable()

@@ -58,7 +58,10 @@ public class SignupPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Rect position = new Rect((Screen.width - 500) * 0.5f, (Screen.height - _height) * 0.5f, 500, _height);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        // centre against the virtual screen for mobile menu scale
+        Rect position = new Rect((MobileMenuScale.VirtualWidth - 500) * 0.5f, (MobileMenuScale.VirtualHeight - _height) * 0.5f, 500, _height);
 
         GUI.BeginGroup(position, GUIContent.none, BlueStonez.window);
         {
@@ -187,6 +190,8 @@ public class SignupPanelGUI : PanelGuiBase
             GUI.enabled = true;
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void ShowSignUpErrorPopup(string title, string message)

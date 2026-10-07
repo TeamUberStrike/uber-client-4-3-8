@@ -61,6 +61,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         ResetFilters();
 
         _unFocus = true;
+        _shownTime = Time.realtimeSinceStartup;   // start of the mobile settle-reveal (see OnGUI)
     }
 
     private void OnDisable()
@@ -68,8 +69,12 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
 
     }
 
+    private float _shownTime = -10f;   // realtime the play page last opened (set in Show()) — drives the HELP-column settle-reveal
+
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
 
@@ -80,7 +85,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             _unFocus = false;
         }
 
-        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), Screen.width, Screen.height - GlobalUIRibbon.Instance.GetHeight());
+        // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
         GUI.Box(rect, string.Empty, BlueStonez.box_grey31);
 
         if (!_isConnectedToGameServer || GameServerController.Instance.SelectedServer == null)
@@ -94,8 +100,11 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
 
         if (_checkForPassword)
         {
-            PasswordCheck(new Rect((Screen.width - 280) / 2, (Screen.height - 200) / 2, 280, 200));
+            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth - 280) / 2, (MobileMenuScale.VirtualHeight - 200) / 2, 280, 200));
         }
+
+        MobileMenuScale.End(scaleMatrix);
+
         GuiManager.DrawTooltip();
     }
 
@@ -156,6 +165,21 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
     /// </summary>
     private void DoServerHelpText(Rect position)
     {
+        // Mobile settle-reveal for the HELP column ONLY. It is RIGHT-anchored (x = rect.width - helpPartWidth),
+        // so while VirtualWidth is still settling during the ~1s page-open camera fly-in it briefly renders
+        // pulled toward the centre, then snaps to the right edge — the #65 "HELP floats in the middle for ~1s"
+        // bug. (The left-anchored server list doesn't move, which is why ONLY the HELP drifts.) Hold the HELP
+        // hidden until the page settles, then fade it in, so only its final docked position is ever seen.
+        // _shownTime is reset in Show() (the real per-open hook); the rest of the page draws immediately.
+        Color prevHelpColor = GUI.color;
+        if (MobileMenuScale.Active)
+        {
+            const float revealDelay = 1.1f, revealFade = 0.25f;
+            float a = Mathf.Clamp01((Time.realtimeSinceStartup - _shownTime - revealDelay) / revealFade);
+            if (a <= 0f) return;   // hidden until settled — kills the centre-float
+            GUI.color = new Color(prevHelpColor.r, prevHelpColor.g, prevHelpColor.b, prevHelpColor.a * a);
+        }
+
         GUI.BeginGroup(position);
         {
             GUI.Box(new Rect(0, 0, position.width, 32), LocalizedStrings.HelpCaps, BlueStonez.box_grey50);
@@ -169,6 +193,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GUI.EndScrollView();
         }
         GUI.EndGroup();
+
+        GUI.color = prevHelpColor;
     }
 
     /// <summary>
@@ -253,7 +279,9 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
         int length = GameServerManager.Instance.PhotonServerCount * 48;
 
         GUI.color = Color.white;
-        _serverSelectionScrollBar = GUI.BeginScrollView(new Rect(0, 31, pos.width + 1, pos.height - 31 - 55), _serverSelectionScrollBar, new Rect(0, 0, pos.width - 20, length));
+        Rect serverListView = new Rect(0, 31, pos.width + 1, pos.height - 31 - 55);
+        _serverSelectionScrollBar = MobileScroll.Drag(ScrollId.ServerList, serverListView, _serverSelectionScrollBar);
+        _serverSelectionScrollBar = GUI.BeginScrollView(serverListView, _serverSelectionScrollBar, new Rect(0, 0, pos.width - 20, length));
 
         int i = 0;
         string text = string.Empty;
@@ -513,7 +541,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GUI.enabled &= (_dropDownList == 0) && !_checkForPassword;
             if (_showFilters)
             {
-                DoGameList(new Rect(25, 73, Screen.width - 0, Screen.height - 105));
+                DoGameList(new Rect(25, 73, MobileMenuScale.VirtualWidth - 0, MobileMenuScale.VirtualHeight - 105));
             }
             else
             {
@@ -670,7 +698,9 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             if (LobbyConnectionManager.IsConnected)
             {
                 Vector2 tmp = _serverScroll;
-                _serverScroll = GUI.BeginScrollView(new Rect(0, 25, serverRect.width, serverRect.height - 1 - 25), _serverScroll, new Rect(0, 0, serverRect.width - 60, length), BlueStonez.horizontalScrollbar, BlueStonez.verticalScrollbar);
+                Rect serverRoomsView = new Rect(0, 25, serverRect.width, serverRect.height - 1 - 25);
+                _serverScroll = MobileScroll.Drag(ScrollId.ServerHelp, serverRoomsView, _serverScroll);
+                _serverScroll = GUI.BeginScrollView(serverRoomsView, _serverScroll, new Rect(0, 0, serverRect.width - 60, length), BlueStonez.horizontalScrollbar, BlueStonez.verticalScrollbar);
                 {
                     _filteredActiveRoomCount = DrawAllGames(serverRect, serverRect.height <= length);
                 }
@@ -930,7 +960,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GameServerController.Instance.SelectedServer.Data.RoomsCreated != 0 &&
             !PanelManager.Instance.IsPanelOpen(PanelType.CreateGame);
 
-        GUI.Label(new Rect(0, Screen.height - 20, Screen.width, 20), "lobby: " + LobbyConnectionManager.IsConnected +
+        GUI.Label(new Rect(0, MobileMenuScale.VirtualHeight - 20, MobileMenuScale.VirtualWidth, 20), "lobby: " + LobbyConnectionManager.IsConnected +
             " sel game: " + (_selectedGame != null) + " sel srv: " + (GameServerController.Instance.SelectedServer != null) + " room: " + GameServerController.Instance.SelectedServer.Data.RoomsCreated);
 
         if (GUITools.Button(new Rect(rect.width - 160, rect.height - 42, 140, 32), new GUIContent(LocalizedStrings.JoinCaps), BlueStonez.button_green, SoundEffectType.UIJoinGame))
@@ -1323,7 +1353,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
     /// </summary>
     private void UpdateColumnWidth()
     {
-        int maxWidth = GUITools.ScreenWidth - 20;
+        // VirtualWidth is float; this feeds an int width used to size the game-list columns.
+        int maxWidth = (int)MobileMenuScale.VirtualWidth - 20;
         int spaceLeft = maxWidth - _moderatorInGameWidth - _privateGameWidth - _gameTimeWidth - _playerCountWidth;
 
         _gameModeWidth = Mathf.Clamp(Mathf.CeilToInt(spaceLeft * 25f / 100f), 100, 200);
@@ -1337,6 +1368,12 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
     /// </summary>
     public void Show()
     {
+        // Restart the HELP-column settle-reveal on every page open. This is the reliable per-open hook
+        // (PlayPageScene.OnLoad calls it); OnEnable only fires once because this is a persistent singleton
+        // whose Show()/Hide() don't toggle enabled/active. Without this the reveal timer was always elapsed
+        // and the gate did nothing (#65 v32 "HELP still floats").
+        _shownTime = Time.realtimeSinceStartup;
+
         //update game list of currently selected server
         if (_isConnectedToGameServer)
         {

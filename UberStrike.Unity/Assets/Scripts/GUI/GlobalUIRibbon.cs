@@ -105,7 +105,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.GlobalRibbon;
-        GUI.Label(new Rect(0, _yOffset, Screen.width, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), GUIContent.none, BlueStonez.tab_strip_large);
+        // Scale the full-width ribbon for mobile. All widths anchor against VirtualWidth so it still
+        // spans the screen (= Scale * VirtualWidth) but renders taller with bigger text/tabs.
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        GUI.Label(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), GUIContent.none, BlueStonez.tab_strip_large);
 
         if (ApplicationDataManager.Channel != ChannelType.MacAppStore && ApplicationDataManager.Channel != ChannelType.OSXStandalone)
         {
@@ -116,10 +119,13 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         if (PlayerDataManager.IsPlayerLoggedIn)
         {
-            DoStatusBar(new Rect(0, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, Screen.width, STATUSBAR_HEIGHT));
+            DoStatusBar(new Rect(0, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, MobileMenuScale.VirtualWidth, STATUSBAR_HEIGHT));
         }
 
-        _dropDown.SetRect(new Rect(Screen.width - STATUSBAR_HEIGHT, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
+        // Settings dropdown (gear) — desktop only (incl. NOT under the Editor preview). On mobile the
+        // OPTIONS ribbon button opens an equivalent touch popup (DrawOptionsMenu); the tiny gear is unused.
+        if (!MobileMenuScale.Active)
+            _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT - MobileMenuScale.RightInset, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
 
         if (_ribbonEvents.Count > 0)
         {
@@ -136,18 +142,26 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         // Draw the build info if not in game
         string buildInfo = string.Format("{0} v{1}", ApplicationDataManager.FrameRate, ApplicationDataManager.VersionLong);
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(Screen.width - 195, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195 - MobileMenuScale.RightInsetTight, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
         GUI.color = Color.white;
 
-        _dropDown.Draw();
+        if (!MobileMenuScale.Active)
+            _dropDown.Draw();
 
+        // Mobile settings popup opened by the OPTIONS ribbon button (Help / Options / Audio / Report).
+        DrawOptionsMenu();
+
+        // "Menu UI" switcher dropdown popup (4.3.8 column vs 4.3.10 classic ring).
+        DrawMenuUiDropdown();
+
+        MobileMenuScale.End(scaleMatrix);
         GuiManager.DrawTooltip();
     }
 
     private void DoPages()
     {
-        _pageGroupRect = new Rect(2, _yOffset + NEWSFEED_HEIGHT, Screen.width, PAGETABS_HEIGHT);
-        float tabWidth = Mathf.Clamp(Screen.width - 200, _pageList.Count * 80, 600) / (float)_pageList.Count;
+        _pageGroupRect = new Rect(2, _yOffset + NEWSFEED_HEIGHT, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT);
+        float tabWidth = Mathf.Clamp(MobileMenuScale.VirtualWidth - 200, _pageList.Count * 80, 600) / (float)_pageList.Count;
 
         GUI.BeginGroup(_pageGroupRect);
         {
@@ -171,11 +185,52 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
                 i++;
             }
 
-            //BUY CREDITS 
-            if (GUITools.Button(new Rect(Screen.width - 136, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
+            //BUY CREDITS (tighter right inset on mobile so the OPTIONS+GET CREDITS cluster sits closer to the edge)
+            if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInsetTight, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
             {
                 //GoogleAnalytics.Instance.LogEvent("ui-globaluiribbon-click", "Get Credits", true);
                 ApplicationDataManager.Instance.OpenBuyCredits();
+            }
+
+            // Explicit OPTIONS button (mobile only), styled like the HOME/PLAY/SHOP nav tabs (NOT a 2nd
+            // gold CTA), sitting immediately left of GET CREDITS — a reliable, on-brand Options entry. The
+            // corner gear dropdown (_dropDown) renders as a tiny 25x25 icon flush to the screen edge,
+            // invisible/untappable under a phone notch, with a caption that needs a serialized icon texture
+            // not reliably set on this branch. Desktop keeps the gear unchanged.
+            // Active (not IsMobile) so it ALSO shows under the Editor "Preview Menu Scale" toggle.
+            if (MobileMenuScale.Active)
+            {
+                const float optW = 112f;
+                // tab-height (37) at y=0 so it lines up with the nav tabs; tight 4px gap to GET CREDITS.
+                Rect optRect = new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInsetTight - optW - 4, 0, optW, 37);
+                // Remember the button's absolute (scaled-local) rect so the popup can anchor under it
+                // (optRect is local to this BeginGroup at _pageGroupRect).
+                _optionsAnchor = new Rect(_pageGroupRect.x + optRect.x, _pageGroupRect.y + optRect.y, optRect.width, optRect.height);
+                if (GUITools.Button(optRect, new GUIContent(LocalizedStrings.OptionsCaps, LocalizedStrings.OptionsBtnTooltip), BlueStonez.tab_large, SoundEffectType.UIButtonClick))
+                {
+                    _optionsMenuOpen = !_optionsMenuOpen;   // toggle the Help/Options/Audio/Report popup
+                }
+            }
+
+            // "Menu UI" switcher dropdown — same tab style, sitting immediately left of OPTIONS (when that
+            // button is shown) or left of GET CREDITS otherwise. Home page only (that's where the lobby UI
+            // lives). Picks 4.3.8 column vs 4.3.10 classic ring; switching plays the LobbyUiSwitchFx wipe.
+            if (MenuPageManager.IsCurrentPage(PageType.Home))
+            {
+                const float menuUiW = 150f;
+                float getCreditsLeft = MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInsetTight;
+                float anchorLeft = MobileMenuScale.Active ? (getCreditsLeft - 112f - 4f) : getCreditsLeft; // left edge of OPTIONS or GET CREDITS
+                Rect menuUiRect = new Rect(anchorLeft - menuUiW - 4f, 0, menuUiW, 37);
+                _menuUiAnchor = new Rect(_pageGroupRect.x + menuUiRect.x, _pageGroupRect.y + menuUiRect.y, menuUiRect.width, menuUiRect.height);
+                string menuUiLabel = ApplicationDataManager.ApplicationOptions.UseClassicLobby ? " 4.3.10 Menu UI" : " 4.3.8 Menu UI";
+                if (GUITools.Button(menuUiRect, new GUIContent(menuUiLabel), BlueStonez.tab_large, SoundEffectType.UIButtonClick))
+                {
+                    _menuUiDropOpen = !_menuUiDropOpen;
+                }
+            }
+            else
+            {
+                _menuUiDropOpen = false;
             }
         }
         GUI.EndGroup();
@@ -223,9 +278,98 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUI.EndGroup();
     }
 
+    // Mobile-only settings popup opened by the OPTIONS ribbon button. Mirrors the desktop gear dropdown
+    // (Help / Options / Audio / Report) but WITHOUT "Full Screen" (meaningless on a phone), with big
+    // touch-sized rows, anchored under the OPTIONS button and drawn inside the menu scale matrix.
+    private void DrawOptionsMenu()
+    {
+        if (!_optionsMenuOpen) return;
+
+        const float itemH = 46f;
+        const float w = 220f;
+        const int count = 4;
+        float px = _optionsAnchor.xMax - w;          // right-aligned to the button's right edge
+        float py = _optionsAnchor.yMax + 2f;
+        Rect panel = new Rect(px, py, w, itemH * count + 8f);
+
+        // Tap outside the popup (and not the button) closes it. NOTE: qualify UnityEngine.EventType —
+        // this class has its own nested EventType enum (XpEvent/PointEvent/CreditEvent).
+        if (Event.current.type == UnityEngine.EventType.MouseDown
+            && !panel.Contains(Event.current.mousePosition)
+            && !_optionsAnchor.Contains(Event.current.mousePosition))
+        {
+            _optionsMenuOpen = false;
+            return;
+        }
+
+        GUI.Box(panel, GUIContent.none, BlueStonez.window);
+        float bx = px + 4f, bw = w - 8f, by = py + 4f, bh = itemH - 2f;
+
+        if (GUITools.Button(new Rect(bx, by, bw, bh), new GUIContent(" Help"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        { _optionsMenuOpen = false; PanelManager.Instance.OpenPanel(PanelType.Help); }
+
+        if (GUITools.Button(new Rect(bx, by + itemH, bw, bh), new GUIContent(" Options"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        { _optionsMenuOpen = false; PanelManager.Instance.OpenPanel(PanelType.Options); }
+
+        bool audioOn = ApplicationDataManager.ApplicationOptions.AudioEnabled;
+        if (GUITools.Button(new Rect(bx, by + 2 * itemH, bw, bh), new GUIContent(audioOn ? " Audio: On" : " Audio: Off"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        {
+            ApplicationDataManager.ApplicationOptions.AudioEnabled = !audioOn;
+            SfxManager.EnableAudio(ApplicationDataManager.ApplicationOptions.AudioEnabled);
+            ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
+            // stay open so the user sees the On/Off label flip
+        }
+
+        if (GUITools.Button(new Rect(bx, by + 3 * itemH, bw, bh), new GUIContent(" Report"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        { _optionsMenuOpen = false; PanelManager.Instance.OpenPanel(PanelType.ReportPlayer); }
+    }
+
+    // Dropdown popup for the "Menu UI" switcher: 4.3.8 column lobby vs 4.3.10 classic ring. A check marks
+    // the active one; picking the OTHER one plays the LobbyUiSwitchFx wipe (which flips the flag + reloads
+    // Home at its midpoint). Anchored under the dropdown button, drawn inside the menu scale matrix.
+    private void DrawMenuUiDropdown()
+    {
+        if (!_menuUiDropOpen) return;
+
+        const float itemH = 46f;
+        const int count = 2;
+        float w = _menuUiAnchor.width;
+        float px = _menuUiAnchor.x;
+        float py = _menuUiAnchor.yMax + 2f;
+        Rect panel = new Rect(px, py, w, itemH * count + 8f);
+
+        // Tap outside the popup (and not the button) closes it.
+        if (Event.current.type == UnityEngine.EventType.MouseDown
+            && !panel.Contains(Event.current.mousePosition)
+            && !_menuUiAnchor.Contains(Event.current.mousePosition))
+        {
+            _menuUiDropOpen = false;
+            return;
+        }
+
+        GUI.Box(panel, GUIContent.none, BlueStonez.window);
+        float bx = px + 4f, bw = w - 8f, by = py + 4f, bh = itemH - 2f;
+
+        bool isClassic = ApplicationDataManager.ApplicationOptions.UseClassicLobby;
+
+        if (GUITools.Button(new Rect(bx, by, bw, bh), new GUIContent(!isClassic ? " > 4.3.8 Menu UI" : "    4.3.8 Menu UI"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        {
+            _menuUiDropOpen = false;
+            if (isClassic && !LobbyUiSwitchFx.Instance.IsPlaying)
+                LobbyUiSwitchFx.Instance.Begin(false);
+        }
+
+        if (GUITools.Button(new Rect(bx, by + itemH, bw, bh), new GUIContent(isClassic ? " > 4.3.10 Menu UI" : "    4.3.10 Menu UI"), BlueStonez.buttondark_medium, SoundEffectType.UIButtonClick))
+        {
+            _menuUiDropOpen = false;
+            if (!isClassic && !LobbyUiSwitchFx.Instance.IsPlaying)
+                LobbyUiSwitchFx.Instance.Begin(true);
+        }
+    }
+
     private void DoLiveFeeds()
     {
-        Rect rect = new Rect(0, _yOffset, Screen.width - 100, NEWSFEED_HEIGHT);
+        Rect rect = new Rect(0, _yOffset, MobileMenuScale.VirtualWidth - 100, NEWSFEED_HEIGHT);
         GUI.BeginGroup(rect);
         {
             GUI.DrawTexture(new Rect(4, 6, 24, 24), _livefeedTexture);
@@ -297,12 +441,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaCredits > 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new GainEvent(Screen.width - 130, Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetCredits);
         }
         else if (deltaCredits < 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new LoseEvent(Screen.width - 130, Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
         }
     }
 
@@ -310,12 +454,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaPoints > 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new GainEvent(Screen.width - 220, Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetPoints);
         }
         else if (deltaPoints < 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new LoseEvent(Screen.width - 220, Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
         }
     }
 
@@ -364,6 +508,14 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     private Rect _pageGroupRect;
     private Rect _pageToggleRect;
+
+    // Mobile OPTIONS-button settings popup (Help/Options/Audio/Report).
+    private bool _optionsMenuOpen;
+    private Rect _optionsAnchor;
+
+    // "Menu UI" switcher dropdown (4.3.8 column lobby <-> 4.3.10 classic ring), shown left of OPTIONS on Home.
+    private bool _menuUiDropOpen;
+    private Rect _menuUiAnchor;
 
     private Dictionary<EventType, RibbonEvent> _ribbonEvents = new Dictionary<EventType, RibbonEvent>();
 
@@ -454,6 +606,15 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     public int GetHeight()
     {
+        // THE GHOST HUD: _yOffset is the ribbon's OWN intro slide-in. Update() lerps it from -HEIGHT up
+        // to 0 over ~1s (Mathf.Lerp(_yOffset, 0.1f, dt*8)) then snaps to 0. Every page/panel top-anchors
+        // its content to this value (Home WeeklySpecial, Play, Shop, Stats, Inbox, Clan, Chat, Help...),
+        // so on first open the whole content area RODE the lerp at half speed and then snapped = the
+        // "float for ~1s then jump" ghost. The ribbon draws ITSELF from _yOffset directly (not GetHeight),
+        // so returning the final docked height here keeps the ribbon's slide-in intact while docking page
+        // content immediately. Mobile/Editor-preview only; desktop keeps its original animated behaviour.
+        if (MobileMenuScale.Active)
+            return HEIGHT - 1;
         return (int)_yOffset + HEIGHT - 1;
     }
 

@@ -46,6 +46,14 @@ public class QuickItemHud
         private set;
     }
 
+    // The configured item icon for this slot (used by the mobile on-screen Quick Item buttons). Null until
+    // ConfigureSlot runs / for an empty slot.
+    public Texture Icon
+    {
+        get;
+        private set;
+    }
+
     public int Amount
     {
         get { return _amount; }
@@ -246,6 +254,7 @@ public class QuickItemHud
     {
         _quickItemGroup.Hide();
         IsEmpty = true;
+        Icon = null;
         ResetHud();
     }
 
@@ -265,6 +274,7 @@ public class QuickItemHud
         _background.Alpha = BackgroundAlpha;
         _selection.Texture = selectionTexture;
         _icon.Texture = icon;
+        Icon = icon;
 
         _countText.BitmapMeshText.ShadowColor = textColor;
         _countText.BitmapMeshText.AlphaMin = 0.40f;

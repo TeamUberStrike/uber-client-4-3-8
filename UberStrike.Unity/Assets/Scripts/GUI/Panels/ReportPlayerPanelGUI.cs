@@ -37,11 +37,16 @@ public class ReportPlayerPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        _rect = new Rect((Screen.width - 570) * 0.5f, (Screen.height - 345) * 0.5f, 570, 345);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        // centre against the virtual screen for mobile menu scale
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 570) * 0.5f, (MobileMenuScale.VirtualHeight - 345) * 0.5f, 570, 345);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         DrawReportPanel();
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void Show()

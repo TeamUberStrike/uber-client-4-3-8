@@ -1,0 +1,69 @@
+<linker>
+  <!--
+    link.xml — IL2CPP managed-code preservation rules for the UberStrike mobile build.
+
+    Reasoning:
+      * ProjectSettings.asset has `stripEngineCode: 1` and `managedStrippingLevel` of 1 (Low)
+        across all build platforms. The Unity linker walks roots (scenes, build settings,
+        [Preserve] attributes, link.xml) and prunes anything else.
+      * UberStrike runtime patterns that the linker CANNOT see through:
+          1. `Singleton<T>` and `RenderSettingsController` use
+             `GetConstructor(BindingFlags.NonPublic)` to invoke private constructors on
+             concrete subclass types. The linker sees `T` only as a generic parameter,
+             not as the 35+ concrete subclasses (BackgroundMusicPlayer, ChatManager,
+             AmmoHud, etc.). Cmune's 4.3.10.1 iOS build relied on the same pattern.
+          2. Prime31 StoreKit / Etcetera native plugins invoke managed callbacks via
+             `UnitySendMessage("StoreKitManager", "productPurchased", json)` —
+             dispatched by GameObject name + method-name string, invisible to the linker.
+          3. Photon / UberStrike.UnitySdk perform serialization via reflection.
+
+    AOT (IL2CPP) note — runtime generic construction:
+      The mobile JIT/AOT audit (2026-05-13/14) decompiled all three plugin DLLs.
+      The ONLY genuine AOT-fragile site is Photon3Unity3D's
+      `Protocol.DeserializeDictionary`, which does
+        `typeof(Dictionary<,>).MakeGenericType(k, v)` + `Activator.CreateInstance`
+      over value-type keys/values returned by `Protocol.GetTypeOfCode`. link.xml
+      preservation alone does NOT fix this — IL2CPP must have *generated* each
+      `Dictionary<K,V>` instantiation at compile time. That is handled by
+      `Assets/Scripts/AOT/PhotonAotHints.cs` (statically references every value-type
+      combo), which lives inside Assembly-CSharp and is covered by the rule below.
+      P31RestKit's `MakeGenericMethod` sites (`toClass<T>`/`toList<T>`) are DEAD CODE
+      in this project — grep finds zero `[P31DeserializeableField]` usages across
+      `Assets/` — so they need no AOT hint; the preserve rule below is belt-and-braces.
+
+    First-cut scope:
+      * Preserve all of Assembly-CSharp ("preserve all" — broad but safe). Stripping
+        savings on this assembly are modest compared to engine code stripping, which
+        remains active.
+      * Preserve UberStrike.UnitySdk and ExitGames.Client.Photon types referenced via
+        reflection by network serialization.
+      * Tighten by switching from `preserve="all"` to enumerated `<type>` rules once a
+        green IL2CPP build verifies which symbols are actually needed.
+  -->
+
+  <assembly fullname="Assembly-CSharp" preserve="all" />
+
+  <!-- Photon transport — held alive by string-based event registration -->
+  <assembly fullname="Photon3Unity3D" preserve="all" />
+
+  <!-- UberStrike SDK assembly — reflection-based view serialization -->
+  <assembly fullname="UberStrike.UnitySdk" preserve="all" />
+
+  <!--
+    Prime31 native plugins:
+      P31RestKit handles HTTP callbacks via UnitySendMessage. Its reflection-based
+      `P31DeserializationExtensions.toClass<T>/toList<T>` (the `MakeGenericMethod`
+      sites) are dead code here — no `[P31DeserializeableField]` attributes exist in
+      `Assets/`. Preserve fully anyway until the green-build pass confirms which entry
+      points are reached; the assembly is only 16 KB.
+  -->
+  <assembly fullname="P31RestKit" preserve="all" />
+
+  <!-- System.Core: LINQ extension methods are referenced from generic instantiations
+       across UberStrike. Without this, IL2CPP may drop Enumerable.Select<int,bool>
+       etc. specializations that are referenced only via lambdas. -->
+  <assembly fullname="System.Core">
+    <type fullname="System.Linq.Enumerable" preserve="all" />
+  </assembly>
+
+</linker>

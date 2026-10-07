@@ -27,7 +27,9 @@ public abstract class BasePopupDialog : IPopupDialog
 
     public void OnGUI()
     {
-        Rect rect = new Rect((GUITools.ScreenWidth - _size.x) * 0.5f, (GUITools.ScreenHeight - _size.y - 56) * 0.5f, _size.x, _size.y);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Centre against the virtual (scaled) screen so the popup stays centred under the mobile menu scale.
+        Rect rect = new Rect((MobileMenuScale.VirtualWidth - _size.x) * 0.5f, (MobileMenuScale.VirtualHeight - _size.y - 56) * 0.5f, _size.x, _size.y);
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
             GUI.Label(new Rect(0, 0, _size.x, 56), Title, BlueStonez.tab_strip);
@@ -48,6 +50,7 @@ public abstract class BasePopupDialog : IPopupDialog
             }
         }
         GUI.EndGroup();
+        MobileMenuScale.End(scaleMatrix);
     }
 
     protected abstract void DrawPopupWindow();

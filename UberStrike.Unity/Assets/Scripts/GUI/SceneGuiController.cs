@@ -59,11 +59,14 @@ class SceneGuiController : MonoBehaviour
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
 
         _rect.y = GlobalUIRibbon.Instance.GetHeight();
-        _rect.height = Screen.height - _rect.y;
-        _rect.x = Screen.width - _rect.width + _offset;
+        //anchor against the virtual (scaled) screen
+        _rect.height = MobileMenuScale.VirtualHeight - _rect.y;
+        _rect.x = MobileMenuScale.VirtualWidth - _rect.width + _offset;
 
         GUI.skin = BlueStonez.Skin;
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
@@ -77,11 +80,14 @@ class SceneGuiController : MonoBehaviour
             if (GUI.changed)
             {
                 SetCurrentPage(_currentGuiPageIndex);
+                MobileMenuScale.End(scaleMatrix);
                 return;
             }
         }
         GUI.EndGroup();
         _guiPages[_currentGuiPageIndex].DrawGUI(new Rect(_rect.x, _rect.y + 57, _rect.width, _rect.height - 56));
+
+        MobileMenuScale.End(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }

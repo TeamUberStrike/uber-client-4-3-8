@@ -25,6 +25,8 @@ public class EndOfRoundPageScene : PageScene
 
     private void OnGUI()
     {
+        // Not mobile-menu-scaled: this is an in-game results overlay whose MeshGUIText splats are
+        // drawn in screen space and do not respect GUI.matrix, so a scale would desync them.
         GUI.depth = (int)GuiDepth.Hud;
 
         if (GameState.HasCurrentGame)

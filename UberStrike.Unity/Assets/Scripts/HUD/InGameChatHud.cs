@@ -250,6 +250,20 @@ public class InGameChatHud : Singleton<InGameChatHud>
         UpdateMessagePosition();
     }
 
+    // --- Mobile touch-control entry points ---
+    // The on-screen chat button opens the native keyboard; these thin wrappers let the touch
+    // input layer drive the existing chat flow without reaching into private members.
+    public void OpenChat()
+    {
+        BeginChat();
+    }
+
+    public void PushMessage(string text)
+    {
+        _inputContent = text;
+        SendChatMessage();
+    }
+
     #region Private
     private void BeginChat()
     {

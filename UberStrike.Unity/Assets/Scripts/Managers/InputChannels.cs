@@ -250,12 +250,17 @@ public class MouseInputChannel : IInputChannel, IByteArray
     public void Listen()
     {
         _wasDown = _isDown;
-        _isDown = Input.GetMouseButton(_button);
+        // On mobile, Unity simulates mouse-button-0/1 from the FIRST finger, so ANY touch
+        // (move joystick, look-drag) would otherwise drive PrimaryFire/SecondaryFire — the
+        // auto-fire bug. Touch-simulated mouse buttons must never drive game input here; mobile
+        // fire comes only from the on-screen fire button (TouchInput routes it explicitly).
+        _isDown = !ApplicationDataManager.IsMobile && Input.GetMouseButton(_button);
     }
 
     public float RawValue()
     {
-        return Input.GetMouseButton(_button) ? 1 : 0;
+        // See Listen(): suppress touch-as-mouse on mobile so it can't trigger fire.
+        return (!ApplicationDataManager.IsMobile && Input.GetMouseButton(_button)) ? 1 : 0;
     }
 
     public void Reset()

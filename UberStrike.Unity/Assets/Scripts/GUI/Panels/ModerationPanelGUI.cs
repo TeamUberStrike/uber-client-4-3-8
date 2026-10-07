@@ -17,10 +17,15 @@ public class ModerationPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        _rect = new Rect(GUITools.ScreenHalfWidth - 320, GUITools.ScreenHalfHeight - 202, 640, 404);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        // centre against the virtual screen for mobile menu scale
+        _rect = new Rect((MobileMenuScale.VirtualWidth * 0.5f) - 320, (MobileMenuScale.VirtualHeight * 0.5f) - 202, 640, 404);
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         DrawModerationPanel();
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void Show()

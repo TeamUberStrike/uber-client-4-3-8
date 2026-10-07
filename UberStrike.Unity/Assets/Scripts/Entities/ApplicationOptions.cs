@@ -8,8 +8,8 @@ public class ApplicationOptions
     // Video
     public bool IsUsingCustom = false;
     public int VideoQualityLevel = 1;
-    public int VideoMaxQueuedFrames = 1;
-    public int VideoTextureQuality = 4;
+    public int VideoMaxQueuedFrames = 10;   // default: slider maxed (per request)
+    public int VideoTextureQuality = 0;     // globalTextureMipmapLimit; 0 = full-res = Texture Quality slider 5 (best)
     public int VideoVSyncCount = 0;
     public int VideoAntiAliasing = 0;
     public int VideoWaterMode = 1;
@@ -27,6 +27,26 @@ public class ApplicationOptions
     public float InputMouseRotationMinX = -360;
     public float InputMouseRotationMinY = -90;
     public bool InputInvertMouse = false;
+
+    // Touch / mobile input (used by the on-screen touch controls). Persisted via PlayerPrefs
+    // directly (below) so we don't have to extend the CmunePrefs.Key enum.
+    public bool UseMultiTouch = false;
+    public float TouchLookSensitivity = 1.5f;
+    public float TouchMoveSensitivity = 1.0f;
+
+    // Gyroscope aim — mobile, SCOPE-ONLY (only drives the view while a weapon is scoped). High-end
+    // "game" gyro: integrates the device's angular velocity into the look. Strength is a sensitivity
+    // multiplier (1 ≈ 1:1 device→view rotation, scaled by the scope's zoom); InvertY flips the vertical
+    // axis. PlayerPrefs-backed like the other touch fields.
+    public bool GyroAimEnabled = false;
+    public float GyroStrength = 1.5f;
+    public bool GyroInvertY = false;
+    public bool GyroInvertX = false;
+
+    // Interface — opt-in "classic" lobby HUD (4.3.10.1-style Play/Shop + Profile/Inbox/Clans/Options ring).
+    // Default OFF so production keeps the current lobby unless the player switches it in Options.
+    // PlayerPrefs-backed (like the touch fields) so we don't extend the CmunePrefs.Key enum.
+    public bool UseClassicLobby = false;
 
     // Gameplay
     public bool GameplayAutoPickupEnabled = true;
@@ -105,6 +125,21 @@ public class ApplicationOptions
         InputMouseRotationMinX = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputMouseRotationMinX, -360f);
         InputMouseRotationMinY = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputMouseRotationMinY, -90f);
         InputInvertMouse = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputInvertMouse, false);
+
+        // Touch input (PlayerPrefs-backed; see fields above)
+        UseMultiTouch = PlayerPrefs.GetInt("Options_UseMultiTouch", 0) != 0;
+        TouchLookSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchLookSensitivity", 1.5f), 0.5f, 3.0f);
+        TouchMoveSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat("Options_TouchMoveSensitivity", 1.0f), 0.5f, 3.0f);
+
+        // Gyroscope aim (PlayerPrefs-backed)
+        GyroAimEnabled = PlayerPrefs.GetInt("Options_GyroAimEnabled", 0) != 0;
+        GyroStrength = Mathf.Clamp(PlayerPrefs.GetFloat("Options_GyroStrength", 1.5f), 0.2f, 4.0f);
+        GyroInvertY = PlayerPrefs.GetInt("Options_GyroInvertY", 0) != 0;
+        GyroInvertX = PlayerPrefs.GetInt("Options_GyroInvertX", 0) != 0;
+
+        // Interface (PlayerPrefs-backed)
+        UseClassicLobby = PlayerPrefs.GetInt("Options_UseClassicLobby", 0) != 0;
+
         bool isGamePadEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputEnableGamepad, false);
         InputManager.Instance.IsGamepadEnabled = Input.GetJoystickNames().Length > 0 && isGamePadEnabled;
 
@@ -117,6 +152,19 @@ public class ApplicationOptions
         AudioEffectsVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioEffectsVolume, 0.7f);
         AudioMusicVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioMusicVolume, 0.3f);
         AudioMasterVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioMasterVolume, 0.5f);
+
+        // One-time migration so EXISTING installs also land on the new video defaults (Target FPS 200,
+        // Max Queued Frames 10, Texture Quality 5 = full-res) once — then the player's later changes stick.
+        // New installs already get these from the field defaults; this covers devices with older saved prefs
+        // (which would otherwise keep showing their previous values).
+        if (PlayerPrefs.GetInt("Options_VideoDefaults_v2", 0) == 0)
+        {
+            GeneralTargetFrameRate = 200;
+            VideoMaxQueuedFrames = 10;
+            VideoTextureQuality = 0;
+            PlayerPrefs.SetInt("Options_VideoDefaults_v2", 1);
+            SaveApplicationOptions();
+        }
 
         if (isReset) SaveApplicationOptions();
     }
@@ -146,6 +194,20 @@ public class ApplicationOptions
         // Input
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputXMouseSensitivity, InputXMouseSensitivity);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputYMouseSensitivity, InputYMouseSensitivity);
+
+        // Touch input (PlayerPrefs-backed)
+        PlayerPrefs.SetInt("Options_UseMultiTouch", UseMultiTouch ? 1 : 0);
+        PlayerPrefs.SetFloat("Options_TouchLookSensitivity", TouchLookSensitivity);
+        PlayerPrefs.SetFloat("Options_TouchMoveSensitivity", TouchMoveSensitivity);
+
+        // Gyroscope aim (PlayerPrefs-backed)
+        PlayerPrefs.SetInt("Options_GyroAimEnabled", GyroAimEnabled ? 1 : 0);
+        PlayerPrefs.SetFloat("Options_GyroStrength", GyroStrength);
+        PlayerPrefs.SetInt("Options_GyroInvertY", GyroInvertY ? 1 : 0);
+        PlayerPrefs.SetInt("Options_GyroInvertX", GyroInvertX ? 1 : 0);
+
+        // Interface (PlayerPrefs-backed)
+        PlayerPrefs.SetInt("Options_UseClassicLobby", UseClassicLobby ? 1 : 0);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMaxX, InputMouseRotationMaxX);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMaxY, InputMouseRotationMaxY);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputMouseRotationMinX, InputMouseRotationMinX);

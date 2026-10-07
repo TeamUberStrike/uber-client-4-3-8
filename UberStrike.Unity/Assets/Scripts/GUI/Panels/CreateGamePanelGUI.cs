@@ -85,15 +85,20 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
             }
         }
 
-        _windowRect.x = (Screen.width - _windowRect.width) * 0.5f;
-        _windowRect.y = (Screen.height - _windowRect.height) * 0.5f + 25;
+        // centre against the virtual screen for mobile menu scale
+        _windowRect.x = (MobileMenuScale.VirtualWidth - _windowRect.width) * 0.5f;
+        _windowRect.y = (MobileMenuScale.VirtualHeight - _windowRect.height) * 0.5f + 25;
     }
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.BeginGroup(_windowRect, GUIContent.none, BlueStonez.window);
         DrawCreateGamePanel();
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }
@@ -174,6 +179,7 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
     {
         float buttonWidth = (LevelManager.Instance.Count > 8) ? (rect.width - 18) : rect.width;
 
+        _scroll = MobileScroll.Drag(ScrollId.CreateGameMaps, rect, _scroll);
         _scroll = GUI.BeginScrollView(rect, _scroll, new Rect(0, 0, rect.width - 18, 10 + LevelManager.Instance.Count * 35));
         {
             int i = 0;

@@ -119,6 +119,16 @@ public class MenuConfiguration : MonoSingleton<MenuConfiguration>
     /// <returns>True, if view points were successfully set</returns>
     public bool GetPageViewPoint(PageType type, out Vector3 position, out Quaternion rotation)
     {
+        // Classic ring lobby: override ONLY the Home-page camera viewpoint with the retail-style framing
+        // (avatar right, ring left), tuned in-Editor. Routed through the normal viewpoint system so the
+        // camera animates here on page transition. Home page only; the column lobby keeps its viewpoint.
+        if (type == PageType.Home && ApplicationDataManager.ApplicationOptions.UseClassicLobby)
+        {
+            position = new Vector3(-16.714f, -0.776f, -2.374f);
+            rotation = Quaternion.Euler(14.586f, -107.133f, 0f);
+            return true;
+        }
+
         Transform transform;
         if (viewPointByPage.TryGetValue(type, out transform))
         {
@@ -132,6 +142,17 @@ public class MenuConfiguration : MonoSingleton<MenuConfiguration>
         }
 
         return transform != null;
+    }
+
+    // Classic ring lobby uses a wider FOV on the Home page (tuned in-Editor); every other page and the
+    // whole column lobby keep the default 60.
+    public const float DefaultLobbyFov = 60f;
+    public const float ClassicHomeFov = 90.6f;
+
+    public float GetPageFov(PageType type)
+    {
+        return (type == PageType.Home && ApplicationDataManager.ApplicationOptions.UseClassicLobby)
+            ? ClassicHomeFov : DefaultLobbyFov;
     }
 
     /// <summary>
