@@ -9,9 +9,7 @@ public static class ParticleEmissionSystem
     // TEMP DEBUG: Press F11 to toggle 10x particle size for visual inspection
     public static bool DebugLargeParticles = false;
 
-    // Legacy ParticleRenderer size renders at half the Shuriken startSize (session-4 frame
-    // captures vs 3.5.5: explosions/trails needed 0.5x). Surface/fire/water impacts keep
-    // their original config sizes, so apply the same factor to them.
+    // hit puffs scale. 0.5 = guess from explosion tuning, not measured on hits. tune in game.
     public const float ImpactSizeScale = 0.5f;
     static readonly HashSet<string> _impactNames = new HashSet<string>
     {
