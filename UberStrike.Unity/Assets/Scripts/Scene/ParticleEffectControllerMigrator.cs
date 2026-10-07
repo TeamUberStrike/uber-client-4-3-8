@@ -543,7 +543,7 @@ public static class ParticleEffectControllerMigrator
             {
                 var grow = ps.gameObject.GetComponent<LegacySizeGrow>();
                 if (grow == null) grow = ps.gameObject.AddComponent<LegacySizeGrow>();
-                grow.sizeGrow = sizeGrow;
+                grow.sizeGrow = sizeGrow * ParticleEmissionSystem.ImpactScale(goName);
             }
 
             // --- Force Over Lifetime (gravity from ParticleAnimator force.y) ---
@@ -1431,7 +1431,7 @@ public static class ParticleEffectControllerMigrator
         {
             var grow = ps.gameObject.GetComponent<LegacySizeGrow>();
             if (grow == null) grow = ps.gameObject.AddComponent<LegacySizeGrow>();
-            grow.sizeGrow = sizeGrow;
+            grow.sizeGrow = sizeGrow * ParticleEmissionSystem.ImpactScale(animEntry[0]);
         }
 
         // Force over lifetime
