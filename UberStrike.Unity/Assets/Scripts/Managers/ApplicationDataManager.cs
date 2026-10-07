@@ -28,6 +28,25 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public const int MinimalHeight = 560;
 
     public static ChannelType Channel { get; set; }
+
+    // Canonical "is this a mobile build?" gate. The client reports its platform
+    // via the ChannelType in the client configuration XML (Android / IPhone /
+    // IPad), NOT via Unity's UNITY_IPHONE/#if compile symbols — so all
+    // platform-dependent code in this project keys off Channel, not #if. Route
+    // every mobile/desktop branch through this one property so mobile-only
+    // behaviour can never accidentally leak into a PC build, and vice-versa.
+    // NOTE: the WebGL build reports the IPad channel (to pass the dev version
+    // gate), so IsMobile is also true in the browser build; desktop standalone
+    // is the only target where this is false.
+    public static bool IsMobile
+    {
+        get
+        {
+            return Channel == ChannelType.Android
+                || Channel == ChannelType.IPad
+                || Channel == ChannelType.IPhone;
+        }
+    }
     public static string VersionLong = string.Empty;
     public static string VersionShort = string.Empty;
     public static BuildType BuildType;
