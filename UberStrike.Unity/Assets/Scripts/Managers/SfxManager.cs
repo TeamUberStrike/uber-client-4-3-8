@@ -95,6 +95,9 @@ public class SfxManager : MonoSingleton<SfxManager>
 
     private void Awake()
     {
+        uiAudioSource.spatialBlend = 0f;
+        musicAudioSource.spatialBlend = 0f;
+
         _sounds = new Dictionary<SoundEffectType, AudioClip>(AllSounds.Length);
 
         foreach (SoundValuePair pair in AllSounds)
@@ -213,6 +216,7 @@ public class SfxManager : MonoSingleton<SfxManager>
 
             // Custom AudioSource Parameters here
             audioGo.GetComponent<AudioSource>().volume = volume;
+            audioGo.GetComponent<AudioSource>().spatialBlend = 1f;
             audioGo.GetComponent<AudioSource>().rolloffMode = rolloffMode;
             audioGo.GetComponent<AudioSource>().minDistance = minDistance;
             audioGo.GetComponent<AudioSource>().maxDistance = maxDistance;

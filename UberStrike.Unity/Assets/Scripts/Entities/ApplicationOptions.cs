@@ -3,7 +3,9 @@ using UnityEngine;
 public class ApplicationOptions
 {
     // General
-    public int GeneralTargetFrameRate = 200;
+    public bool GeneralLimitFrameRate = false;
+    public int GeneralTargetFrameRate = 144;
+    public int FrameRateCap { get { return GeneralLimitFrameRate ? GeneralTargetFrameRate : -1; } }
 
     // Video
     public bool IsUsingCustom = false;
@@ -39,7 +41,9 @@ public class ApplicationOptions
     // Field of View — user-adjustable main camera FOV (Options → Video)
     public const float VideoFOVMin = 60f;
     public const float VideoFOVMax = 110f;
-    public float VideoFOV = 75f;
+    public const float VideoFOVNormal = 75f;
+    public const float VideoFOVWide = 100f;
+    public float VideoFOV = VideoFOVNormal;
 
     // In-match FPS counter overlay + post-processing (Options → Video).
     // PostProcessing now has a 0-100 strength slider — 0 is off, 100 is full.
@@ -70,7 +74,17 @@ public class ApplicationOptions
         }
 
         // General
-        GeneralTargetFrameRate = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, 200);
+        if (CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralFrameRateVersion, 0) < 1)
+        {
+            // old default 200 -> uncapped
+            int old = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, 200);
+            bool limit = old > 0 && old != 200;
+            CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralLimitFrameRate, limit);
+            CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, limit ? old : GeneralTargetFrameRate);
+            CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralFrameRateVersion, 1);
+        }
+        GeneralLimitFrameRate = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralLimitFrameRate, GeneralLimitFrameRate);
+        GeneralTargetFrameRate = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, GeneralTargetFrameRate);
 
         // Video
         IsUsingCustom = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoIsUsingCustom, IsUsingCustom);
@@ -91,15 +105,15 @@ public class ApplicationOptions
         IsFullscreen = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoIsFullscreen, true);
         ScreenResolution = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoScreenRes, ScreenResolutionManager.CurrentResolutionIndex);
 
-        VideoFOV = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV), VideoFOVMin, VideoFOVMax);
+        VideoFOV = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV) >= (VideoFOVNormal + VideoFOVWide) * 0.5f ? VideoFOVWide : VideoFOVNormal;
         VideoShowFps = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoShowFps, VideoShowFps);
         VideoPostProcessingStrength = Mathf.Clamp(
             CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoPostProcessingStrength, VideoPostProcessingStrength),
             0, 100);
 
         // Input
-        InputXMouseSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputXMouseSensitivity, 3.0f), 1.0f, 10.0f);
-        InputYMouseSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputYMouseSensitivity, 3.0f), 1.0f, 10.0f);
+        InputXMouseSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputXMouseSensitivity, 3.0f), 0.1f, 10.0f);
+        InputYMouseSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputYMouseSensitivity, 3.0f), 0.1f, 10.0f);
         InputMouseRotationMaxX = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputMouseRotationMaxX, 360f);
         InputMouseRotationMaxY = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputMouseRotationMaxY, 90f);
         InputMouseRotationMinX = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputMouseRotationMinX, -360f);
@@ -124,6 +138,7 @@ public class ApplicationOptions
     public void SaveApplicationOptions()
     {
         // General
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralLimitFrameRate, GeneralLimitFrameRate);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, GeneralTargetFrameRate);
 
         // Video
