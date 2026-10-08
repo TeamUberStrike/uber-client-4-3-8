@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cmune.Util;
 using UberStrike.Core.Models.Views;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : Singleton<LevelManager>
 {
@@ -125,6 +126,9 @@ public class LevelManager : Singleton<LevelManager>
         if (map.MapId == 0)
             _originalLightmaps = LightmapSettings.lightmaps;
 
+        // before reparent, after = 'Latest'
+        string currentSceneName = map.gameObject.scene.name;
+
         map.transform.parent = GetLevelsParent();
 
         //clear all old levels
@@ -141,6 +145,17 @@ public class LevelManager : Singleton<LevelManager>
                     m.Space = null;
                 }
             }
+        }
+        // U2022 keeps empty additive scenes: unload stale Level*
+        for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
+        {
+            Scene s = SceneManager.GetSceneAt(i);
+            if (!s.IsValid() || !s.isLoaded) continue;
+            if (!s.name.StartsWith("Level")) continue;
+            if (s.name == "LevelSpaceship") continue; // lobby
+            if (s.name == currentSceneName) continue;
+            if (s == SceneManager.GetActiveScene()) continue;
+            SceneManager.UnloadSceneAsync(s);
         }
         Resources.UnloadUnusedAssets();
         //Debug.Log("LightMaps: " + LightmapSettings.lightmaps.Length);
