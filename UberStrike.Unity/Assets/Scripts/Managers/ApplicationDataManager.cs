@@ -200,7 +200,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         if (isFocused)
         {
-            Application.targetFrameRate = (applicationOptions != null) ? applicationOptions.GeneralTargetFrameRate : 200;
+            Application.targetFrameRate = (applicationOptions != null) ? applicationOptions.FrameRateCap : -1;
         }
         else
         {

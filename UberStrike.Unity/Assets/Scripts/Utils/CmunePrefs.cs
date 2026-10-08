@@ -51,6 +51,8 @@ public static class CmunePrefs
         Options_VideoShowFps = 128,
         Options_VideoPostProcessing = 129,
         Options_VideoPostProcessingStrength = 130,
+        Options_GeneralLimitFrameRate = 131,
+        Options_GeneralFrameRateVersion = 132,
 
         Keymap_None = 300,
         Keymap_HorizontalLook = 301,
