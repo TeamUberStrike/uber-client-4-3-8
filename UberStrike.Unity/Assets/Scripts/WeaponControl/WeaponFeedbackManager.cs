@@ -343,7 +343,8 @@ public class WeaponFeedbackManager : MonoSingleton<WeaponFeedbackManager>
         public PickUpState(BaseWeaponLogic weapon, BaseWeaponDecorator decorator)
             : base(weapon, decorator)
         {
-            _transitionTime = Mathf.Max(Instance.WeaponAnimation.PickUpDuration, weapon.Config.SwitchDelayMilliSeconds / 1000);
+            // ms -> s, float divide
+            _transitionTime = Mathf.Max(Instance.WeaponAnimation.PickUpDuration, weapon.Config.SwitchDelayMilliSeconds / 1000f);
             if (decorator.IsMelee)
             {
                 _currentRotation = -90;
