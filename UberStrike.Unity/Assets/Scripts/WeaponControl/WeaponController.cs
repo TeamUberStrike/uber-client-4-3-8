@@ -138,6 +138,8 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                 if (_weapon.InputHandler != null)
                     _weapon.InputHandler.OnPrimaryFire(false);
 
+                _bufferedTapTime = -1f;
+
                 UpdateAmmoHUD();
 
                 if (_weapon.Logic != null && _weapon.Decorator != null)
@@ -553,6 +555,12 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         get { return IsWeaponValid && _weapon.NextShootTime < Time.time && _weapon.Logic.IsWeaponActive; }
     }
 
+    // pickup anim past 25%
+    private bool IsSwitchDone
+    {
+        get { return IsWeaponValid && _weapon.Logic.IsWeaponActive; }
+    }
+
     public bool IsSecondaryAction
     {
         get { return _weapon != null && !_weapon.InputHandler.CanChangeWeapon(); }
@@ -693,10 +701,17 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             // dropped; release events still flow through normally. Part 2
             // (LateUpdate reconciliation below) synthesizes the press once
             // the lockout clears if LMB is still physically held.
-            if (CanPlayerShoot)
+            if (CanPlayerShoot && IsSwitchDone)
+            {
+                _bufferedTapTime = -1f;
                 _weapon.InputHandler.OnPrimaryFire(true);
-            else if (_weaponSwitchTimeout >= Time.time)
+            }
+            else if (_weaponSwitchTimeout >= Time.time || CanPlayerShoot)
+            {
+                // gun not up yet: keep tap till ready
                 _bufferedTapTime = Time.time;
+                _bufferedTapReadyTime = -1f;
+            }
         }
         else
         {
@@ -740,9 +755,14 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             // every frame of a continuous hold.
             if (_weapon != null && _weapon.HasWeapon)
             {
+                bool ready = IsWeaponReady;
+
                 if (Input.GetMouseButton(0))
                 {
-                    if (!_reconciledFireHeld)
+                    _bufferedTapTime = -1f;
+
+                    // wait till gun ready, else semi-auto eats the press
+                    if (!_reconciledFireHeld && ready)
                     {
                         _weapon.InputHandler.OnPrimaryFire(true);
                         _reconciledFireHeld = true;
@@ -752,14 +772,25 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                 {
                     _reconciledFireHeld = false;
 
-                    if (Time.time - _bufferedTapTime <= BufferedTapWindow)
+                    if (_bufferedTapTime >= 0)
                     {
-                        tapHandler = _weapon.InputHandler;
-                        tapHandler.OnPrimaryFire(true);
+                        if (_bufferedTapReadyTime < 0 && IsSwitchDone)
+                            _bufferedTapReadyTime = Time.time;
+
+                        if (ready)
+                        {
+                            _bufferedTapTime = -1f;
+                            tapHandler = _weapon.InputHandler;
+                            tapHandler.OnPrimaryFire(true);
+                        }
+                        else if (Time.time - _bufferedTapTime > BufferedTapMaxAge ||
+                                 (_bufferedTapReadyTime >= 0 && Time.time - _bufferedTapReadyTime > BufferedTapReadyGrace))
+                        {
+                            _bufferedTapTime = -1f;
+                        }
                     }
                 }
             }
-            _bufferedTapTime = -1f;
 
             //single fire shots
             if (_weapon != null && _weapon.HasWeapon && _weaponSwitchTimeout < Time.time)
@@ -792,6 +823,9 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             // that when it clears, a still-held LMB is replayed as a fresh
             // press edge.
             _reconciledFireHeld = false;
+
+            if (_weaponSwitchTimeout < Time.time)
+                _bufferedTapTime = -1f;
 
             if (GameState.HasCurrentPlayer)
                 GameState.LocalCharacter.IsFiring = false;
@@ -1003,8 +1037,10 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     // re-engages. Prevents re-synthesizing a press every frame.
     private bool _reconciledFireHeld = false;
 
-    private const float BufferedTapWindow = 0.3f;
+    private const float BufferedTapMaxAge = 1f;
+    private const float BufferedTapReadyGrace = 0.15f;
     private float _bufferedTapTime = -1f;
+    private float _bufferedTapReadyTime = -1f;
 
     private LoadoutSlotType _lastLoadoutType = LoadoutSlotType.WeaponPrimary;
 
