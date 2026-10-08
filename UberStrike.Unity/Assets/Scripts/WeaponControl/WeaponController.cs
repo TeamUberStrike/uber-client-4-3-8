@@ -140,6 +140,9 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
 
                 _bufferedTapTime = -1f;
 
+                // RMB down before/with switch key: open scope when gate opens
+                _secondaryPending = true;
+
                 UpdateAmmoHUD();
 
                 if (_weapon.Logic != null && _weapon.Decorator != null)
@@ -725,6 +728,14 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         if (GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive &&
             IsEnabled && _weapon != null && _weapon.HasWeapon)
         {
+            // lockout Stop() eats hold press. keep till gate opens
+            if (ev.IsDown && _weaponSwitchTimeout >= Time.time && _weapon.InputHandler.HoldsSecondary)
+            {
+                _secondaryPending = true;
+                return;
+            }
+
+            _secondaryPending = false;
             _weapon.InputHandler.OnSecondaryFire(ev.IsDown);
         }
     }
@@ -792,6 +803,16 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                 }
             }
 
+            if (_secondaryPending)
+            {
+                _secondaryPending = false;
+
+                // replay once, only if RMB still held
+                if (_weapon != null && _weapon.HasWeapon && _weapon.InputHandler.HoldsSecondary &&
+                    InputManager.Instance.GetValue(GameInputKey.SecondaryFire) != 0)
+                    _weapon.InputHandler.OnSecondaryFire(true);
+            }
+
             //single fire shots
             if (_weapon != null && _weapon.HasWeapon && _weaponSwitchTimeout < Time.time)
             {
@@ -825,7 +846,10 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             _reconciledFireHeld = false;
 
             if (_weaponSwitchTimeout < Time.time)
+            {
                 _bufferedTapTime = -1f;
+                _secondaryPending = false;
+            }
 
             if (GameState.HasCurrentPlayer)
                 GameState.LocalCharacter.IsFiring = false;
@@ -1041,6 +1065,7 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     private const float BufferedTapReadyGrace = 0.15f;
     private float _bufferedTapTime = -1f;
     private float _bufferedTapReadyTime = -1f;
+    private bool _secondaryPending = false;
 
     private LoadoutSlotType _lastLoadoutType = LoadoutSlotType.WeaponPrimary;
 
