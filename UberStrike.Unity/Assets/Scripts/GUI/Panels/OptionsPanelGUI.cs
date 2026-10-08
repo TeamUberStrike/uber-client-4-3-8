@@ -573,11 +573,11 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.BeginGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 65));
             {
                 GUI.Label(new Rect(15, 10, 130, 30), LocalizedStrings.MouseSensitivity, BlueStonez.label_interparkbold_11pt_left);
-                float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 1, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+                float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 0.1f, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
                 GUI.Label(new Rect(370, 10, 100, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
                 if (s != ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity)
                 {
-                    ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity = s;
+                    ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity = Mathf.Round(s * 10f) / 10f;
                 }
 
                 bool invert = GUI.Toggle(new Rect(15, 38, 200, 30), ApplicationDataManager.ApplicationOptions.InputInvertMouse, LocalizedStrings.InvertMouseButtons, BlueStonez.toggle);

@@ -405,6 +405,11 @@ public class AxisInputChannel : IInputChannel, IByteArray
 
     public float RawValue()
     {
+        // wheel raw: smoothing delays QS
+        if (_axis.StartsWith("Mouse ScrollWheel"))
+        {
+            return Input.GetAxisRaw(_axis);
+        }
         return Input.GetAxis(_axis);
     }
 

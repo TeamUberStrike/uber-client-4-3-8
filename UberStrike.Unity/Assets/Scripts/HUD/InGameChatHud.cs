@@ -19,7 +19,11 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     public void Update()
     {
-        if (!PopupSystem.IsAnyPopupOpen && !InputManager.Instance.IsAnyDown &&
+        // click away: close on release, else click hits gun
+        if (_closeOnMouseUp && !Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+            CloseInput();
+
+        if (!PopupSystem.IsAnyPopupOpen &&
             _spamTimer <= 0 && (_chatTimer <= 0 || _canInput) &&
             Input.GetKeyDown(KeyCode.Return))
         {
@@ -47,13 +51,18 @@ public class InGameChatHud : Singleton<InGameChatHud>
         {
         }
 
-        for (int i = 0; i < _chatMsgs.Count; i++)
+        for (int i = _chatMsgs.Count - 1; i >= 0; i--)
         {
             _chatMsgs[i].Timer -= Time.deltaTime * MsgFadeSpeed;
             if (_chatMsgs[i].Timer < 0) _chatMsgs.RemoveAt(i);
         }
 
-        MsgPosition.height = Screen.height - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
+        float height = Screen.height / Scale - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
+        if (height != MsgPosition.height)
+        {
+            MsgPosition.height = height;
+            UpdateMessagePosition();
+        }
 
         if (_chatTimer > 0) _chatTimer -= Time.deltaTime;
         if (_spamTimer > 0) _spamTimer -= Time.deltaTime;
@@ -64,6 +73,10 @@ public class InGameChatHud : Singleton<InGameChatHud>
         GUI.depth = (int)GuiDepth.Chat;
 
         if (TabScreenPanelGUI.Enabled) return;
+
+        Matrix4x4 matrix = GUI.matrix;
+        float scale = Scale;
+        GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1)) * matrix;
 
         GUI.BeginGroup(MsgPosition);
         {
@@ -78,6 +91,8 @@ public class InGameChatHud : Singleton<InGameChatHud>
         }
         GUI.EndGroup();
 
+        GUI.matrix = matrix;
+
         if (_doFocusOnChat)
         {
             GUI.FocusControl("input");
@@ -90,6 +105,27 @@ public class InGameChatHud : Singleton<InGameChatHud>
         _chatMsgs = new List<ChatMessage>(10);
         ClearAll();
         CmuneEventHandler.AddListener<OnSetPlayerTeamEvent>(OnTeamChange);
+        CmuneEventHandler.AddListener<OnPlayerRespawnEvent>(OnPlayerRespawn);
+    }
+
+    private void OnPlayerRespawn(OnPlayerRespawnEvent ev)
+    {
+        CloseIfAbandoned();
+    }
+
+    // respawn: focused input stays, abandoned one closes, draft kept
+    public void CloseIfAbandoned()
+    {
+        if (!_canInput) return;
+
+        if (_closeOnMouseUp || !_inputFocused)
+        {
+            CloseInput();
+            return;
+        }
+
+        if (!GameState.LocalPlayer.IsGamePaused) _paused = false;
+        InputManager.Instance.IsInputEnabled = false;
     }
 
     private void OnTeamChange(OnSetPlayerTeamEvent ev)
@@ -134,9 +170,17 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         Rect pos = new Rect(44, MsgPosition.height - InputHeight, MsgPosition.width - 44, InputHeight);
 
+        if (Event.current.rawType == EventType.MouseDown &&
+            !new Rect(0, pos.y, MsgPosition.width, InputHeight).Contains(Event.current.mousePosition))
+        {
+            _closeOnMouseUp = true;
+        }
+
         GUI.color = Color.white;
         GUI.SetNextControlName("input");
         _inputContent = GUI.TextField(pos, _inputContent, _maxMessageLength, _textFieldStyle);
+        if (Event.current.type == EventType.Repaint)
+            _inputFocused = GUI.GetNameOfFocusedControl() == "input";
         _inputContent = _inputContent.Trim(new char[] { '\n', '\t' });
 
         GUI.color = Color.black;
@@ -147,7 +191,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
         if (Event.current.isKey && Event.current.keyCode == KeyCode.Return &&
             Event.current.type == EventType.KeyUp)
         {
-            if (_chatTimer <= 0)
+            if (!_skipEnterUp)
             {
                 _canInput = false;
                 GUIUtility.keyboardControl = 0;
@@ -156,6 +200,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
             }
             else
             {
+                _skipEnterUp = false;
                 Event.current.Use();
             }
         }
@@ -236,8 +281,24 @@ public class InGameChatHud : Singleton<InGameChatHud>
     public void ClearAll()
     {
         _canInput = false;
+        _skipEnterUp = false;
         _inputContent = string.Empty;
         _chatMsgs.Clear();
+    }
+
+    private void CloseInput()
+    {
+        _paused = false;
+        _skipEnterUp = false;
+        _closeOnMouseUp = false;
+
+        if (!_canInput) return;
+
+        _canInput = false;
+        GUIUtility.keyboardControl = 0;
+
+        if (GameState.HasCurrentGame && GameState.CurrentGame.IsMatchRunning && !GameState.LocalPlayer.IsGamePaused)
+            InputManager.Instance.IsInputEnabled = true;
     }
 
     public void Pause()
@@ -254,7 +315,9 @@ public class InGameChatHud : Singleton<InGameChatHud>
     private void BeginChat()
     {
         _doFocusOnChat = true;
-        _chatTimer = 0.5f;
+        _skipEnterUp = true;
+        _closeOnMouseUp = false;
+        _inputFocused = true;
         //_enableTime = Time.time;
 
         InputManager.Instance.IsInputEnabled = false;
@@ -264,7 +327,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         SendChatMessage();
 
-        _chatTimer = 0.3f;
+        _chatTimer = 0.1f;
 
         if (_paused)
         {
@@ -297,9 +360,14 @@ public class InGameChatHud : Singleton<InGameChatHud>
                 remove = true;
                 break;
             }
-
-            if (remove) _chatMsgs.RemoveRange(index, _chatMsgs.Count - index);
         }
+
+        if (remove) _chatMsgs.RemoveRange(index, _chatMsgs.Count - index);
+    }
+
+    private float Scale
+    {
+        get { return Mathf.Max(1f, Screen.height / 1080f); }
     }
 
     private GUIStyle MsgStyle
@@ -326,6 +394,9 @@ public class InGameChatHud : Singleton<InGameChatHud>
     private GUIStyle _msgStyleCache;
     private bool _paused;
     private bool _doFocusOnChat;
+    private bool _skipEnterUp;
+    private bool _closeOnMouseUp;
+    private bool _inputFocused;
     private List<ChatMessage> _chatMsgs;
     private float _chatTimer;
     private float _muteTimer;
