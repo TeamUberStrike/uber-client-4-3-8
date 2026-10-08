@@ -119,8 +119,6 @@ public class WeaponSlot
         switch (item.Configuration.InputHandlerType)
         {
             case WeaponInputHandlerType.SniperRifle:
-                // Prefab _zoomInformation is clobbered when the loadout config is rebuilt, so force the
-                // intended per-weapon zoom here (see SniperZoomOverride).
                 InputHandler = new SniperRifleInputHandler(logic, isLocal, SniperZoomOverride.Resolve(item.Configuration));
                 break;
 
