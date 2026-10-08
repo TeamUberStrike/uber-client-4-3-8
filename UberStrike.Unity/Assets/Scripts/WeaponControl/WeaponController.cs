@@ -691,6 +691,8 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             // the lockout clears if LMB is still physically held.
             if (CanPlayerShoot)
                 _weapon.InputHandler.OnPrimaryFire(true);
+            else if (_weaponSwitchTimeout >= Time.time)
+                _bufferedTapTime = Time.time;
         }
         else
         {
@@ -720,6 +722,8 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     {
         if (CanPlayerShoot)
         {
+            WeaponInputHandler tapHandler = null;
+
             // QS stuck-trigger fix for public issue #45 (Part 2/2):
             // if LMB is physically held but the handler's trigger state is
             // false (because the press-edge arrived during the switch
@@ -743,13 +747,26 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                 else
                 {
                     _reconciledFireHeld = false;
+
+                    if (Time.time - _bufferedTapTime <= BufferedTapWindow)
+                    {
+                        tapHandler = _weapon.InputHandler;
+                        tapHandler.OnPrimaryFire(true);
+                    }
                 }
             }
+            _bufferedTapTime = -1f;
 
             //single fire shots
             if (_weapon != null && _weapon.HasWeapon && _weaponSwitchTimeout < Time.time)
             {
                 _weapon.InputHandler.Update();
+            }
+
+            if (tapHandler != null)
+            {
+                GameState.LocalCharacter.IsFiring = false;
+                tapHandler.OnPrimaryFire(false);
             }
 
             // check if need to remove pickup weapon
@@ -981,6 +998,9 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     // it via the reconciled press; reset on release or when the gate
     // re-engages. Prevents re-synthesizing a press every frame.
     private bool _reconciledFireHeld = false;
+
+    private const float BufferedTapWindow = 0.3f;
+    private float _bufferedTapTime = -1f;
 
     private LoadoutSlotType _lastLoadoutType = LoadoutSlotType.WeaponPrimary;
 
