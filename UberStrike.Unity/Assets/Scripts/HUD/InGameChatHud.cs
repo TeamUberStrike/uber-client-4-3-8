@@ -154,6 +154,13 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         Rect pos = new Rect(44, MsgPosition.height - InputHeight, MsgPosition.width - 44, InputHeight);
 
+        if (Event.current.rawType == EventType.MouseDown &&
+            !new Rect(0, pos.y, MsgPosition.width, InputHeight).Contains(Event.current.mousePosition))
+        {
+            CloseInput();
+            return;
+        }
+
         GUI.color = Color.white;
         GUI.SetNextControlName("input");
         _inputContent = GUI.TextField(pos, _inputContent, _maxMessageLength, _textFieldStyle);
@@ -265,6 +272,11 @@ public class InGameChatHud : Singleton<InGameChatHud>
     public void CancelInput()
     {
         _inputContent = string.Empty;
+        CloseInput();
+    }
+
+    private void CloseInput()
+    {
         _paused = false;
         _skipEnterUp = false;
 
