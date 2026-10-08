@@ -22,6 +22,10 @@ public class InGameChatHud : Singleton<InGameChatHud>
         if (_canInput && IsAlive != _aliveAtOpen)
             CancelInput();
 
+        // click away: close on release, else click hits gun
+        if (_closeOnMouseUp && !Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+            CloseInput();
+
         if (!PopupSystem.IsAnyPopupOpen &&
             _spamTimer <= 0 && (_chatTimer <= 0 || _canInput) &&
             Input.GetKeyDown(KeyCode.Return))
@@ -157,8 +161,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
         if (Event.current.rawType == EventType.MouseDown &&
             !new Rect(0, pos.y, MsgPosition.width, InputHeight).Contains(Event.current.mousePosition))
         {
-            CloseInput();
-            return;
+            _closeOnMouseUp = true;
         }
 
         GUI.color = Color.white;
@@ -279,6 +282,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         _paused = false;
         _skipEnterUp = false;
+        _closeOnMouseUp = false;
 
         if (!_canInput) return;
 
@@ -304,6 +308,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         _doFocusOnChat = true;
         _skipEnterUp = true;
+        _closeOnMouseUp = false;
         _aliveAtOpen = IsAlive;
         //_enableTime = Time.time;
 
@@ -388,6 +393,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     private bool _doFocusOnChat;
     private bool _skipEnterUp;
     private bool _aliveAtOpen;
+    private bool _closeOnMouseUp;
     private List<ChatMessage> _chatMsgs;
     private float _chatTimer;
     private float _muteTimer;
