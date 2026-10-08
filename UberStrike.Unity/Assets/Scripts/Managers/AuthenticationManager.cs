@@ -122,7 +122,8 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             LoginPanelGUI.IsBanned = loginResult.MemberAuthenticationResult == MemberAuthenticationResult.IsBanned;
             if (Application.isEditor || Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                ApplicationDataManager.Instance.LockApplication(LocalizedStrings.YourAccountHasBeenBanned);
+                ApplicationDataManager.Instance.LockApplication(
+                    LoginPanelGUI.IsBanned ? LocalizedStrings.YourAccountHasBeenBanned : LoginPanelGUI.ErrorMessage);
             }
             else
             {
