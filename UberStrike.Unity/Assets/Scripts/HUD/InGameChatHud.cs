@@ -90,6 +90,12 @@ public class InGameChatHud : Singleton<InGameChatHud>
         _chatMsgs = new List<ChatMessage>(10);
         ClearAll();
         CmuneEventHandler.AddListener<OnSetPlayerTeamEvent>(OnTeamChange);
+        CmuneEventHandler.AddListener<OnPlayerRespawnEvent>(OnPlayerRespawn);
+    }
+
+    private void OnPlayerRespawn(OnPlayerRespawnEvent ev)
+    {
+        CancelInput();
     }
 
     private void OnTeamChange(OnSetPlayerTeamEvent ev)
@@ -238,6 +244,20 @@ public class InGameChatHud : Singleton<InGameChatHud>
         _canInput = false;
         _inputContent = string.Empty;
         _chatMsgs.Clear();
+    }
+
+    public void CancelInput()
+    {
+        _inputContent = string.Empty;
+        _paused = false;
+
+        if (!_canInput) return;
+
+        _canInput = false;
+        GUIUtility.keyboardControl = 0;
+
+        if (GameState.HasCurrentGame && GameState.CurrentGame.IsMatchRunning && !GameState.LocalPlayer.IsGamePaused)
+            InputManager.Instance.IsInputEnabled = true;
     }
 
     public void Pause()
