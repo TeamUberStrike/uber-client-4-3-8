@@ -387,7 +387,7 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                     }
                     else
                     {
-                        Debug.LogError("SetPickupWeapon failed because item of the same class already equipped");
+                        Debug.Log("SetPickupWeapon skipped: item of the same class already equipped");
                     }
                 }
             }
@@ -671,12 +671,15 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
 
     private void PrimaryFireCallback(InputChangeEvent ev, LoadoutSlotType slotType)
     {
-        if (ev.IsDown && CanPlayerShoot)
+        if (_weapon == null || !_weapon.HasWeapon) return;
+
+        if (ev.IsDown)
         {
-            if (_weapon != null && _weapon.HasWeapon)
+            // lockout press: never send false (sticks trigger)
+            if (CanPlayerShoot)
                 _weapon.InputHandler.OnPrimaryFire(true);
         }
-        else if (_weapon != null)
+        else
         {
             GameState.LocalCharacter.IsFiring = false;
             _weapon.InputHandler.OnPrimaryFire(false);
@@ -704,6 +707,23 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     {
         if (CanPlayerShoot)
         {
+            // LMB held, press lost in lockout: replay once
+            if (_weapon != null && _weapon.HasWeapon)
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    if (!_reconciledFireHeld)
+                    {
+                        _weapon.InputHandler.OnPrimaryFire(true);
+                        _reconciledFireHeld = true;
+                    }
+                }
+                else
+                {
+                    _reconciledFireHeld = false;
+                }
+            }
+
             //single fire shots
             if (_weapon != null && _weapon.HasWeapon && _weaponSwitchTimeout < Time.time)
             {
@@ -725,6 +745,8 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         }
         else
         {
+            _reconciledFireHeld = false;
+
             if (GameState.HasCurrentPlayer)
                 GameState.LocalCharacter.IsFiring = false;
 
@@ -928,6 +950,8 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     private int _pickupWeaponEventCount = 0;
     private float _pickUpWeaponAutoRemovalTime = 0;
     private int _projectileId;
+
+    private bool _reconciledFireHeld = false;
 
     private LoadoutSlotType _lastLoadoutType = LoadoutSlotType.WeaponPrimary;
 
