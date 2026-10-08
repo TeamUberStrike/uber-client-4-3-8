@@ -1049,20 +1049,6 @@ public static class ParticleEffectControllerMigrator
         bool wasNull = c.ParticleEmitter == null;
         c.ParticleEmitter = ps;
         if (c.ParticleColor.a < 0.01f) c.ParticleColor = Color.white;
-
-        // Sand particle size fix: serialized data has 0.05m (5cm) which is an extreme outlier
-        // compared to Stone (0.3m), Wood (0.2m), Grass (0.1-0.6m). At 5cm, particles are nearly
-        // invisible and appear as hard dots. Boost undersized Sand configs to match Stone/Wood range.
-        // Only override configs with clearly too-small sizes (< 0.15) to preserve the few weapon
-        // configs that intentionally use larger Sand sizes (0.5m on some weapons).
-        if (n == "Sand" && c.ParticleMaxSize < 0.15f)
-        {
-            c.ParticleMinSize = 0.25f;
-            c.ParticleMaxSize = 0.35f;
-            c.ParticleMinLiveTime = 0.8f;
-            c.ParticleMaxLiveTime = 1.5f;
-        }
-
         return wasNull ? 1 : 0;
     }
 
