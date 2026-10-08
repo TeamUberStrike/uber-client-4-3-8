@@ -119,13 +119,10 @@ public class ForceField : MonoBehaviour
         collider.isTrigger = true;
         gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
 
-        // Port artifact: some ForceField BoxColliders shipped at 1×1×1 local while
-        // the pad's visible mesh (a child) spans much wider → players can walk onto
-        // the pad edge without entering the trigger, and only jump when they reach
-        // the dead center. Fit the collider to the combined child-mesh bounds so the
-        // trigger covers the full pad surface. Non-Box colliders (MeshCollider etc.)
-        // are left alone.
-        FitTriggerToChildMeshes(collider);
+        // retail pads keep authored box (centre-only launch, = 4.3.8). fit only unset 1x1x1 box
+        var box = collider as BoxCollider;
+        if (box != null && box.size == Vector3.one)
+            FitTriggerToChildMeshes(collider);
 
         // Only spawn on JumpPads, not Accelerator pads (accel, AcceleratorPad, etc.)
         if (gameObject.name.IndexOf("accel", System.StringComparison.OrdinalIgnoreCase) >= 0)
