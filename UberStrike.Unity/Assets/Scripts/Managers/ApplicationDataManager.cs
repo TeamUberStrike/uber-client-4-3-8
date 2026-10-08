@@ -139,6 +139,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
                 // Setup Application Options
                 applicationOptions.Initialize();
+                OnApplicationFocus(Application.isFocused);
 
                 // Set the initial Video options based on Cmune Prefs
                 if (applicationOptions.IsUsingCustom)
