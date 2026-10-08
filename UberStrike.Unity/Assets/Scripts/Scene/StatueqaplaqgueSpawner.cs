@@ -85,6 +85,30 @@ public class StatueqaplaqgueSpawner : MonoBehaviour
         // CreatePrimitive attaches a BoxCollider; leave it for wall-blocking
         // parity with the UB6 MeshCollider (the cube and scaled-mesh volumes
         // are equivalent here).
-        SceneManager.MoveGameObjectToScene(go, scene);
+
+        // parent to Temple root so it unloads with the map
+        Transform mapRoot = FindTempleMapRoot();
+        if (mapRoot != null)
+        {
+            go.transform.SetParent(mapRoot, true);
+        }
+        else
+        {
+            Debug.LogWarning("[Statueqaplaqgue] Temple map root '" + TempleSceneName +
+                "' not found; leaving plaque in scene '" + scene.name + "'.");
+            SceneManager.MoveGameObjectToScene(go, scene);
+        }
+    }
+
+    private static Transform FindTempleMapRoot()
+    {
+        var maps = Object.FindObjectsOfType<MapConfiguration>(true);
+        foreach (var m in maps)
+        {
+            if (m != null && m.gameObject.name == TempleSceneName)
+                return m.transform;
+        }
+        var byName = GameObject.Find(TempleSceneName);
+        return byName != null ? byName.transform : null;
     }
 }
