@@ -19,7 +19,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     public void Update()
     {
-        if (!PopupSystem.IsAnyPopupOpen && !InputManager.Instance.IsAnyDown &&
+        if (!PopupSystem.IsAnyPopupOpen && (_canInput || !InputManager.Instance.IsAnyDown) &&
             _spamTimer <= 0 && (_chatTimer <= 0 || _canInput) &&
             Input.GetKeyDown(KeyCode.Return))
         {
@@ -158,7 +158,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
         if (Event.current.isKey && Event.current.keyCode == KeyCode.Return &&
             Event.current.type == EventType.KeyUp)
         {
-            if (_chatTimer <= 0)
+            if (!_skipEnterUp)
             {
                 _canInput = false;
                 GUIUtility.keyboardControl = 0;
@@ -167,6 +167,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
             }
             else
             {
+                _skipEnterUp = false;
                 Event.current.Use();
             }
         }
@@ -279,7 +280,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     private void BeginChat()
     {
         _doFocusOnChat = true;
-        _chatTimer = 0.5f;
+        _skipEnterUp = true;
         //_enableTime = Time.time;
 
         InputManager.Instance.IsInputEnabled = false;
@@ -289,7 +290,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         SendChatMessage();
 
-        _chatTimer = 0.3f;
+        _chatTimer = 0.1f;
 
         if (_paused)
         {
@@ -351,6 +352,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     private GUIStyle _msgStyleCache;
     private bool _paused;
     private bool _doFocusOnChat;
+    private bool _skipEnterUp;
     private List<ChatMessage> _chatMsgs;
     private float _chatTimer;
     private float _muteTimer;
