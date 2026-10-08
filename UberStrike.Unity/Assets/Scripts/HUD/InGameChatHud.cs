@@ -110,7 +110,22 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     private void OnPlayerRespawn(OnPlayerRespawnEvent ev)
     {
-        CancelInput();
+        CloseIfAbandoned();
+    }
+
+    // respawn: focused input stays, abandoned one closes, draft kept
+    public void CloseIfAbandoned()
+    {
+        if (!_canInput) return;
+
+        if (_closeOnMouseUp || !_inputFocused)
+        {
+            CloseInput();
+            return;
+        }
+
+        if (!GameState.LocalPlayer.IsGamePaused) _paused = false;
+        InputManager.Instance.IsInputEnabled = false;
     }
 
     private void OnTeamChange(OnSetPlayerTeamEvent ev)
@@ -164,6 +179,8 @@ public class InGameChatHud : Singleton<InGameChatHud>
         GUI.color = Color.white;
         GUI.SetNextControlName("input");
         _inputContent = GUI.TextField(pos, _inputContent, _maxMessageLength, _textFieldStyle);
+        if (Event.current.type == EventType.Repaint)
+            _inputFocused = GUI.GetNameOfFocusedControl() == "input";
         _inputContent = _inputContent.Trim(new char[] { '\n', '\t' });
 
         GUI.color = Color.black;
@@ -269,12 +286,6 @@ public class InGameChatHud : Singleton<InGameChatHud>
         _chatMsgs.Clear();
     }
 
-    public void CancelInput()
-    {
-        _inputContent = string.Empty;
-        CloseInput();
-    }
-
     private void CloseInput()
     {
         _paused = false;
@@ -306,6 +317,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
         _doFocusOnChat = true;
         _skipEnterUp = true;
         _closeOnMouseUp = false;
+        _inputFocused = true;
         //_enableTime = Time.time;
 
         InputManager.Instance.IsInputEnabled = false;
@@ -384,6 +396,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     private bool _doFocusOnChat;
     private bool _skipEnterUp;
     private bool _closeOnMouseUp;
+    private bool _inputFocused;
     private List<ChatMessage> _chatMsgs;
     private float _chatTimer;
     private float _muteTimer;
