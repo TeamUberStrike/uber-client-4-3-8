@@ -19,9 +19,6 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     public void Update()
     {
-        if (_canInput && IsAlive != _aliveAtOpen)
-            CancelInput();
-
         // click away: close on release, else click hits gun
         if (_closeOnMouseUp && !Input.GetMouseButton(0) && !Input.GetMouseButton(1))
             CloseInput();
@@ -309,7 +306,6 @@ public class InGameChatHud : Singleton<InGameChatHud>
         _doFocusOnChat = true;
         _skipEnterUp = true;
         _closeOnMouseUp = false;
-        _aliveAtOpen = IsAlive;
         //_enableTime = Time.time;
 
         InputManager.Instance.IsInputEnabled = false;
@@ -357,11 +353,6 @@ public class InGameChatHud : Singleton<InGameChatHud>
         if (remove) _chatMsgs.RemoveRange(index, _chatMsgs.Count - index);
     }
 
-    private static bool IsAlive
-    {
-        get { return GameState.LocalCharacter != null && GameState.LocalCharacter.IsAlive; }
-    }
-
     private float Scale
     {
         get { return Mathf.Max(1f, Screen.height / 1080f); }
@@ -392,7 +383,6 @@ public class InGameChatHud : Singleton<InGameChatHud>
     private bool _paused;
     private bool _doFocusOnChat;
     private bool _skipEnterUp;
-    private bool _aliveAtOpen;
     private bool _closeOnMouseUp;
     private List<ChatMessage> _chatMsgs;
     private float _chatTimer;
