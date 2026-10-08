@@ -58,8 +58,8 @@ public static class GameListManager
         //update game list
         foreach (GameMetaData room in _gameList.Values)
         {
-            if (room.ServerConnection == serverConnection)
-                room.Latency = GameServerManager.Instance.GetServerLatency(serverConnection);
+            if (room.ServerConnection == serverConnection || GameServerManager.Instance.PhotonServerCount == 1)
+                room.Latency = GameServerManager.Instance.GetServerLatency(room.ServerConnection);
         }
     }
 
