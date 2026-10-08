@@ -18,6 +18,7 @@ public class OptionsPanelGUI : PanelGuiBase
 
     int _currentQuality = 0;
     float _targetFrameRate = -1;
+    bool _limitFrameRate = false;
     float _textureQuality = 0;
     float _queuedFrames = 0;
     int _vsync = 0;
@@ -258,7 +259,8 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         _currentQuality = QualitySettings.GetQualityLevel();
 
-        _targetFrameRate = Application.targetFrameRate;
+        _limitFrameRate = ApplicationDataManager.ApplicationOptions.GeneralLimitFrameRate;
+        _targetFrameRate = ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate;
         _textureQuality = MasterTextureLimit - QualitySettings.globalTextureMipmapLimit;
         _queuedFrames = QualitySettings.maxQueuedFrames;
 
@@ -394,11 +396,20 @@ public class OptionsPanelGUI : PanelGuiBase
                 SfxManager.Play2dAudioClip(SoundEffectType.UIButtonClick);
             }
 
-            if (HorizontalScrollbar(new Rect(GroupMarginX, 30, width, 30), "Target Framerate:", ref _targetFrameRate, -1, 200))
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 33, 140, 24), _limitFrameRate, LocalizedStrings.LimitFramerate) != _limitFrameRate)
             {
+                _limitFrameRate = !_limitFrameRate;
+                UpdateApplicationFrameRate();
+            }
+            GUI.enabled = _limitFrameRate;
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 30, width, 30), string.Empty, ref _targetFrameRate, 30, 500))
+            {
+                // 5 fps steps, 144 sticky
+                _targetFrameRate = Mathf.Abs(_targetFrameRate - 144) < 3 ? 144 : Mathf.Round(_targetFrameRate / 5) * 5;
                 _vsync = 0;
                 graphicsChanged = true;
             }
+            GUI.enabled = true;
             if (HorizontalScrollbar(new Rect(GroupMarginX, 60, width, 30), "Max Queued Frames:", ref _queuedFrames, 0, 10))
             {
                 graphicsChanged = true;
@@ -412,7 +423,7 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             if (HorizontalGridbar(new Rect(GroupMarginX, 120, width, 30), "VSync:", ref _vsync, vsyncSet))
             {
-                _targetFrameRate = -1;
+                _limitFrameRate = false;
                 graphicsChanged = true;
                 SetCurrentQuality(qualitySet.Length - 1);
             }
@@ -871,10 +882,9 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private void UpdateApplicationFrameRate()
     {
-        _targetFrameRate = Mathf.RoundToInt(_targetFrameRate);
-        if (_targetFrameRate >= 0) _targetFrameRate = Mathf.Max(_targetFrameRate, 20);
-        Application.targetFrameRate = (int)_targetFrameRate;
-        ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate = Application.targetFrameRate;
+        ApplicationDataManager.ApplicationOptions.GeneralLimitFrameRate = _limitFrameRate;
+        ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate = Mathf.RoundToInt(_targetFrameRate);
+        Application.targetFrameRate = ApplicationDataManager.ApplicationOptions.FrameRateCap;
     }
 
     private void UpdateMaxQueuedFrames()
