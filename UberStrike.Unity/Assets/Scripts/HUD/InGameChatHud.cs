@@ -19,7 +19,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     public void Update()
     {
-        if (!PopupSystem.IsAnyPopupOpen && (_canInput || !InputManager.Instance.IsAnyDown) &&
+        if (!PopupSystem.IsAnyPopupOpen &&
             _spamTimer <= 0 && (_chatTimer <= 0 || _canInput) &&
             Input.GetKeyDown(KeyCode.Return))
         {
@@ -254,6 +254,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     public void ClearAll()
     {
         _canInput = false;
+        _skipEnterUp = false;
         _inputContent = string.Empty;
         _chatMsgs.Clear();
     }
@@ -262,6 +263,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         _inputContent = string.Empty;
         _paused = false;
+        _skipEnterUp = false;
 
         if (!_canInput) return;
 
