@@ -571,7 +571,6 @@ public class CharacterMoveController
         {
             _canJump = false;
 
-            GameState.LocalCharacter.Set(PlayerStates.GROUNDED, false);
             GameState.LocalCharacter.Set(PlayerStates.JUMPING, true);
 
             _currentVelocity.y = _attributes.JumpForce;
