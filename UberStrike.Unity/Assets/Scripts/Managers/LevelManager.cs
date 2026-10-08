@@ -126,9 +126,7 @@ public class LevelManager : Singleton<LevelManager>
         if (map.MapId == 0)
             _originalLightmaps = LightmapSettings.lightmaps;
 
-        // Capture the map's own additive scene BEFORE we reparent its root into
-        // 'Levels' (which lives in the persistent 'Latest' scene) — after the
-        // reparent, map.gameObject.scene reports 'Latest', not the map scene.
+        // before reparent, after = 'Latest'
         string currentSceneName = map.gameObject.scene.name;
 
         map.transform.parent = GetLevelsParent();
@@ -148,23 +146,15 @@ public class LevelManager : Singleton<LevelManager>
                 }
             }
         }
-        // Unity 2022 additive-scene leak fix. Application.LoadLevelAdditiveAsync
-        // creates a PERSISTENT empty Scene container per map in 2022 (3.5.5 merged
-        // additive loads into the active scene, so the DestroyImmediate above was
-        // full cleanup). Unload every stale Level* container now — keeping the lobby
-        // (LevelSpaceship / mapId 0), the map we just loaded, and the active scene.
-        // 'Latest' and 'DontDestroyOnLoad' don't start with 'Level' -> never touched.
-        // Load MODE is unchanged (stays additive); this touches neither
-        // BeastLightmapLoader nor any shader/material. Removing the stale scenes also
-        // stops Unity's stale-lightmap auto-union that the BeastMapLightmapGuard fights.
+        // U2022 keeps empty additive scenes: unload stale Level*
         for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
         {
             Scene s = SceneManager.GetSceneAt(i);
             if (!s.IsValid() || !s.isLoaded) continue;
             if (!s.name.StartsWith("Level")) continue;
-            if (s.name == "LevelSpaceship") continue;         // lobby (mapId 0)
-            if (s.name == currentSceneName) continue;         // the map we just loaded
-            if (s == SceneManager.GetActiveScene()) continue; // never unload the active scene
+            if (s.name == "LevelSpaceship") continue; // lobby
+            if (s.name == currentSceneName) continue;
+            if (s == SceneManager.GetActiveScene()) continue;
             SceneManager.UnloadSceneAsync(s);
         }
         Resources.UnloadUnusedAssets();

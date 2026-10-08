@@ -14,8 +14,6 @@ public class ForceField : MonoBehaviour
 
     private float gizmofactor = 0.0055f;
 
-    // Set true to re-enable verbose [JumpPad] particle-decoration logging (fires on every jump-pad
-    // map load); kept off in normal/shipped builds to avoid per-load log spam.
     private const bool VerboseJumpPad = false;
 
     #endregion
@@ -47,13 +45,7 @@ public class ForceField : MonoBehaviour
         Bounds world = renderers[0].bounds;
         for (int i = 1; i < renderers.Length; i++) world.Encapsulate(renderers[i].bounds);
 
-        // Retail behaviour: the pad launches you when you STAND ON it — the authored
-        // trigger is a modest box at the pad's TOP (launch) surface, not a tall column.
-        // The old port fitted the trigger to the full mesh + 2.5u upward + 1.25x wide,
-        // so the player entered it on approach / while jumping past and got launched
-        // prematurely ("immediate push on contact"). Anchor a thin box at the pad top
-        // instead: reachBelow catches a grounded capsule's feet sitting on the surface,
-        // reachAbove gives a little fast-approach tolerance without launching jumpers-over.
+        // retail: thin box on pad top, no widen
         const float reachAbove = 0.6f;
         const float reachBelow = 0.35f;
         float padTop = world.max.y;
@@ -67,7 +59,6 @@ public class ForceField : MonoBehaviour
         Vector3 localSize = transform.InverseTransformVector(fittedSize);
         localSize = new Vector3(Mathf.Abs(localSize.x), Mathf.Abs(localSize.y), Mathf.Abs(localSize.z));
 
-        // Footprint only (no over-widening) so the edges match the visible pad.
         if (localSize.y < (reachAbove + reachBelow)) localSize.y = reachAbove + reachBelow;
 
         // Only apply the fit when the existing collider is clearly TOO SMALL for
@@ -82,7 +73,7 @@ public class ForceField : MonoBehaviour
 
         box.size = new Vector3(
             Mathf.Max(current.x, localSize.x),
-            localSize.y,   // force the thin surface height; never keep the oversized authored Y (a tall column launches you on approach / at ground level near the pad)
+            localSize.y, // no Max: tall box launches early
             Mathf.Max(current.z, localSize.z));
         box.center = localCenter;
     }
