@@ -134,6 +134,10 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                 _weaponSwitchTimeout = Time.time + 0.2f;
                 _weapon = newWeapon;
 
+                // LMB release went to other gun. Clear stale semi-auto trigger.
+                if (_weapon.InputHandler != null)
+                    _weapon.InputHandler.OnPrimaryFire(false);
+
                 UpdateAmmoHUD();
 
                 if (_weapon.Logic != null && _weapon.Decorator != null)
