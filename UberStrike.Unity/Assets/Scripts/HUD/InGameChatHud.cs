@@ -53,7 +53,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
             if (_chatMsgs[i].Timer < 0) _chatMsgs.RemoveAt(i);
         }
 
-        float height = Screen.height - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
+        float height = Screen.height / Scale - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
         if (height != MsgPosition.height)
         {
             MsgPosition.height = height;
@@ -70,6 +70,10 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
         if (TabScreenPanelGUI.Enabled) return;
 
+        Matrix4x4 matrix = GUI.matrix;
+        float scale = Scale;
+        GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1)) * matrix;
+
         GUI.BeginGroup(MsgPosition);
         {
             DoChatMessages();
@@ -82,6 +86,8 @@ public class InGameChatHud : Singleton<InGameChatHud>
                 DoChatInput();
         }
         GUI.EndGroup();
+
+        GUI.matrix = matrix;
 
         if (_doFocusOnChat)
         {
@@ -326,6 +332,11 @@ public class InGameChatHud : Singleton<InGameChatHud>
         }
 
         if (remove) _chatMsgs.RemoveRange(index, _chatMsgs.Count - index);
+    }
+
+    private float Scale
+    {
+        get { return Mathf.Max(1f, Screen.height / 1080f); }
     }
 
     private GUIStyle MsgStyle
