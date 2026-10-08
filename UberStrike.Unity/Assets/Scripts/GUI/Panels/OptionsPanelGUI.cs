@@ -23,7 +23,6 @@ public class OptionsPanelGUI : PanelGuiBase
     int _vsync = 0;
     int _antiAliasing = 0;
     int _waterQuality = 0;
-    float _fov = 75f;
 
     private Rect _rect;
 
@@ -279,7 +278,6 @@ public class OptionsPanelGUI : PanelGuiBase
 
         _waterQuality = ApplicationDataManager.ApplicationOptions.VideoWaterMode;
         _vsync = QualitySettings.vSyncCount;
-        _fov = ApplicationDataManager.ApplicationOptions.VideoFOV;
     }
 
     public static bool HorizontalScrollbar(Rect rect, string title, ref float value, float min, float max)
@@ -426,11 +424,12 @@ public class OptionsPanelGUI : PanelGuiBase
                 ApplicationDataManager.ApplicationOptions.VideoWaterMode = _waterQuality;
                 SetCurrentQuality(qualitySet.Length - 1);
             }
-            if (HorizontalScrollbar(new Rect(GroupMarginX, 210, width, 30), "Field of View:", ref _fov, ApplicationOptions.VideoFOVMin, ApplicationOptions.VideoFOVMax))
+            bool fovWide = ApplicationDataManager.ApplicationOptions.VideoFOV >= ApplicationOptions.VideoFOVWide;
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 213, 200, 24), fovWide, "FOV Mode") != fovWide)
             {
-                ApplicationDataManager.ApplicationOptions.VideoFOV = _fov;
-                if (LevelCamera.Exists && LevelCamera.Instance.MainCamera != null)
-                    LevelCamera.Instance.MainCamera.fieldOfView = _fov;
+                ApplicationDataManager.ApplicationOptions.VideoFOV = fovWide ? ApplicationOptions.VideoFOVNormal : ApplicationOptions.VideoFOVWide;
+                if (LevelCamera.Exists && !LevelCamera.Instance.IsZoomedIn)
+                    LevelCamera.Instance.ResetZoom();
             }
 
             // Post-Processing is a 0-100 strength slider (instead of a plain toggle).
