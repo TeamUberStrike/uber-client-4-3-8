@@ -641,7 +641,9 @@ public static class ParticleEffectControllerMigrator
         int refsFixed = WireAllConfigs(controller, psMap, weaponPsMap);
 
         // Create F11 debug handler
+#if UNITY_EDITOR
         CreateDebugHandler();
+#endif
 
         // Summary log
         Debug.Log("[ParticleMigrator] === SUMMARY ===" +
