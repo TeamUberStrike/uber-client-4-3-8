@@ -47,13 +47,18 @@ public class InGameChatHud : Singleton<InGameChatHud>
         {
         }
 
-        for (int i = 0; i < _chatMsgs.Count; i++)
+        for (int i = _chatMsgs.Count - 1; i >= 0; i--)
         {
             _chatMsgs[i].Timer -= Time.deltaTime * MsgFadeSpeed;
             if (_chatMsgs[i].Timer < 0) _chatMsgs.RemoveAt(i);
         }
 
-        MsgPosition.height = Screen.height - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
+        float height = Screen.height - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
+        if (height != MsgPosition.height)
+        {
+            MsgPosition.height = height;
+            UpdateMessagePosition();
+        }
 
         if (_chatTimer > 0) _chatTimer -= Time.deltaTime;
         if (_spamTimer > 0) _spamTimer -= Time.deltaTime;
@@ -317,9 +322,9 @@ public class InGameChatHud : Singleton<InGameChatHud>
                 remove = true;
                 break;
             }
-
-            if (remove) _chatMsgs.RemoveRange(index, _chatMsgs.Count - index);
         }
+
+        if (remove) _chatMsgs.RemoveRange(index, _chatMsgs.Count - index);
     }
 
     private GUIStyle MsgStyle
