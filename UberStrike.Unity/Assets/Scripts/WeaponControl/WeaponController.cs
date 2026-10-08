@@ -134,6 +134,15 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                 _weaponSwitchTimeout = Time.time + 0.2f;
                 _weapon = newWeapon;
 
+                // LMB release went to other gun. Clear stale semi-auto trigger.
+                if (_weapon.InputHandler != null)
+                    _weapon.InputHandler.OnPrimaryFire(false);
+
+                _bufferedTapTime = -1f;
+
+                // RMB down before/with switch key: open scope when gate opens
+                _secondaryPending = true;
+
                 UpdateAmmoHUD();
 
                 if (_weapon.Logic != null && _weapon.Decorator != null)
@@ -546,6 +555,12 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         get { return IsWeaponValid && _weapon.NextShootTime < Time.time && _weapon.Logic.IsWeaponActive; }
     }
 
+    // pickup anim past 25%
+    private bool IsSwitchDone
+    {
+        get { return IsWeaponValid && _weapon.Logic.IsWeaponActive; }
+    }
+
     public bool IsSecondaryAction
     {
         get { return _weapon != null && !_weapon.InputHandler.CanChangeWeapon(); }
@@ -676,8 +691,17 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         if (ev.IsDown)
         {
             // lockout press: never send false (sticks trigger)
-            if (CanPlayerShoot)
+            if (CanPlayerShoot && IsSwitchDone)
+            {
+                _bufferedTapTime = -1f;
                 _weapon.InputHandler.OnPrimaryFire(true);
+            }
+            else if (_weaponSwitchTimeout >= Time.time || CanPlayerShoot)
+            {
+                // gun not up yet: keep tap till ready
+                _bufferedTapTime = Time.time;
+                _bufferedTapReadyTime = -1f;
+            }
         }
         else
         {
@@ -691,6 +715,14 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         if (GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive &&
             IsEnabled && _weapon != null && _weapon.HasWeapon)
         {
+            // lockout Stop() eats hold press. keep till gate opens
+            if (ev.IsDown && _weaponSwitchTimeout >= Time.time && _weapon.InputHandler.HoldsSecondary)
+            {
+                _secondaryPending = true;
+                return;
+            }
+
+            _secondaryPending = false;
             _weapon.InputHandler.OnSecondaryFire(ev.IsDown);
         }
     }
@@ -707,12 +739,19 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     {
         if (CanPlayerShoot)
         {
+            WeaponInputHandler tapHandler = null;
+
             // LMB held, press lost in lockout: replay once
             if (_weapon != null && _weapon.HasWeapon)
             {
+                bool ready = IsWeaponReady;
+
                 if (Input.GetMouseButton(0))
                 {
-                    if (!_reconciledFireHeld)
+                    _bufferedTapTime = -1f;
+
+                    // wait till gun ready, else semi-auto eats the press
+                    if (!_reconciledFireHeld && ready)
                     {
                         _weapon.InputHandler.OnPrimaryFire(true);
                         _reconciledFireHeld = true;
@@ -721,13 +760,47 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
                 else
                 {
                     _reconciledFireHeld = false;
+
+                    if (_bufferedTapTime >= 0)
+                    {
+                        if (_bufferedTapReadyTime < 0 && IsSwitchDone)
+                            _bufferedTapReadyTime = Time.time;
+
+                        if (ready)
+                        {
+                            _bufferedTapTime = -1f;
+                            tapHandler = _weapon.InputHandler;
+                            tapHandler.OnPrimaryFire(true);
+                        }
+                        else if (Time.time - _bufferedTapTime > BufferedTapMaxAge ||
+                                 (_bufferedTapReadyTime >= 0 && Time.time - _bufferedTapReadyTime > BufferedTapReadyGrace))
+                        {
+                            _bufferedTapTime = -1f;
+                        }
+                    }
                 }
+            }
+
+            if (_secondaryPending)
+            {
+                _secondaryPending = false;
+
+                // replay once, only if RMB still held
+                if (_weapon != null && _weapon.HasWeapon && _weapon.InputHandler.HoldsSecondary &&
+                    InputManager.Instance.GetValue(GameInputKey.SecondaryFire) != 0)
+                    _weapon.InputHandler.OnSecondaryFire(true);
             }
 
             //single fire shots
             if (_weapon != null && _weapon.HasWeapon && _weaponSwitchTimeout < Time.time)
             {
                 _weapon.InputHandler.Update();
+            }
+
+            if (tapHandler != null)
+            {
+                GameState.LocalCharacter.IsFiring = false;
+                tapHandler.OnPrimaryFire(false);
             }
 
             // check if need to remove pickup weapon
@@ -746,6 +819,12 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         else
         {
             _reconciledFireHeld = false;
+
+            if (_weaponSwitchTimeout < Time.time)
+            {
+                _bufferedTapTime = -1f;
+                _secondaryPending = false;
+            }
 
             if (GameState.HasCurrentPlayer)
                 GameState.LocalCharacter.IsFiring = false;
@@ -952,6 +1031,12 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
     private int _projectileId;
 
     private bool _reconciledFireHeld = false;
+
+    private const float BufferedTapMaxAge = 1f;
+    private const float BufferedTapReadyGrace = 0.15f;
+    private float _bufferedTapTime = -1f;
+    private float _bufferedTapReadyTime = -1f;
+    private bool _secondaryPending = false;
 
     private LoadoutSlotType _lastLoadoutType = LoadoutSlotType.WeaponPrimary;
 
