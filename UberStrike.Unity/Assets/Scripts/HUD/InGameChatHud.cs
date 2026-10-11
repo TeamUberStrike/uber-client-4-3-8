@@ -23,7 +23,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
         if (_closeOnMouseUp && !Input.GetMouseButton(0) && !Input.GetMouseButton(1))
             CloseInput();
 
-        if (!PopupSystem.IsAnyPopupOpen &&
+        if (!InGameChatPageGUI.IsOpen && !PopupSystem.IsAnyPopupOpen &&
             _spamTimer <= 0 && (_chatTimer <= 0 || _canInput) &&
             Input.GetKeyDown(KeyCode.Return))
         {
@@ -303,6 +303,13 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
         if (GameState.HasCurrentGame && GameState.CurrentGame.IsMatchRunning && !GameState.LocalPlayer.IsGamePaused)
             InputManager.Instance.IsInputEnabled = true;
+    }
+
+    public void CloseForPanel()
+    {
+        CloseInput();
+        _doFocusOnChat = false;
+        _inputFocused = false;
     }
 
     public void Pause()
