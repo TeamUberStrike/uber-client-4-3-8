@@ -62,6 +62,13 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void Draw()
     {
+        if (GameState.HasCurrentGame && GameState.LocalPlayer.IsGamePaused &&
+            !PopupSystem.IsAnyPopupOpen && GUITools.Button(
+                new Rect(Screen.width * CameraRectController.Instance.Width - 240, Screen.height - 150, 220, 50),
+                new GUIContent("Chat"), StormFront.ButtonBlue))
+        {
+            SceneGuiController.OpenChat();
+        }
         if (ButtonEnabled)
         {
             if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 100,

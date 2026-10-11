@@ -22,6 +22,7 @@ public abstract class BaseWeaponDecorator : MonoBehaviour
     private bool _isShootAnimationEnabled;
 
     protected AudioSource _mainAudioSource;
+    private AudioSource _shotAudioSource;
 
     private Dictionary<string, SurfaceEffectType> _effectMap;
 
@@ -229,6 +230,9 @@ public abstract class BaseWeaponDecorator : MonoBehaviour
     public virtual void StopSound()
     {
         _mainAudioSource.Stop();
+
+        if (_shotAudioSource)
+            _shotAudioSource.Stop();
     }
 
     public void PlayShootSound()
@@ -240,10 +244,59 @@ public abstract class BaseWeaponDecorator : MonoBehaviour
             AudioClip clip = _shootSounds[index];
             if (clip)
             {
-                _mainAudioSource.volume = ApplicationDataManager.ApplicationOptions.AudioEffectsVolume;
-                _mainAudioSource.PlayOneShot(clip);
+                AudioSource source = GetShotAudioSource();
+                source.volume = ApplicationDataManager.ApplicationOptions.AudioEffectsVolume;
+                source.PlayOneShot(clip);
             }
         }
+    }
+
+    // shot sound on own object next to gun. switch disables gun = cut shot
+    private AudioSource GetShotAudioSource()
+    {
+        if (!_shotAudioSource)
+        {
+            _shotAudioSource = new GameObject(gameObject.name + " ShotAudio").AddComponent<AudioSource>();
+            CopyAudioSource(_mainAudioSource, _shotAudioSource);
+        }
+
+        Transform t = _shotAudioSource.transform;
+        if (t.parent != transform.parent)
+            t.SetParent(transform.parent, false);
+        t.localPosition = transform.localPosition;
+
+        return _shotAudioSource;
+    }
+
+    private static void CopyAudioSource(AudioSource from, AudioSource to)
+    {
+        to.playOnAwake = false;
+        to.enabled = from.enabled;
+        to.outputAudioMixerGroup = from.outputAudioMixerGroup;
+        to.mute = from.mute;
+        to.bypassEffects = from.bypassEffects;
+        to.bypassListenerEffects = from.bypassListenerEffects;
+        to.bypassReverbZones = from.bypassReverbZones;
+        to.priority = from.priority;
+        to.pitch = from.pitch;
+        to.panStereo = from.panStereo;
+        to.spatialBlend = from.spatialBlend;
+        to.reverbZoneMix = from.reverbZoneMix;
+        to.dopplerLevel = from.dopplerLevel;
+        to.spread = from.spread;
+        to.rolloffMode = from.rolloffMode;
+        to.minDistance = from.minDistance;
+        to.maxDistance = from.maxDistance;
+        to.SetCustomCurve(AudioSourceCurveType.CustomRolloff, from.GetCustomCurve(AudioSourceCurveType.CustomRolloff));
+        to.SetCustomCurve(AudioSourceCurveType.SpatialBlend, from.GetCustomCurve(AudioSourceCurveType.SpatialBlend));
+        to.SetCustomCurve(AudioSourceCurveType.ReverbZoneMix, from.GetCustomCurve(AudioSourceCurveType.ReverbZoneMix));
+        to.SetCustomCurve(AudioSourceCurveType.Spread, from.GetCustomCurve(AudioSourceCurveType.Spread));
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (_shotAudioSource)
+            Destroy(_shotAudioSource.gameObject, 3f);
     }
 
     private void InitEffectMap()

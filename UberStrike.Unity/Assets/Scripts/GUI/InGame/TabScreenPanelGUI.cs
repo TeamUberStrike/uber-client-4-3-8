@@ -36,7 +36,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         if (!GameState.HasCurrentGame || !GameState.HasCurrentPlayer) return;
 
         bool showTabScreen =
-            InputManager.Instance.RawValue(GameInputKey.Tabscreen) > 0 &&
+            !InGameChatPageGUI.IsOpen && InputManager.Instance.RawValue(GameInputKey.Tabscreen) > 0 &&
             !PanelManager.IsAnyPanelOpen &&
             GameState.CurrentGame.CanShowTabscreen;
 
