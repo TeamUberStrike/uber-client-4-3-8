@@ -108,7 +108,10 @@ public class ChatPageGUI : PageGUI
                         }
                     case TabArea.InGame:
                         {
-                            DrawInGameArea(paneRect, headerRect, dialogRect, footerRect, pane);
+                            DoDialogFooter(footerRect, pane, ChatManager.Instance.InGameDialog);
+                            DrawCommPane(paneRect, pane);
+                            DoDialogHeader(headerRect, ChatManager.Instance.InGameDialog);
+                            DoDialog(dialogRect, pane, ChatManager.Instance.InGameDialog);
                             break;
                         }
                     case TabArea.Moderation:
@@ -149,25 +152,31 @@ public class ChatPageGUI : PageGUI
     protected void DrawInGamePanel(Rect rect)
     {
         GUI.skin = BlueStonez.Skin;
-        GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
+        // steam look: flat dark, short player list, history fills, input at bottom
+        Color c = GUI.color;
+        GUI.color = new Color(0.06f, 0.06f, 0.06f, 0.97f);
+        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+        GUI.color = c;
+        GUI.BeginGroup(rect);
         if (_gamePane == null)
         {
             _gamePane = new ChatGroupPanel();
             _gamePane.AddGroup(UserGroups.None, LocalizedStrings.Game, ChatManager.Instance.GameUsers);
         }
-        float playersHeight = Mathf.Max(24, (rect.height - 60) * 0.55f);
+        // dev build label sits on the bottom right
+        float bottom = rect.height - (Debug.isDebugBuild ? 20 : 0);
+        float footerHeight = 34;
+        float playersHeight = Mathf.Clamp(26 + ChatManager.Instance.GameUsers.Count * 22, 48, rect.height * 0.3f);
         DrawInGameArea(new Rect(0, 0, rect.width, playersHeight),
-            new Rect(0, playersHeight, rect.width, 22),
-            new Rect(0, playersHeight + 22, rect.width, Mathf.Max(1, rect.height - playersHeight - 59)),
-            new Rect(0, rect.height - 37, rect.width, 37), _gamePane);
+            new Rect(0, playersHeight + 6, rect.width, Mathf.Max(1, bottom - footerHeight - playersHeight - 12)),
+            new Rect(0, bottom - footerHeight, rect.width, footerHeight), _gamePane);
         GUI.EndGroup();
     }
 
-    private void DrawInGameArea(Rect players, Rect header, Rect history, Rect footer, ChatGroupPanel pane)
+    private void DrawInGameArea(Rect players, Rect history, Rect footer, ChatGroupPanel pane)
     {
         DoDialogFooter(footer, pane, ChatManager.Instance.InGameDialog, TabArea.InGame);
         DrawCommPane(players, pane);
-        DoDialogHeader(header, ChatManager.Instance.InGameDialog);
         DoDialog(history, pane, ChatManager.Instance.InGameDialog);
     }
 

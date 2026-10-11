@@ -9,7 +9,18 @@ class SceneGuiController : MonoBehaviour
         // chat tab on every in-game panel (pregame, death/esc, end of match)
         _includeInGameChat = GetComponent<ShopPageGUI>();
         _hideTitleWhenAlive = GetComponent<ShopPageScene>();
-        if (_hideTitleWhenAlive) _deathShop = this;
+        if (_hideTitleWhenAlive)
+        {
+            _deathShop = this;
+            // esc/death panel like steam: Loadout & Shop | Chat
+            var keep = new System.Collections.Generic.List<PageGUI>();
+            foreach (PageGUI p in _guiPages)
+            {
+                if (p is PregameLoadoutPageGUI) p.enabled = false;
+                else keep.Add(p);
+            }
+            _guiPages = keep.ToArray();
+        }
         if (_includeInGameChat)
         {
             GameObject chatObject = new GameObject("InGameChat");
