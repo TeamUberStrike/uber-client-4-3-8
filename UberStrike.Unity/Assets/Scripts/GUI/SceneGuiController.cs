@@ -52,6 +52,8 @@ class SceneGuiController : MonoBehaviour
         if (_guiPages.Length > 0)
         {
             SetCurrentPage(0);
+            _closing = false;
+            _returnIndex = 0;
             if (_includeInGameChat) _open = this;
             _guiPageAnim.Value = _rect.width;
             _guiPageAnim.AnimTo(0.0f, 0.5f, EaseType.In);
@@ -85,6 +87,11 @@ class SceneGuiController : MonoBehaviour
         {
             _guiPageAnim.Update();
         }
+        else if (_closing)
+        {
+            _closing = false;
+            GamePageManager.Instance.UnloadCurrentPage();
+        }
     }
 
     private void OnGUI()
@@ -116,17 +123,35 @@ class SceneGuiController : MonoBehaviour
         GuiManager.DrawTooltip();
     }
 
-    // panel open (pregame/death/end) -> its chat tab. else esc -> death/shop panel on chat
+    // chat button = toggle. panel open -> its chat tab; chat already shown -> esc/death slide out, pregame back to last tab
     public static void OpenChat()
     {
         if (!GameState.HasCurrentGame) return;
-        if (!_open)
+        if (_open)
         {
-            GameState.LocalPlayer.Pause();
-            GamePageManager.Instance.LoadPage(PageType.Shop);
+            int chat = _open._guiPages.Length - 1;
+            if (_open._currentGuiPageIndex != chat)
+            {
+                _open._returnIndex = _open._currentGuiPageIndex;
+                _open.SetCurrentPage(chat);
+            }
+            else if (_open._hideTitleWhenAlive)
+                _open.SlideOut();
+            else
+                _open.SetCurrentPage(_open._returnIndex);
+            return;
         }
+        GameState.LocalPlayer.Pause();
+        GamePageManager.Instance.LoadPage(PageType.Shop);
         SceneGuiController target = _open ? _open : _deathShop;
         if (target) target.SetCurrentPage(target._guiPages.Length - 1);
+    }
+
+    private void SlideOut()
+    {
+        if (_closing) return;
+        _closing = true;
+        _guiPageAnim.AnimTo(_rect.width, 0.3f, EaseType.Out);
     }
 
     private void SetCurrentPage(int index)
@@ -160,6 +185,8 @@ class SceneGuiController : MonoBehaviour
     private static SceneGuiController _deathShop;
     private bool _includeInGameChat;
     private bool _hideTitleWhenAlive;
+    private bool _closing;
+    private int _returnIndex;
     private GUIContent[] _guiPageTabs;
     private float _offset;
     private int _currentGuiPageIndex = -1;
