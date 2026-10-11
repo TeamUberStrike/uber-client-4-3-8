@@ -9,9 +9,12 @@ public class MuzzleFlash : BaseWeaponEffect
     private float _flashDuration = 0.1f;
 
     private List<Renderer> _renderers = new List<Renderer>();
+    private Light[] _lights;
 
     void Awake()
     {
+        _lights = GetComponentsInChildren<Light>(true);
+
         _animation = GetComponentInChildren<Animation>();
 
         if (_animation)
@@ -40,6 +43,11 @@ public class MuzzleFlash : BaseWeaponEffect
 
         foreach (Renderer r in _renderers)
             r.enabled = false;
+
+        // anim light keeps last key when gun goes off mid flash
+        if (_lights != null)
+            foreach (Light l in _lights)
+                l.intensity = 0;
     }
 
     public override void OnShoot()
