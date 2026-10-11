@@ -51,8 +51,16 @@ public class BulletTrail : BaseWeaponEffect
     {
     }
 
+    // gun off kills coroutine, trail stays on. hide here
     public override void Hide()
     {
+        StopAllCoroutines();
+
+        if (_animation)
+            _animation.Stop();
+
+        foreach (Renderer r in _renderers)
+            r.enabled = false;
     }
 
     private IEnumerator StartTrailEffect(float time)
