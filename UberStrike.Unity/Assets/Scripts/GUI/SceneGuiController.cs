@@ -6,10 +6,12 @@ class SceneGuiController : MonoBehaviour
 {
     private void Awake()
     {
-        _includeInGameChat = GetComponent<ShopPageScene>() && GetComponent<PregameLoadoutPageGUI>();
+        // chat tab on every in-game panel (pregame, death/esc, end of match)
+        _includeInGameChat = GetComponent<ShopPageGUI>();
+        _hideTitleWhenAlive = GetComponent<ShopPageScene>();
+        if (_hideTitleWhenAlive) _deathShop = this;
         if (_includeInGameChat)
         {
-            _inGameController = this;
             GameObject chatObject = new GameObject("InGameChat");
             chatObject.SetActive(false);
             chatObject.transform.parent = transform;
@@ -39,6 +41,7 @@ class SceneGuiController : MonoBehaviour
         if (_guiPages.Length > 0)
         {
             SetCurrentPage(0);
+            if (_includeInGameChat) _open = this;
             _guiPageAnim.Value = _rect.width;
             _guiPageAnim.AnimTo(0.0f, 0.5f, EaseType.In);
         }
@@ -54,6 +57,7 @@ class SceneGuiController : MonoBehaviour
         }
         MonoRoutine.Start(resetGuiPage());
         _currentGuiPageIndex = -1;
+        if (_open == this) _open = null;
         CmuneEventHandler.RemoveListener<ScreenResolutionEvent>(OnScreenResolutionChange);
     }
 
@@ -83,7 +87,7 @@ class SceneGuiController : MonoBehaviour
         GUI.skin = BlueStonez.Skin;
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
-            string title = _includeInGameChat && GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive ? string.Empty : _title;
+            string title = _hideTitleWhenAlive && GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive ? string.Empty : _title;
             GUI.Label(new Rect(0, 0, _rect.width, 56), title, BlueStonez.tab_strip);
 
             GUI.changed = false;
@@ -101,12 +105,17 @@ class SceneGuiController : MonoBehaviour
         GuiManager.DrawTooltip();
     }
 
+    // panel open (pregame/death/end) -> its chat tab. else esc -> death/shop panel on chat
     public static void OpenChat()
     {
         if (!GameState.HasCurrentGame) return;
-        GameState.LocalPlayer.Pause();
-        GamePageManager.Instance.LoadPage(PageType.Shop);
-        if (_inGameController) _inGameController.SetCurrentPage(_inGameController._guiPages.Length - 1);
+        if (!_open)
+        {
+            GameState.LocalPlayer.Pause();
+            GamePageManager.Instance.LoadPage(PageType.Shop);
+        }
+        SceneGuiController target = _open ? _open : _deathShop;
+        if (target) target.SetCurrentPage(target._guiPages.Length - 1);
     }
 
     private void SetCurrentPage(int index)
@@ -136,8 +145,10 @@ class SceneGuiController : MonoBehaviour
     [SerializeField]
     private Rect _rect;
 
-    private static SceneGuiController _inGameController;
+    private static SceneGuiController _open;
+    private static SceneGuiController _deathShop;
     private bool _includeInGameChat;
+    private bool _hideTitleWhenAlive;
     private GUIContent[] _guiPageTabs;
     private float _offset;
     private int _currentGuiPageIndex = -1;
