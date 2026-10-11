@@ -23,7 +23,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
         if (_closeOnMouseUp && !Input.GetMouseButton(0) && !Input.GetMouseButton(1))
             CloseInput();
 
-        if (!PopupSystem.IsAnyPopupOpen &&
+        if (!InGameChatPageGUI.IsOpen && !PopupSystem.IsAnyPopupOpen &&
             _spamTimer <= 0 && (_chatTimer <= 0 || _canInput) &&
             Input.GetKeyDown(KeyCode.Return))
         {
@@ -57,9 +57,13 @@ public class InGameChatHud : Singleton<InGameChatHud>
             if (_chatMsgs[i].Timer < 0) _chatMsgs.RemoveAt(i);
         }
 
-        float height = Screen.height / Scale - MsgPosition.y - (GameState.LocalPlayer.IsGamePaused ? 70 : 140);
-        if (height != MsgPosition.height)
+        // mid left like steam: input line 30% above bottom
+        float screenHeight = Screen.height / Scale;
+        float top = screenHeight * 0.3f;
+        float height = screenHeight * 0.4f;
+        if (top != MsgPosition.y || height != MsgPosition.height)
         {
+            MsgPosition.y = top;
             MsgPosition.height = height;
             UpdateMessagePosition();
         }
@@ -301,6 +305,13 @@ public class InGameChatHud : Singleton<InGameChatHud>
             InputManager.Instance.IsInputEnabled = true;
     }
 
+    public void CloseForPanel()
+    {
+        CloseInput();
+        _doFocusOnChat = false;
+        _inputFocused = false;
+    }
+
     public void Pause()
     {
         if (_canInput) _paused = true;
@@ -367,7 +378,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     private float Scale
     {
-        get { return Mathf.Max(1f, Screen.height / 1080f); }
+        get { return Mathf.Max(1f, Screen.height / 1080f) * 1.2f; }
     }
 
     private GUIStyle MsgStyle
