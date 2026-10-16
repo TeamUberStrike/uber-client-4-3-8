@@ -16,6 +16,9 @@ public class AvatarDecoratorConfig : MonoBehaviour
     private Color _skinColor;
     private List<Material> _materials;
 
+    // 0 = account skin color, 1 = white
+    public static float SkinToneLift = 0.85f;
+
     private void Awake()
     {
         _materials = new List<Material>();
@@ -49,11 +52,12 @@ public class AvatarDecoratorConfig : MonoBehaviour
         {
             _skinColor = value;
             UpdateMaterials();
+            var applied = Color.Lerp(_skinColor, Color.white, Mathf.Clamp01(SkinToneLift));
             foreach (var m in _materials)
             {
                 if (m.name.Contains("Skin"))
                 {
-                    m.color = _skinColor;
+                    m.color = applied;
                 }
             }
         }
