@@ -39,7 +39,9 @@ public class ApplicationOptions
     // Field of View — user-adjustable main camera FOV (Options → Video)
     public const float VideoFOVMin = 60f;
     public const float VideoFOVMax = 110f;
-    public float VideoFOV = 75f;
+    public const float VideoFOVNormal = 75f;
+    public const float VideoFOVWide = 100f;
+    public float VideoFOV = VideoFOVNormal;
 
     // In-match FPS counter overlay + post-processing (Options → Video).
     // PostProcessing now has a 0-100 strength slider — 0 is off, 100 is full.
@@ -91,7 +93,7 @@ public class ApplicationOptions
         IsFullscreen = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoIsFullscreen, true);
         ScreenResolution = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoScreenRes, ScreenResolutionManager.CurrentResolutionIndex);
 
-        VideoFOV = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV), VideoFOVMin, VideoFOVMax);
+        VideoFOV = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV) >= (VideoFOVNormal + VideoFOVWide) * 0.5f ? VideoFOVWide : VideoFOVNormal;
         VideoShowFps = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoShowFps, VideoShowFps);
         VideoPostProcessingStrength = Mathf.Clamp(
             CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoPostProcessingStrength, VideoPostProcessingStrength),
