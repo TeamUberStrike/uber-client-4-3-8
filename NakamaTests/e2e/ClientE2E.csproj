@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Shipped adapter (NakamaPeer + NakamaLink) against a live Nakama 3.41.0 + uber Go module. Runs in server CI. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AdapterDir>..\..\UberStrike.Unity\Assets\Scripts\Network\Nakama\</AdapterDir>
+    <NakamaDll Condition=" '$(NakamaDll)' == '' ">..\..\UberStrike.Unity\Library\PackageCache\com.heroiclabs.nakama-unity@34d764d62d\Runtime\Plugins\Nakama.dll</NakamaDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(AdapterDir)NakamaFraming.cs" Link="Adapter\NakamaFraming.cs" />
+    <Compile Include="$(AdapterDir)NakamaClock.cs" Link="Adapter\NakamaClock.cs" />
+    <Compile Include="$(AdapterDir)INakamaLink.cs" Link="Adapter\INakamaLink.cs" />
+    <Compile Include="$(AdapterDir)NakamaPeer.cs" Link="Adapter\NakamaPeer.cs" />
+    <Compile Include="$(AdapterDir)NakamaConfig.cs" Link="Adapter\NakamaConfig.cs" />
+    <Compile Include="$(AdapterDir)NakamaLink.cs" Link="Adapter\NakamaLink.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UberStrike.UnitySdk">
+      <HintPath>..\..\UberStrike.Unity\Assets\Plugins\UberStrike.UnitySdk.dll</HintPath>
+    </Reference>
+    <Reference Include="Nakama">
+      <HintPath>$(NakamaDll)</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
