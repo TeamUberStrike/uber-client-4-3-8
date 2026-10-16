@@ -3,7 +3,9 @@ using UnityEngine;
 public class ApplicationOptions
 {
     // General
-    public int GeneralTargetFrameRate = 200;
+    public bool GeneralLimitFrameRate = false;
+    public int GeneralTargetFrameRate = 144;
+    public int FrameRateCap { get { return GeneralLimitFrameRate ? GeneralTargetFrameRate : -1; } }
 
     // Video
     public bool IsUsingCustom = false;
@@ -72,7 +74,17 @@ public class ApplicationOptions
         }
 
         // General
-        GeneralTargetFrameRate = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, 200);
+        if (CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralFrameRateVersion, 0) < 1)
+        {
+            // old default 200 -> uncapped
+            int old = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, 200);
+            bool limit = old > 0 && old != 200;
+            CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralLimitFrameRate, limit);
+            CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, limit ? old : GeneralTargetFrameRate);
+            CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralFrameRateVersion, 1);
+        }
+        GeneralLimitFrameRate = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralLimitFrameRate, GeneralLimitFrameRate);
+        GeneralTargetFrameRate = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, GeneralTargetFrameRate);
 
         // Video
         IsUsingCustom = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoIsUsingCustom, IsUsingCustom);
@@ -126,6 +138,7 @@ public class ApplicationOptions
     public void SaveApplicationOptions()
     {
         // General
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralLimitFrameRate, GeneralLimitFrameRate);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GeneralTargetFrameRate, GeneralTargetFrameRate);
 
         // Video
