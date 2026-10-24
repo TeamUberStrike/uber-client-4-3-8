@@ -24383,7 +24383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useVignetting: 0
-  useBloomAndFlares: 1
+  useBloomAndFlares: 0
 --- !u!114 &1609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24672,6 +24672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 459}
+  MaxX: 0
 --- !u!114 &1624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28131,7 +28132,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 0
 --- !u!4 &1032561183
 Transform:
@@ -28166,7 +28167,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
