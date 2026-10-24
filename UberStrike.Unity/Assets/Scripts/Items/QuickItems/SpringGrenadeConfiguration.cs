@@ -16,7 +16,7 @@ public class SpringGrenadeConfiguration : QuickItemConfiguration
     [CustomProperty("LifeTime")]
     [SerializeField]
     private int _lifeTime = 15;
-    public int LifeTime { get { return _lifeTime; } }
+    public int LifeTime { get { return _lifeTime; } set { _lifeTime = value; } }
 
     [CustomProperty("Sticky")]
     [SerializeField]

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e70e3631016d949a4b57fedea9fb7c, type: 3}
+  m_Name: LevelMonkeyIsland
+  m_EditorClassIdentifier: 
+  lightmaps:
+  - {fileID: 2800000, guid: 2bddb59e6950960478171d7d4060e470, type: 3}
+  - {fileID: 2800000, guid: f391685fa4027bd4ab6686fef2d0f120, type: 3}
+  - {fileID: 2800000, guid: 5ed96d03f6d7b5d45b742b800548218e, type: 3}

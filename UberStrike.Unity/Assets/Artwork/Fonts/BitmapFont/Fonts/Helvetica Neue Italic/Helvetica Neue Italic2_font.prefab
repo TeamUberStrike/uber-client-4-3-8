@@ -3,57 +3,57 @@
 --- !u!1 &100000
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
   m_Component:
-  - 4: {fileID: 400000}
-  - 114: {fileID: 11400000}
+  - component: {fileID: 400000}
+  - component: {fileID: 11400000}
   m_Layer: 0
   m_Name: Helvetica Neue Italic2_font
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!1002 &100001
-EditorExtensionImpl:
-  serializedVersion: 6
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
---- !u!1002 &400001
-EditorExtensionImpl:
-  serializedVersion: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3049df9d42996804fbcba979a6268775, type: 1}
+  m_Script: {fileID: 11500000, guid: 3049df9d42996804fbcba979a6268775, type: 3}
   m_Name: 
+  m_EditorClassIdentifier: 
   Color: {r: 1, g: 1, b: 1, a: 1}
-  AlphaMin: .49000001
-  AlphaMax: .50999999
+  AlphaMin: 0.49
+  AlphaMax: 0.51
   ShadowColor: {r: 0, g: 0, b: 0, a: 1}
-  ShadowAlphaMin: .280000001
-  ShadowAlphaMax: .49000001
-  ShadowOffset: {x: -.0500000007, y: .0799999982}
+  ShadowAlphaMin: 0.28
+  ShadowAlphaMax: 0.49
+  ShadowOffset: {x: -0.05, y: 0.08}
   Size: 256
   LineHeight: 256
-  float: 209
+  Base: 0
   ScaleW: 2048
   ScaleH: 2048
   Chars:
@@ -1213,30 +1213,12 @@ MonoBehaviour:
   - serializedVersion: 2
     x: 0
     y: 0
-    width: .5
+    width: 0.5
     height: 1
   - serializedVersion: 2
-    x: .5
+    x: 0.5
     y: 0
-    width: .5
+    width: 0.5
     height: 1
-  PageAtlas: {fileID: 2800000, guid: be49b8bf81bbb49468f68000eb746b7e, type: 1}
+  PageAtlas: {fileID: 2800000, guid: be49b8bf81bbb49468f68000eb746b7e, type: 3}
   Kernings: []
---- !u!1002 &11400001
-EditorExtensionImpl:
-  serializedVersion: 6
---- !u!1001 &100100000
-Prefab:
-  m_ObjectHideFlags: 1
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications: []
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 100000}
-  m_IsPrefabParent: 1
-  m_IsExploded: 1
---- !u!1002 &100100001
-EditorExtensionImpl:
-  serializedVersion: 6

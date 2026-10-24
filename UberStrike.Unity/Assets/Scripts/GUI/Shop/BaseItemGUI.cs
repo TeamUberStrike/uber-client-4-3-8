@@ -11,6 +11,22 @@ public abstract class BaseItemGUI
     private BuyingLocationType _location;
     private BuyingRecommendationType _recommendation;
 
+    // IMGUI perf: DrawPrice / DrawRecommendPrice were allocating a fresh GUIContent
+    // and running GUIStyle.CalcSize() every frame per item, which at 20-100 visible
+    // items × 2-4 OnGUI passes per frame tanked the shop to <10 FPS. The formatted
+    // price string and its measured width are stable per item, so cache them and
+    // regenerate only when the source ItemPrice.Price value actually changes.
+    private struct PriceCache
+    {
+        public bool Valid;
+        public int SourcePrice;
+        public string Text;
+        public float Width;
+    }
+    private PriceCache _pointsPriceCache;
+    private PriceCache _creditsPriceCache;
+    private PriceCache _recommendPriceCache;
+
     public IUnityItem Item { get; private set; }
 
     public IBaseItemDetailGUI DetailGUI { get; private set; }
@@ -128,15 +144,15 @@ public abstract class BaseItemGUI
         float x = 0;
         if (points != null)
         {
-            string price = string.Format("{0}", points.Price == 0 ? "FREE" : points.Price.ToString("N0"));
+            EnsurePriceCache(ref _pointsPriceCache, points.Price, allowFree: true, measure: true);
             GUI.DrawTexture(new Rect(rect.x, rect.y, 16, 16), ShopUtils.CurrencyIcon(points.Currency));
-            GUI.Label(new Rect(rect.x + 20, rect.y + 3, rect.width - 20, 16), price, BlueStonez.label_interparkmed_11pt_left);
-            x += 40 + BlueStonez.label_interparkmed_11pt_left.CalcSize(new GUIContent(price)).x;
+            GUI.Label(new Rect(rect.x + 20, rect.y + 3, rect.width - 20, 16), _pointsPriceCache.Text, BlueStonez.label_interparkmed_11pt_left);
+            x += 40 + _pointsPriceCache.Width;
         }
 
         if (credits != null)
         {
-            string price = string.Format("{0}", credits.Price == 0 ? "FREE" : credits.Price.ToString("N0"));
+            EnsurePriceCache(ref _creditsPriceCache, credits.Price, allowFree: true, measure: false);
 
             if (x > 0)
             {
@@ -144,7 +160,7 @@ public abstract class BaseItemGUI
             }
 
             GUI.DrawTexture(new Rect(rect.x + x, rect.y, 16, 16), ShopUtils.CurrencyIcon(credits.Currency));
-            GUI.Label(new Rect(rect.x + x + 20, rect.y + 3, rect.width - 20, 16), price, BlueStonez.label_interparkmed_11pt_left);
+            GUI.Label(new Rect(rect.x + x + 20, rect.y + 3, rect.width - 20, 16), _creditsPriceCache.Text, BlueStonez.label_interparkmed_11pt_left);
         }
     }
 
@@ -152,13 +168,23 @@ public abstract class BaseItemGUI
     {
         if (price != null)
         {
-            string value = price.Price.ToString("N0");
-            Vector2 size = BlueStonez.label_interparkmed_11pt_left.CalcSize(new GUIContent(value));
+            EnsurePriceCache(ref _recommendPriceCache, price.Price, allowFree: false, measure: true);
+            float sizeX = _recommendPriceCache.Width;
+            string value = _recommendPriceCache.Text;
 
-            GUI.Label(new Rect(rect.width - size.x - 127, rect.y + 1, 100, 16), "FROM", BlueStonez.label_interparkbold_11pt_right);
-            GUI.DrawTexture(new Rect(rect.width - size.x - 20, rect.y + 1, 16, 16), ShopUtils.CurrencyIcon(price.Currency));
-            GUI.Label(new Rect(rect.width - size.x, rect.y + 1, size.x, 16), value, BlueStonez.label_interparkmed_11pt_right);
+            GUI.Label(new Rect(rect.width - sizeX - 127, rect.y + 1, 100, 16), "FROM", BlueStonez.label_interparkbold_11pt_right);
+            GUI.DrawTexture(new Rect(rect.width - sizeX - 20, rect.y + 1, 16, 16), ShopUtils.CurrencyIcon(price.Currency));
+            GUI.Label(new Rect(rect.width - sizeX, rect.y + 1, sizeX, 16), value, BlueStonez.label_interparkmed_11pt_right);
         }
+    }
+
+    private static void EnsurePriceCache(ref PriceCache cache, int priceValue, bool allowFree, bool measure)
+    {
+        if (cache.Valid && cache.SourcePrice == priceValue) return;
+        cache.SourcePrice = priceValue;
+        cache.Text = (allowFree && priceValue == 0) ? "FREE" : priceValue.ToString("N0");
+        cache.Width = measure ? BlueStonez.label_interparkmed_11pt_left.CalcSize(new GUIContent(cache.Text)).x : 0f;
+        cache.Valid = true;
     }
 
     public void DrawEquipButton(Rect rect, string content)

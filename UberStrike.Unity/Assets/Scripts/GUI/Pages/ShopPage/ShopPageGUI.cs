@@ -50,6 +50,18 @@ public class ShopPageGUI : PageGUI
     private bool _showRenewLoadoutButton = false;
     private int _skippedDefaultGearCount = 0;
 
+    // IMGUI perf: DrawItemGUIList was running SearchBarGUI.CheckIfPassFilter +
+    // IShopItemFilter.CanPass per item per OnGUI pass (2-4× per frame × 50-100
+    // items = thousands of string ToLower() + dictionary scans per second).
+    // Cache the filtered index list and invalidate only when any of the inputs
+    // that could flip a pass/fail decision changes.
+    private readonly List<int> _filteredIndices = new List<int>();
+    private object _filteredIndicesListRef;
+    private int _filteredIndicesListCount;
+    private string _filteredIndicesSearchText;
+    private object _filteredIndicesFilterRef;
+    private int _filteredIndicesLoadoutVersion;
+
     private float shopPositionX = 0;
 
     private List<BaseItemGUI> _shopItemGUIList = new List<BaseItemGUI>();
@@ -257,13 +269,18 @@ public class ShopPageGUI : PageGUI
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         if (IsOnGUIEnabled)
         {
-            DrawGUI(new Rect(Screen.width - shopPositionX, GlobalUIRibbon.Instance.GetHeight(), ShopWidth,
-                Screen.height - GlobalUIRibbon.Instance.GetHeight() + 1));
+            // Right-anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+            DrawGUI(new Rect(MobileMenuScale.VirtualWidth - shopPositionX, GlobalUIRibbon.Instance.GetHeight(), ShopWidth,
+                MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() + 1));
 
             ArmorHud.Instance.Update();
         }
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void DrawGUI(Rect rect)
@@ -293,8 +310,9 @@ public class ShopPageGUI : PageGUI
         }
         GUI.EndGroup();
 
-        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(0, 55, Screen.width - 580, Screen.height - 55), OnDropAvatar);
-        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(Screen.width - _rectLabs.width + 200, 55, _rectLabs.width - 200, Screen.height - 55), OnDropShop);
+        // Drop zones are anchored to the panel; use virtual (scaled) screen dims for the mobile menu scale.
+        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(0, 55, MobileMenuScale.VirtualWidth - 580, MobileMenuScale.VirtualHeight - 55), OnDropAvatar);
+        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(MobileMenuScale.VirtualWidth - _rectLabs.width + 200, 55, _rectLabs.width - 200, MobileMenuScale.VirtualHeight - 55), OnDropShop);
 
         GUITools.PopGUIState();
 
@@ -923,30 +941,34 @@ public class ShopPageGUI : PageGUI
             //decrease the width of the content when there is a scrollbar
             int decreaseWidth = contentRect.height > scrollRect.height ? 20 : 5;
 
-            _skippedDefaultGearCount = 0;
+            RebuildFilteredIndicesIfStale(list);
+            _skippedDefaultGearCount = list.Count - _filteredIndices.Count;
 
-            int top = -height;
+            // Scroll-view virtualization (2026-04-24). Unity 2022's legacy
+            // IMGUI path spends ~6-10 GUI.* calls + a CalcSize() + a
+            // DragAndDrop.DrawSlot registration per item, ×2 OnGUI passes,
+            // ×50-100 items on Weapons/Gear/Inventory. Most items are
+            // scrolled off-screen and produce no pixels — skipping those
+            // rows' Draw/Tooltip/DrawSlot calls is the dominant win.
+            // Visibility decision is deterministic across Layout and
+            // Repaint events (scroll offset is stable within a frame), so
+            // IMGUI control-ID allocation stays consistent. One-row buffer
+            // above and below avoids any edge pop-in while scrolling.
+            float visibleTop = _labScroll.y - height;
+            float visibleBottom = _labScroll.y + scrollRect.height + height;
 
-            for (int i = 0; i < list.Count; i++)
+            for (int row = 0; row < _filteredIndices.Count; row++)
             {
-                if (!_searchBar.CheckIfPassFilter(list[i].Item.Name))
+                int i = _filteredIndices[row];
+                int top = height * row;
+                int itemY = top + ((selectedItemPosition == -1) ? 0 : selectedItemHeight - 20);
+
+                if (itemY + height < visibleTop || itemY > visibleBottom)
                 {
-                    _skippedDefaultGearCount++;
-                    continue;
-                }
-                if (_itemFilter != null && !_itemFilter.CanPass(list[i].Item))
-                {
-                    _skippedDefaultGearCount++;
                     continue;
                 }
 
-                top += height;
-
-                // don't draw items that can't be seen
-                if (top + height < _labScroll.y || top > _labScroll.y + scrollRect.height)
-                    continue;
-
-                Rect itemRect = new Rect(0, top + ((selectedItemPosition == -1) ? 0 : selectedItemHeight - 20), position.width - decreaseWidth, height);
+                Rect itemRect = new Rect(0, itemY, position.width - decreaseWidth, height);
                 Rect hoverRect = new Rect(itemRect.x, itemRect.y, itemRect.width - 100, itemRect.height);
 
                 list[i].Draw(itemRect, itemRect.Contains(Event.current.mousePosition));
@@ -961,6 +983,48 @@ public class ShopPageGUI : PageGUI
             }
         }
         GUITools.EndScrollView();
+    }
+
+    // Recompute the filtered index list only when a filter input actually changed.
+    // Detection:
+    //   - different `list` reference or different `list.Count` → items added/removed
+    //   - different search-bar text (reference compare — SearchBarGUI keeps one instance)
+    //   - different filter reference (filter type changes on tab switch)
+    //   - equipped-item set changed (InventoryItemFilter depends on it)
+    private void RebuildFilteredIndicesIfStale<T>(List<T> list) where T : BaseItemGUI
+    {
+        string searchText = _searchBar != null ? _searchBar.FilterText : null;
+        object listRef = list;
+        object filterRef = _itemFilter;
+        int loadoutVersion = LoadoutManager.Instance != null ? LoadoutManager.Instance.EquippedVersion : 0;
+
+        // Value-compare the search text, not reference-compare — GUI.TextField
+        // returns a freshly-allocated string every OnGUI pass even when the
+        // user hasn't typed anything, so ReferenceEquals invalidated the cache
+        // every frame and negated the entire point of caching.
+        if (_filteredIndicesListRef == listRef &&
+            _filteredIndicesListCount == list.Count &&
+            string.Equals(_filteredIndicesSearchText, searchText) &&
+            _filteredIndicesFilterRef == filterRef &&
+            _filteredIndicesLoadoutVersion == loadoutVersion)
+        {
+            return;
+        }
+
+        _filteredIndicesListRef = listRef;
+        _filteredIndicesListCount = list.Count;
+        _filteredIndicesSearchText = searchText;
+        _filteredIndicesFilterRef = filterRef;
+        _filteredIndicesLoadoutVersion = loadoutVersion;
+
+        _filteredIndices.Clear();
+        for (int i = 0; i < list.Count; i++)
+        {
+            var gui = list[i];
+            if (!_searchBar.CheckIfPassFilter(gui.Item.Name)) continue;
+            if (_itemFilter != null && !_itemFilter.CanPass(gui.Item)) continue;
+            _filteredIndices.Add(i);
+        }
     }
 
     private void UpdateItemFilter()

@@ -9,7 +9,7 @@ public class QuickItemConfiguration : UberStrikeItemQuickView
 
     [CustomProperty("RechargeTime")]
     private int _rechargeTime = 0;
-    public int RechargeTime { get { return _rechargeTime; } }
+    public int RechargeTime { get { return _rechargeTime; } set { _rechargeTime = value; } }
 
     [CustomProperty("SlowdownOnCharge")]
     private float _slowdownOnCharge = 2.0f;

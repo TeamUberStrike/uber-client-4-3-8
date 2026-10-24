@@ -50,6 +50,8 @@ public class ArmorHud : Singleton<ArmorHud>
         _meshGUITexts.Group.Add(_defenseBonusValue);
         _meshGUITexts.Group.Add(_defenseBonusSymbol);
         _meshGUITexts.Group.Add(_defenseBonusText);
+
+        _meshGUITexts.IsEnabled = false;
     }
 
     public void Update()

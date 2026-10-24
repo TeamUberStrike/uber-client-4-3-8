@@ -1,684 +1,2569 @@
 fileFormatVersion: 2
 guid: a8977a0b18959994eb57214fba57b773
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: LutzHeadAndFace
-    7400000: Take 001 //// LutzBaseAvatar
-    7400002: lightGunUpDown //// LutzBaseAvatar
-    7400004: heavyGunUpDown //// LutzBaseAvatar
-    7400006: run //// LutzBaseAvatar
-    7400008: walk //// LutzBaseAvatar
-    7400010: jumpUp //// LutzBaseAvatar
-    7400012: jumpFall //// LutzBaseAvatar
-    7400014: jumpLand //// LutzBaseAvatar
-    7400016: squat //// LutzBaseAvatar
-    7400018: crouch //// LutzBaseAvatar
-    7400020: swimStart //// LutzBaseAvatar
-    7400022: swimLoop //// LutzBaseAvatar
-    7400024: leanRight //// LutzBaseAvatar
-    7400026: leanLeft //// LutzBaseAvatar
-    7400028: shootLightGun //// LutzBaseAvatar
-    7400030: shootHeavyGun //// LutzBaseAvatar
-    7400032: gotHit //// LutzBaseAvatar
-    7400034: die1 //// LutzBaseAvatar
-    7400036: die2 //// LutzBaseAvatar
-    7400038: die3 //// LutzBaseAvatar
-    7400040: idle //// LutzBaseAvatar
-    7400042: lightGunBreathe //// LutzBaseAvatar
-    7400044: heavyGunBreathe //// LutzBaseAvatar
-    7400046: snipeUpDown //// LutzBaseAvatar
-    7400048: idleBigGunNoneAction //// LutzBaseAvatar
-    7400050: idleBigGunLookAround //// LutzBaseAvatar
-    7400052: idleBigGunRelaxNeck //// LutzBaseAvatar
-    7400054: idleBigGunCheckWeapon //// LutzBaseAvatar
-    7400056: idleBigGunShakeWeapon //// LutzBaseAvatar
-    7400058: meleeSwingRightToLeft //// LutzBaseAvatar
-    7400060: meleSwingLeftToRight //// LutzBaseAvatar
-    7400062: idleMeleeNoneAction //// LutzBaseAvatar
-    7400064: idleMeleeLookAround //// LutzBaseAvatar
-    7400066: idleMeleeRelaxNeck //// LutzBaseAvatar
-    7400068: idleMeleeCheckWeapon //// LutzBaseAvatar
-    7400070: idleHandGunNoneAction //// LutzBaseAvatar
-    7400072: idleHandGunLookAround //// LutzBaseAvatar
-    7400074: idleHandGunRelaxNeck //// LutzBaseAvatar
-    7400076: idleHandGunCheckWeapon //// LutzBaseAvatar
-    7400078: idleMiniGunNoAction //// LutzBaseAvatar
-    7400080: idleMiniGunLookAround //// LutzBaseAvatar
-    7400082: idleMiniGunRelaxNeck //// LutzBaseAvatar
-    7400084: idleMiniGunCheckWeapon //// LutzBaseAvatar
-    7400086: outToShootPosHandGun //// LutzBaseAvatar
-    7400088: shootPosHandGun //// LutzBaseAvatar
-    7400090: shootPosShootActionHandGun //// LutzBaseAvatar
-    7400092: outToShootBigGun //// LutzBaseAvatar
-    7400094: shootPosBigGun //// LutzBaseAvatar
-    7400096: shootPosShootActionBigGun //// LutzBaseAvatar
-    7400098: putGunAway //// LutzBaseAvatar
-    7400100: outToShootPosMelee //// LutzBaseAvatar
-    7400102: shootPosMelee //// LutzBaseAvatar
-    7400104: putMeleeAway //// LutzBaseAvatar
-    7400106: idleNoWeaponNoneAction //// LutzBaseAvatar
-    7400108: idleNoWeaponLookAround //// LutzBaseAvatar
-    7400110: idleNoWeaponRelaxNeck //// LutzBaseAvatar
-    7400112: checkNewGloves //// LutzBaseAvatar
-    7400114: checkNewChest //// LutzBaseAvatar
-    7400116: checkNewFeet //// LutzBaseAvatar
-    7400118: checkNewLegs //// LutzBaseAvatar
-    7400120: CheckNewHead //// LutzBaseAvatar
-    7400122: idleWalk //// LutzBaseAvatar
-    7400124: guiderWalk //// LutzBaseAvatar
-    7400126: guiderAirlock //// LutzBaseAvatar
-    7400128: guiderTalk //// LutzBaseAvatar
-    7400130: guiderIdle //// LutzBaseAvatar
-    7400132: guiderArmory //// LutzBaseAvatar
-    7400134: ShopLargeGunIdle //// LutzBaseAvatar
-    7400136: ShopLargeGunLookAround //// LutzBaseAvatar
-    7400138: ShopLargeGunRelaxNeck //// LutzBaseAvatar
-    7400140: ShopLargeGunCheckWeapon //// LutzBaseAvatar
-    7400142: ShopLargeGunShakeWeapon //// LutzBaseAvatar
-    7400144: ShopMeleeIdle //// LutzBaseAvatar
-    7400146: ShopMeleeLookAround //// LutzBaseAvatar
-    7400148: ShopMeleeRelaxNeck //// LutzBaseAvatar
-    7400150: ShopMeleeCheckWeapon //// LutzBaseAvatar
-    7400152: ShopSmallGunIdle //// LutzBaseAvatar
-    7400154: ShopSmallGunLookAround //// LutzBaseAvatar
-    7400156: ShopSmallGunRelaxNeck //// LutzBaseAvatar
-    7400158: ShopSmallGunCheckWeapon //// LutzBaseAvatar
-    7400160: ShopMediumGunIdle //// LutzBaseAvatar
-    7400162: ShopMediumGunLookAround //// LutzBaseAvatar
-    7400164: ShopMediumGunRelaxNeck //// LutzBaseAvatar
-    7400166: ShopMediumGunCheckWeapon //// LutzBaseAvatar
-    7400168: ShopSmallGunTakeOut //// LutzBaseAvatar
-    7400170: ShopSmallGunAimIdle //// LutzBaseAvatar
-    7400172: ShopSmallGunShoot //// LutzBaseAvatar
-    7400174: ShopLargeGunTakeOut //// LutzBaseAvatar
-    7400176: ShopLargeGunAimIdle //// LutzBaseAvatar
-    7400178: ShopLargeGunShoot //// LutzBaseAvatar
-    7400180: ShopHideGun //// LutzBaseAvatar
-    7400182: ShopMeleeTakeOut //// LutzBaseAvatar
-    7400184: ShopMeleeAimIdle //// LutzBaseAvatar
-    7400186: ShopHideMelee //// LutzBaseAvatar
-    7400188: ShopNoWeaponIdle //// LutzBaseAvatar
-    7400190: ShopNoWeaponnLookAround //// LutzBaseAvatar
-    7400192: ShopNoWeaponRelaxNeck //// LutzBaseAvatar
-    7400194: ShopNewGloves //// LutzBaseAvatar
-    7400196: ShopNewUpperBody //// LutzBaseAvatar
-    7400198: ShopNewBoots //// LutzBaseAvatar
-    7400200: ShopNewLowerBody //// LutzBaseAvatar
-    7400202: ShopNewHead //// LutzBaseAvatar
-    7400204: TutorialGuideWalk //// LutzBaseAvatar
-    7400206: TutorialGuideAirlock //// LutzBaseAvatar
-    7400208: TutorialGuideTalk //// LutzBaseAvatar
-    7400210: TutorialGuideIdle //// LutzBaseAvatar
-    7400212: TutorialGuideArmory //// LutzBaseAvatar
-    7400214: HomeLargeGunIdle //// LutzBaseAvatar
-    7400216: HomeLargeGunLookAround //// LutzBaseAvatar
-    7400218: HomeLargeGunRelaxNeck //// LutzBaseAvatar
-    7400220: HomeLargeGunCheckWeapon //// LutzBaseAvatar
-    7400222: HomeLargeGunShakeWeapon //// LutzBaseAvatar
-    7400224: HomeMeleeIdle //// LutzBaseAvatar
-    7400226: HomeMeleeLookAround //// LutzBaseAvatar
-    7400228: HomeMeleeRelaxNeck //// LutzBaseAvatar
-    7400230: HomeMeleeCheckWeapon //// LutzBaseAvatar
-    7400232: HomeSmallGunIdle //// LutzBaseAvatar
-    7400234: HomeSmallGunLookAround //// LutzBaseAvatar
-    7400236: HomeSmallGunRelaxNeck //// LutzBaseAvatar
-    7400238: HomeSmallGunCheckWeapon //// LutzBaseAvatar
-    7400240: HomeMediumGunIdle //// LutzBaseAvatar
-    7400242: HomeMediumGunLookAround //// LutzBaseAvatar
-    7400244: HomeMediumGunRelaxNeck //// LutzBaseAvatar
-    7400246: HomeMediumGunCheckWeapon //// LutzBaseAvatar
-    7400248: HomeNoWeaponIdle //// LutzBaseAvatar
-    7400250: HomeNoWeaponnLookAround //// LutzBaseAvatar
-    7400252: HomeNoWeaponRelaxNeck //// LutzBaseAvatar
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: LutzHeadAndFace
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      74: 7400002
+    second: lightGunUpDown
+  - first:
+      74: 7400004
+    second: heavyGunUpDown
+  - first:
+      74: 7400006
+    second: run
+  - first:
+      74: 7400008
+    second: walk
+  - first:
+      74: 7400010
+    second: jumpUp
+  - first:
+      74: 7400012
+    second: jumpFall
+  - first:
+      74: 7400014
+    second: jumpLand
+  - first:
+      74: 7400016
+    second: squat
+  - first:
+      74: 7400018
+    second: crouch
+  - first:
+      74: 7400020
+    second: swimStart
+  - first:
+      74: 7400022
+    second: swimLoop
+  - first:
+      74: 7400024
+    second: leanRight
+  - first:
+      74: 7400026
+    second: leanLeft
+  - first:
+      74: 7400028
+    second: shootLightGun
+  - first:
+      74: 7400030
+    second: shootHeavyGun
+  - first:
+      74: 7400032
+    second: gotHit
+  - first:
+      74: 7400034
+    second: die1
+  - first:
+      74: 7400036
+    second: die2
+  - first:
+      74: 7400038
+    second: die3
+  - first:
+      74: 7400040
+    second: idle
+  - first:
+      74: 7400042
+    second: lightGunBreathe
+  - first:
+      74: 7400044
+    second: heavyGunBreathe
+  - first:
+      74: 7400046
+    second: snipeUpDown
+  - first:
+      74: 7400048
+    second: idleBigGunNoneAction
+  - first:
+      74: 7400050
+    second: idleBigGunLookAround
+  - first:
+      74: 7400052
+    second: idleBigGunRelaxNeck
+  - first:
+      74: 7400054
+    second: idleBigGunCheckWeapon
+  - first:
+      74: 7400056
+    second: idleBigGunShakeWeapon
+  - first:
+      74: 7400058
+    second: meleeSwingRightToLeft
+  - first:
+      74: 7400060
+    second: meleSwingLeftToRight
+  - first:
+      74: 7400062
+    second: idleMeleeNoneAction
+  - first:
+      74: 7400064
+    second: idleMeleeLookAround
+  - first:
+      74: 7400066
+    second: idleMeleeRelaxNeck
+  - first:
+      74: 7400068
+    second: idleMeleeCheckWeapon
+  - first:
+      74: 7400070
+    second: idleHandGunNoneAction
+  - first:
+      74: 7400072
+    second: idleHandGunLookAround
+  - first:
+      74: 7400074
+    second: idleHandGunRelaxNeck
+  - first:
+      74: 7400076
+    second: idleHandGunCheckWeapon
+  - first:
+      74: 7400078
+    second: idleMiniGunNoAction
+  - first:
+      74: 7400080
+    second: idleMiniGunLookAround
+  - first:
+      74: 7400082
+    second: idleMiniGunRelaxNeck
+  - first:
+      74: 7400084
+    second: idleMiniGunCheckWeapon
+  - first:
+      74: 7400086
+    second: outToShootPosHandGun
+  - first:
+      74: 7400088
+    second: shootPosHandGun
+  - first:
+      74: 7400090
+    second: shootPosShootActionHandGun
+  - first:
+      74: 7400092
+    second: outToShootBigGun
+  - first:
+      74: 7400094
+    second: shootPosBigGun
+  - first:
+      74: 7400096
+    second: shootPosShootActionBigGun
+  - first:
+      74: 7400098
+    second: putGunAway
+  - first:
+      74: 7400100
+    second: outToShootPosMelee
+  - first:
+      74: 7400102
+    second: shootPosMelee
+  - first:
+      74: 7400104
+    second: putMeleeAway
+  - first:
+      74: 7400106
+    second: idleNoWeaponNoneAction
+  - first:
+      74: 7400108
+    second: idleNoWeaponLookAround
+  - first:
+      74: 7400110
+    second: idleNoWeaponRelaxNeck
+  - first:
+      74: 7400112
+    second: checkNewGloves
+  - first:
+      74: 7400114
+    second: checkNewChest
+  - first:
+      74: 7400116
+    second: checkNewFeet
+  - first:
+      74: 7400118
+    second: checkNewLegs
+  - first:
+      74: 7400120
+    second: CheckNewHead
+  - first:
+      74: 7400122
+    second: idleWalk
+  - first:
+      74: 7400124
+    second: guiderWalk
+  - first:
+      74: 7400126
+    second: guiderAirlock
+  - first:
+      74: 7400128
+    second: guiderTalk
+  - first:
+      74: 7400130
+    second: guiderIdle
+  - first:
+      74: 7400132
+    second: guiderArmory
+  - first:
+      74: 7400134
+    second: ShopLargeGunIdle
+  - first:
+      74: 7400136
+    second: ShopLargeGunLookAround
+  - first:
+      74: 7400138
+    second: ShopLargeGunRelaxNeck
+  - first:
+      74: 7400140
+    second: ShopLargeGunCheckWeapon
+  - first:
+      74: 7400142
+    second: ShopLargeGunShakeWeapon
+  - first:
+      74: 7400144
+    second: ShopMeleeIdle
+  - first:
+      74: 7400146
+    second: ShopMeleeLookAround
+  - first:
+      74: 7400148
+    second: ShopMeleeRelaxNeck
+  - first:
+      74: 7400150
+    second: ShopMeleeCheckWeapon
+  - first:
+      74: 7400152
+    second: ShopSmallGunIdle
+  - first:
+      74: 7400154
+    second: ShopSmallGunLookAround
+  - first:
+      74: 7400156
+    second: ShopSmallGunRelaxNeck
+  - first:
+      74: 7400158
+    second: ShopSmallGunCheckWeapon
+  - first:
+      74: 7400160
+    second: ShopMediumGunIdle
+  - first:
+      74: 7400162
+    second: ShopMediumGunLookAround
+  - first:
+      74: 7400164
+    second: ShopMediumGunRelaxNeck
+  - first:
+      74: 7400166
+    second: ShopMediumGunCheckWeapon
+  - first:
+      74: 7400168
+    second: ShopSmallGunTakeOut
+  - first:
+      74: 7400170
+    second: ShopSmallGunAimIdle
+  - first:
+      74: 7400172
+    second: ShopSmallGunShoot
+  - first:
+      74: 7400174
+    second: ShopLargeGunTakeOut
+  - first:
+      74: 7400176
+    second: ShopLargeGunAimIdle
+  - first:
+      74: 7400178
+    second: ShopLargeGunShoot
+  - first:
+      74: 7400180
+    second: ShopHideGun
+  - first:
+      74: 7400182
+    second: ShopMeleeTakeOut
+  - first:
+      74: 7400184
+    second: ShopMeleeAimIdle
+  - first:
+      74: 7400186
+    second: ShopHideMelee
+  - first:
+      74: 7400188
+    second: ShopNoWeaponIdle
+  - first:
+      74: 7400190
+    second: ShopNoWeaponnLookAround
+  - first:
+      74: 7400192
+    second: ShopNoWeaponRelaxNeck
+  - first:
+      74: 7400194
+    second: ShopNewGloves
+  - first:
+      74: 7400196
+    second: ShopNewUpperBody
+  - first:
+      74: 7400198
+    second: ShopNewBoots
+  - first:
+      74: 7400200
+    second: ShopNewLowerBody
+  - first:
+      74: 7400202
+    second: ShopNewHead
+  - first:
+      74: 7400204
+    second: TutorialGuideWalk
+  - first:
+      74: 7400206
+    second: TutorialGuideAirlock
+  - first:
+      74: 7400208
+    second: TutorialGuideTalk
+  - first:
+      74: 7400210
+    second: TutorialGuideIdle
+  - first:
+      74: 7400212
+    second: TutorialGuideArmory
+  - first:
+      74: 7400214
+    second: HomeLargeGunIdle
+  - first:
+      74: 7400216
+    second: HomeLargeGunLookAround
+  - first:
+      74: 7400218
+    second: HomeLargeGunRelaxNeck
+  - first:
+      74: 7400220
+    second: HomeLargeGunCheckWeapon
+  - first:
+      74: 7400222
+    second: HomeLargeGunShakeWeapon
+  - first:
+      74: 7400224
+    second: HomeMeleeIdle
+  - first:
+      74: 7400226
+    second: HomeMeleeLookAround
+  - first:
+      74: 7400228
+    second: HomeMeleeRelaxNeck
+  - first:
+      74: 7400230
+    second: HomeMeleeCheckWeapon
+  - first:
+      74: 7400232
+    second: HomeSmallGunIdle
+  - first:
+      74: 7400234
+    second: HomeSmallGunLookAround
+  - first:
+      74: 7400236
+    second: HomeSmallGunRelaxNeck
+  - first:
+      74: 7400238
+    second: HomeSmallGunCheckWeapon
+  - first:
+      74: 7400240
+    second: HomeMediumGunIdle
+  - first:
+      74: 7400242
+    second: HomeMediumGunLookAround
+  - first:
+      74: 7400244
+    second: HomeMediumGunRelaxNeck
+  - first:
+      74: 7400246
+    second: HomeMediumGunCheckWeapon
+  - first:
+      74: 7400248
+    second: HomeNoWeaponIdle
+  - first:
+      74: 7400250
+    second: HomeNoWeaponnLookAround
+  - first:
+      74: 7400252
+    second: HomeNoWeaponRelaxNeck
+  - first:
+      1: 100016
+    second: //RootNode
+  - first:
+      4: 400016
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100050
+    second: Chest
+  - first:
+      4: 400050
+    second: Chest
+  - first:
+      137: 13700000
+    second: Chest
+  - first:
+      1: 100038
+    second: Head
+  - first:
+      4: 400038
+    second: Head
+  - first:
+      1: 100020
+    second: HeadTop
+  - first:
+      4: 400020
+    second: HeadTop
+  - first:
+      1: 100024
+    second: Hips
+  - first:
+      4: 400024
+    second: Hips
+  - first:
+      1: 100044
+    second: LeftArm
+  - first:
+      4: 400044
+    second: LeftArm
+  - first:
+      1: 100014
+    second: LeftFoot
+  - first:
+      4: 400014
+    second: LeftFoot
+  - first:
+      1: 100008
+    second: LeftForeArm
+  - first:
+      4: 400008
+    second: LeftForeArm
+  - first:
+      1: 100026
+    second: LeftHand
+  - first:
+      4: 400026
+    second: LeftHand
+  - first:
+      1: 100034
+    second: LeftHandEnd
+  - first:
+      4: 400034
+    second: LeftHandEnd
+  - first:
+      1: 100018
+    second: LeftLeg
+  - first:
+      4: 400018
+    second: LeftLeg
+  - first:
+      1: 100028
+    second: LeftShoulder
+  - first:
+      4: 400028
+    second: LeftShoulder
+  - first:
+      1: 100048
+    second: LeftToe
+  - first:
+      4: 400048
+    second: LeftToe
+  - first:
+      1: 100046
+    second: LeftUpLeg
+  - first:
+      4: 400046
+    second: LeftUpLeg
+  - first:
+      1: 100004
+    second: LutzHeadAndFace
+  - first:
+      4: 400004
+    second: LutzHeadAndFace
+  - first:
+      1: 100012
+    second: Neck
+  - first:
+      4: 400012
+    second: Neck
+  - first:
+      1: 100030
+    second: RightArm
+  - first:
+      4: 400030
+    second: RightArm
+  - first:
+      1: 100042
+    second: RightFoot
+  - first:
+      4: 400042
+    second: RightFoot
+  - first:
+      1: 100000
+    second: RightForeArm
+  - first:
+      4: 400000
+    second: RightForeArm
+  - first:
+      1: 100010
+    second: RightHand
+  - first:
+      4: 400010
+    second: RightHand
+  - first:
+      1: 100022
+    second: RightHandEnd
+  - first:
+      4: 400022
+    second: RightHandEnd
+  - first:
+      1: 100002
+    second: RightLeg
+  - first:
+      4: 400002
+    second: RightLeg
+  - first:
+      1: 100036
+    second: RightShoulder
+  - first:
+      4: 400036
+    second: RightShoulder
+  - first:
+      1: 100032
+    second: RightToe
+  - first:
+      4: 400032
+    second: RightToe
+  - first:
+      1: 100040
+    second: RightUpLeg
+  - first:
+      4: 400040
+    second: RightUpLeg
+  - first:
+      1: 100006
+    second: Spine
+  - first:
+      4: 400006
+    second: Spine
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 3
+    legacyGenerateAnimations: 3
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
-    - name: lightGunUpDown
+    - serializedVersion: 16
+      name: lightGunUpDown
+      takeName: 
+      internalID: 0
       firstFrame: 1
       lastFrame: 24
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: heavyGunUpDown
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: heavyGunUpDown
+      takeName: 
+      internalID: 0
       firstFrame: 26
       lastFrame: 49
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: run
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: run
+      takeName: 
+      internalID: 0
       firstFrame: 51
       lastFrame: 67
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: walk
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: walk
+      takeName: 
+      internalID: 0
       firstFrame: 70
       lastFrame: 85
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: jumpUp
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: jumpUp
+      takeName: 
+      internalID: 0
       firstFrame: 87
       lastFrame: 98
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: jumpFall
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: jumpFall
+      takeName: 
+      internalID: 0
       firstFrame: 99
       lastFrame: 106
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: jumpLand
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: jumpLand
+      takeName: 
+      internalID: 0
       firstFrame: 107
       lastFrame: 112
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: squat
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: squat
+      takeName: 
+      internalID: 0
       firstFrame: 112
       lastFrame: 116
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: crouch
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: crouch
+      takeName: 
+      internalID: 0
       firstFrame: 117
       lastFrame: 140
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: swimStart
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: swimStart
+      takeName: 
+      internalID: 0
       firstFrame: 142
       lastFrame: 152
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: swimLoop
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: swimLoop
+      takeName: 
+      internalID: 0
       firstFrame: 153
       lastFrame: 180
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: leanRight
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: leanRight
+      takeName: 
+      internalID: 0
       firstFrame: 182
       lastFrame: 189
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: leanLeft
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: leanLeft
+      takeName: 
+      internalID: 0
       firstFrame: 189
       lastFrame: 196
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: shootLightGun
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: shootLightGun
+      takeName: 
+      internalID: 0
       firstFrame: 197
       lastFrame: 201
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: shootHeavyGun
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: shootHeavyGun
+      takeName: 
+      internalID: 0
       firstFrame: 202
       lastFrame: 207
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: gotHit
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: gotHit
+      takeName: 
+      internalID: 0
       firstFrame: 208
       lastFrame: 209
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: die1
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: die1
+      takeName: 
+      internalID: 0
       firstFrame: 209
       lastFrame: 243
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: die2
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: die2
+      takeName: 
+      internalID: 0
       firstFrame: 245
       lastFrame: 264
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: die3
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: die3
+      takeName: 
+      internalID: 0
       firstFrame: 266
       lastFrame: 302
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: idle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: idle
+      takeName: 
+      internalID: 0
       firstFrame: 304
       lastFrame: 337
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: lightGunBreathe
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: lightGunBreathe
+      takeName: 
+      internalID: 0
       firstFrame: 339
       lastFrame: 398
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: heavyGunBreathe
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: heavyGunBreathe
+      takeName: 
+      internalID: 0
       firstFrame: 400
       lastFrame: 459
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: snipeUpDown
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: snipeUpDown
+      takeName: 
+      internalID: 0
       firstFrame: 460
       lastFrame: 485
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: HomeLargeGunIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeLargeGunIdle
+      takeName: 
+      internalID: 0
       firstFrame: 486
       lastFrame: 565
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeLargeGunLookAround
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeLargeGunLookAround
+      takeName: 
+      internalID: 0
       firstFrame: 565
       lastFrame: 660
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeLargeGunRelaxNeck
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeLargeGunRelaxNeck
+      takeName: 
+      internalID: 0
       firstFrame: 661
       lastFrame: 749
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeLargeGunCheckWeapon
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeLargeGunCheckWeapon
+      takeName: 
+      internalID: 0
       firstFrame: 750
       lastFrame: 858
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeLargeGunShakeWeapon
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeLargeGunShakeWeapon
+      takeName: 
+      internalID: 0
       firstFrame: 858
       lastFrame: 938
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: meleeSwingRightToLeft
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: meleeSwingRightToLeft
+      takeName: 
+      internalID: 0
       firstFrame: 940
       lastFrame: 953
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: meleSwingLeftToRight
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: meleSwingLeftToRight
+      takeName: 
+      internalID: 0
       firstFrame: 953
       lastFrame: 966
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMeleeIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMeleeIdle
+      takeName: 
+      internalID: 0
       firstFrame: 967
       lastFrame: 1046
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMeleeLookAround
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMeleeLookAround
+      takeName: 
+      internalID: 0
       firstFrame: 1046
       lastFrame: 1141
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMeleeRelaxNeck
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMeleeRelaxNeck
+      takeName: 
+      internalID: 0
       firstFrame: 1141
       lastFrame: 1230
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMeleeCheckWeapon
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMeleeCheckWeapon
+      takeName: 
+      internalID: 0
       firstFrame: 1230
       lastFrame: 1348
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeSmallGunIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeSmallGunIdle
+      takeName: 
+      internalID: 0
       firstFrame: 1349
       lastFrame: 1428
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeSmallGunLookAround
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeSmallGunLookAround
+      takeName: 
+      internalID: 0
       firstFrame: 1428
       lastFrame: 1523
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeSmallGunRelaxNeck
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeSmallGunRelaxNeck
+      takeName: 
+      internalID: 0
       firstFrame: 1523
       lastFrame: 1612
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeSmallGunCheckWeapon
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeSmallGunCheckWeapon
+      takeName: 
+      internalID: 0
       firstFrame: 1612
       lastFrame: 1745
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMediumGunIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMediumGunIdle
+      takeName: 
+      internalID: 0
       firstFrame: 1746
       lastFrame: 1825
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMediumGunLookAround
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMediumGunLookAround
+      takeName: 
+      internalID: 0
       firstFrame: 1825
       lastFrame: 1921
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMediumGunRelaxNeck
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMediumGunRelaxNeck
+      takeName: 
+      internalID: 0
       firstFrame: 1921
       lastFrame: 1989
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeMediumGunCheckWeapon
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeMediumGunCheckWeapon
+      takeName: 
+      internalID: 0
       firstFrame: 1989
       lastFrame: 2105
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopSmallGunTakeOut
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopSmallGunTakeOut
+      takeName: 
+      internalID: 0
       firstFrame: 2106
       lastFrame: 2122
       wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: ShopSmallGunAimIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopSmallGunAimIdle
+      takeName: 
+      internalID: 0
       firstFrame: 2122
       lastFrame: 2182
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopSmallGunShoot
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopSmallGunShoot
+      takeName: 
+      internalID: 0
       firstFrame: 2182
       lastFrame: 2188
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopLargeGunTakeOut
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopLargeGunTakeOut
+      takeName: 
+      internalID: 0
       firstFrame: 2189
       lastFrame: 2205
       wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: ShopLargeGunAimIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopLargeGunAimIdle
+      takeName: 
+      internalID: 0
       firstFrame: 2205
       lastFrame: 2265
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopLargeGunShoot
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopLargeGunShoot
+      takeName: 
+      internalID: 0
       firstFrame: 2265
       lastFrame: 2271
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopHideGun
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopHideGun
+      takeName: 
+      internalID: 0
       firstFrame: 2272
       lastFrame: 2304
       wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: ShopMeleeTakeOut
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopMeleeTakeOut
+      takeName: 
+      internalID: 0
       firstFrame: 2305
       lastFrame: 2315
       wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: ShopMeleeAimIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopMeleeAimIdle
+      takeName: 
+      internalID: 0
       firstFrame: 2315
       lastFrame: 2375
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopHideMelee
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopHideMelee
+      takeName: 
+      internalID: 0
       firstFrame: 2375
       lastFrame: 2400
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeNoWeaponIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeNoWeaponIdle
+      takeName: 
+      internalID: 0
       firstFrame: 2401
       lastFrame: 2480
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeNoWeaponnLookAround
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeNoWeaponnLookAround
+      takeName: 
+      internalID: 0
       firstFrame: 2480
       lastFrame: 2575
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: HomeNoWeaponRelaxNeck
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HomeNoWeaponRelaxNeck
+      takeName: 
+      internalID: 0
       firstFrame: 2575
       lastFrame: 2664
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopNewGloves
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopNewGloves
+      takeName: 
+      internalID: 0
       firstFrame: 2664
       lastFrame: 2769
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopNewUpperBody
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopNewUpperBody
+      takeName: 
+      internalID: 0
       firstFrame: 2769
       lastFrame: 2865
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopNewBoots
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopNewBoots
+      takeName: 
+      internalID: 0
       firstFrame: 2865
       lastFrame: 2954
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopNewLowerBody
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopNewLowerBody
+      takeName: 
+      internalID: 0
       firstFrame: 2954
       lastFrame: 3033
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: ShopNewHead
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ShopNewHead
+      takeName: 
+      internalID: 0
       firstFrame: 3033
       lastFrame: 3115
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: idleWalk
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: idleWalk
+      takeName: 
+      internalID: 0
       firstFrame: 3116
       lastFrame: 3147
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: TutorialGuideWalk
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: TutorialGuideWalk
+      takeName: 
+      internalID: 0
       firstFrame: 3148
       lastFrame: 3180
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: TutorialGuideAirlock
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: TutorialGuideAirlock
+      takeName: 
+      internalID: 0
       firstFrame: 3181
       lastFrame: 3311
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
-    - name: TutorialGuideTalk
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: TutorialGuideTalk
+      takeName: 
+      internalID: 0
       firstFrame: 3312
       lastFrame: 3421
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: TutorialGuideIdle
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: TutorialGuideIdle
+      takeName: 
+      internalID: 0
       firstFrame: 3422
       lastFrame: 3501
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 1
-    - name: TutorialGuideArmory
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: TutorialGuideArmory
+      takeName: 
+      internalID: 0
       firstFrame: 3502
       lastFrame: 3576
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 3
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 111
-        second: 605fa900
-    Chest:
-      data:
-        first: 1
-        second: d2860100
-      data:
-        first: 4
-        second: b21a0600
-      data:
-        first: 137
-        second: a00bd100
-    Head:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-    HeadTop:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-    Hips:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-    LeftArm:
-      data:
-        first: 1
-        second: cc860100
-      data:
-        first: 4
-        second: ac1a0600
-    LeftFoot:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-    LeftForeArm:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-    LeftHand:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-    LeftHandEnd:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-    LeftLeg:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-    LeftShoulder:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-    LeftToe:
-      data:
-        first: 1
-        second: d0860100
-      data:
-        first: 4
-        second: b01a0600
-    LeftUpLeg:
-      data:
-        first: 1
-        second: ce860100
-      data:
-        first: 4
-        second: ae1a0600
-    LutzHeadAndFace:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-    Neck:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-    RightArm:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-    RightFoot:
-      data:
-        first: 1
-        second: ca860100
-      data:
-        first: 4
-        second: aa1a0600
-    RightForeArm:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-    RightHand:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-    RightHandEnd:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-    RightLeg:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-    RightShoulder:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-    RightToe:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-    RightUpLeg:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-    Spine:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -18,6 +18,11 @@ public class LoadoutManager : Singleton<LoadoutManager>
 
     public static readonly string[] GearSlotNames = new string[] { LocalizedStrings.Head, LocalizedStrings.Face, LocalizedStrings.Gloves, LocalizedStrings.UpperBody, LocalizedStrings.LowerBody, LocalizedStrings.Boots };
 
+    // Bumped whenever the equipped-item set could have changed. Read by the shop's
+    // filter-index cache so it knows to rebuild after an equip/unequip instead of
+    // re-running InventoryItemFilter.CanPass per item per frame.
+    public int EquippedVersion { get; private set; }
+
     private LoadoutManager()
     {
         _loadout = new Dictionary<LoadoutSlotType, int>()
@@ -95,6 +100,7 @@ public class LoadoutManager : Singleton<LoadoutManager>
             previousWeaponIds[i] = _loadout[s];
             _loadout[s] = weaponIds[i];
         }
+        EquippedVersion++;
 
         return previousWeaponIds;
     }
@@ -127,6 +133,7 @@ public class LoadoutManager : Singleton<LoadoutManager>
             _loadout[LoadoutSlotType.WeaponPrimary] = view.Weapon1;
             _loadout[LoadoutSlotType.WeaponSecondary] = view.Weapon2;
             _loadout[LoadoutSlotType.WeaponTertiary] = view.Weapon3;
+            EquippedVersion++;
 
             UpdateArmor();
         }
@@ -530,6 +537,7 @@ public class LoadoutManager : Singleton<LoadoutManager>
     public void SetLoadoutItem(LoadoutSlotType loadoutSlotType, InventoryItem item)
     {
         _loadout[loadoutSlotType] = (item != null && item.Item != null) ? item.Item.ItemId : 0;
+        EquippedVersion++;
 
         MonoRoutine.Start(PlayerDataManager.Instance.StartSetLoadout());
 
@@ -538,7 +546,14 @@ public class LoadoutManager : Singleton<LoadoutManager>
 
     public bool IsItemEquipped(int itemId)
     {
-        return _loadout.Any(i => i.Value == itemId);
+        // Was `.Any(lambda)` — closure allocation + full dictionary enumeration
+        // per item per OnGUI pass in the shop. Plain foreach over Values skips
+        // the lambda and lets the iterator early-exit.
+        foreach (var v in _loadout.Values)
+        {
+            if (v == itemId) return true;
+        }
+        return false;
     }
 
     public bool HasItemInSlot(LoadoutSlotType slot)

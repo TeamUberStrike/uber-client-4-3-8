@@ -1,829 +1,976 @@
 fileFormatVersion: 2
 guid: 8351a6108fa0f464aa2af20bf11e5f4f
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: VIFS001
-    4300002: VIFS002
-    4300004: VIFS003
-    4300006: VIFS004
-    4300008: VIFS005
-    4300010: VIFS006
-    4300012: VIFS007
-    4300014: VIFS008
-    4300016: VIFS009
-    4300018: VIFS010
-    4300020: VIFS011
-    4300022: VIFS012
-    4300024: VIFS013
-    4300026: VIFS014
-    4300028: VIFS015
-    4300030: VIFS016
-    4300032: piece1
-    4300034: Piece2
-    4300036: Piece3
-    4300038: Piece4
-    4300040: Piece5
-    4300042: Piece6
-    4300044: Piece7
-    4300046: Piece8
-    4300048: Piece9
-    4300050: Piece10
-    4300052: Piece11
-    4300054: Piece12
-    4300056: Piece13
-    4300058: Piece14
-    4300060: Piece15
-    4300062: Piece16
-    4300064: Piece17
-    4300066: Piece18
-    4300068: Piece19
-    4300070: Piece20
-    4300072: Piece21
-    4300074: Piece22
-    4300076: Piece23
-    4300078: Piece24
-    4300080: Piece25
-    4300082: Piece26
-    4300084: Piece27
-    4300086: Piece28
-    4300088: Piece29
-    4300090: Piece30
-    4300092: Piece31
-    4300094: Piece32
-    4300096: Piece33
-    4300098: Piece34
-    4300100: Piece35
-    4300102: Piece36
-    4300104: Piece37
-    4300106: Piece38
-    4300108: Piece39
-    4300110: Piece40
-    4300112: Piece41
-    4300114: Piece42
-    4300116: Piece43
-    4300118: Piece44
-    4300120: Piece45
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: VIFS001
+  - first:
+      43: 4300002
+    second: VIFS002
+  - first:
+      43: 4300004
+    second: VIFS003
+  - first:
+      43: 4300006
+    second: VIFS004
+  - first:
+      43: 4300008
+    second: VIFS005
+  - first:
+      43: 4300010
+    second: VIFS006
+  - first:
+      43: 4300012
+    second: VIFS007
+  - first:
+      43: 4300014
+    second: VIFS008
+  - first:
+      43: 4300016
+    second: VIFS009
+  - first:
+      43: 4300018
+    second: VIFS010
+  - first:
+      43: 4300020
+    second: VIFS011
+  - first:
+      43: 4300022
+    second: VIFS012
+  - first:
+      43: 4300024
+    second: VIFS013
+  - first:
+      43: 4300026
+    second: VIFS014
+  - first:
+      43: 4300028
+    second: VIFS015
+  - first:
+      43: 4300030
+    second: VIFS016
+  - first:
+      43: 4300032
+    second: piece1
+  - first:
+      43: 4300034
+    second: Piece2
+  - first:
+      43: 4300036
+    second: Piece3
+  - first:
+      43: 4300038
+    second: Piece4
+  - first:
+      43: 4300040
+    second: Piece5
+  - first:
+      43: 4300042
+    second: Piece6
+  - first:
+      43: 4300044
+    second: Piece7
+  - first:
+      43: 4300046
+    second: Piece8
+  - first:
+      43: 4300048
+    second: Piece9
+  - first:
+      43: 4300050
+    second: Piece10
+  - first:
+      43: 4300052
+    second: Piece11
+  - first:
+      43: 4300054
+    second: Piece12
+  - first:
+      43: 4300056
+    second: Piece13
+  - first:
+      43: 4300058
+    second: Piece14
+  - first:
+      43: 4300060
+    second: Piece15
+  - first:
+      43: 4300062
+    second: Piece16
+  - first:
+      43: 4300064
+    second: Piece17
+  - first:
+      43: 4300066
+    second: Piece18
+  - first:
+      43: 4300068
+    second: Piece19
+  - first:
+      43: 4300070
+    second: Piece20
+  - first:
+      43: 4300072
+    second: Piece21
+  - first:
+      43: 4300074
+    second: Piece22
+  - first:
+      43: 4300076
+    second: Piece23
+  - first:
+      43: 4300078
+    second: Piece24
+  - first:
+      43: 4300080
+    second: Piece25
+  - first:
+      43: 4300082
+    second: Piece26
+  - first:
+      43: 4300084
+    second: Piece27
+  - first:
+      43: 4300086
+    second: Piece28
+  - first:
+      43: 4300088
+    second: Piece29
+  - first:
+      43: 4300090
+    second: Piece30
+  - first:
+      43: 4300092
+    second: Piece31
+  - first:
+      43: 4300094
+    second: Piece32
+  - first:
+      43: 4300096
+    second: Piece33
+  - first:
+      43: 4300098
+    second: Piece34
+  - first:
+      43: 4300100
+    second: Piece35
+  - first:
+      43: 4300102
+    second: Piece36
+  - first:
+      43: 4300104
+    second: Piece37
+  - first:
+      43: 4300106
+    second: Piece38
+  - first:
+      43: 4300108
+    second: Piece39
+  - first:
+      43: 4300110
+    second: Piece40
+  - first:
+      43: 4300112
+    second: Piece41
+  - first:
+      43: 4300114
+    second: Piece42
+  - first:
+      43: 4300116
+    second: Piece43
+  - first:
+      43: 4300118
+    second: Piece44
+  - first:
+      43: 4300120
+    second: Piece45
+  - first:
+      1: 100004
+    second: //RootNode
+  - first:
+      4: 400004
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100048
+    second: Piece10
+  - first:
+      4: 400048
+    second: Piece10
+  - first:
+      33: 3300046
+    second: Piece10
+  - first:
+      23: 2300046
+    second: Piece10
+  - first:
+      64: 6400046
+    second: Piece10
+  - first:
+      1: 100046
+    second: Piece11
+  - first:
+      4: 400046
+    second: Piece11
+  - first:
+      33: 3300044
+    second: Piece11
+  - first:
+      23: 2300044
+    second: Piece11
+  - first:
+      64: 6400044
+    second: Piece11
+  - first:
+      1: 100044
+    second: Piece12
+  - first:
+      4: 400044
+    second: Piece12
+  - first:
+      33: 3300042
+    second: Piece12
+  - first:
+      23: 2300042
+    second: Piece12
+  - first:
+      64: 6400042
+    second: Piece12
+  - first:
+      1: 100042
+    second: Piece13
+  - first:
+      4: 400042
+    second: Piece13
+  - first:
+      33: 3300040
+    second: Piece13
+  - first:
+      23: 2300040
+    second: Piece13
+  - first:
+      64: 6400040
+    second: Piece13
+  - first:
+      1: 100040
+    second: Piece14
+  - first:
+      4: 400040
+    second: Piece14
+  - first:
+      33: 3300038
+    second: Piece14
+  - first:
+      23: 2300038
+    second: Piece14
+  - first:
+      64: 6400038
+    second: Piece14
+  - first:
+      1: 100038
+    second: Piece15
+  - first:
+      4: 400038
+    second: Piece15
+  - first:
+      33: 3300036
+    second: Piece15
+  - first:
+      23: 2300036
+    second: Piece15
+  - first:
+      64: 6400036
+    second: Piece15
+  - first:
+      1: 100036
+    second: Piece16
+  - first:
+      4: 400036
+    second: Piece16
+  - first:
+      33: 3300034
+    second: Piece16
+  - first:
+      23: 2300034
+    second: Piece16
+  - first:
+      64: 6400034
+    second: Piece16
+  - first:
+      1: 100034
+    second: Piece17
+  - first:
+      4: 400034
+    second: Piece17
+  - first:
+      33: 3300032
+    second: Piece17
+  - first:
+      23: 2300032
+    second: Piece17
+  - first:
+      64: 6400032
+    second: Piece17
+  - first:
+      1: 100032
+    second: Piece18
+  - first:
+      4: 400032
+    second: Piece18
+  - first:
+      33: 3300030
+    second: Piece18
+  - first:
+      23: 2300030
+    second: Piece18
+  - first:
+      64: 6400030
+    second: Piece18
+  - first:
+      1: 100030
+    second: Piece19
+  - first:
+      4: 400030
+    second: Piece19
+  - first:
+      33: 3300028
+    second: Piece19
+  - first:
+      23: 2300028
+    second: Piece19
+  - first:
+      64: 6400028
+    second: Piece19
+  - first:
+      1: 100064
+    second: Piece2
+  - first:
+      4: 400064
+    second: Piece2
+  - first:
+      33: 3300062
+    second: Piece2
+  - first:
+      23: 2300062
+    second: Piece2
+  - first:
+      64: 6400062
+    second: Piece2
+  - first:
+      1: 100028
+    second: Piece20
+  - first:
+      4: 400028
+    second: Piece20
+  - first:
+      33: 3300026
+    second: Piece20
+  - first:
+      23: 2300026
+    second: Piece20
+  - first:
+      64: 6400026
+    second: Piece20
+  - first:
+      1: 100026
+    second: Piece21
+  - first:
+      4: 400026
+    second: Piece21
+  - first:
+      33: 3300024
+    second: Piece21
+  - first:
+      23: 2300024
+    second: Piece21
+  - first:
+      64: 6400024
+    second: Piece21
+  - first:
+      1: 100024
+    second: Piece22
+  - first:
+      4: 400024
+    second: Piece22
+  - first:
+      33: 3300022
+    second: Piece22
+  - first:
+      23: 2300022
+    second: Piece22
+  - first:
+      64: 6400022
+    second: Piece22
+  - first:
+      1: 100022
+    second: Piece23
+  - first:
+      4: 400022
+    second: Piece23
+  - first:
+      33: 3300020
+    second: Piece23
+  - first:
+      23: 2300020
+    second: Piece23
+  - first:
+      64: 6400020
+    second: Piece23
+  - first:
+      1: 100020
+    second: Piece24
+  - first:
+      4: 400020
+    second: Piece24
+  - first:
+      33: 3300018
+    second: Piece24
+  - first:
+      23: 2300018
+    second: Piece24
+  - first:
+      64: 6400018
+    second: Piece24
+  - first:
+      1: 100018
+    second: Piece25
+  - first:
+      4: 400018
+    second: Piece25
+  - first:
+      33: 3300016
+    second: Piece25
+  - first:
+      23: 2300016
+    second: Piece25
+  - first:
+      64: 6400016
+    second: Piece25
+  - first:
+      1: 100016
+    second: Piece26
+  - first:
+      4: 400016
+    second: Piece26
+  - first:
+      33: 3300014
+    second: Piece26
+  - first:
+      23: 2300014
+    second: Piece26
+  - first:
+      64: 6400014
+    second: Piece26
+  - first:
+      1: 100014
+    second: Piece27
+  - first:
+      4: 400014
+    second: Piece27
+  - first:
+      33: 3300012
+    second: Piece27
+  - first:
+      23: 2300012
+    second: Piece27
+  - first:
+      64: 6400012
+    second: Piece27
+  - first:
+      1: 100012
+    second: Piece28
+  - first:
+      4: 400012
+    second: Piece28
+  - first:
+      33: 3300010
+    second: Piece28
+  - first:
+      23: 2300010
+    second: Piece28
+  - first:
+      64: 6400010
+    second: Piece28
+  - first:
+      1: 100010
+    second: Piece29
+  - first:
+      4: 400010
+    second: Piece29
+  - first:
+      33: 3300008
+    second: Piece29
+  - first:
+      23: 2300008
+    second: Piece29
+  - first:
+      64: 6400008
+    second: Piece29
+  - first:
+      1: 100062
+    second: Piece3
+  - first:
+      4: 400062
+    second: Piece3
+  - first:
+      33: 3300060
+    second: Piece3
+  - first:
+      23: 2300060
+    second: Piece3
+  - first:
+      64: 6400060
+    second: Piece3
+  - first:
+      1: 100008
+    second: Piece30
+  - first:
+      4: 400008
+    second: Piece30
+  - first:
+      33: 3300006
+    second: Piece30
+  - first:
+      23: 2300006
+    second: Piece30
+  - first:
+      64: 6400006
+    second: Piece30
+  - first:
+      1: 100006
+    second: Piece31
+  - first:
+      4: 400006
+    second: Piece31
+  - first:
+      33: 3300004
+    second: Piece31
+  - first:
+      23: 2300004
+    second: Piece31
+  - first:
+      64: 6400004
+    second: Piece31
+  - first:
+      1: 100002
+    second: Piece32
+  - first:
+      4: 400002
+    second: Piece32
+  - first:
+      33: 3300002
+    second: Piece32
+  - first:
+      23: 2300002
+    second: Piece32
+  - first:
+      64: 6400002
+    second: Piece32
+  - first:
+      1: 100000
+    second: Piece33
+  - first:
+      4: 400000
+    second: Piece33
+  - first:
+      33: 3300000
+    second: Piece33
+  - first:
+      23: 2300000
+    second: Piece33
+  - first:
+      64: 6400000
+    second: Piece33
+  - first:
+      1: 100090
+    second: Piece34
+  - first:
+      4: 400090
+    second: Piece34
+  - first:
+      33: 3300088
+    second: Piece34
+  - first:
+      23: 2300088
+    second: Piece34
+  - first:
+      64: 6400088
+    second: Piece34
+  - first:
+      1: 100088
+    second: Piece35
+  - first:
+      4: 400088
+    second: Piece35
+  - first:
+      33: 3300086
+    second: Piece35
+  - first:
+      23: 2300086
+    second: Piece35
+  - first:
+      64: 6400086
+    second: Piece35
+  - first:
+      1: 100086
+    second: Piece36
+  - first:
+      4: 400086
+    second: Piece36
+  - first:
+      33: 3300084
+    second: Piece36
+  - first:
+      23: 2300084
+    second: Piece36
+  - first:
+      64: 6400084
+    second: Piece36
+  - first:
+      1: 100084
+    second: Piece37
+  - first:
+      4: 400084
+    second: Piece37
+  - first:
+      33: 3300082
+    second: Piece37
+  - first:
+      23: 2300082
+    second: Piece37
+  - first:
+      64: 6400082
+    second: Piece37
+  - first:
+      1: 100082
+    second: Piece38
+  - first:
+      4: 400082
+    second: Piece38
+  - first:
+      33: 3300080
+    second: Piece38
+  - first:
+      23: 2300080
+    second: Piece38
+  - first:
+      64: 6400080
+    second: Piece38
+  - first:
+      1: 100080
+    second: Piece39
+  - first:
+      4: 400080
+    second: Piece39
+  - first:
+      33: 3300078
+    second: Piece39
+  - first:
+      23: 2300078
+    second: Piece39
+  - first:
+      64: 6400078
+    second: Piece39
+  - first:
+      1: 100060
+    second: Piece4
+  - first:
+      4: 400060
+    second: Piece4
+  - first:
+      33: 3300058
+    second: Piece4
+  - first:
+      23: 2300058
+    second: Piece4
+  - first:
+      64: 6400058
+    second: Piece4
+  - first:
+      1: 100078
+    second: Piece40
+  - first:
+      4: 400078
+    second: Piece40
+  - first:
+      33: 3300076
+    second: Piece40
+  - first:
+      23: 2300076
+    second: Piece40
+  - first:
+      64: 6400076
+    second: Piece40
+  - first:
+      1: 100076
+    second: Piece41
+  - first:
+      4: 400076
+    second: Piece41
+  - first:
+      33: 3300074
+    second: Piece41
+  - first:
+      23: 2300074
+    second: Piece41
+  - first:
+      64: 6400074
+    second: Piece41
+  - first:
+      1: 100074
+    second: Piece42
+  - first:
+      4: 400074
+    second: Piece42
+  - first:
+      33: 3300072
+    second: Piece42
+  - first:
+      23: 2300072
+    second: Piece42
+  - first:
+      64: 6400072
+    second: Piece42
+  - first:
+      1: 100072
+    second: Piece43
+  - first:
+      4: 400072
+    second: Piece43
+  - first:
+      33: 3300070
+    second: Piece43
+  - first:
+      23: 2300070
+    second: Piece43
+  - first:
+      64: 6400070
+    second: Piece43
+  - first:
+      1: 100070
+    second: Piece44
+  - first:
+      4: 400070
+    second: Piece44
+  - first:
+      33: 3300068
+    second: Piece44
+  - first:
+      23: 2300068
+    second: Piece44
+  - first:
+      64: 6400068
+    second: Piece44
+  - first:
+      1: 100068
+    second: Piece45
+  - first:
+      4: 400068
+    second: Piece45
+  - first:
+      33: 3300066
+    second: Piece45
+  - first:
+      23: 2300066
+    second: Piece45
+  - first:
+      64: 6400066
+    second: Piece45
+  - first:
+      1: 100058
+    second: Piece5
+  - first:
+      4: 400058
+    second: Piece5
+  - first:
+      33: 3300056
+    second: Piece5
+  - first:
+      23: 2300056
+    second: Piece5
+  - first:
+      64: 6400056
+    second: Piece5
+  - first:
+      1: 100056
+    second: Piece6
+  - first:
+      4: 400056
+    second: Piece6
+  - first:
+      33: 3300054
+    second: Piece6
+  - first:
+      23: 2300054
+    second: Piece6
+  - first:
+      64: 6400054
+    second: Piece6
+  - first:
+      1: 100054
+    second: Piece7
+  - first:
+      4: 400054
+    second: Piece7
+  - first:
+      33: 3300052
+    second: Piece7
+  - first:
+      23: 2300052
+    second: Piece7
+  - first:
+      64: 6400052
+    second: Piece7
+  - first:
+      1: 100052
+    second: Piece8
+  - first:
+      4: 400052
+    second: Piece8
+  - first:
+      33: 3300050
+    second: Piece8
+  - first:
+      23: 2300050
+    second: Piece8
+  - first:
+      64: 6400050
+    second: Piece8
+  - first:
+      1: 100050
+    second: Piece9
+  - first:
+      4: 400050
+    second: Piece9
+  - first:
+      33: 3300048
+    second: Piece9
+  - first:
+      23: 2300048
+    second: Piece9
+  - first:
+      64: 6400048
+    second: Piece9
+  - first:
+      1: 100066
+    second: piece1
+  - first:
+      4: 400066
+    second: piece1
+  - first:
+      33: 3300064
+    second: piece1
+  - first:
+      23: 2300064
+    second: piece1
+  - first:
+      64: 6400064
+    second: piece1
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 0
+    legacyGenerateAnimations: 0
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 3
     addColliders: 1
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 1
     useFileUnits: 1
-    optimizeMesh: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 1
     secondaryUVAreaDistortion: 1
     secondaryUVHardAngle: 180
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 64
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 111
-        second: 605fa900
-    Piece10:
-      data:
-        first: 1
-        second: d0860100
-      data:
-        first: 4
-        second: b01a0600
-      data:
-        first: 23
-        second: 8e182300
-      data:
-        first: 33
-        second: ce5a3200
-      data:
-        first: 64
-        second: 2ea86100
-    Piece11:
-      data:
-        first: 1
-        second: ce860100
-      data:
-        first: 4
-        second: ae1a0600
-      data:
-        first: 23
-        second: 8c182300
-      data:
-        first: 33
-        second: cc5a3200
-      data:
-        first: 64
-        second: 2ca86100
-    Piece12:
-      data:
-        first: 1
-        second: cc860100
-      data:
-        first: 4
-        second: ac1a0600
-      data:
-        first: 23
-        second: 8a182300
-      data:
-        first: 33
-        second: ca5a3200
-      data:
-        first: 64
-        second: 2aa86100
-    Piece13:
-      data:
-        first: 1
-        second: ca860100
-      data:
-        first: 4
-        second: aa1a0600
-      data:
-        first: 23
-        second: 88182300
-      data:
-        first: 33
-        second: c85a3200
-      data:
-        first: 64
-        second: 28a86100
-    Piece14:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 86182300
-      data:
-        first: 33
-        second: c65a3200
-      data:
-        first: 64
-        second: 26a86100
-    Piece15:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-      data:
-        first: 23
-        second: 84182300
-      data:
-        first: 33
-        second: c45a3200
-      data:
-        first: 64
-        second: 24a86100
-    Piece16:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-      data:
-        first: 23
-        second: 82182300
-      data:
-        first: 33
-        second: c25a3200
-      data:
-        first: 64
-        second: 22a86100
-    Piece17:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-      data:
-        first: 23
-        second: 80182300
-      data:
-        first: 33
-        second: c05a3200
-      data:
-        first: 64
-        second: 20a86100
-    Piece18:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
-      data:
-        first: 64
-        second: 1ea86100
-    Piece19:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-      data:
-        first: 64
-        second: 1ca86100
-    Piece2:
-      data:
-        first: 1
-        second: e0860100
-      data:
-        first: 4
-        second: c01a0600
-      data:
-        first: 23
-        second: 9e182300
-      data:
-        first: 33
-        second: de5a3200
-      data:
-        first: 64
-        second: 3ea86100
-    Piece20:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-      data:
-        first: 64
-        second: 1aa86100
-    Piece21:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-      data:
-        first: 64
-        second: 18a86100
-    Piece22:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-      data:
-        first: 64
-        second: 16a86100
-    Piece23:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-      data:
-        first: 64
-        second: 14a86100
-    Piece24:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-      data:
-        first: 64
-        second: 12a86100
-    Piece25:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-      data:
-        first: 64
-        second: 10a86100
-    Piece26:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-      data:
-        first: 64
-        second: 0ea86100
-    Piece27:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-      data:
-        first: 64
-        second: 0ca86100
-    Piece28:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-      data:
-        first: 64
-        second: 0aa86100
-    Piece29:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-      data:
-        first: 64
-        second: 08a86100
-    Piece3:
-      data:
-        first: 1
-        second: de860100
-      data:
-        first: 4
-        second: be1a0600
-      data:
-        first: 23
-        second: 9c182300
-      data:
-        first: 33
-        second: dc5a3200
-      data:
-        first: 64
-        second: 3ca86100
-    Piece30:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-      data:
-        first: 64
-        second: 06a86100
-    Piece31:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
-      data:
-        first: 64
-        second: 04a86100
-    Piece32:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-      data:
-        first: 64
-        second: 02a86100
-    Piece33:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-      data:
-        first: 64
-        second: 00a86100
-    Piece34:
-      data:
-        first: 1
-        second: fa860100
-      data:
-        first: 4
-        second: da1a0600
-      data:
-        first: 23
-        second: b8182300
-      data:
-        first: 33
-        second: f85a3200
-      data:
-        first: 64
-        second: 58a86100
-    Piece35:
-      data:
-        first: 1
-        second: f8860100
-      data:
-        first: 4
-        second: d81a0600
-      data:
-        first: 23
-        second: b6182300
-      data:
-        first: 33
-        second: f65a3200
-      data:
-        first: 64
-        second: 56a86100
-    Piece36:
-      data:
-        first: 1
-        second: f6860100
-      data:
-        first: 4
-        second: d61a0600
-      data:
-        first: 23
-        second: b4182300
-      data:
-        first: 33
-        second: f45a3200
-      data:
-        first: 64
-        second: 54a86100
-    Piece37:
-      data:
-        first: 1
-        second: f4860100
-      data:
-        first: 4
-        second: d41a0600
-      data:
-        first: 23
-        second: b2182300
-      data:
-        first: 33
-        second: f25a3200
-      data:
-        first: 64
-        second: 52a86100
-    Piece38:
-      data:
-        first: 1
-        second: f2860100
-      data:
-        first: 4
-        second: d21a0600
-      data:
-        first: 23
-        second: b0182300
-      data:
-        first: 33
-        second: f05a3200
-      data:
-        first: 64
-        second: 50a86100
-    Piece39:
-      data:
-        first: 1
-        second: f0860100
-      data:
-        first: 4
-        second: d01a0600
-      data:
-        first: 23
-        second: ae182300
-      data:
-        first: 33
-        second: ee5a3200
-      data:
-        first: 64
-        second: 4ea86100
-    Piece4:
-      data:
-        first: 1
-        second: dc860100
-      data:
-        first: 4
-        second: bc1a0600
-      data:
-        first: 23
-        second: 9a182300
-      data:
-        first: 33
-        second: da5a3200
-      data:
-        first: 64
-        second: 3aa86100
-    Piece40:
-      data:
-        first: 1
-        second: ee860100
-      data:
-        first: 4
-        second: ce1a0600
-      data:
-        first: 23
-        second: ac182300
-      data:
-        first: 33
-        second: ec5a3200
-      data:
-        first: 64
-        second: 4ca86100
-    Piece41:
-      data:
-        first: 1
-        second: ec860100
-      data:
-        first: 4
-        second: cc1a0600
-      data:
-        first: 23
-        second: aa182300
-      data:
-        first: 33
-        second: ea5a3200
-      data:
-        first: 64
-        second: 4aa86100
-    Piece42:
-      data:
-        first: 1
-        second: ea860100
-      data:
-        first: 4
-        second: ca1a0600
-      data:
-        first: 23
-        second: a8182300
-      data:
-        first: 33
-        second: e85a3200
-      data:
-        first: 64
-        second: 48a86100
-    Piece43:
-      data:
-        first: 1
-        second: e8860100
-      data:
-        first: 4
-        second: c81a0600
-      data:
-        first: 23
-        second: a6182300
-      data:
-        first: 33
-        second: e65a3200
-      data:
-        first: 64
-        second: 46a86100
-    Piece44:
-      data:
-        first: 1
-        second: e6860100
-      data:
-        first: 4
-        second: c61a0600
-      data:
-        first: 23
-        second: a4182300
-      data:
-        first: 33
-        second: e45a3200
-      data:
-        first: 64
-        second: 44a86100
-    Piece45:
-      data:
-        first: 1
-        second: e4860100
-      data:
-        first: 4
-        second: c41a0600
-      data:
-        first: 23
-        second: a2182300
-      data:
-        first: 33
-        second: e25a3200
-      data:
-        first: 64
-        second: 42a86100
-    Piece5:
-      data:
-        first: 1
-        second: da860100
-      data:
-        first: 4
-        second: ba1a0600
-      data:
-        first: 23
-        second: 98182300
-      data:
-        first: 33
-        second: d85a3200
-      data:
-        first: 64
-        second: 38a86100
-    Piece6:
-      data:
-        first: 1
-        second: d8860100
-      data:
-        first: 4
-        second: b81a0600
-      data:
-        first: 23
-        second: 96182300
-      data:
-        first: 33
-        second: d65a3200
-      data:
-        first: 64
-        second: 36a86100
-    Piece7:
-      data:
-        first: 1
-        second: d6860100
-      data:
-        first: 4
-        second: b61a0600
-      data:
-        first: 23
-        second: 94182300
-      data:
-        first: 33
-        second: d45a3200
-      data:
-        first: 64
-        second: 34a86100
-    Piece8:
-      data:
-        first: 1
-        second: d4860100
-      data:
-        first: 4
-        second: b41a0600
-      data:
-        first: 23
-        second: 92182300
-      data:
-        first: 33
-        second: d25a3200
-      data:
-        first: 64
-        second: 32a86100
-    Piece9:
-      data:
-        first: 1
-        second: d2860100
-      data:
-        first: 4
-        second: b21a0600
-      data:
-        first: 23
-        second: 90182300
-      data:
-        first: 33
-        second: d05a3200
-      data:
-        first: 64
-        second: 30a86100
-    piece1:
-      data:
-        first: 1
-        second: e2860100
-      data:
-        first: 4
-        second: c21a0600
-      data:
-        first: 23
-        second: a0182300
-      data:
-        first: 33
-        second: e05a3200
-      data:
-        first: 64
-        second: 40a86100
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

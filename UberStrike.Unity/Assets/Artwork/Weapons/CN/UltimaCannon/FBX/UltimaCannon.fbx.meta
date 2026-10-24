@@ -1,245 +1,360 @@
 fileFormatVersion: 2
 guid: b392893b33a24104ca3cd19cce98f6c6
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: UltimaCannon
-    4300002: UltimaCannonCoils
-    4300004: UltimeCannonMuzzle
-    4300006: UltimeCannonMuzzlePart1
-    4300008: UltimeCannonMuzzlePiston1
-    4300010: UltimeCannonMuzzleCoil1
-    4300012: UltimeCannonMuzzlePart2
-    4300014: UltimeCannonMuzzlePiston2
-    4300016: UltimeCannonMuzzleCoil2
-    4300018: UltimeCannonMuzzlePart3
-    4300020: UltimeCannonMuzzlePiston3
-    4300022: UltimeCannonMuzzleCoil3
-    4300024: UltimeCannonLightning
-    4300026: UltimaCannon2
-    4300028: DetailGlow
-    7400000: Take 001 //// UltimaCannon
-    7400002: Shoot //// UltimaCannon
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: UltimaCannon
+  - first:
+      43: 4300002
+    second: UltimaCannonCoils
+  - first:
+      43: 4300004
+    second: UltimeCannonMuzzle
+  - first:
+      43: 4300006
+    second: UltimeCannonMuzzlePart1
+  - first:
+      43: 4300008
+    second: UltimeCannonMuzzlePiston1
+  - first:
+      43: 4300010
+    second: UltimeCannonMuzzleCoil1
+  - first:
+      43: 4300012
+    second: UltimeCannonMuzzlePart2
+  - first:
+      43: 4300014
+    second: UltimeCannonMuzzlePiston2
+  - first:
+      43: 4300016
+    second: UltimeCannonMuzzleCoil2
+  - first:
+      43: 4300018
+    second: UltimeCannonMuzzlePart3
+  - first:
+      43: 4300020
+    second: UltimeCannonMuzzlePiston3
+  - first:
+      43: 4300022
+    second: UltimeCannonMuzzleCoil3
+  - first:
+      43: 4300024
+    second: UltimeCannonLightning
+  - first:
+      43: 4300026
+    second: UltimaCannon2
+  - first:
+      43: 4300028
+    second: DetailGlow
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      74: 7400002
+    second: Shoot
+  - first:
+      1: 100022
+    second: //RootNode
+  - first:
+      4: 400022
+    second: //RootNode
+  - first:
+      33: 3300022
+    second: //RootNode
+  - first:
+      23: 2300022
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100026
+    second: DetailGlow
+  - first:
+      4: 400026
+    second: DetailGlow
+  - first:
+      33: 3300026
+    second: DetailGlow
+  - first:
+      23: 2300026
+    second: DetailGlow
+  - first:
+      1: 100020
+    second: UltimaCannonCoils
+  - first:
+      4: 400020
+    second: UltimaCannonCoils
+  - first:
+      33: 3300020
+    second: UltimaCannonCoils
+  - first:
+      23: 2300020
+    second: UltimaCannonCoils
+  - first:
+      1: 100024
+    second: UltimeCannonLightning
+  - first:
+      4: 400024
+    second: UltimeCannonLightning
+  - first:
+      33: 3300024
+    second: UltimeCannonLightning
+  - first:
+      23: 2300024
+    second: UltimeCannonLightning
+  - first:
+      1: 100016
+    second: UltimeCannonMuzzle
+  - first:
+      4: 400016
+    second: UltimeCannonMuzzle
+  - first:
+      33: 3300016
+    second: UltimeCannonMuzzle
+  - first:
+      23: 2300016
+    second: UltimeCannonMuzzle
+  - first:
+      1: 100010
+    second: UltimeCannonMuzzleCoil1
+  - first:
+      4: 400010
+    second: UltimeCannonMuzzleCoil1
+  - first:
+      33: 3300010
+    second: UltimeCannonMuzzleCoil1
+  - first:
+      23: 2300010
+    second: UltimeCannonMuzzleCoil1
+  - first:
+      1: 100006
+    second: UltimeCannonMuzzleCoil2
+  - first:
+      4: 400006
+    second: UltimeCannonMuzzleCoil2
+  - first:
+      33: 3300006
+    second: UltimeCannonMuzzleCoil2
+  - first:
+      23: 2300006
+    second: UltimeCannonMuzzleCoil2
+  - first:
+      1: 100000
+    second: UltimeCannonMuzzleCoil3
+  - first:
+      4: 400000
+    second: UltimeCannonMuzzleCoil3
+  - first:
+      33: 3300000
+    second: UltimeCannonMuzzleCoil3
+  - first:
+      23: 2300000
+    second: UltimeCannonMuzzleCoil3
+  - first:
+      1: 100018
+    second: UltimeCannonMuzzlePart1
+  - first:
+      4: 400018
+    second: UltimeCannonMuzzlePart1
+  - first:
+      33: 3300018
+    second: UltimeCannonMuzzlePart1
+  - first:
+      23: 2300018
+    second: UltimeCannonMuzzlePart1
+  - first:
+      1: 100012
+    second: UltimeCannonMuzzlePart2
+  - first:
+      4: 400012
+    second: UltimeCannonMuzzlePart2
+  - first:
+      33: 3300012
+    second: UltimeCannonMuzzlePart2
+  - first:
+      23: 2300012
+    second: UltimeCannonMuzzlePart2
+  - first:
+      1: 100002
+    second: UltimeCannonMuzzlePart3
+  - first:
+      4: 400002
+    second: UltimeCannonMuzzlePart3
+  - first:
+      33: 3300002
+    second: UltimeCannonMuzzlePart3
+  - first:
+      23: 2300002
+    second: UltimeCannonMuzzlePart3
+  - first:
+      1: 100014
+    second: UltimeCannonMuzzlePiston1
+  - first:
+      4: 400014
+    second: UltimeCannonMuzzlePiston1
+  - first:
+      33: 3300014
+    second: UltimeCannonMuzzlePiston1
+  - first:
+      23: 2300014
+    second: UltimeCannonMuzzlePiston1
+  - first:
+      1: 100008
+    second: UltimeCannonMuzzlePiston2
+  - first:
+      4: 400008
+    second: UltimeCannonMuzzlePiston2
+  - first:
+      33: 3300008
+    second: UltimeCannonMuzzlePiston2
+  - first:
+      23: 2300008
+    second: UltimeCannonMuzzlePiston2
+  - first:
+      1: 100004
+    second: UltimeCannonMuzzlePiston3
+  - first:
+      4: 400004
+    second: UltimeCannonMuzzlePiston3
+  - first:
+      33: 3300004
+    second: UltimeCannonMuzzlePiston3
+  - first:
+      23: 2300004
+    second: UltimeCannonMuzzlePiston3
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 3
+    legacyGenerateAnimations: 3
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations:
-    - name: Shoot
+    - serializedVersion: 16
+      name: Shoot
+      takeName: 
+      internalID: 0
       firstFrame: 0
       lastFrame: 28
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
       loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 3
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 1
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-      data:
-        first: 111
-        second: 605fa900
-    DetailGlow:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    UltimaCannonCoils:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    UltimeCannonLightning:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    UltimeCannonMuzzle:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    UltimeCannonMuzzleCoil1:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    UltimeCannonMuzzleCoil2:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    UltimeCannonMuzzleCoil3:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    UltimeCannonMuzzlePart1:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    UltimeCannonMuzzlePart2:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    UltimeCannonMuzzlePart3:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    UltimeCannonMuzzlePiston1:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    UltimeCannonMuzzlePiston2:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    UltimeCannonMuzzlePiston3:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

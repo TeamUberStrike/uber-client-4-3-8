@@ -29,6 +29,14 @@ public class DynamicTexture
         }
     }
 
+    public DynamicTexture(Texture2D preloaded)
+    {
+        _url = null;
+        _texture = preloaded;
+        _state = State.Success;
+        _alpha = 1;
+    }
+
     public void Draw(Rect rect)
     {
         switch (_state)

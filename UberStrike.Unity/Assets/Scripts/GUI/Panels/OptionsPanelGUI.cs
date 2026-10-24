@@ -19,6 +19,7 @@ public class OptionsPanelGUI : PanelGuiBase
 
     int _currentQuality = 0;
     float _targetFrameRate = -1;
+    bool _limitFrameRate = false;
     float _textureQuality = 0;
     float _queuedFrames = 0;
     int _vsync = 0;
@@ -115,8 +116,11 @@ public class OptionsPanelGUI : PanelGuiBase
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.Panel - 100;
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
 
-        _rect = new Rect((Screen.width - 528) / 2, (Screen.height - 300) / 2, 528, 300);
+        // Centre against the virtual (scaled) screen size so the panel stays centred under the mobile
+        // menu scale; everything else is drawn relative to _rect and scales with it.
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 528) / 2, (MobileMenuScale.VirtualHeight - 300) / 2, 528, 300);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
@@ -127,6 +131,7 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
+        MobileMenuScale.End(scaleMatrix);
         GuiManager.DrawTooltip();
     }
 
@@ -283,7 +288,8 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         _currentQuality = QualitySettings.GetQualityLevel();
 
-        _targetFrameRate = Application.targetFrameRate;
+        _limitFrameRate = ApplicationDataManager.ApplicationOptions.GeneralLimitFrameRate;
+        _targetFrameRate = ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate;
         _textureQuality = MasterTextureLimit - QualitySettings.globalTextureMipmapLimit;
         _queuedFrames = QualitySettings.maxQueuedFrames;
 
@@ -331,6 +337,65 @@ public class OptionsPanelGUI : PanelGuiBase
         return value != v;
     }
 
+    // Checkbox matching the Steam reference: a dark bordered square that fills
+    // UberStrike blue with a white "✓" when checked, followed by a label. Uses
+    // GUI.DrawTexture so the visual doesn't depend on BlueStonez skin textures
+    // that render as a near-invisible empty box in our project's build.
+    private static readonly Color _toggleBorder = new Color(0.10f, 0.12f, 0.14f, 1f);
+    private static readonly Color _toggleFillOn = new Color(0.22f, 0.64f, 0.92f, 1f); // UberStrike blue
+    private static readonly Color _toggleFillOff = new Color(0.17f, 0.18f, 0.20f, 1f); // empty-state body
+
+    private static Texture2D _whitePixel;
+    private static Texture2D GetWhitePixel()
+    {
+        if (_whitePixel == null)
+        {
+            _whitePixel = new Texture2D(1, 1);
+            _whitePixel.SetPixel(0, 0, Color.white);
+            _whitePixel.Apply();
+            _whitePixel.hideFlags = HideFlags.HideAndDontSave;
+        }
+        return _whitePixel;
+    }
+
+    public static bool DrawCustomToggle(Rect rect, bool value, string label)
+    {
+        float boxSize = 16f;
+        float boxY = rect.y + (rect.height - boxSize) * 0.5f;
+        Rect box = new Rect(rect.x, boxY, boxSize, boxSize);
+        Rect inner = new Rect(box.x + 1, box.y + 1, box.width - 2, box.height - 2);
+
+        var tex = GetWhitePixel();
+        var prev = GUI.color;
+
+        GUI.color = _toggleBorder;
+        GUI.DrawTexture(box, tex);
+        GUI.color = value ? _toggleFillOn : _toggleFillOff;
+        GUI.DrawTexture(inner, tex);
+
+        if (value)
+        {
+            GUI.color = Color.white;
+            var old = GUI.skin.label.fontStyle;
+            GUI.skin.label.fontStyle = FontStyle.Bold;
+            GUI.Label(new Rect(box.x - 1, box.y - 2, boxSize + 2, boxSize + 2), "\u2713");
+            GUI.skin.label.fontStyle = old;
+        }
+
+        GUI.color = prev;
+
+        // Label next to the box
+        Rect labelRect = new Rect(rect.x + boxSize + 8, rect.y, rect.width - boxSize - 8, rect.height);
+        GUI.Label(labelRect, label, BlueStonez.label_interparkbold_11pt_left);
+
+        // Clickable area: full row.
+        if (GUI.Button(rect, GUIContent.none, GUIStyle.none))
+        {
+            return !value;
+        }
+        return value;
+    }
+
     private void DoVideoGroup()
     {
         GUI.skin = BlueStonez.Skin;
@@ -360,11 +425,20 @@ public class OptionsPanelGUI : PanelGuiBase
                 SfxManager.Play2dAudioClip(SoundEffectType.UIButtonClick);
             }
 
-            if (HorizontalScrollbar(new Rect(GroupMarginX, 30, width, 30), "Target Framerate:", ref _targetFrameRate, -1, 200))
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 33, 140, 24), _limitFrameRate, LocalizedStrings.LimitFramerate) != _limitFrameRate)
             {
+                _limitFrameRate = !_limitFrameRate;
+                UpdateApplicationFrameRate();
+            }
+            GUI.enabled = _limitFrameRate;
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 30, width, 30), string.Empty, ref _targetFrameRate, 30, 500))
+            {
+                // 5 fps steps, 144 sticky
+                _targetFrameRate = Mathf.Abs(_targetFrameRate - 144) < 3 ? 144 : Mathf.Round(_targetFrameRate / 5) * 5;
                 _vsync = 0;
                 graphicsChanged = true;
             }
+            GUI.enabled = true;
             if (HorizontalScrollbar(new Rect(GroupMarginX, 60, width, 30), "Max Queued Frames:", ref _queuedFrames, 0, 10))
             {
                 graphicsChanged = true;
@@ -378,7 +452,7 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             if (HorizontalGridbar(new Rect(GroupMarginX, 120, width, 30), "VSync:", ref _vsync, vsyncSet))
             {
-                _targetFrameRate = -1;
+                _limitFrameRate = false;
                 graphicsChanged = true;
                 SetCurrentQuality(qualitySet.Length - 1);
             }
@@ -391,6 +465,40 @@ public class OptionsPanelGUI : PanelGuiBase
             {
                 ApplicationDataManager.ApplicationOptions.VideoWaterMode = _waterQuality;
                 SetCurrentQuality(qualitySet.Length - 1);
+            }
+            bool fovWide = ApplicationDataManager.ApplicationOptions.VideoFOV >= ApplicationOptions.VideoFOVWide;
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 213, 200, 24), fovWide, "FOV Mode") != fovWide)
+            {
+                ApplicationDataManager.ApplicationOptions.VideoFOV = fovWide ? ApplicationOptions.VideoFOVNormal : ApplicationOptions.VideoFOVWide;
+                if (LevelCamera.Exists && !LevelCamera.Instance.IsZoomedIn)
+                    LevelCamera.Instance.ResetZoom();
+            }
+
+            // Post-Processing is a 0-100 strength slider (instead of a plain toggle).
+            // Different maps need different intensities: 0 disables entirely, 100
+            // is full vibrance/bloom/vignette. Uses the same HorizontalScrollbar
+            // helper as FOV/Target Framerate/Texture Quality so the style matches
+            // the rest of the Video tab exactly.
+            int prevStrength = ApplicationDataManager.ApplicationOptions.VideoPostProcessingStrength;
+            float strength = prevStrength;
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 240, width, 30), "Post Processing:", ref strength, 0f, 100f))
+            {
+                ApplicationDataManager.ApplicationOptions.VideoPostProcessingStrength = Mathf.RoundToInt(strength);
+                if (RenderSettingsController.Instance != null)
+                    RenderSettingsController.Instance.EnableImageEffects();
+                ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
+            }
+
+            // Show FPS stays as a checkbox — it's binary, no reason to slider it.
+            bool prevShowFps = ApplicationDataManager.ApplicationOptions.VideoShowFps;
+            ApplicationDataManager.ApplicationOptions.VideoShowFps = DrawCustomToggle(
+                new Rect(GroupMarginX + 4, 272, 200, 24),
+                ApplicationDataManager.ApplicationOptions.VideoShowFps,
+                "Show FPS");
+
+            if (prevShowFps != ApplicationDataManager.ApplicationOptions.VideoShowFps)
+            {
+                ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
             }
 
             //// EFFECTS
@@ -410,7 +518,8 @@ public class OptionsPanelGUI : PanelGuiBase
             //    }
             //}
             //GUI.EndGroup();
-            int resolutionY = 240;
+            int resolutionY = 298;  // room for two 20px toggles at y=243/268
+
             //RESOLUTIONS (standalone)
             if (Application.platform != RuntimePlatform.WebGLPlayer || showResolutions)
             {
@@ -507,11 +616,11 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.BeginGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 65));
             {
                 GUI.Label(new Rect(15, 10, 130, 30), LocalizedStrings.MouseSensitivity, BlueStonez.label_interparkbold_11pt_left);
-                float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 1, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+                float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 0.1f, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
                 GUI.Label(new Rect(370, 10, 100, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
                 if (s != ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity)
                 {
-                    ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity = s;
+                    ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity = Mathf.Round(s * 10f) / 10f;
                 }
 
                 bool invert = GUI.Toggle(new Rect(15, 38, 200, 30), ApplicationDataManager.ApplicationOptions.InputInvertMouse, LocalizedStrings.InvertMouseButtons, BlueStonez.toggle);
@@ -854,10 +963,9 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private void UpdateApplicationFrameRate()
     {
-        _targetFrameRate = Mathf.RoundToInt(_targetFrameRate);
-        if (_targetFrameRate >= 0) _targetFrameRate = Mathf.Max(_targetFrameRate, 20);
-        Application.targetFrameRate = (int)_targetFrameRate;
-        ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate = Application.targetFrameRate;
+        ApplicationDataManager.ApplicationOptions.GeneralLimitFrameRate = _limitFrameRate;
+        ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate = Mathf.RoundToInt(_targetFrameRate);
+        Application.targetFrameRate = ApplicationDataManager.ApplicationOptions.FrameRateCap;
     }
 
     private void UpdateMaxQueuedFrames()

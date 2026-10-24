@@ -126,6 +126,23 @@ public abstract class BaseWeaponDecorator : MonoBehaviour
 
         _effects.AddRange(GetComponentsInChildren<BaseWeaponEffect>(true));
 
+        // Add muzzle smoke only for UltimaCannon — it's the only cannon weapon
+        // without a prefab CNMuzzleSmoke that needs one. ForceCannon/ForceCannonPlus
+        // have their own CNMuzzleSmoke in the prefab. Default Cannon and Paintzerfaust don't use it.
+        if (!_effects.Exists(e => e is MuzzleSmoke) && _muzzlePosition != null)
+        {
+            string weaponName = gameObject.name;
+            if (weaponName.Contains("UltimaCannon"))
+            {
+                var smokeGO = new GameObject("MuzzleSmoke");
+                smokeGO.transform.SetParent(_muzzlePosition, false);
+                smokeGO.transform.localPosition = Vector3.zero;
+                var muzzleSmoke = smokeGO.AddComponent<MuzzleSmoke>();
+                _effects.Add(muzzleSmoke);
+                Debug.Log("[WeaponDecorator] Added MuzzleSmoke to " + weaponName);
+            }
+        }
+
         if (_muzzlePosition)
             _particles = _muzzlePosition.GetComponent<ParticleSystem>();
 

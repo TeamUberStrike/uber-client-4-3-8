@@ -47,6 +47,11 @@ public static class CmunePrefs
         Options_VideoHardcoreMode = 124,
         Options_VideoScreenRes = 125,
         Options_VideoIsFullscreen = 126,
+        Options_VideoFOV = 127,
+        Options_VideoShowFps = 128,
+        Options_VideoPostProcessing = 129,
+        Options_VideoPostProcessingStrength = 130,
+
 #if UNITY_ANDROID || UNITY_IPHONE
         Options_MobileUseMultiTouch = 150,
         Options_MobileTouchLookSensitivity = 151,

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e70e3631016d949a4b57fedea9fb7c, type: 3}
+  m_Name: LevelCuberSpace
+  m_EditorClassIdentifier: 
+  lightmaps:
+  - {fileID: 2800000, guid: ce7ef5dfe2b24884e9b9a8b945083896, type: 3}
+  - {fileID: 2800000, guid: b11d1afd1584fea4dbbbe0812f81ab4b, type: 3}
+  - {fileID: 2800000, guid: cef3d66ff2ac729479401cb798bf5ef2, type: 3}
+  - {fileID: 2800000, guid: 48993356c1bc3af40ba33ce62455f63d, type: 3}
+  - {fileID: 2800000, guid: 8f2b4c247ff896440a7b2e6242cc2ade, type: 3}
+  - {fileID: 2800000, guid: 9fd1235e64b137d4b8e6d307d5102b94, type: 3}
+  - {fileID: 2800000, guid: 00c19b8d092e0b44c841eb753be970f3, type: 3}
+  - {fileID: 2800000, guid: ca577f464230e454384e549ad6faa230, type: 3}
+  - {fileID: 2800000, guid: 949a681876ad1bd41ae457320b695ef6, type: 3}
+  - {fileID: 2800000, guid: bdbad9d5f4b7c2b4abd38ebbf18348ca, type: 3}
+  - {fileID: 2800000, guid: 70e423901a436bd448e4a7238b30da2d, type: 3}
+  - {fileID: 2800000, guid: 1e81804037e42554ab53250490d198d7, type: 3}
+  - {fileID: 2800000, guid: 16102873245ea864991a4555f9c0512c, type: 3}
+  - {fileID: 2800000, guid: 5bd37d3ec67e1de408d62e4645cebd75, type: 3}
+  - {fileID: 2800000, guid: 5936fef6279857949a46cde9b0f29e58, type: 3}
+  - {fileID: 2800000, guid: 250fb0ec85b489f45815e15f65719bf9, type: 3}
+  - {fileID: 2800000, guid: c584c504fc095764aa0d34ed9811da3d, type: 3}
+  - {fileID: 2800000, guid: 4aaa72dcae5acb541815745b308b4e9e, type: 3}

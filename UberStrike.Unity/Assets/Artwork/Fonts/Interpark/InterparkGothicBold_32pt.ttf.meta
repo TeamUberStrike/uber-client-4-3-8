@@ -1,14 +1,21 @@
 fileFormatVersion: 2
 guid: 6aab19822b27e394c80968dcfc7f0efb
 TrueTypeFontImporter:
-  serializedVersion: 2
+  externalObjects: {}
+  serializedVersion: 4
   fontSize: 28
-  fontColor: {r: 1, g: 1, b: 1, a: 1}
   forceTextureCase: 0
-  renderMode: 0
-  style: 0
+  characterSpacing: 0
+  characterPadding: 1
   includeFontData: 1
-  use2xBehaviour: 0
   fontNames:
-  - 
+  - InterparkGothic
+  fallbackFontReferences: []
   customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

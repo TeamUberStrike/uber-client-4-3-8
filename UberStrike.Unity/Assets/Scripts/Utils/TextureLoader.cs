@@ -6,12 +6,14 @@ public class TextureLoader : Singleton<TextureLoader>
 {
     private Dictionary<string, Texture2D> _cache;
     private Dictionary<int, int> _state;
+    private HashSet<string> _failedUrls; // blacklist so dead URLs don't retry
     private Texture2D _fallback;
 
     private TextureLoader()
     {
         _cache = new Dictionary<string, Texture2D>();
         _state = new Dictionary<int, int>();
+        _failedUrls = new HashSet<string>();
         _fallback = CreateDefaultTexture();
     }
 
@@ -20,6 +22,14 @@ public class TextureLoader : Singleton<TextureLoader>
         Texture2D texture;
         if (!string.IsNullOrEmpty(url))
         {
+            // Skip retry for URLs we already saw fail this session — the shop
+            // tab used to spawn dozens of coroutines hammering dead
+            // content.cmune.com URLs, each logging a Debug.LogError on failure
+            // that cascaded through DebugConsoleManager.SendExceptionReport.
+            if (_failedUrls.Contains(url))
+            {
+                return _fallback;
+            }
             if (!_cache.TryGetValue(url, out texture))
             {
                 texture = CreatePlaceholder(placeholder);
@@ -64,7 +74,13 @@ public class TextureLoader : Singleton<TextureLoader>
             else
             {
                 _state[texture.GetInstanceID()] = 2;
-                Debug.LogError("DownloadTexture url '" + url + "' failed with error: " + www.error);
+                _failedUrls.Add(url);
+                // Downgraded from Debug.LogError to Debug.LogWarning + no-op in
+                // the exception-report pipeline. The shop used to burst ~50-100
+                // LogErrors at tab-open, each routed through DebugConsoleManager
+                // which added significant frame overhead.
+                if (Debug.isDebugBuild)
+                    Debug.LogWarning("[TextureLoader] URL unreachable (suppressed after first): " + url);
             }
         }
     }

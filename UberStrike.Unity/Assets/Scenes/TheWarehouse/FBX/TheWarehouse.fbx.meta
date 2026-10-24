@@ -1,845 +1,1216 @@
 fileFormatVersion: 2
 guid: c790444fe23029845873bd706080627b
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: roof
-    4300002: wall
-    4300004: ground
-    4300006: props_1_1
-    4300008: props_2_1
-    4300010: props_3_2
-    4300012: pipe
-    4300014: shelf
-    4300016: bannar
-    4300018: vent_net
-    4300020: vent
-    4300022: platform
-    4300024: small_box1
-    4300026: small_box2
-    4300028: small_box3
-    4300030: small_box4
-    4300032: small_box5
-    4300034: long_box1
-    4300036: long_box2
-    4300038: long_box
-    4300040: big_boxes1
-    4300042: big_boxes2
-    4300044: big_boxes3
-    4300046: big_boxes4
-    4300048: metal_box1
-    4300050: metal_box2
-    4300052: blue_container1
-    4300054: blue_container2
-    4300056: board7
-    4300058: net1
-    4300060: board4
-    4300062: net1
-    4300064: board6
-    4300066: net1
-    4300068: board5
-    4300070: net1
-    4300072: board3
-    4300074: net1
-    4300076: board2
-    4300078: net1
-    4300080: board1
-    4300082: net1
-    4300084: board8
-    4300086: net1
-    4300088: props_1_1
-    4300090: props_2_1
-    4300092: props_3_2
-    4300094: pipe
-    4300096: shelf
-    4300098: bannar
-    4300100: vent_net
-    4300102: vent
-    4300104: platform
-    4300106: small_box1
-    4300108: small_box2
-    4300110: small_box3
-    4300112: small_box4
-    4300114: small_box5
-    4300116: long_box1
-    4300118: long_box2
-    4300120: long_box
-    4300122: big_boxes1
-    4300124: big_boxes2
-    4300126: big_boxes3
-    4300128: big_boxes4
-    4300130: metal_box1
-    4300132: metal_box2
-    4300134: blue_container1
-    4300136: blue_container2
-    4300138: board7
-    4300140: net1
-    4300142: board4
-    4300144: net1
-    4300146: board6
-    4300148: net1
-    4300150: board5
-    4300152: net1
-    4300154: board3
-    4300156: net1
-    4300158: board2
-    4300160: net1
-    4300162: board1
-    4300164: net1
-    4300166: board8
-    4300168: net1
-    4300170: yellow_container
-    4300172: net2
-    4300174: net3
-    4300176: net4
-    4300178: net5
-    4300180: net6
-    4300182: net7
-    4300184: net8
-    4300186: net2
-    4300188: net3
-    4300190: net4
-    4300192: net5
-    4300194: net6
-    4300196: net7
-    4300198: net8
-    4300200: woodBox_Long1
-    4300202: woodBox_Long2
-    4300204: woodBox_Long3
-    4300206: woodBox_big1
-    4300208: woodBox_big2
-    4300210: woodBox_big3
-    4300212: woodBox_small1
-    4300214: woodBox_small2
-    4300216: woodBox_small3
-    4300218: container_blue1
-    4300220: container_blue2
-    4300222: container_grey
-    4300224: Shelf
-    4300226: woodBox_Long1
-    4300228: woodBox_Long2
-    4300230: woodBox_Long3
-    4300232: woodBox_big1
-    4300234: woodBox_big2
-    4300236: woodBox_big3
-    4300238: woodBox_small1
-    4300240: woodBox_small2
-    4300242: woodBox_small3
-    4300244: container_blue1
-    4300246: container_blue2
-    4300248: container_grey
-    4300250: Shelf
-    4300252: Board_Net
-    4300254: Board
-    4300256: Board_Net
-    4300258: Board
-    4300260: container_red1
-    4300262: container_red2
-    4300264: Roof
-    4300266: Walls
-    4300268: Ground
-    4300270: BlueContainers1
-    4300272: BlueContainers2
-    4300274: GreyContainers1
-    4300276: GreyContainers2
-    4300278: RedContainers1
-    4300280: RedContainers2
-    4300282: YellowContainers
-    4300284: LargeCrate1
-    4300286: LargeCrate2
-    4300288: LargeCrate3
-    4300290: LargeCrate4
-    4300292: LargeCrate5
-    4300294: LargeCrate6
-    4300296: MediumCrate1
-    4300298: MediumCrate2
-    4300300: MediumCrate3
-    4300302: MediumCrate4
-    4300304: MediumCrate5
-    4300306: MediumCrate6
-    4300308: SmallCrate1
-    4300310: SmallCrate2
-    4300312: SmallCrate3
-    4300314: SmallCrate4
-    4300316: SmallCrate5
-    4300318: SmallCrate6
-    4300320: VentDuct1
-    4300322: VentDuct1Net
-    4300324: VentDuct2
-    4300326: VentDuct2Net
-    4300328: ElectricBox1
-    4300330: ElectricBox2
-    4300332: ElectricBox3
-    4300334: ElectricBox4
-    4300336: ElectricBox5
-    4300338: ElectricBox6
-    4300340: Shelf1
-    4300342: Shelf2
-    4300344: Ramp1Net
-    4300346: Ramp1
-    4300348: Ramp2Net
-    4300350: Ramp2
-  serializedVersion: 10
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: roof
+  - first:
+      43: 4300002
+    second: wall
+  - first:
+      43: 4300004
+    second: ground
+  - first:
+      43: 4300006
+    second: props_1_1
+  - first:
+      43: 4300008
+    second: props_2_1
+  - first:
+      43: 4300010
+    second: props_3_2
+  - first:
+      43: 4300012
+    second: pipe
+  - first:
+      43: 4300014
+    second: shelf
+  - first:
+      43: 4300016
+    second: bannar
+  - first:
+      43: 4300018
+    second: vent_net
+  - first:
+      43: 4300020
+    second: vent
+  - first:
+      43: 4300022
+    second: platform
+  - first:
+      43: 4300024
+    second: small_box1
+  - first:
+      43: 4300026
+    second: small_box2
+  - first:
+      43: 4300028
+    second: small_box3
+  - first:
+      43: 4300030
+    second: small_box4
+  - first:
+      43: 4300032
+    second: small_box5
+  - first:
+      43: 4300034
+    second: long_box1
+  - first:
+      43: 4300036
+    second: long_box2
+  - first:
+      43: 4300038
+    second: long_box
+  - first:
+      43: 4300040
+    second: big_boxes1
+  - first:
+      43: 4300042
+    second: big_boxes2
+  - first:
+      43: 4300044
+    second: big_boxes3
+  - first:
+      43: 4300046
+    second: big_boxes4
+  - first:
+      43: 4300048
+    second: metal_box1
+  - first:
+      43: 4300050
+    second: metal_box2
+  - first:
+      43: 4300052
+    second: blue_container1
+  - first:
+      43: 4300054
+    second: blue_container2
+  - first:
+      43: 4300056
+    second: board7
+  - first:
+      43: 4300058
+    second: net1
+  - first:
+      43: 4300060
+    second: board4
+  - first:
+      43: 4300062
+    second: net1
+  - first:
+      43: 4300064
+    second: board6
+  - first:
+      43: 4300066
+    second: net1
+  - first:
+      43: 4300068
+    second: board5
+  - first:
+      43: 4300070
+    second: net1
+  - first:
+      43: 4300072
+    second: board3
+  - first:
+      43: 4300074
+    second: net1
+  - first:
+      43: 4300076
+    second: board2
+  - first:
+      43: 4300078
+    second: net1
+  - first:
+      43: 4300080
+    second: board1
+  - first:
+      43: 4300082
+    second: net1
+  - first:
+      43: 4300084
+    second: board8
+  - first:
+      43: 4300086
+    second: net1
+  - first:
+      43: 4300088
+    second: props_1_1
+  - first:
+      43: 4300090
+    second: props_2_1
+  - first:
+      43: 4300092
+    second: props_3_2
+  - first:
+      43: 4300094
+    second: pipe
+  - first:
+      43: 4300096
+    second: shelf
+  - first:
+      43: 4300098
+    second: bannar
+  - first:
+      43: 4300100
+    second: vent_net
+  - first:
+      43: 4300102
+    second: vent
+  - first:
+      43: 4300104
+    second: platform
+  - first:
+      43: 4300106
+    second: small_box1
+  - first:
+      43: 4300108
+    second: small_box2
+  - first:
+      43: 4300110
+    second: small_box3
+  - first:
+      43: 4300112
+    second: small_box4
+  - first:
+      43: 4300114
+    second: small_box5
+  - first:
+      43: 4300116
+    second: long_box1
+  - first:
+      43: 4300118
+    second: long_box2
+  - first:
+      43: 4300120
+    second: long_box
+  - first:
+      43: 4300122
+    second: big_boxes1
+  - first:
+      43: 4300124
+    second: big_boxes2
+  - first:
+      43: 4300126
+    second: big_boxes3
+  - first:
+      43: 4300128
+    second: big_boxes4
+  - first:
+      43: 4300130
+    second: metal_box1
+  - first:
+      43: 4300132
+    second: metal_box2
+  - first:
+      43: 4300134
+    second: blue_container1
+  - first:
+      43: 4300136
+    second: blue_container2
+  - first:
+      43: 4300138
+    second: board7
+  - first:
+      43: 4300140
+    second: net1
+  - first:
+      43: 4300142
+    second: board4
+  - first:
+      43: 4300144
+    second: net1
+  - first:
+      43: 4300146
+    second: board6
+  - first:
+      43: 4300148
+    second: net1
+  - first:
+      43: 4300150
+    second: board5
+  - first:
+      43: 4300152
+    second: net1
+  - first:
+      43: 4300154
+    second: board3
+  - first:
+      43: 4300156
+    second: net1
+  - first:
+      43: 4300158
+    second: board2
+  - first:
+      43: 4300160
+    second: net1
+  - first:
+      43: 4300162
+    second: board1
+  - first:
+      43: 4300164
+    second: net1
+  - first:
+      43: 4300166
+    second: board8
+  - first:
+      43: 4300168
+    second: net1
+  - first:
+      43: 4300170
+    second: yellow_container
+  - first:
+      43: 4300172
+    second: net2
+  - first:
+      43: 4300174
+    second: net3
+  - first:
+      43: 4300176
+    second: net4
+  - first:
+      43: 4300178
+    second: net5
+  - first:
+      43: 4300180
+    second: net6
+  - first:
+      43: 4300182
+    second: net7
+  - first:
+      43: 4300184
+    second: net8
+  - first:
+      43: 4300186
+    second: net2
+  - first:
+      43: 4300188
+    second: net3
+  - first:
+      43: 4300190
+    second: net4
+  - first:
+      43: 4300192
+    second: net5
+  - first:
+      43: 4300194
+    second: net6
+  - first:
+      43: 4300196
+    second: net7
+  - first:
+      43: 4300198
+    second: net8
+  - first:
+      43: 4300200
+    second: woodBox_Long1
+  - first:
+      43: 4300202
+    second: woodBox_Long2
+  - first:
+      43: 4300204
+    second: woodBox_Long3
+  - first:
+      43: 4300206
+    second: woodBox_big1
+  - first:
+      43: 4300208
+    second: woodBox_big2
+  - first:
+      43: 4300210
+    second: woodBox_big3
+  - first:
+      43: 4300212
+    second: woodBox_small1
+  - first:
+      43: 4300214
+    second: woodBox_small2
+  - first:
+      43: 4300216
+    second: woodBox_small3
+  - first:
+      43: 4300218
+    second: container_blue1
+  - first:
+      43: 4300220
+    second: container_blue2
+  - first:
+      43: 4300222
+    second: container_grey
+  - first:
+      43: 4300224
+    second: Shelf
+  - first:
+      43: 4300226
+    second: woodBox_Long1
+  - first:
+      43: 4300228
+    second: woodBox_Long2
+  - first:
+      43: 4300230
+    second: woodBox_Long3
+  - first:
+      43: 4300232
+    second: woodBox_big1
+  - first:
+      43: 4300234
+    second: woodBox_big2
+  - first:
+      43: 4300236
+    second: woodBox_big3
+  - first:
+      43: 4300238
+    second: woodBox_small1
+  - first:
+      43: 4300240
+    second: woodBox_small2
+  - first:
+      43: 4300242
+    second: woodBox_small3
+  - first:
+      43: 4300244
+    second: container_blue1
+  - first:
+      43: 4300246
+    second: container_blue2
+  - first:
+      43: 4300248
+    second: container_grey
+  - first:
+      43: 4300250
+    second: Shelf
+  - first:
+      43: 4300252
+    second: Board_Net
+  - first:
+      43: 4300254
+    second: Board
+  - first:
+      43: 4300256
+    second: Board_Net
+  - first:
+      43: 4300258
+    second: Board
+  - first:
+      43: 4300260
+    second: container_red1
+  - first:
+      43: 4300262
+    second: container_red2
+  - first:
+      43: 4300264
+    second: Roof
+  - first:
+      43: 4300266
+    second: Walls
+  - first:
+      43: 4300268
+    second: Ground
+  - first:
+      43: 4300270
+    second: BlueContainers1
+  - first:
+      43: 4300272
+    second: BlueContainers2
+  - first:
+      43: 4300274
+    second: GreyContainers1
+  - first:
+      43: 4300276
+    second: GreyContainers2
+  - first:
+      43: 4300278
+    second: RedContainers1
+  - first:
+      43: 4300280
+    second: RedContainers2
+  - first:
+      43: 4300282
+    second: YellowContainers
+  - first:
+      43: 4300284
+    second: LargeCrate1
+  - first:
+      43: 4300286
+    second: LargeCrate2
+  - first:
+      43: 4300288
+    second: LargeCrate3
+  - first:
+      43: 4300290
+    second: LargeCrate4
+  - first:
+      43: 4300292
+    second: LargeCrate5
+  - first:
+      43: 4300294
+    second: LargeCrate6
+  - first:
+      43: 4300296
+    second: MediumCrate1
+  - first:
+      43: 4300298
+    second: MediumCrate2
+  - first:
+      43: 4300300
+    second: MediumCrate3
+  - first:
+      43: 4300302
+    second: MediumCrate4
+  - first:
+      43: 4300304
+    second: MediumCrate5
+  - first:
+      43: 4300306
+    second: MediumCrate6
+  - first:
+      43: 4300308
+    second: SmallCrate1
+  - first:
+      43: 4300310
+    second: SmallCrate2
+  - first:
+      43: 4300312
+    second: SmallCrate3
+  - first:
+      43: 4300314
+    second: SmallCrate4
+  - first:
+      43: 4300316
+    second: SmallCrate5
+  - first:
+      43: 4300318
+    second: SmallCrate6
+  - first:
+      43: 4300320
+    second: VentDuct1
+  - first:
+      43: 4300322
+    second: VentDuct1Net
+  - first:
+      43: 4300324
+    second: VentDuct2
+  - first:
+      43: 4300326
+    second: VentDuct2Net
+  - first:
+      43: 4300328
+    second: ElectricBox1
+  - first:
+      43: 4300330
+    second: ElectricBox2
+  - first:
+      43: 4300332
+    second: ElectricBox3
+  - first:
+      43: 4300334
+    second: ElectricBox4
+  - first:
+      43: 4300336
+    second: ElectricBox5
+  - first:
+      43: 4300338
+    second: ElectricBox6
+  - first:
+      43: 4300340
+    second: Shelf1
+  - first:
+      43: 4300342
+    second: Shelf2
+  - first:
+      43: 4300344
+    second: Ramp1Net
+  - first:
+      43: 4300346
+    second: Ramp1
+  - first:
+      43: 4300348
+    second: Ramp2Net
+  - first:
+      43: 4300350
+    second: Ramp2
+  - first:
+      1: 100176
+    second: //RootNode
+  - first:
+      4: 400176
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100036
+    second: BlueContainers1
+  - first:
+      4: 400036
+    second: BlueContainers1
+  - first:
+      33: 3300032
+    second: BlueContainers1
+  - first:
+      23: 2300032
+    second: BlueContainers1
+  - first:
+      1: 100034
+    second: BlueContainers2
+  - first:
+      4: 400034
+    second: BlueContainers2
+  - first:
+      33: 3300030
+    second: BlueContainers2
+  - first:
+      23: 2300030
+    second: BlueContainers2
+  - first:
+      1: 100000
+    second: Containers
+  - first:
+      4: 400000
+    second: Containers
+  - first:
+      1: 100012
+    second: Crates
+  - first:
+      4: 400012
+    second: Crates
+  - first:
+      1: 100070
+    second: ElectricBox1
+  - first:
+      4: 400070
+    second: ElectricBox1
+  - first:
+      33: 3300062
+    second: ElectricBox1
+  - first:
+      23: 2300062
+    second: ElectricBox1
+  - first:
+      1: 100072
+    second: ElectricBox2
+  - first:
+      4: 400072
+    second: ElectricBox2
+  - first:
+      33: 3300064
+    second: ElectricBox2
+  - first:
+      23: 2300064
+    second: ElectricBox2
+  - first:
+      1: 100078
+    second: ElectricBox3
+  - first:
+      4: 400078
+    second: ElectricBox3
+  - first:
+      33: 3300070
+    second: ElectricBox3
+  - first:
+      23: 2300070
+    second: ElectricBox3
+  - first:
+      1: 100088
+    second: ElectricBox4
+  - first:
+      4: 400088
+    second: ElectricBox4
+  - first:
+      33: 3300078
+    second: ElectricBox4
+  - first:
+      23: 2300078
+    second: ElectricBox4
+  - first:
+      1: 100090
+    second: ElectricBox5
+  - first:
+      4: 400090
+    second: ElectricBox5
+  - first:
+      33: 3300080
+    second: ElectricBox5
+  - first:
+      23: 2300080
+    second: ElectricBox5
+  - first:
+      1: 100082
+    second: ElectricBox6
+  - first:
+      4: 400082
+    second: ElectricBox6
+  - first:
+      33: 3300074
+    second: ElectricBox6
+  - first:
+      23: 2300074
+    second: ElectricBox6
+  - first:
+      1: 100044
+    second: ElectricBoxes
+  - first:
+      4: 400044
+    second: ElectricBoxes
+  - first:
+      1: 100138
+    second: Environment
+  - first:
+      4: 400138
+    second: Environment
+  - first:
+      1: 100006
+    second: GreyContainers1
+  - first:
+      4: 400006
+    second: GreyContainers1
+  - first:
+      33: 3300004
+    second: GreyContainers1
+  - first:
+      23: 2300004
+    second: GreyContainers1
+  - first:
+      1: 100038
+    second: GreyContainers2
+  - first:
+      4: 400038
+    second: GreyContainers2
+  - first:
+      33: 3300034
+    second: GreyContainers2
+  - first:
+      23: 2300034
+    second: GreyContainers2
+  - first:
+      1: 100004
+    second: Ground
+  - first:
+      4: 400004
+    second: Ground
+  - first:
+      33: 3300002
+    second: Ground
+  - first:
+      23: 2300002
+    second: Ground
+  - first:
+      1: 100010
+    second: LargeCrate1
+  - first:
+      4: 400010
+    second: LargeCrate1
+  - first:
+      33: 3300008
+    second: LargeCrate1
+  - first:
+      23: 2300008
+    second: LargeCrate1
+  - first:
+      1: 100014
+    second: LargeCrate2
+  - first:
+      4: 400014
+    second: LargeCrate2
+  - first:
+      33: 3300010
+    second: LargeCrate2
+  - first:
+      23: 2300010
+    second: LargeCrate2
+  - first:
+      1: 100030
+    second: LargeCrate3
+  - first:
+      4: 400030
+    second: LargeCrate3
+  - first:
+      33: 3300026
+    second: LargeCrate3
+  - first:
+      23: 2300026
+    second: LargeCrate3
+  - first:
+      1: 100026
+    second: LargeCrate4
+  - first:
+      4: 400026
+    second: LargeCrate4
+  - first:
+      33: 3300022
+    second: LargeCrate4
+  - first:
+      23: 2300022
+    second: LargeCrate4
+  - first:
+      1: 100028
+    second: LargeCrate5
+  - first:
+      4: 400028
+    second: LargeCrate5
+  - first:
+      33: 3300024
+    second: LargeCrate5
+  - first:
+      23: 2300024
+    second: LargeCrate5
+  - first:
+      1: 100016
+    second: LargeCrate6
+  - first:
+      4: 400016
+    second: LargeCrate6
+  - first:
+      33: 3300012
+    second: LargeCrate6
+  - first:
+      23: 2300012
+    second: LargeCrate6
+  - first:
+      1: 100022
+    second: MediumCrate1
+  - first:
+      4: 400022
+    second: MediumCrate1
+  - first:
+      33: 3300018
+    second: MediumCrate1
+  - first:
+      23: 2300018
+    second: MediumCrate1
+  - first:
+      1: 100020
+    second: MediumCrate2
+  - first:
+      4: 400020
+    second: MediumCrate2
+  - first:
+      33: 3300016
+    second: MediumCrate2
+  - first:
+      23: 2300016
+    second: MediumCrate2
+  - first:
+      1: 100018
+    second: MediumCrate3
+  - first:
+      4: 400018
+    second: MediumCrate3
+  - first:
+      33: 3300014
+    second: MediumCrate3
+  - first:
+      23: 2300014
+    second: MediumCrate3
+  - first:
+      1: 100008
+    second: MediumCrate4
+  - first:
+      4: 400008
+    second: MediumCrate4
+  - first:
+      33: 3300006
+    second: MediumCrate4
+  - first:
+      23: 2300006
+    second: MediumCrate4
+  - first:
+      1: 100058
+    second: MediumCrate5
+  - first:
+      4: 400058
+    second: MediumCrate5
+  - first:
+      33: 3300052
+    second: MediumCrate5
+  - first:
+      23: 2300052
+    second: MediumCrate5
+  - first:
+      1: 100056
+    second: MediumCrate6
+  - first:
+      4: 400056
+    second: MediumCrate6
+  - first:
+      33: 3300050
+    second: MediumCrate6
+  - first:
+      23: 2300050
+    second: MediumCrate6
+  - first:
+      1: 100092
+    second: Ramp1
+  - first:
+      4: 400092
+    second: Ramp1
+  - first:
+      33: 3300082
+    second: Ramp1
+  - first:
+      23: 2300082
+    second: Ramp1
+  - first:
+      1: 100080
+    second: Ramp1Net
+  - first:
+      4: 400080
+    second: Ramp1Net
+  - first:
+      33: 3300072
+    second: Ramp1Net
+  - first:
+      23: 2300072
+    second: Ramp1Net
+  - first:
+      1: 100096
+    second: Ramp2
+  - first:
+      4: 400096
+    second: Ramp2
+  - first:
+      33: 3300084
+    second: Ramp2
+  - first:
+      23: 2300084
+    second: Ramp2
+  - first:
+      1: 100076
+    second: Ramp2Net
+  - first:
+      4: 400076
+    second: Ramp2Net
+  - first:
+      33: 3300068
+    second: Ramp2Net
+  - first:
+      23: 2300068
+    second: Ramp2Net
+  - first:
+      1: 100094
+    second: Ramps
+  - first:
+      4: 400094
+    second: Ramps
+  - first:
+      1: 100032
+    second: RedContainers1
+  - first:
+      4: 400032
+    second: RedContainers1
+  - first:
+      33: 3300028
+    second: RedContainers1
+  - first:
+      23: 2300028
+    second: RedContainers1
+  - first:
+      1: 100024
+    second: RedContainers2
+  - first:
+      4: 400024
+    second: RedContainers2
+  - first:
+      33: 3300020
+    second: RedContainers2
+  - first:
+      23: 2300020
+    second: RedContainers2
+  - first:
+      1: 100002
+    second: Roof
+  - first:
+      4: 400002
+    second: Roof
+  - first:
+      33: 3300000
+    second: Roof
+  - first:
+      23: 2300000
+    second: Roof
+  - first:
+      1: 100084
+    second: Shelf1
+  - first:
+      4: 400084
+    second: Shelf1
+  - first:
+      33: 3300076
+    second: Shelf1
+  - first:
+      23: 2300076
+    second: Shelf1
+  - first:
+      1: 100074
+    second: Shelf2
+  - first:
+      4: 400074
+    second: Shelf2
+  - first:
+      33: 3300066
+    second: Shelf2
+  - first:
+      23: 2300066
+    second: Shelf2
+  - first:
+      1: 100086
+    second: Shelves
+  - first:
+      4: 400086
+    second: Shelves
+  - first:
+      1: 100050
+    second: SmallCrate1
+  - first:
+      4: 400050
+    second: SmallCrate1
+  - first:
+      33: 3300044
+    second: SmallCrate1
+  - first:
+      23: 2300044
+    second: SmallCrate1
+  - first:
+      1: 100052
+    second: SmallCrate2
+  - first:
+      4: 400052
+    second: SmallCrate2
+  - first:
+      33: 3300046
+    second: SmallCrate2
+  - first:
+      23: 2300046
+    second: SmallCrate2
+  - first:
+      1: 100062
+    second: SmallCrate3
+  - first:
+      4: 400062
+    second: SmallCrate3
+  - first:
+      33: 3300056
+    second: SmallCrate3
+  - first:
+      23: 2300056
+    second: SmallCrate3
+  - first:
+      1: 100048
+    second: SmallCrate4
+  - first:
+      4: 400048
+    second: SmallCrate4
+  - first:
+      33: 3300042
+    second: SmallCrate4
+  - first:
+      23: 2300042
+    second: SmallCrate4
+  - first:
+      1: 100042
+    second: SmallCrate5
+  - first:
+      4: 400042
+    second: SmallCrate5
+  - first:
+      33: 3300038
+    second: SmallCrate5
+  - first:
+      23: 2300038
+    second: SmallCrate5
+  - first:
+      1: 100060
+    second: SmallCrate6
+  - first:
+      4: 400060
+    second: SmallCrate6
+  - first:
+      33: 3300054
+    second: SmallCrate6
+  - first:
+      23: 2300054
+    second: SmallCrate6
+  - first:
+      1: 100066
+    second: Vent
+  - first:
+      4: 400066
+    second: Vent
+  - first:
+      1: 100064
+    second: VentDuct1
+  - first:
+      4: 400064
+    second: VentDuct1
+  - first:
+      33: 3300058
+    second: VentDuct1
+  - first:
+      23: 2300058
+    second: VentDuct1
+  - first:
+      1: 100040
+    second: VentDuct1Net
+  - first:
+      4: 400040
+    second: VentDuct1Net
+  - first:
+      33: 3300036
+    second: VentDuct1Net
+  - first:
+      23: 2300036
+    second: VentDuct1Net
+  - first:
+      1: 100046
+    second: VentDuct2
+  - first:
+      4: 400046
+    second: VentDuct2
+  - first:
+      33: 3300040
+    second: VentDuct2
+  - first:
+      23: 2300040
+    second: VentDuct2
+  - first:
+      1: 100068
+    second: VentDuct2Net
+  - first:
+      4: 400068
+    second: VentDuct2Net
+  - first:
+      33: 3300060
+    second: VentDuct2Net
+  - first:
+      23: 2300060
+    second: VentDuct2Net
+  - first:
+      1: 100054
+    second: Walls
+  - first:
+      4: 400054
+    second: Walls
+  - first:
+      33: 3300048
+    second: Walls
+  - first:
+      23: 2300048
+    second: Walls
+  - first:
+      1: 100098
+    second: YellowContainers
+  - first:
+      4: 400098
+    second: YellowContainers
+  - first:
+      33: 3300086
+    second: YellowContainers
+  - first:
+      23: 2300086
+    second: YellowContainers
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 0
+    legacyGenerateAnimations: 0
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 3
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 0
     normalImportMode: 0
     tangentImportMode: 2
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: 50870100
-      data:
-        first: 4
-        second: 301b0600
-      data:
-        first: 111
-        second: 605fa900
-    BlueContainers1:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-      data:
-        first: 23
-        second: 80182300
-      data:
-        first: 33
-        second: c05a3200
-    BlueContainers2:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
-    Containers:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-    Crates:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-    ElectricBox1:
-      data:
-        first: 1
-        second: e6860100
-      data:
-        first: 4
-        second: c61a0600
-      data:
-        first: 23
-        second: 9e182300
-      data:
-        first: 33
-        second: de5a3200
-    ElectricBox2:
-      data:
-        first: 1
-        second: e8860100
-      data:
-        first: 4
-        second: c81a0600
-      data:
-        first: 23
-        second: a0182300
-      data:
-        first: 33
-        second: e05a3200
-    ElectricBox3:
-      data:
-        first: 1
-        second: ee860100
-      data:
-        first: 4
-        second: ce1a0600
-      data:
-        first: 23
-        second: a6182300
-      data:
-        first: 33
-        second: e65a3200
-    ElectricBox4:
-      data:
-        first: 1
-        second: f8860100
-      data:
-        first: 4
-        second: d81a0600
-      data:
-        first: 23
-        second: ae182300
-      data:
-        first: 33
-        second: ee5a3200
-    ElectricBox5:
-      data:
-        first: 1
-        second: fa860100
-      data:
-        first: 4
-        second: da1a0600
-      data:
-        first: 23
-        second: b0182300
-      data:
-        first: 33
-        second: f05a3200
-    ElectricBox6:
-      data:
-        first: 1
-        second: f2860100
-      data:
-        first: 4
-        second: d21a0600
-      data:
-        first: 23
-        second: aa182300
-      data:
-        first: 33
-        second: ea5a3200
-    ElectricBoxes:
-      data:
-        first: 1
-        second: cc860100
-      data:
-        first: 4
-        second: ac1a0600
-    Environment:
-      data:
-        first: 1
-        second: 2a870100
-      data:
-        first: 4
-        second: 0a1b0600
-    GreyContainers1:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
-    GreyContainers2:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-      data:
-        first: 23
-        second: 82182300
-      data:
-        first: 33
-        second: c25a3200
-    Ground:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    LargeCrate1:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    LargeCrate2:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    LargeCrate3:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    LargeCrate4:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    LargeCrate5:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    LargeCrate6:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    MediumCrate1:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    MediumCrate2:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    MediumCrate3:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    MediumCrate4:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    MediumCrate5:
-      data:
-        first: 1
-        second: da860100
-      data:
-        first: 4
-        second: ba1a0600
-      data:
-        first: 23
-        second: 94182300
-      data:
-        first: 33
-        second: d45a3200
-    MediumCrate6:
-      data:
-        first: 1
-        second: d8860100
-      data:
-        first: 4
-        second: b81a0600
-      data:
-        first: 23
-        second: 92182300
-      data:
-        first: 33
-        second: d25a3200
-    Ramp1:
-      data:
-        first: 1
-        second: fc860100
-      data:
-        first: 4
-        second: dc1a0600
-      data:
-        first: 23
-        second: b2182300
-      data:
-        first: 33
-        second: f25a3200
-    Ramp1Net:
-      data:
-        first: 1
-        second: f0860100
-      data:
-        first: 4
-        second: d01a0600
-      data:
-        first: 23
-        second: a8182300
-      data:
-        first: 33
-        second: e85a3200
-    Ramp2:
-      data:
-        first: 1
-        second: 00870100
-      data:
-        first: 4
-        second: e01a0600
-      data:
-        first: 23
-        second: b4182300
-      data:
-        first: 33
-        second: f45a3200
-    Ramp2Net:
-      data:
-        first: 1
-        second: ec860100
-      data:
-        first: 4
-        second: cc1a0600
-      data:
-        first: 23
-        second: a4182300
-      data:
-        first: 33
-        second: e45a3200
-    Ramps:
-      data:
-        first: 1
-        second: fe860100
-      data:
-        first: 4
-        second: de1a0600
-    RedContainers1:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-    RedContainers2:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    Roof:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    Shelf1:
-      data:
-        first: 1
-        second: f4860100
-      data:
-        first: 4
-        second: d41a0600
-      data:
-        first: 23
-        second: ac182300
-      data:
-        first: 33
-        second: ec5a3200
-    Shelf2:
-      data:
-        first: 1
-        second: ea860100
-      data:
-        first: 4
-        second: ca1a0600
-      data:
-        first: 23
-        second: a2182300
-      data:
-        first: 33
-        second: e25a3200
-    Shelves:
-      data:
-        first: 1
-        second: f6860100
-      data:
-        first: 4
-        second: d61a0600
-    SmallCrate1:
-      data:
-        first: 1
-        second: d2860100
-      data:
-        first: 4
-        second: b21a0600
-      data:
-        first: 23
-        second: 8c182300
-      data:
-        first: 33
-        second: cc5a3200
-    SmallCrate2:
-      data:
-        first: 1
-        second: d4860100
-      data:
-        first: 4
-        second: b41a0600
-      data:
-        first: 23
-        second: 8e182300
-      data:
-        first: 33
-        second: ce5a3200
-    SmallCrate3:
-      data:
-        first: 1
-        second: de860100
-      data:
-        first: 4
-        second: be1a0600
-      data:
-        first: 23
-        second: 98182300
-      data:
-        first: 33
-        second: d85a3200
-    SmallCrate4:
-      data:
-        first: 1
-        second: d0860100
-      data:
-        first: 4
-        second: b01a0600
-      data:
-        first: 23
-        second: 8a182300
-      data:
-        first: 33
-        second: ca5a3200
-    SmallCrate5:
-      data:
-        first: 1
-        second: ca860100
-      data:
-        first: 4
-        second: aa1a0600
-      data:
-        first: 23
-        second: 86182300
-      data:
-        first: 33
-        second: c65a3200
-    SmallCrate6:
-      data:
-        first: 1
-        second: dc860100
-      data:
-        first: 4
-        second: bc1a0600
-      data:
-        first: 23
-        second: 96182300
-      data:
-        first: 33
-        second: d65a3200
-    Vent:
-      data:
-        first: 1
-        second: e2860100
-      data:
-        first: 4
-        second: c21a0600
-    VentDuct1:
-      data:
-        first: 1
-        second: e0860100
-      data:
-        first: 4
-        second: c01a0600
-      data:
-        first: 23
-        second: 9a182300
-      data:
-        first: 33
-        second: da5a3200
-    VentDuct1Net:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 84182300
-      data:
-        first: 33
-        second: c45a3200
-    VentDuct2:
-      data:
-        first: 1
-        second: ce860100
-      data:
-        first: 4
-        second: ae1a0600
-      data:
-        first: 23
-        second: 88182300
-      data:
-        first: 33
-        second: c85a3200
-    VentDuct2Net:
-      data:
-        first: 1
-        second: e4860100
-      data:
-        first: 4
-        second: c41a0600
-      data:
-        first: 23
-        second: 9c182300
-      data:
-        first: 33
-        second: dc5a3200
-    Walls:
-      data:
-        first: 1
-        second: d6860100
-      data:
-        first: 4
-        second: b61a0600
-      data:
-        first: 23
-        second: 90182300
-      data:
-        first: 33
-        second: d05a3200
-    YellowContainers:
-      data:
-        first: 1
-        second: 02870100
-      data:
-        first: 4
-        second: e21a0600
-      data:
-        first: 23
-        second: b6182300
-      data:
-        first: 33
-        second: f65a3200
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

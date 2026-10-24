@@ -75,6 +75,19 @@ public class ReticleHud : Singleton<ReticleHud>
                     GUI.DrawTexture(new Rect(0, h + size, Screen.width, h), BlueStonez.box_black.normal.background);
                 }
             }
+            else if (_reticle.Primary != null)
+            {
+                // Fallback for issue #50 (public repo): weapons whose server
+                // config has SecondaryActionReticle == None AND whose secondary
+                // action is IronSight (e.g. Vlad) hit neither of the above
+                // branches, so the player got no crosshair at all during ADS.
+                // Fall back to the primary reticle so there's always something
+                // to aim with. The !IsIronSighted gate on the full SR zoom
+                // overlay is intentional — you don't want a big scope overlay
+                // on a weapon that already renders iron sights in the model —
+                // but "no overlay" shouldn't also mean "no crosshair".
+                _reticle.Primary.Draw(new Rect((Screen.width - 64) * 0.5f, (Screen.height - 64) * 0.5f, 64, 64));
+            }
         }
         else
         {

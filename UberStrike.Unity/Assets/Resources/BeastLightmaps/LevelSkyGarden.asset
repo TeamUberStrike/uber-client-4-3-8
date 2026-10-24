@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e70e3631016d949a4b57fedea9fb7c, type: 3}
+  m_Name: LevelSkyGarden
+  m_EditorClassIdentifier: 
+  lightmaps:
+  - {fileID: 2800000, guid: bdc94ee65a950df4281ad91e9a8bafae, type: 3}
+  - {fileID: 2800000, guid: 88c5528caa6431e409339494ab95d71a, type: 3}
+  - {fileID: 2800000, guid: ee729c5030d532e4b896c1c1f93e3f21, type: 3}
+  - {fileID: 2800000, guid: 4367191b71cc7974b824da5268d0deef, type: 3}
+  - {fileID: 2800000, guid: 000bb5be40059ec44977480e5a25f01c, type: 3}
+  - {fileID: 2800000, guid: ea0382f5070b41c44bd5c92b8e9323b3, type: 3}
+  - {fileID: 2800000, guid: 869520718b7c09447ae2fb536dcd77ce, type: 3}
+  - {fileID: 2800000, guid: 9512791f5ececa3468839aa8a348d04c, type: 3}

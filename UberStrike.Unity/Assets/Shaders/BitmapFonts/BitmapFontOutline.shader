@@ -70,7 +70,7 @@ Shader "BitmapFont/Outline" {
 				float shadowAlpha = smoothstep(_ShadowAlphaMin, _ShadowAlphaMax, shadowtexel.w);
 				float4 shadow = _ShadowColor * shadowAlpha;
 
-				return mix(shadow, _Color, alpha);
+				return lerp(shadow, _Color, alpha);
 				//return _Color * base.a;
 			}
 
