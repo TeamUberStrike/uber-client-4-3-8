@@ -72,6 +72,9 @@ public abstract class WeaponInputHandler
     public abstract bool CanChangeWeapon();
 
     public virtual void Stop() { }
+
+    // RMB state lives while held, Stop() wipes it
+    public virtual bool HoldsSecondary { get { return false; } }
 }
 
 /// <summary>
@@ -205,6 +208,8 @@ public class IronsightInputHandler : FullAutoWeaponInputHandler
         return !_isIronsight && _ironSightDelay <= 0;
     }
 
+    public override bool HoldsSecondary { get { return true; } }
+
     private void UpdateIronsight()
     {
         if (_isIronsight)
@@ -282,6 +287,8 @@ public class SniperRifleInputHandler : SemiAutoWeaponInputHandler
     {
         return !_scopeOpen;
     }
+
+    public override bool HoldsSecondary { get { return true; } }
 
     public override void Stop()
     {
@@ -374,6 +381,8 @@ public class MinigunInputHandler : FullAutoWeaponInputHandler
     {
         return !_isGunWarm;
     }
+
+    public override bool HoldsSecondary { get { return true; } }
 
     public override void Stop()
     {

@@ -39,6 +39,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
         bool showTabScreen =
             (InputManager.Instance.RawValue(GameInputKey.Tabscreen) > 0 || ForceShow) &&
+            !InGameChatPageGUI.IsOpen &&
             !PanelManager.IsAnyPanelOpen &&
             GameState.CurrentGame.CanShowTabscreen;
 
@@ -260,7 +261,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             // Seperating line
             GUI.Label(new Rect(10, 32, position.width - 20, 1), GUIContent.none, BlueStonez.horizontal_line_grey95);
 
-            scroll = GUITools.BeginScrollView(new Rect(10, 36, position.width - 20, position.height - 45), scroll, new Rect(0, 0, position.width - 40, players.Count * 36));
+            scroll = GUI.BeginScrollView(new Rect(10, 36, position.width - 20, position.height - 45), scroll, new Rect(0, 0, position.width - 40, players.Count * 36));
             {
                 int i = 0;
 
@@ -350,7 +351,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
                     i++;
                 }
             }
-            GUITools.EndScrollView();
+            GUI.EndScrollView();
         }
         GUI.EndGroup();
 

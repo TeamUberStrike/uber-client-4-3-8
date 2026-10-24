@@ -4,12 +4,14 @@ using System.Collections;
 public class MuzzleLight : BaseWeaponEffect
 {
     private Animation _shootAnimation;
+    private Light _light;
 
     private void Awake()
     {
         _shootAnimation = GetComponent<Animation>();
+        _light = GetComponent<Light>();
 
-        if (GetComponent<Light>()) GetComponent<Light>().intensity = 0;
+        if (_light) _light.intensity = 0;
     }
 
     public override void OnShoot()
@@ -28,5 +30,8 @@ public class MuzzleLight : BaseWeaponEffect
         {
             _shootAnimation.Stop();
         }
+
+        // stop keeps last key. switch mid flash = light stuck on
+        if (_light) _light.intensity = 0;
     }
 }

@@ -127,7 +127,7 @@ public class ChatManager : Singleton<ChatManager>
         if (GameState.HasCurrentGame && GameState.CurrentGameMode == GameMode.TeamElimination && GameState.CurrentGame.IsMatchRunning)
         {
             ChatContext myctx = PlayerSpectatorControl.Instance.IsEnabled ? ChatContext.Spectator : ChatContext.Player;
-            return ctx == myctx;
+            return myctx == ChatContext.Spectator || ctx == myctx;
         }
         else
         {

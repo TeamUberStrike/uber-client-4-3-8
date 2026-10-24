@@ -82,6 +82,10 @@ public class LevelBoundary : MonoBehaviour
 
     public static void KillPlayer()
     {
+        // dead: server respawn timer
+        if (GameState.LocalPlayer.IsDead || (GameState.HasCurrentGame && GameState.CurrentGame.IsWaitingForSpawn))
+            return;
+
         //in waiting mode - just respawn
         if (GameState.HasCurrentGame && GameState.CurrentGame.IsWaitingForPlayers)
         {

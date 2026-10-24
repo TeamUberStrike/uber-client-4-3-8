@@ -14,13 +14,13 @@ public class ChatPageGUI : PageGUI
 
     private int _lastMessageCount = 0;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _playerMenu = new PopupMenu();
-        IsOnGUIEnabled = true;
+        IsOnGUIEnabled = !IsInGamePanel;
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         _playerMenu.AddMenuItem(LocalizedStrings.AddAsFriend, MenuCmdAddFriend, MenuChkAddFriend);
         _playerMenu.AddMenuItem(LocalizedStrings.PrivateChat, MenuCmdChat, MenuChkChat);
@@ -34,7 +34,7 @@ public class ChatPageGUI : PageGUI
         }
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (_lastMessageSentTimer < 0.3f)
             _lastMessageSentTimer += Time.deltaTime;
@@ -45,7 +45,7 @@ public class ChatPageGUI : PageGUI
             _yPosition = 0;
     }
 
-    private void OnGUI()
+    protected virtual void OnGUI()
     {
         if (IsOnGUIEnabled)
         {
@@ -146,6 +146,41 @@ public class ChatPageGUI : PageGUI
 
         GuiManager.DrawTooltip();
     }
+
+    protected virtual bool IsInGamePanel { get { return false; } }
+
+    protected void DrawInGamePanel(Rect rect)
+    {
+        GUI.skin = BlueStonez.Skin;
+        // steam look: flat dark, short player list, history fills, input at bottom
+        Color c = GUI.color;
+        GUI.color = new Color(0.06f, 0.06f, 0.06f, 0.97f);
+        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+        GUI.color = c;
+        GUI.BeginGroup(rect);
+        if (_gamePane == null)
+        {
+            _gamePane = new ChatGroupPanel();
+            _gamePane.AddGroup(UserGroups.None, LocalizedStrings.Game, ChatManager.Instance.GameUsers);
+        }
+        // dev build label sits on the bottom right
+        float bottom = rect.height - (Debug.isDebugBuild ? 20 : 0);
+        float footerHeight = 34;
+        float playersHeight = Mathf.Clamp(26 + ChatManager.Instance.GameUsers.Count * 22, 48, rect.height * 0.3f);
+        DrawInGameArea(new Rect(0, 0, rect.width, playersHeight),
+            new Rect(0, playersHeight + 6, rect.width, Mathf.Max(1, bottom - footerHeight - playersHeight - 12)),
+            new Rect(0, bottom - footerHeight, rect.width, footerHeight), _gamePane);
+        GUI.EndGroup();
+    }
+
+    private void DrawInGameArea(Rect players, Rect history, Rect footer, ChatGroupPanel pane)
+    {
+        DoDialogFooter(footer, pane, ChatManager.Instance.InGameDialog, TabArea.InGame);
+        DrawCommPane(players, pane);
+        DoDialog(history, pane, ChatManager.Instance.InGameDialog);
+    }
+
+    private ChatGroupPanel _gamePane;
 
     private void PasswordCheck(Rect position)
     {
@@ -773,15 +808,24 @@ public class ChatPageGUI : PageGUI
 
     private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog)
     {
+        DoDialogFooter(rect, pane, dialog, SelectedTab);
+    }
+
+    private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog, TabArea context)
+    {
         GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
         {
             GUI.SetNextControlName("@CurrentChatMessage");
 
             bool tmp = GUI.enabled;
-            GUI.enabled &= !ClientCommCenter.IsPlayerMuted && dialog != null && dialog.CanChat;
+            GUI.enabled &= !PopupSystem.IsAnyPopupOpen &&
+                CommConnectionManager.Client.ConnectionState == Cmune.Realtime.Photon.Client.PhotonClient.ConnectionStatus.RUNNING &&
+                !ClientCommCenter.IsPlayerMuted && dialog != null && dialog.CanChat;
 
-            if (SelectedTab == TabArea.InGame)
+            if (context == TabArea.InGame)
                 GUI.enabled &= (GameState.HasCurrentGame && GameState.CurrentGame.IsGameStarted);
+
+            bool canSend = GUI.enabled && _lastMessageSentTimer > 0.29f;
 
             // Chat Input Textfield
             _currentChatMessage = GUI.TextField(new Rect(6, 6, rect.width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
@@ -826,10 +870,11 @@ public class ChatPageGUI : PageGUI
 
             if (GUITools.Button(new Rect(rect.width - 51, 6, 45, rect.height - 12), new GUIContent(LocalizedStrings.Send), BlueStonez.buttondark_small))
             {
-                if (!string.IsNullOrEmpty(_currentChatMessage))
+                if (canSend && !string.IsNullOrWhiteSpace(_currentChatMessage))
                 {
-                    GUIUtility.keyboardControl = 0;
-                    SendChatMessage();
+                    SendChatMessage(context);
+                    if (IsInGamePanel) GUI.FocusControl("@CurrentChatMessage");
+                    else GUIUtility.keyboardControl = 0;
                 }
             }
 
@@ -837,13 +882,15 @@ public class ChatPageGUI : PageGUI
 
             // Send the message if player pushes ENTER
             if ((Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return) &&
-                !ClientCommCenter.IsPlayerMuted && (_lastMessageSentTimer > 0.29f))
+                canSend && GUI.GetNameOfFocusedControl() == "@CurrentChatMessage")
             {
-                if (!string.IsNullOrEmpty(_currentChatMessage))
+                if (canSend && !string.IsNullOrWhiteSpace(_currentChatMessage))
                 {
-                    GUIUtility.keyboardControl = 0;
-                    SendChatMessage();
+                    SendChatMessage(context);
+                    if (IsInGamePanel) GUI.FocusControl("@CurrentChatMessage");
+                    else GUIUtility.keyboardControl = 0;
                 }
+                Event.current.Use();
             }
         }
         GUI.EndGroup();
@@ -870,15 +917,15 @@ public class ChatPageGUI : PageGUI
         bool tmp = GUI.enabled;
 
         // RCLK to show menu
-        if (user.Cmid != myCmid && CheckMouseClickIn(rect, 1))
+        if (!IsInGamePanel && user.Cmid != myCmid && CheckMouseClickIn(rect, 1))
         {
             SelectCommUser(user);
 
             _playerMenu.Show(GUIUtility.GUIToScreenPoint(Event.current.mousePosition), user);
         }
 
-        // DBLCLK to chat with 
-        if (MouseInput.Instance.DoubleClick(rect))
+        // DBLCLK to chat with
+        if (!IsInGamePanel && MouseInput.Instance.DoubleClick(rect))
         {
             // user is not me and user is online
             if (user.Cmid != myCmid && user.PresenceIndex != PresenceType.Offline)
@@ -897,7 +944,7 @@ public class ChatPageGUI : PageGUI
         }
 
         //single click
-        if ((allowSelfSelection || user.Cmid != myCmid) && CheckMouseClickIn(new Rect(rect.x, rect.y, rect.width - 20, rect.height)))
+        if (!IsInGamePanel && (allowSelfSelection || user.Cmid != myCmid) && CheckMouseClickIn(new Rect(rect.x, rect.y, rect.width - 20, rect.height)))
         {
             SelectCommUser(user);
         }
@@ -923,7 +970,7 @@ public class ChatPageGUI : PageGUI
         GUI.Label(new Rect(6 + 20 + 18, vOffset, width - 66, CHAT_USER_HEIGHT), user.Name, BlueStonez.label_interparkmed_10pt_left);
 
         GUI.color = Color.white;
-        if (user.Cmid != myCmid)
+        if (!IsInGamePanel && user.Cmid != myCmid)
         {
             if (GUI.Button(new Rect(rect.width - 17, vOffset + 1, 18, 18), GUIContent.none, BlueStonez.button_context))
             {
@@ -937,7 +984,7 @@ public class ChatPageGUI : PageGUI
 
         //new message icon
         ChatDialog d;
-        if (SelectedTab == TabArea.Private &&
+        if (!IsInGamePanel && SelectedTab == TabArea.Private &&
             ChatManager.Instance._dialogsByCmid.TryGetValue(user.Cmid, out d) && d != null && d.HasUnreadMessage &&
             d != ChatManager.Instance._selectedDialog)
         {
@@ -977,11 +1024,11 @@ public class ChatPageGUI : PageGUI
         }
     }
 
-    private void SendChatMessage()
+    private void SendChatMessage(TabArea? context = null)
     {
         _currentChatMessage = TextUtilities.ShortenText(TextUtilities.Trim(_currentChatMessage), 140, false);
 
-        switch (SelectedTab)
+        switch (context ?? SelectedTab)
         {
             case TabArea.InGame:
                 {

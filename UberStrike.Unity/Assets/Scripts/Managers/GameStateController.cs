@@ -38,6 +38,8 @@ public class GameStateController : Singleton<GameStateController>
 
     public void CreateGame(GameMetaData game)
     {
+        MenuPageManager.Instance.UnloadCurrentPage();
+
         AvatarBuilder.Instance.UpdateLocalAvatar();
 
         LobbyConnectionManager.Stop();

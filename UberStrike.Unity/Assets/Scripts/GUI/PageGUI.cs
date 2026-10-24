@@ -8,5 +8,5 @@ public abstract class PageGUI : MonoBehaviour
 
     public bool IsOnGUIEnabled { get; set; }
     public abstract void DrawGUI(Rect rect);
-    public string Title { get { return _title; } }
+    public virtual string Title { get { return _title; } }
 }

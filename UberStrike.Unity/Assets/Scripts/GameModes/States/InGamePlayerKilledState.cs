@@ -33,6 +33,7 @@ class InGamePlayerKilledState : IState
         GamePageManager.Instance.UnloadCurrentPage();
         HudUtil.Instance.ClearAllFeedbackHud();
         PlayerStateMsgHud.Instance.ButtonEnabled = false;
+        InGameChatHud.Instance.CloseIfAbandoned();
 
         QuickItemController.Instance.IsEnabled = true;
 

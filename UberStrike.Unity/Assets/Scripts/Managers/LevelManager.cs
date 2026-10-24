@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Cmune.DataCenter.Common.Entities;
 using Cmune.Util;
 using UberStrike.Core.Models.Views;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : Singleton<LevelManager>
 {
@@ -11,7 +11,6 @@ public class LevelManager : Singleton<LevelManager>
     private Dictionary<int, UberstrikeMap> mapsById = new Dictionary<int, UberstrikeMap>();
     private MapLoader _loader;
     private UberstrikeMap _initialMap;
-    private readonly HashSet<int> _mobileSupportedMaps = new HashSet<int> { 3, 4, 5, 7, 8, 10 };
 
     public IEnumerable<UberstrikeMap> AllMaps { get { return mapsById.Values; } }
     public int CurrentLoadingLevelId { get { return _loader.MapToLoad != null ? _loader.MapToLoad.Id : -1; } }
@@ -127,6 +126,9 @@ public class LevelManager : Singleton<LevelManager>
         if (map.MapId == 0)
             _originalLightmaps = LightmapSettings.lightmaps;
 
+        // before reparent, after = 'Latest'
+        string currentSceneName = map.gameObject.scene.name;
+
         map.transform.parent = GetLevelsParent();
 
         //clear all old levels
@@ -144,9 +146,19 @@ public class LevelManager : Singleton<LevelManager>
                 }
             }
         }
-#if !UNITY_ANDROID
+        // U2022 keeps empty additive scenes: unload stale Level*
+        for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
+        {
+            Scene s = SceneManager.GetSceneAt(i);
+            if (!s.IsValid() || !s.isLoaded) continue;
+            if (!s.name.StartsWith("Level")) continue;
+            if (s.name == "LevelSpaceship") continue; // lobby
+            if (s.name == currentSceneName) continue;
+            if (s == SceneManager.GetActiveScene()) continue;
+            SceneManager.UnloadSceneAsync(s);
+        }
         Resources.UnloadUnusedAssets();
-#endif
+        //Debug.Log("LightMaps: " + LightmapSettings.lightmaps.Length);
     }
 
     private Transform GetLevelsParent()
@@ -193,17 +205,12 @@ public class LevelManager : Singleton<LevelManager>
         {
             if (!mapsById.ContainsKey(m.MapId))
             {
-                    if ((ApplicationDataManager.Channel != ChannelType.Android &&
-                        ApplicationDataManager.Channel != ChannelType.IPhone &&
-                        ApplicationDataManager.Channel != ChannelType.IPad) ||
-                        _mobileSupportedMaps.Contains(m.MapId))
-                    mapsById.Add(m.MapId, new UberstrikeMap(m));
+                mapsById.Add(m.MapId, new UberstrikeMap(m));
             }
         }
 
         return (mapsById.Count > 0);
     }
-
 
     public void CancelLoadMap(int mapId)
     {
@@ -233,10 +240,6 @@ public class LevelManager : Singleton<LevelManager>
             int id = CoroutineManager.Begin(StartLoadingMap);
 
             if (Application.isEditor && !ApplicationDataManager.Instance.LoadMapsUsingWebService)//Instance.IsSimulateWebplayer)
-            {
-                yield return Application.LoadLevelAdditiveAsync(MapToLoad.SceneName);
-            }
-            else if (ApplicationDataManager.Channel == ChannelType.Android || ApplicationDataManager.Channel == ChannelType.IPad || ApplicationDataManager.Channel == ChannelType.IPhone)
             {
                 yield return Application.LoadLevelAdditiveAsync(MapToLoad.SceneName);
             }

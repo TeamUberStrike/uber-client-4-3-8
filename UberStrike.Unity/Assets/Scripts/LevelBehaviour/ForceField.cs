@@ -14,6 +14,8 @@ public class ForceField : MonoBehaviour
 
     private float gizmofactor = 0.0055f;
 
+    private const bool VerboseJumpPad = false;
+
     #endregion
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -43,13 +45,12 @@ public class ForceField : MonoBehaviour
         Bounds world = renderers[0].bounds;
         for (int i = 1; i < renderers.Length; i++) world.Encapsulate(renderers[i].bounds);
 
-        // Extend the trigger upward from the pad surface: player's capsule centre is
-        // ~1u above their feet, and fast sideways movement can skip a thin trigger
-        // between frames. A 2u tall trigger column above the pad top catches both.
-        const float verticalReach = 2.5f;
-        Vector3 worldMin = world.min;
-        Vector3 worldMax = world.max;
-        worldMax.y += verticalReach;
+        // retail: thin box on pad top, no widen
+        const float reachAbove = 0.6f;
+        const float reachBelow = 0.35f;
+        float padTop = world.max.y;
+        Vector3 worldMin = new Vector3(world.min.x, padTop - reachBelow, world.min.z);
+        Vector3 worldMax = new Vector3(world.max.x, padTop + reachAbove, world.max.z);
         Vector3 fittedCenter = (worldMin + worldMax) * 0.5f;
         Vector3 fittedSize = worldMax - worldMin;
 
@@ -58,10 +59,7 @@ public class ForceField : MonoBehaviour
         Vector3 localSize = transform.InverseTransformVector(fittedSize);
         localSize = new Vector3(Mathf.Abs(localSize.x), Mathf.Abs(localSize.y), Mathf.Abs(localSize.z));
 
-        // Pad XZ generously so the player can't skim the edge without entering.
-        localSize.x *= 1.25f;
-        localSize.z *= 1.25f;
-        if (localSize.y < verticalReach) localSize.y = verticalReach;
+        if (localSize.y < (reachAbove + reachBelow)) localSize.y = reachAbove + reachBelow;
 
         // Only apply the fit when the existing collider is clearly TOO SMALL for
         // the visible pad — e.g., SPR pads ship with a default 1×1×1 BoxCollider.
@@ -75,7 +73,7 @@ public class ForceField : MonoBehaviour
 
         box.size = new Vector3(
             Mathf.Max(current.x, localSize.x),
-            Mathf.Max(current.y, localSize.y),
+            localSize.y, // no Max: tall box launches early
             Mathf.Max(current.z, localSize.z));
         box.center = localCenter;
     }
@@ -119,18 +117,15 @@ public class ForceField : MonoBehaviour
         collider.isTrigger = true;
         gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
 
-        // Port artifact: some ForceField BoxColliders shipped at 1×1×1 local while
-        // the pad's visible mesh (a child) spans much wider → players can walk onto
-        // the pad edge without entering the trigger, and only jump when they reach
-        // the dead center. Fit the collider to the combined child-mesh bounds so the
-        // trigger covers the full pad surface. Non-Box colliders (MeshCollider etc.)
-        // are left alone.
-        FitTriggerToChildMeshes(collider);
+        // retail pads keep authored box (centre-only launch, = 4.3.8). fit only unset 1x1x1 box
+        var box = collider as BoxCollider;
+        if (box != null && box.size == Vector3.one)
+            FitTriggerToChildMeshes(collider);
 
         // Only spawn on JumpPads, not Accelerator pads (accel, AcceleratorPad, etc.)
         if (gameObject.name.IndexOf("accel", System.StringComparison.OrdinalIgnoreCase) >= 0)
         {
-            Debug.Log("[JumpPad/" + gameObject.name + "] Skipped: name contains 'accel'. Scene=" + gameObject.scene.name);
+            if (VerboseJumpPad) Debug.Log("[JumpPad/" + gameObject.name + "] Skipped: name contains 'accel'. Scene=" + gameObject.scene.name);
             return;
         }
 
@@ -138,11 +133,11 @@ public class ForceField : MonoBehaviour
         var existing = GetComponentInChildren<ParticleSystem>();
         if (existing != null)
         {
-            Debug.Log("[JumpPad/" + gameObject.name + "] Skipped: already has ParticleSystem '" + existing.name + "'. Scene=" + gameObject.scene.name);
+            if (VerboseJumpPad) Debug.Log("[JumpPad/" + gameObject.name + "] Skipped: already has ParticleSystem '" + existing.name + "'. Scene=" + gameObject.scene.name);
             return;
         }
 
-        Debug.Log("[JumpPad/" + gameObject.name + "] Spawning particles. Scene=" + gameObject.scene.name);
+        if (VerboseJumpPad) Debug.Log("[JumpPad/" + gameObject.name + "] Spawning particles. Scene=" + gameObject.scene.name);
         // Spawn particles directly on the ForceField's transform. On flattened
         // (ForgeRipper-migrated) scenes the mesh child may sit at world origin
         // while the ForceField parent is at the real pad position, so using
@@ -244,7 +239,7 @@ public class ForceField : MonoBehaviour
         else if (templeGreen) matName = "JumpPadParticlesGreen";
         else                  matName = yellow ? "JumpPadParticlesYellow" : "JumpPadParticles";
         Material jumpPadMat = Resources.Load<Material>(matName);
-        Debug.Log("[JumpPad] parent=" + (parent != null ? parent.name : "null") + " padScene=" + padScene + " ownerMap=" + (ownerMap ?? "(none)") + " yellow=" + yellow + " reactor=" + reactor + " templeGreen=" + templeGreen + " matName=" + matName + " loaded=" + (jumpPadMat != null));
+        if (VerboseJumpPad) Debug.Log("[JumpPad] parent=" + (parent != null ? parent.name : "null") + " padScene=" + padScene + " ownerMap=" + (ownerMap ?? "(none)") + " yellow=" + yellow + " reactor=" + reactor + " templeGreen=" + templeGreen + " matName=" + matName + " loaded=" + (jumpPadMat != null));
         if (jumpPadMat == null)
             Debug.LogWarning("[JumpPad] Resources.Load failed for '" + matName + "' — falling back to default.");
         Color tint = Color.white;

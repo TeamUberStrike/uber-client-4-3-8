@@ -8,6 +8,7 @@ using Cmune.DataCenter.Common.Entities;
 using Cmune.Realtime.Photon.Client.Utils;
 using Cmune.Util;
 using UberStrike.Core.Types;
+using UberStrike.Realtime.NakamaAdapter;
 using UberStrike.DataCenter.Common.Entities;
 using UberStrike.WebService.Unity;
 using UnityEngine;
@@ -220,6 +221,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
                 // Setup Application Options
                 applicationOptions.Initialize();
+                OnApplicationFocus(Application.isFocused);
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
                 // Set the initial Video options based on Cmune Prefs
@@ -296,7 +298,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         if (isFocused)
         {
-            Application.targetFrameRate = (applicationOptions != null) ? applicationOptions.GeneralTargetFrameRate : 200;
+            Application.targetFrameRate = (applicationOptions != null) ? applicationOptions.FrameRateCap : -1;
         }
         else
         {
@@ -498,47 +500,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             // We have authenticated the application and the player and are considered online (this is important for calling encrypted web services like RecordException)
             ApplicationDataManager.IsOnline = true;
 
-            // Setup Game Servers
-            if (CmuneNetworkConfiguration.Instance.CustomGameServer.IsEnabled)
-            {
-                // Setup Local Game Server only if we are in the editor
-                Singleton<GameServerManager>.Instance.AddGameServer(new PhotonView()
-                {
-                    IP = CmuneNetworkConfiguration.Instance.CustomGameServer.Ip,
-                    Port = CmuneNetworkConfiguration.Instance.CustomGameServer.Port,
-                    UsageType = PhotonUsageType.All,
-                    Name = string.Format("Custom Game Server ({0})", CmuneNetworkConfiguration.Instance.CustomGameServer.Address),
-                    Region = RegionType.AsiaPacific
-                });
-            }
-            else
-            {
-                foreach (PhotonView v in ev.GameServers)
-                {
-#if !UNITY_ANDROID && !UNITY_IPHONE
-                    // mobile servers should only be seen by mobile devices
-                    if (v.UsageType == PhotonUsageType.Mobile) continue;
-#endif
-                    GameServerManager.Instance.AddGameServer(v);
-                }
-            }
-
-            // Setup Comm Server
-            if (CmuneNetworkConfiguration.Instance.CustomCommServer.IsEnabled)
-            {
-                CmuneNetworkManager.CurrentCommServer = new GameServerView(new PhotonView()
-                {
-                    IP = CmuneNetworkConfiguration.Instance.CustomCommServer.Ip,
-                    Port = CmuneNetworkConfiguration.Instance.CustomCommServer.Port,
-                    UsageType = PhotonUsageType.CommServer,
-                    Name = string.Format("Custom Comm Server ({0})", CmuneNetworkConfiguration.Instance.CustomCommServer.Address),
-                    Region = RegionType.AsiaPacific
-                });
-            }
-            else
-            {
-                CmuneNetworkManager.CurrentCommServer = new GameServerView(ev.CommServer);
-            }
+            // Nakama endpoint, Play page rows, comm row = web DB CommServer row
+            NakamaServerList.Apply(ev);
 
 #if UNITY_ANDROID || UNITY_IPHONE
             _showLoadingBackground = false;

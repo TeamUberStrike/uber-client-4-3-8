@@ -35,7 +35,7 @@ public class InGameHelpHud : Singleton<InGameHelpHud>
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L)) //TODO:later get the button from the config.
+        if (!InGameChatPageGUI.IsOpen && !InGameChatHud.Instance.CanInput && Input.GetKeyDown(KeyCode.L)) //TODO:later get the button from the config.
         {
             OnToggleLoadout();
         }
