@@ -52,5 +52,5 @@ Shader "Cross Platform Shaders/Transparent Diffuse Double Sided" {
 		ENDCG
 	}
 
-	Fallback "Cross Platform Shaders/Vertex Lit"
+	Fallback "Cross Platform Shaders/VertexLit"
 }
