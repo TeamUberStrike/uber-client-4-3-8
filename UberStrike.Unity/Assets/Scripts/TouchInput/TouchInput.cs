@@ -459,8 +459,10 @@ public class TouchInput : MonoSingleton<TouchInput>
             });
         }
 
-        if (Dpad != null)
+        if (Dpad != null && UseMultiTouch)
         {
+            // The D-pad only exists in multi-touch (D-pad) mode — single-input uses the joystick
+            // instead, so don't offer a D-Pad handle there.
             MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), DefaultButtonScale());
             list.Add(new LayoutHandle
             {
