@@ -305,6 +305,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "chat": return new Vector2(30 * s, 260 * s);
             case "score": return new Vector2(30 * s, 320 * s);
             case "weaponChanger": return new Vector2(Screen.width - 95 * s, 105 * s);
+            case "dpad": return new Vector2(25f + 399f * s / 2f, Screen.height - 256f + 209f * s / 2f);
             default: return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         }
     }
@@ -322,6 +323,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "chat": return "Chat";
             case "score": return "Scores";
             case "weaponChanger": return "Weapons";
+            case "dpad": return "D-Pad";
             case "quickItems": return "Quick Items";
             case "quickSlot1": return "Quick Item 1";
             case "quickSlot2": return "Quick Item 2";
@@ -370,6 +372,18 @@ public class TouchInput : MonoSingleton<TouchInput>
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", DefaultGuiCenterFor("weaponChanger"), baseScale);
             WeaponChanger.LayoutScale = wp.Scale;
             WeaponChanger.Position = MobileControlLayout.ToPixels(wp);
+        }
+
+        if (Dpad != null)
+        {
+            // The D-pad is editable like the buttons: stored placement (id "dpad") drives its
+            // top-left position AND its uniform Scale (layout editor drag + pinch).
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), baseScale);
+            Vector2 c = MobileControlLayout.ToPixels(dp);
+            float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
+            float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+            Dpad.Scale = dp.Scale;
+            Dpad.TopLeftPosition = new Vector2(c.x - dw * dp.Scale / 2f, c.y - dh * dp.Scale / 2f);
         }
 
         if (HudAssets.Exists && WeaponsHud.Instance.QuickItems.Group != null)
@@ -442,6 +456,19 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Boundary = WeaponChanger.Boundary,
                 Icon = null,
                 Scale = WeaponChanger.LayoutScale,
+            });
+        }
+
+        if (Dpad != null)
+        {
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), DefaultButtonScale());
+            list.Add(new LayoutHandle
+            {
+                Id = "dpad",
+                DisplayName = DisplayNameFor("dpad"),
+                Boundary = Dpad.DpadBoundary,
+                Icon = MobileIcons.KeyboardDpad,
+                Scale = dp.Scale,
             });
         }
 

@@ -6,30 +6,42 @@ using System;
 
 public class TouchDPad : TouchBaseControl
 {
+    // Uniform scale for the whole D-pad cluster (layout editor). 1 = authored pixel size.
+    public float Scale = 1f;
+
     public Vector2 TopLeftPosition
     {
         set
         {
-            _dpadRect = new Rect(value.x, value.y, _dpad.image.width, _dpad.image.height);
+            float s = Scale;
 
-            _leftRect = new Rect(value.x, value.y, 104, 209);
+            _dpadRect = new Rect(value.x, value.y, _dpad.image.width * s, _dpad.image.height * s);
 
-            _forwardRect = new Rect(value.x + 104, value.y, 104, 104);
-            _backwardRect = new Rect(value.x + 104, value.y + 104, 104, 106);
+            _leftRect = new Rect(value.x, value.y, 104 * s, 209 * s);
 
-            _rightRect = new Rect(value.x + 207, value.y + 103, 104, 106);
+            _forwardRect = new Rect(value.x + 104 * s, value.y, 104 * s, 104 * s);
+            _backwardRect = new Rect(value.x + 104 * s, value.y + 104 * s, 104 * s, 106 * s);
 
-            _centerPosition = new Vector2(value.x + 155, value.y + 103);
+            _rightRect = new Rect(value.x + 207 * s, value.y + 103 * s, 104 * s, 106 * s);
+
+            _centerPosition = new Vector2(value.x + 155 * s, value.y + 103 * s);
 
             if (CrouchButton != null)
             {
-                Rect crouchRect = new Rect(value.x + 311, value.y + 103, 88, 106);
+                Rect crouchRect = new Rect(value.x + 311 * s, value.y + 103 * s, 88 * s, 106 * s);
                 CrouchButton.Boundary = crouchRect;
             }
             if (JumpButton != null)
             {
-                Rect jumpRect = new Rect(value.x + 207, value.y, 192, 104);
+                Rect jumpRect = new Rect(value.x + 207 * s, value.y, 192 * s, 104 * s);
                 JumpButton.Boundary = jumpRect;
+            }
+
+            // Refresh the rotation pivot after a move/resize so Jump/Crouch rotate about the new centre.
+            if (_rotation != 0 && JumpButton != null && CrouchButton != null)
+            {
+                JumpButton.SetRotation(_rotation, _centerPosition);
+                CrouchButton.SetRotation(_rotation, _centerPosition);
             }
         }
     }
