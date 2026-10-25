@@ -8,6 +8,13 @@ public class TouchShooter : TouchBaseControl
 {
     public Vector2 Aim { get; private set; }
 
+    /// <summary>
+    /// True while the tap-to-fire (secondary) finger is still live. Used by TouchInput's fire
+    /// safety net so D-pad-mode fire (owned by the Shooter) isn't released because the on-screen
+    /// fire button is disabled.
+    /// </summary>
+    public bool IsFireFingerLive { get { return _secondaryFinger.FingerId != -1; } }
+
     public float SecondaryFireTapDelay = 0.4f;
     public float SecondaryFireTapMaxDistanceSqr = 10000.0f;
 
