@@ -65,6 +65,7 @@ public class TouchShooter : TouchBaseControl
                     FingerId = touch.fingerId,
                 };
                 _primaryInIgnoreZone = inIgnoreZone;
+                Debug.Log("[ShooterDiag] primary bind finger=" + touch.fingerId + " ignoreZone=" + inIgnoreZone + " pos=" + touch.position);
 
                 if (!inIgnoreZone)
                 {
@@ -89,7 +90,12 @@ public class TouchShooter : TouchBaseControl
                     LastPos = touch.position,
                     FingerId = touch.fingerId,
                 };
+                Debug.Log("[ShooterDiag] secondary bind -> FIRE finger=" + touch.fingerId + " pos=" + touch.position);
                 if (OnFireStart != null) OnFireStart();
+            }
+            else if (_primaryFinger.FingerId != touch.fingerId && _secondaryFinger.FingerId == -1 && inIgnoreZone)
+            {
+                Debug.Log("[ShooterDiag] second finger in ignore zone, no bind finger=" + touch.fingerId + " pos=" + touch.position);
             }
         }
         else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)

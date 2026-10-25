@@ -347,7 +347,11 @@ public class TouchInput : MonoSingleton<TouchInput>
             foreach (TouchKeyType k in actionKeys)
             {
                 TouchButton b;
-                if (Buttons.TryGetValue((int)k, out b) && b != null)
+                // Only ENABLED buttons claim their area. In D-pad mode the standalone
+                // fire/jump/crouch buttons are disabled but kept their old boundaries, so their
+                // rects swallowed taps on the right side of the screen — the natural tap-to-fire
+                // spot — and the second finger never bound as fire.
+                if (Buttons.TryGetValue((int)k, out b) && b != null && b.Enabled)
                     btnRects.Add(b.Boundary);
             }
             Shooter.SetButtonIgnores(btnRects.ToArray());
@@ -711,10 +715,13 @@ public class TouchInput : MonoSingleton<TouchInput>
             Shooter.OnFireStart += OnFireStart;
             Shooter.OnFireEnd += OnFireEnd;
         }
+
+        Debug.Log("[ShooterDiag] UpdateFireMode tapAnywhere=" + tapAnywhereFire);
     }
 
     void OnFireStart()
     {
+        Debug.Log("[ShooterDiag] OnFireStart -> PrimaryFire pressed");
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 1));
         IsFiring = true;
         if (!HasDisplayedFireHelp)
