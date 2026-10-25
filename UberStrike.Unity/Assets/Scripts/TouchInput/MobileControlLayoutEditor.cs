@@ -202,11 +202,25 @@ public class MobileControlLayoutEditor : MonoBehaviour
         foreach (TouchInput.LayoutHandle hd in handles)
         {
             bool selected = (hd.Id == _selectedId);
+            bool isDpad = (hd.Id == "dpad");
+
+            // Render the D-pad exactly like the game does: rotated around the cluster pivot
+            // (TouchDPad.Draw uses GUIUtility.RotateAroundPivot(_rotation, _centerPosition)).
+            // The outline + name badge stay upright.
+            Matrix4x4 m = GUI.matrix;
+            if (isDpad && TouchInput.Exists && TouchInput.Instance.Dpad != null)
+            {
+                TouchDPad dp = TouchInput.Instance.Dpad;
+                Rect dr = dp.DpadBoundary;
+                GUIUtility.RotateAroundPivot(dp.Rotation, new Vector2(dr.x + 155f * dp.Scale, dr.y + 103f * dp.Scale));
+            }
 
             if (hd.Icon != null)
             {
                 GUI.DrawTexture(hd.Boundary, hd.Icon, ScaleMode.StretchToFill, true);
             }
+
+            if (isDpad) GUI.matrix = m;
 
             Color border = selected ? new Color(1f, 0.85f, 0.2f) : new Color(0.45f, 0.65f, 1f, 0.9f);
             DrawOutline(hd.Boundary, border, selected ? 3f : 2f);

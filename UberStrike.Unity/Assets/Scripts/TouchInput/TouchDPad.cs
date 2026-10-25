@@ -266,7 +266,9 @@ public class TouchDPad : TouchBaseControl
 
         GUIUtility.RotateAroundPivot(_rotation, _centerPosition);
 
-        GUI.Label(_dpadRect, _dpad);
+        // Draw scaled to _dpadRect (GUI.Label renders the image at its natural size, ignoring the
+        // rect, so the editor's Scale never showed in-game — the size mismatch with the editor).
+        GUI.DrawTexture(_dpadRect, _dpad.image, ScaleMode.StretchToFill, true);
 
         GUI.matrix = Matrix4x4.identity;
         GUI.color = Color.white;
