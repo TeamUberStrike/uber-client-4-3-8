@@ -61,7 +61,26 @@ public class TextureLoader : Singleton<TextureLoader>
 
     private IEnumerator DownloadTexture(string url, Texture2D texture)
     {
-        using (WWW www = new WWW(url))
+        // Creating the WWW/UnityWebRequest can throw synchronously (e.g.
+        // InvalidOperationException "Insecure connection not allowed" on
+        // release builds, or UriFormatException on malformed URLs). If that
+        // escapes the coroutine it surfaces as an unhandled exception in
+        // OnGUI, so degrade to the placeholder instead.
+        WWW www;
+        try
+        {
+            www = new WWW(url);
+        }
+        catch (System.Exception ex)
+        {
+            _state[texture.GetInstanceID()] = 2;
+            _failedUrls.Add(url);
+            if (Debug.isDebugBuild)
+                Debug.LogWarning("[TextureLoader] Failed to start download for " + url + " (" + ex.Message + ")");
+            yield break;
+        }
+
+        using (www)
         {
             _state[texture.GetInstanceID()] = 0;
             yield return www;
