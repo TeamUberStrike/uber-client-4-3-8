@@ -63,4 +63,4 @@ One-command device deployment:
 2. Compiles with `xcodebuild` (scheme `Unity-iPhone`, automatic signing, `-allowProvisioningUpdates`).
 3. Installs the `.app` and launches `com.yoxa.uberstrike` on the connected device via `devicectl`.
 
-Overridable via env vars: `UNITY`, `DEVICE` (default `Xaver`), `BUNDLE_ID`, `DEVELOPMENT_TEAM` (default `S4CNK69FK9`), `CONFIGURATION`, `SCHEME`, `BUILD_METHOD`. The Unity Editor must be closed (batchmode needs the project lock), and Xcode must have the signing account/team set up once.
+Overridable via env vars: `UNITY`, `DEVICE` (auto-detects the first connected iPhone/iPad when unset), `BUNDLE_ID`, `DEVELOPMENT_TEAM` (default `S4CNK69FK9`), `CONFIGURATION`, `SCHEME`, `BUILD_METHOD`. The Unity Editor must be closed (batchmode needs the project lock), and Xcode must have the signing account/team set up once.

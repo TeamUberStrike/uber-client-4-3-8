@@ -27,12 +27,21 @@ XCODE_PROJECT="$PROJECT/BuildIos/Unity-iPhone.xcodeproj"
 DERIVED_DATA="$PROJECT/BuildIos/DerivedData"
 
 UNITY="${UNITY:-/Applications/Unity/Hub/Editor/2022.3.62f3/Unity.app/Contents/MacOS/Unity}"
-DEVICE="${DEVICE:-Xaver}"
 BUNDLE_ID="${BUNDLE_ID:-com.yoxa.uberstrike}"
 DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM:-S4CNK69FK9}"
 CONFIGURATION="${CONFIGURATION:-Debug}"
 SCHEME="${SCHEME:-Unity-iPhone}"
 BUILD_METHOD="${BUILD_METHOD:-IosCommandLineBuilder.Build}"
+
+# Auto-detect the first connected iPhone/iPad unless DEVICE is set explicitly.
+if [ -z "${DEVICE:-}" ]; then
+    DEVICE="$(xcrun devicectl list devices 2>/dev/null | awk '/connected/ && /iPhone|iPad|iPod/ {print $1; exit}')"
+    if [ -z "$DEVICE" ]; then
+        echo "Error: no connected iPhone/iPad found (set DEVICE=<name|udid> to override)" >&2
+        exit 1
+    fi
+    echo "Auto-detected device: $DEVICE"
+fi
 
 UNITY_LOG="$PROJECT/ios-unity-build.log"
 
