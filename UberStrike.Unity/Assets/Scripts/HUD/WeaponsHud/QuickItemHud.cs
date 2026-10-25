@@ -174,20 +174,21 @@ public class QuickItemHud
             Depth = 7,
         };
 
-        if (!ApplicationDataManager.IsMobile)
+        // Created unconditionally: SetSelected()/HideEditorDecorations()/ConfigureSlot()/Scale()
+        // dereference these without null checks, and on the device (TouchInput.IsSupported) the
+        // SetSelected path uses _selection. On mobile they're just not added to the rendered
+        // group below, so they stay invisible.
+        _descriptionText = new MeshGUIText("Key: 7", HudAssets.Instance.HelveticaBitmapFont, TextAnchor.LowerCenter)
         {
-            _descriptionText = new MeshGUIText("Key: 7", HudAssets.Instance.HelveticaBitmapFont, TextAnchor.LowerCenter)
-            {
-                NamePrefix = name,
-                Depth = 8,
-            };
+            NamePrefix = name,
+            Depth = 8,
+        };
 
-            _selection = new MeshGUIQuad(ConsumableHudTextures.CircleBlue, TextAnchor.MiddleCenter)
-            {
-                Name = name + "Selection",
-                Depth = 4,
-            };
-        }
+        _selection = new MeshGUIQuad(ConsumableHudTextures.CircleBlue, TextAnchor.MiddleCenter)
+        {
+            Name = name + "Selection",
+            Depth = 4,
+        };
 
         _icon = new MeshGUIQuad(ConsumableHudTextures.AmmoBlue, TextAnchor.MiddleCenter)
         {
