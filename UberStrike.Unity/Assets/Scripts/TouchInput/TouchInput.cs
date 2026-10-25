@@ -1250,10 +1250,17 @@ public class TouchInput : MonoSingleton<TouchInput>
     }
 
 #if !UNITY_EDITOR
+    private Coroutine _pauseRoutine;
+
     private IEnumerator BeginPause()
     {
-        yield return new WaitForSeconds(5.0f);
+        // Grace period before a backgrounded app abandons the match. This was 5s, which — together with the
+        // broken cancel below — kicked players back to the lobby whenever iOS briefly backgrounded the app
+        // (Control Center / screen-recording swipe / a notification). Long enough now that a quick
+        // interruption never drops the match, while a genuinely abandoned app still returns to the menu.
+        yield return new WaitForSeconds(60.0f);
 
+        _pauseRoutine = null;
         if (GameState.HasCurrentGame)
             GameStateController.Instance.UnloadGameMode();
         if (!MenuPageManager.IsCurrentPage(PageType.Login))
@@ -1267,11 +1274,20 @@ public class TouchInput : MonoSingleton<TouchInput>
 #if !UNITY_EDITOR
         if (isPaused)
         {
-            StartCoroutine(BeginPause());
+            // Only arm while actually in a match, and keep the handle so we can truly cancel it on resume.
+            if (_pauseRoutine == null && GameState.HasCurrentGame)
+                _pauseRoutine = StartCoroutine(BeginPause());
         }
         else
         {
-            StopCoroutine("BeginPause");
+            // BUG FIX: the old code called StopCoroutine("BeginPause") (by string) on a coroutine started by
+            // reference — that does NOT stop it, so resuming never cancelled the pending kick. Stop by the
+            // stored handle so returning from a brief background reliably keeps you in the match.
+            if (_pauseRoutine != null)
+            {
+                StopCoroutine(_pauseRoutine);
+                _pauseRoutine = null;
+            }
         }
 #endif
     }
