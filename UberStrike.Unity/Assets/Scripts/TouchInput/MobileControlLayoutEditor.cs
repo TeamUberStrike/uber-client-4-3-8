@@ -56,26 +56,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
         if (!MobileControlLayout.EditMode)
         {
-            DrawOpenButton();
             return;
         }
 
         DrawEditor();
-    }
-
-    private void DrawOpenButton()
-    {
-        // Entry point: a small button shown during a match. (Can also be opened from Options later.)
-        if (!GameState.HasCurrentGame) return;
-
-        float w = 160, h = 32;
-        Rect r = new Rect((Screen.width - w) * 0.5f, 6, w, h);
-        if (GUI.Button(r, "Edit Controls"))
-        {
-            MobileControlLayout.EditMode = true;
-            _selectedId = null;
-            _dragging = false;
-        }
     }
 
     private void DrawEditor()
