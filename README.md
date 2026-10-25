@@ -59,7 +59,7 @@ One-command device deployment:
 ./build-ios.sh
 ```
 
-1. Exports the iOS player from Unity in batchmode (`IosCommandLineBuilder.Build` in `Assets/Editor/`, same scene list as Build Settings) into `UberStrike.Unity/BuildIos`.
+1. Exports the iOS player from Unity in batchmode via the existing `SceneExporter.BuildiOS` (also available as **File → Build UberStrike → Internal Dev → iOS**; builds the Editor Build Settings scene list) into `UberStrike.Unity/BuildIos`.
 2. Compiles with `xcodebuild` (scheme `Unity-iPhone`, automatic signing, `-allowProvisioningUpdates`).
 3. Installs the `.app` and launches `com.yoxa.uberstrike` on the connected device via `devicectl`.
 

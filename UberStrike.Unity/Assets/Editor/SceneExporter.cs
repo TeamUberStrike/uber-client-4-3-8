@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using Cmune.DataCenter.Common.Entities;
@@ -22,7 +23,7 @@ public class SceneExporter
     public static readonly string OsxStandaloneFolder = Application.dataPath + "/../Latest/OsxStandalone";
     public static readonly string MacAppStoreStandaloneFolder = Application.dataPath + "/../Latest/MacAppStoreStandalone";
     public static readonly string AndroidFolder = Application.dataPath + "/../Latest/Android";
-    public static readonly string IOSBuildFolder = Application.dataPath + "/../iOS/";
+    public static readonly string IOSBuildFolder = Application.dataPath + "/../BuildIos/";
 
     public const string SceneFolder = "Assets/Scenes/";
     public const string SplashScene = "Splash";
@@ -124,31 +125,31 @@ public class SceneExporter
 
     public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, BuildOptions buildOptions = BuildOptions.None)
     {
-        List<string> scenesToBuild = new List<string>();
-
-        if (buildSplashLoader)
-        {
-            scenesToBuild.Add(SceneFolder + SplashSceneMobile + ".unity");
-        }
-
-        scenesToBuild.Add(SceneFolder + MainScene + ".unity");
-        scenesToBuild.Add(SceneFolder + SpaceshipScene + ".unity");
+        string[] scenesToBuild;
 
         if (buildAllMaps)
         {
-            //scenesToBuild.Add(SceneFolder + MapsToExport[1] + ".unity");
-            //scenesToBuild.Add(SceneFolder + MapsToExport[2] + ".unity");
-            scenesToBuild.Add(SceneFolder + MapsToExport[3] + ".unity");
-            scenesToBuild.Add(SceneFolder + MapsToExport[4] + ".unity");
-            scenesToBuild.Add(SceneFolder + MapsToExport[5] + ".unity");
-            scenesToBuild.Add(SceneFolder + MapsToExport[6] + ".unity");
-            scenesToBuild.Add(SceneFolder + MapsToExport[7] + ".unity");
-            scenesToBuild.Add(SceneFolder + MapsToExport[8] + ".unity");
-            scenesToBuild.Add(SceneFolder + MapsToExport[10] + ".unity");
+            // Build exactly the scene list from Editor Build Settings (SplashMobile, Latest and
+            // every Level* scene), matching a Build Settings UI export. The old hardcoded list
+            // omitted SplashMobile and several maps, which broke device builds.
+            scenesToBuild = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
+        }
+        else
+        {
+            List<string> scenes = new List<string>();
+
+            if (buildSplashLoader)
+            {
+                scenes.Add(SceneFolder + SplashSceneMobile + ".unity");
+            }
+
+            scenes.Add(SceneFolder + MainScene + ".unity");
+            scenes.Add(SceneFolder + SpaceshipScene + ".unity");
+            scenesToBuild = scenes.ToArray();
         }
 
         //PrepareiOSBuildFolder(IOSBuildFolder);
-        var buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), IOSBuildFolder, BuildTarget.iOS, buildOptions);
+        var buildResult = BuildPipeline.BuildPlayer(scenesToBuild, IOSBuildFolder, BuildTarget.iOS, buildOptions);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);

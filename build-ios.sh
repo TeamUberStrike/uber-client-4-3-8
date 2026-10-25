@@ -13,7 +13,7 @@
 #   DEVELOPMENT_TEAM Apple team ID for automatic signing (default: S4CNK69FK9)
 #   CONFIGURATION    Xcode build configuration (default: Debug)
 #   SCHEME           Xcode scheme (default: Unity-iPhone)
-#   BUILD_METHOD     Unity -executeMethod entry point (default: IosCommandLineBuilder.Build)
+#   BUILD_METHOD     Unity -executeMethod entry point (default: SceneExporter.BuildiOS)
 #
 # Requirements:
 #   - Unity Editor (2022.3.62f3 or override via UNITY=...) with iOS Build Support
@@ -31,7 +31,7 @@ BUNDLE_ID="${BUNDLE_ID:-com.yoxa.uberstrike}"
 DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM:-S4CNK69FK9}"
 CONFIGURATION="${CONFIGURATION:-Debug}"
 SCHEME="${SCHEME:-Unity-iPhone}"
-BUILD_METHOD="${BUILD_METHOD:-IosCommandLineBuilder.Build}"
+BUILD_METHOD="${BUILD_METHOD:-SceneExporter.BuildiOS}"
 
 # Auto-detect the first connected iPhone/iPad unless DEVICE is set explicitly.
 if [ -z "${DEVICE:-}" ]; then
@@ -63,13 +63,16 @@ fi
     -executeMethod "$BUILD_METHOD" \
     -logFile "$UNITY_LOG"
 
-if grep -q "IosCommandLineBuilder: Xcode project exported" "$UNITY_LOG"; then
-    echo "Unity export OK -> $XCODE_PROJECT"
-else
+if grep -q "BuildPlayer failed" "$UNITY_LOG"; then
     echo "Error: Unity export failed. Tail of $UNITY_LOG:" >&2
     tail -40 "$UNITY_LOG" >&2 || true
     exit 1
 fi
+if [ ! -d "$XCODE_PROJECT" ]; then
+    echo "Error: Unity export did not produce $XCODE_PROJECT" >&2
+    exit 1
+fi
+echo "Unity export OK -> $XCODE_PROJECT"
 
 echo "== [2/3] xcodebuild (automatic signing, team $DEVELOPMENT_TEAM) =="
 xcodebuild \
