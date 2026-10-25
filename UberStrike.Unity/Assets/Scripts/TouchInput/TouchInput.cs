@@ -588,12 +588,23 @@ public class TouchInput : MonoSingleton<TouchInput>
         // if the fire button no longer owns a live finger, the PrimaryFire input must not stay 1.
         if (!IsFiring) return;
 
-        TouchButton fire;
-        if (Buttons == null ||
-            !Buttons.TryGetValue((int)TouchKeyType.PrimaryFire, out fire) ||
-            fire == null || !fire.Enabled || !fire.IsActive)
+        if (UseMultiTouch)
         {
-            ReleasePrimaryFire("fire button no longer active");
+            // D-pad mode: fire is owned by the Shooter's secondary finger (tap-to-fire), NOT the
+            // disabled fire button. Checking the button here released PrimaryFire one frame after
+            // every tap -> the weapon never shot.
+            if (Shooter == null || !Shooter.IsFireFingerLive)
+                ReleasePrimaryFire("shooter fire finger no longer live");
+        }
+        else
+        {
+            TouchButton fire;
+            if (Buttons == null ||
+                !Buttons.TryGetValue((int)TouchKeyType.PrimaryFire, out fire) ||
+                fire == null || !fire.Enabled || !fire.IsActive)
+            {
+                ReleasePrimaryFire("fire button no longer active");
+            }
         }
     }
 
