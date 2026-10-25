@@ -15,6 +15,7 @@ public class TouchWeaponChanger : TouchButton
 
     private UberstrikeItemClass _currWeaponClass;
     private bool _moveLeft = true;
+    private bool _hasWeapon; // authentic 4.3.10.1 guard: no weapon equipped -> don't build/draw the quad
 
     public float WeaponSwitchTime = 0.3f;
     public float SwipeThreshold = 4;
@@ -99,7 +100,11 @@ public class TouchWeaponChanger : TouchButton
             {
                 OnNextWeapon();
             }
-            GenerateNewQuad(WeaponController.Instance.GetCurrentWeapon().Item.ItemClass, false);
+            WeaponSlot currentWeapon = WeaponController.Instance.GetCurrentWeapon();
+            if (currentWeapon != null)
+            {
+                GenerateNewQuad(currentWeapon.Item.ItemClass, false);
+            }
         }
         _touchUsed = true;
     }
@@ -115,7 +120,11 @@ public class TouchWeaponChanger : TouchButton
             {
                 OnPrevWeapon();
             }
-            GenerateNewQuad(WeaponController.Instance.GetCurrentWeapon().Item.ItemClass, true);
+            WeaponSlot currentWeapon = WeaponController.Instance.GetCurrentWeapon();
+            if (currentWeapon != null)
+            {
+                GenerateNewQuad(currentWeapon.Item.ItemClass, true);
+            }
         }
         else if (_touchStartPos.x - pos.x < -SwipeThreshold)
         {
@@ -124,7 +133,11 @@ public class TouchWeaponChanger : TouchButton
             {
                 OnNextWeapon();
             }
-            GenerateNewQuad(WeaponController.Instance.GetCurrentWeapon().Item.ItemClass, false);
+            WeaponSlot currentWeapon = WeaponController.Instance.GetCurrentWeapon();
+            if (currentWeapon != null)
+            {
+                GenerateNewQuad(currentWeapon.Item.ItemClass, false);
+            }
         }
     }
 
@@ -143,9 +156,20 @@ public class TouchWeaponChanger : TouchButton
             _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = Vector2.zero;
             _incomingQuad = null;
         }
-        _quad = new MeshGUIQuad(weapons[(int)WeaponController.Instance.GetCurrentWeapon().Item.ItemClass], TextAnchor.MiddleCenter);
-        _quad.Position = Position;
-        _quad.Scale = new Vector2(LayoutScale, LayoutScale);
+
+        // authentic guard: only build the weapon quad when a weapon is actually equipped.
+        WeaponSlot currentWeapon = WeaponController.Instance.GetCurrentWeapon();
+        if (currentWeapon != null)
+        {
+            _hasWeapon = true;
+            _quad = new MeshGUIQuad(weapons[(int)currentWeapon.Item.ItemClass], TextAnchor.MiddleCenter);
+            _quad.Position = Position;
+            _quad.Scale = new Vector2(LayoutScale, LayoutScale);
+        }
+        else
+        {
+            _hasWeapon = false;
+        }
 
         _startWeaponSwitch = 0;
     }
@@ -154,17 +178,28 @@ public class TouchWeaponChanger : TouchButton
     {
         base.Draw();
 
-        GUI.Label(_leftIconPos, MobileIcons.LeftIcon);
-        GUI.Label(_rightIconPos, MobileIcons.RightIcon);
+        if (_hasWeapon)
+        {
+            GUI.Label(_leftIconPos, MobileIcons.LeftIcon);
+            GUI.Label(_rightIconPos, MobileIcons.RightIcon);
+        }
     }
 
     public void CheckWeaponChanged()
     {
         // did the weapon change external from this control?
-        UberstrikeItemClass weaponClass = WeaponController.Instance.GetCurrentWeapon().Item.ItemClass;
-        if (weaponClass != _currWeaponClass)
+        WeaponSlot currentWeapon = WeaponController.Instance.GetCurrentWeapon();
+        if (currentWeapon != null)
         {
-            GenerateNewQuad(weaponClass);
+            UberstrikeItemClass weaponClass = currentWeapon.Item.ItemClass;
+            if (weaponClass != _currWeaponClass)
+            {
+                GenerateNewQuad(weaponClass);
+            }
+        }
+        else
+        {
+            _hasWeapon = false;
         }
     }
 
@@ -214,11 +249,10 @@ public class TouchWeaponChanger : TouchButton
             _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = Vector2.zero;
             _incomingQuad.Alpha = 1.0f;
 
-            _quad.FreeObject();
+            if (_quad != null) _quad.FreeObject();
             _quad = _incomingQuad;
             _incomingQuad = null;
         }
     }
 
 }
-
