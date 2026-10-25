@@ -5,6 +5,7 @@ using Cmune.Util;
 using UberStrike.Core.Types;
 using UberStrike.Realtime.Common;
 using UnityEngine;
+using DeviceApplication = UnityEngine.Device.Application;
 
 public class TouchInput : MonoSingleton<TouchInput>
 {
@@ -46,6 +47,18 @@ public class TouchInput : MonoSingleton<TouchInput>
     public static bool WishCrouch;
     public static bool IsFiring;
 
+    public static bool IsSupported
+    {
+        get
+        {
+            if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform) return true;
+#if UNITY_EDITOR
+            return MobileMenuScale.ForcePreviewInEditor;
+#else
+            return false;
+#endif
+        }
+    }
 
     public Dictionary<int, TouchButton> Buttons;
     public TouchDPad Dpad;
@@ -90,6 +103,17 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private void Start()
     {
+        if (!IsSupported)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (GetComponent<MobileControlLayoutEditor>() == null)
+            gameObject.AddComponent<MobileControlLayoutEditor>();
+#endif
+
         UseMultiTouch = ApplicationDataManager.ApplicationOptions.UseMultiTouch;
 
         _screenLeftRect = new Rect(0, 0, Screen.width * leftSideRatio, Screen.height);
@@ -222,7 +246,121 @@ public class TouchInput : MonoSingleton<TouchInput>
         _stateMachine.RegisterState((int)TouchState.Scoreboard, new TouchStateScoreboard());
 
         _stateMachine.SetState((int)TouchState.None);
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        // Apply any saved custom on-screen layout (positions/scales) over the default placement.
+        ApplyLayout();
+#endif
     }
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+    #region Customizable Layout
+
+    public class LayoutHandle
+    {
+        public string Id;
+        public string DisplayName;
+        public Rect Boundary;   // GUI-space rect of the control
+        public Texture Icon;    // icon to draw in the editor (may be null)
+        public float Scale;
+    }
+
+    // Maps a stable layout id -> the button it controls. Only round (TouchButtonCircle) buttons
+    // plus the weapon changer are repositionable; the joystick/D-pad/swipe are region-based and
+    // keep their default placement (tracked as a follow-up).
+    private static readonly KeyValuePair<string, TouchKeyType>[] _layoutKeyMap =
+        new KeyValuePair<string, TouchKeyType>[]
+    {
+        new KeyValuePair<string, TouchKeyType>("fire", TouchKeyType.PrimaryFire),
+        new KeyValuePair<string, TouchKeyType>("secondaryFire", TouchKeyType.SecondaryFire),
+        new KeyValuePair<string, TouchKeyType>("multiSecondaryFire", TouchKeyType.MultiSecondaryFire),
+        new KeyValuePair<string, TouchKeyType>("jump", TouchKeyType.Jump),
+        new KeyValuePair<string, TouchKeyType>("crouch", TouchKeyType.Crouch),
+        new KeyValuePair<string, TouchKeyType>("menu", TouchKeyType.Menu),
+        new KeyValuePair<string, TouchKeyType>("chat", TouchKeyType.Chat),
+        new KeyValuePair<string, TouchKeyType>("score", TouchKeyType.Score),
+    };
+
+    private static string DisplayNameFor(string id)
+    {
+        switch (id)
+        {
+            case "fire": return "Fire";
+            case "secondaryFire": return "2nd Fire";
+            case "multiSecondaryFire": return "2nd Fire (multi)";
+            case "jump": return "Jump";
+            case "crouch": return "Crouch";
+            case "menu": return "Menu";
+            case "chat": return "Chat";
+            case "score": return "Scores";
+            case "weaponChanger": return "Weapons";
+            default: return id;
+        }
+    }
+
+    // Re-applies the saved (or default) placement to every customizable control.
+    public void ApplyLayout()
+    {
+        if (Buttons == null) return;
+
+        foreach (var entry in _layoutKeyMap)
+        {
+            TouchButton b;
+            if (!Buttons.TryGetValue((int)entry.Value, out b)) continue;
+            TouchButtonCircle circle = b as TouchButtonCircle;
+            if (circle == null) continue;
+
+            MobileControlLayout.Placement p = MobileControlLayout.GetOrDefault(entry.Key, circle.CenterPosition, circle.LayoutScale);
+            circle.SetLayout(MobileControlLayout.ToPixels(p), p.Scale);
+        }
+
+        if (WeaponChanger != null)
+        {
+            MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", WeaponChanger.Position, 1f);
+            WeaponChanger.Position = MobileControlLayout.ToPixels(wp);
+        }
+    }
+
+    // Snapshot of every editable control for the layout editor (id, current rect, icon, scale).
+    public List<LayoutHandle> GetLayoutHandles()
+    {
+        var list = new List<LayoutHandle>();
+        if (Buttons == null) return list;
+
+        foreach (var entry in _layoutKeyMap)
+        {
+            TouchButton b;
+            if (!Buttons.TryGetValue((int)entry.Value, out b)) continue;
+            TouchButtonCircle circle = b as TouchButtonCircle;
+            if (circle == null) continue;
+
+            list.Add(new LayoutHandle
+            {
+                Id = entry.Key,
+                DisplayName = DisplayNameFor(entry.Key),
+                Boundary = circle.Boundary,
+                Icon = (circle.Content != null) ? circle.Content.image : null,
+                Scale = circle.LayoutScale,
+            });
+        }
+
+        if (WeaponChanger != null)
+        {
+            list.Add(new LayoutHandle
+            {
+                Id = "weaponChanger",
+                DisplayName = DisplayNameFor("weaponChanger"),
+                Boundary = WeaponChanger.Boundary,
+                Icon = null,
+                Scale = 1f,
+            });
+        }
+
+        return list;
+    }
+
+    #endregion
+#endif
 
     void OnIdleTime()
     {

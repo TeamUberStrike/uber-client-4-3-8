@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR || UNITY_IOS || UNITY_ANDROID
+using UnityEngine;
 using System.Collections;
 
 class SplashLoaderMobile : MonoBehaviour
@@ -83,4 +84,5 @@ class SplashLoaderMobile : MonoBehaviour
         }
     }
 }
+#endif
 

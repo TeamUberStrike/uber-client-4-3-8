@@ -4,27 +4,38 @@ using System.Collections;
 
 public class TouchButtonCircle : TouchButton
 {
+    public float LayoutScale = 1f;
+
     private Vector2 _centerPosition;
     public Vector2 CenterPosition
     {
         get { return _centerPosition; }
         set {
-            if (value != _centerPosition)
-            {
-                if (Content != null)
-                {
-                    float halfWidth = Content.image.width / 2;
-
-                    Boundary = new Rect(value.x - halfWidth, value.y - halfWidth, Content.image.width, Content.image.height);
-
-                    halfWidth += 5; // add padding
-
-                    sqrRadius = halfWidth * halfWidth;
-                }
-
-                _centerPosition = value;
-            }
+            _centerPosition = value;
+            RecomputeBoundary();
         }
+    }
+
+    private void RecomputeBoundary()
+    {
+        if (Content != null && Content.image != null)
+        {
+            float w = Content.image.width * LayoutScale;
+            float h = Content.image.height * LayoutScale;
+
+            Boundary = new Rect(_centerPosition.x - w / 2f, _centerPosition.y - h / 2f, w, h);
+
+            float r = w / 2f + 5; // add padding
+            sqrRadius = r * r;
+        }
+    }
+
+    // Sets position (GUI-space center) and scale together; used by the layout editor.
+    public void SetLayout(Vector2 center, float scale)
+    {
+        LayoutScale = Mathf.Max(0.25f, scale);
+        _centerPosition = center;
+        RecomputeBoundary();
     }
 
     public override bool Enabled
@@ -102,9 +113,10 @@ public class TouchButtonCircle : TouchButton
     {
         GUI.color = new Color(1, 1, 1, Mathf.Clamp(TouchController.Instance.GUIAlpha, MinGUIAlpha, 1.0f));
 
-        if (Content != null && Boundary != null)
+        // DrawTexture (not GUI.Label) so the icon scales with the layout-adjustable Boundary.
+        if (Content != null && Content.image != null)
         {
-            GUI.Label(Boundary, Content);
+            GUI.DrawTexture(Boundary, Content.image, ScaleMode.StretchToFill, true);
         }
         else
         {

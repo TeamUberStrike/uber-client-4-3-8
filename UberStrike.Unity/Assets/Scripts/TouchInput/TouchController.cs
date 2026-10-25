@@ -17,6 +17,12 @@ public class TouchController : Singleton<TouchController>
 
     void OnUpdate()
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        // While the layout editor is open it owns the screen: don't process live touch input
+        // (so dragging a button to reposition it doesn't also fire/move).
+        if (MobileControlLayout.EditMode) return;
+#endif
+
         foreach (TouchBaseControl control in _controls)
         {
             if (!control.Enabled) continue;
@@ -31,6 +37,11 @@ public class TouchController : Singleton<TouchController>
 
     void OnGui()
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        // The layout editor draws the customizable controls itself while open.
+        if (MobileControlLayout.EditMode) return;
+#endif
+
         foreach (TouchBaseControl control in _controls)
         {
             if (!control.Enabled) continue;

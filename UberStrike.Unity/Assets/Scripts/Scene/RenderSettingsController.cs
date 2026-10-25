@@ -58,7 +58,9 @@ public class RenderSettingsController : MonoBehaviour
         RenderSettings.fogStartDistance = fogStart;
         RenderSettings.fogEndDistance = fogEnd;
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
         if (LevelCamera.Exists) LevelCamera.Instance.EnableLowPassFilter(false);
+#endif
 
         // Apply the saved pref on scene enter so a match boots into the right state.
         EnableImageEffects();
