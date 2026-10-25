@@ -183,6 +183,11 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         {
             case ChannelType.MacAppStore:
             case ChannelType.WindowsStandalone:
+            case ChannelType.Android:
+            case ChannelType.IPhone:
+            case ChannelType.IPad:
+                // Mobile ships HD map assets too (per the mobile-il2cpp build); request HD
+                // map data so the definitions match the baked scenes (server 4.3.8 rows are HD).
                 mapType = MapType.HighDefinition;
                 break;
         }
