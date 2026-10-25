@@ -47,6 +47,9 @@ public class TouchInput : MonoSingleton<TouchInput>
     public static bool WishCrouch;
     public static bool IsFiring;
 
+    // Diagnostic: log every fire trigger to pinpoint accidental auto-fire in the Editor preview.
+    public static bool LogFireEvents = false;
+
     public static bool IsSupported
     {
         get
@@ -94,6 +97,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         else if (_keyboard != null && _keyboard.active == false)
         {
             _keyboard = null;
+            InGameChatHud.Instance.CancelChat();
 
             // pop state, but use set to force OnEnter
             _stateMachine.SetState(_previousState);
@@ -223,15 +227,17 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         AimHelpText = new MeshGUIText("Drag finger to aim", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(AimHelpText);
-        AimHelpText.Position = new Vector2(Screen.width - 300, Screen.height - 150);
+        AimHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 40);
         AimHelpText.Scale = new Vector2(0.6f, 0.6f);
         AimHelpText.Alpha = 0.0f;
 
         ShootHelpText = new MeshGUIText("Tap the fire button to shoot", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(ShootHelpText);
-        ShootHelpText.Position = new Vector2(Screen.width - 300, Screen.height - 100);
+        ShootHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 + 10);
         ShootHelpText.Scale = new Vector2(0.6f, 0.6f);
         ShootHelpText.Alpha = 0.0f;
+
+        UpdateHelpTexts(UseMultiTouch);
 
         _stateMachine = new StateMachine();
         _stateMachine.RegisterState((int)TouchState.None, new TouchStateNone());
@@ -292,6 +298,21 @@ public class TouchInput : MonoSingleton<TouchInput>
             case "score": return "Scores";
             case "weaponChanger": return "Weapons";
             default: return id;
+        }
+    }
+
+    public void ToggleMovementMode()
+    {
+        OnModeChangePushed();
+        UseMultiTouch = ApplicationDataManager.ApplicationOptions.UseMultiTouch;
+        UpdateHelpTexts(UseMultiTouch);
+        ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
+        ApplyLayout();
+
+        if (_stateMachine != null)
+        {
+            int state = _stateMachine.CurrentStateId;
+            _stateMachine.SetState(state);
         }
     }
 
@@ -435,8 +456,8 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (WeaponController.Instance.GetCurrentWeapon().Item.Configuration.SecondaryAction != WeaponSecondaryAction.None
             && _stateMachine.CurrentStateId == (int)TouchState.Playing)
         {
-            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = !UseMultiTouch;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
         }
         else
         {
@@ -502,9 +523,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         AimHelpText.Draw();
         ShootHelpText.Draw();
 
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING) & ~PlayerStates.GROUNDED) == 0)
-            WishJump = false;
-
         if (_playerMoving || Dpad.Moving)
         {
             TouchController.Instance.GUIAlpha = Mathf.Lerp(TouchController.Instance.GUIAlpha, 0, Time.deltaTime * 4.0f);
@@ -525,12 +543,13 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (UseMultiTouch != ApplicationDataManager.ApplicationOptions.UseMultiTouch)
         {
             UseMultiTouch = ApplicationDataManager.ApplicationOptions.UseMultiTouch;
+            UpdateHelpTexts(UseMultiTouch);
 
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
 
-            // Tap-anywhere-to-fire is retired in both modes (firing is always the on-screen Fire
-            // button). Detach defensively in case an earlier session left the events bound.
+            // Detach tap-anywhere-to-fire defensively; the state re-entry below re-hooks it
+            // when the new mode needs it (D-pad mode).
             Shooter.OnFireStart -= OnFireStart;
             Shooter.OnFireEnd -= OnFireEnd;
 
@@ -538,6 +557,30 @@ public class TouchInput : MonoSingleton<TouchInput>
             int state = _stateMachine.CurrentStateId;
             _stateMachine.SetState(state);
         }
+    }
+
+    private void LateUpdate()
+    {
+        // Safety net for a lost TouchPhase.Ended or a fire button that got disabled while held:
+        // if the fire button no longer owns a live finger, the PrimaryFire input must not stay 1.
+        if (!IsFiring) return;
+
+        TouchButton fire;
+        if (Buttons == null ||
+            !Buttons.TryGetValue((int)TouchKeyType.PrimaryFire, out fire) ||
+            fire == null || !fire.Enabled || !fire.IsActive)
+        {
+            ReleasePrimaryFire("fire button no longer active");
+        }
+    }
+
+    private void ReleasePrimaryFire(string reason)
+    {
+        if (!IsFiring) return;
+
+        IsFiring = false;
+        if (LogFireEvents) Debug.Log("[TouchFireLog] RELEASE PrimaryFire (" + reason + ")");
+        CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 0));
     }
 
     #region Event Responses
@@ -558,6 +601,9 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnLoadoutPushed()
     {
+        if (!GUITools.SaveClickIn(0.6f)) return;
+        GUITools.Clicked();
+
         if (GamePageManager.IsCurrentPage(PageType.None))
         {
             GamePageManager.Instance.LoadPage(PageType.Shop);
@@ -580,17 +626,25 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnFireTouchBegan(Vector2 obj)
     {
-        CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 1));
+        if (LogFireEvents) Debug.Log("[TouchFireLog] FIRE BUTTON pressed at " + obj);
+        if (!IsFiring)
+        {
+            IsFiring = true;
+            CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 1));
+        }
     }
 
     void OnFireTouchEnded(Vector2 obj)
     {
+        if (LogFireEvents) Debug.Log("[TouchFireLog] FIRE BUTTON released at " + obj);
+        IsFiring = false;
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 0));
     }
 
     void OnSecondaryFireTouchBegan(Vector2 obj)
     {
         _toggleSecondaryFire = !_toggleSecondaryFire;
+        if (LogFireEvents) Debug.Log("[TouchFireLog] SECONDARY-FIRE button at " + obj + " toggle=" + _toggleSecondaryFire + " state=" + _stateMachine.CurrentStateId);
 
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.SecondaryFire, _toggleSecondaryFire ? 1 : 0));
 
@@ -609,6 +663,34 @@ public class TouchInput : MonoSingleton<TouchInput>
         IsFiring = false;
     }
 
+    private void UpdateHelpTexts(bool dpadMode)
+    {
+        if (AimHelpText == null || ShootHelpText == null) return;
+
+        if (dpadMode)
+        {
+            AimHelpText.Text = "Touch anywhere to aim";
+            ShootHelpText.Text = "Tap a second finger to shoot";
+        }
+        else
+        {
+            AimHelpText.Text = "Drag finger to aim";
+            ShootHelpText.Text = "Tap the fire button to shoot";
+        }
+    }
+
+    private void UpdateFireMode(bool tapAnywhereFire)
+    {
+        Shooter.OnFireStart -= OnFireStart;
+        Shooter.OnFireEnd -= OnFireEnd;
+
+        if (tapAnywhereFire)
+        {
+            Shooter.OnFireStart += OnFireStart;
+            Shooter.OnFireEnd += OnFireEnd;
+        }
+    }
+
     void OnFireStart()
     {
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 1));
@@ -625,8 +707,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnJumpTouchEnded(Vector2 obj)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) != 0)
-            WishJump = false;
+        WishJump = false;
     }
 
     void OnCrouchPushed(Vector2 obj)
@@ -637,25 +718,26 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnCrouchBegan(Vector2 obj)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
-            WishCrouch = true;
+        WishCrouch = true;
     }
 
     void OnCrouchEnded(Vector2 obj)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
-            WishCrouch = false;
+        WishCrouch = false;
     }
 
     void OnJump(Vector2 pos)
     {
-        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
+        if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) != 0)
         {
-            if (WishCrouch)
-                WishCrouch = false;
-            else
-                WishJump = true;
+            WishJump = true;
+            return;
         }
+
+        if (WishCrouch)
+            WishCrouch = false;
+        else
+            WishJump = true;
     }
 
     void OnMenu()
@@ -681,8 +763,10 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnChatBegan()
     {
-        _keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false);
-        InGameChatHud.Instance.OpenChat();
+        _keyboard = TouchScreenKeyboard.isSupported
+            ? TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false)
+            : null;
+        InGameChatHud.Instance.OpenChat(_keyboard == null);
 
         // need to force push because it doesn't automatically call OnEnter
         _previousState = _stateMachine.CurrentStateId;
@@ -757,7 +841,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             else if (GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Tutorial)
             {
                 TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
-                TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = true;
                 TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
                 TouchInput.Instance.WeaponChanger.Enabled = true;
                 TouchInput.Instance.ConsumableChanger.UpdateConsumablesHeld();
@@ -793,20 +877,23 @@ public class TouchInput : MonoSingleton<TouchInput>
             if (_walkingEnabled && _inputEnabled)
             {
                 // Movement scheme is the only mode difference: D-pad cluster (left) in multi-touch,
-                // floating joystick otherwise. Fire/Jump/Crouch/Secondary stay on the right in both
-                // modes; the D-pad's integrated Jump/Crouch zones are disabled so they do not duplicate.
+                // floating joystick otherwise. The D-pad's integrated Jump/Crouch zones are used in
+                // D-pad mode and the right-side Jump/Crouch circles only in joystick mode, so they
+                // never duplicate. In D-pad mode there is no Fire button (tap anywhere with a second
+                // finger to shoot).
                 bool dpadMode = UseMultiTouch;
                 TouchInput.Instance.Dpad.Enabled = dpadMode;
                 TouchInput.Instance.Joystick.Enabled = !dpadMode;
                 if (dpadMode)
                 {
-                    TouchInput.Instance.Dpad.JumpButton.Enabled = false;
-                    TouchInput.Instance.Dpad.CrouchButton.Enabled = false;
+                    TouchInput.Instance.Dpad.JumpButton.Enabled = true;
+                    TouchInput.Instance.Dpad.CrouchButton.Enabled = true;
                 }
 
-                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
-                TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = true;
-                TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = true;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !dpadMode;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = !dpadMode;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = !dpadMode;
+                TouchInput.Instance.UpdateFireMode(dpadMode);
 
                 WeaponSlot slot = WeaponController.Instance.GetCurrentWeapon();
                 if (slot != null)
@@ -825,6 +912,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
                 TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
                 TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
+                TouchInput.Instance.UpdateFireMode(false);
             }
         }
 
@@ -890,7 +978,14 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         public void OnUpdate()
         {
-            TouchInput.Instance.CheckKeyboardDone();
+            TouchInput ti = TouchInput.Instance;
+            ti.CheckKeyboardDone();
+
+            if (ti._keyboard == null && !InGameChatHud.Instance.CanInput &&
+                ti._stateMachine.CurrentStateId == (int)TouchState.Chatting)
+            {
+                ti._stateMachine.SetState(ti._previousState);
+            }
         }
 
         public void OnGUI()
@@ -910,26 +1005,28 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Shooter.Enabled = true;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
-            // A sniper still needs to jump and crouch while scoped.
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
-            TouchInput.Instance.AimHelpText.IsEnabled = false;
-            TouchInput.Instance.ShootHelpText.IsEnabled = false;
-
-            // Movement scheme is the only mode difference; Fire and the shared Secondary button stay
-            // visible in both modes so scoping a sniper on the D-pad still has a fire button.
+            // Movement scheme is the only mode difference; the shared Secondary button stays visible
+            // in both modes. In D-pad mode there is no Fire button (tap anywhere to shoot). Jump/Crouch
+            // live on the D-pad in D-pad mode and on the right-side circles in joystick mode.
             bool dpadMode = UseMultiTouch;
             TouchInput.Instance.Dpad.Enabled = dpadMode;
             TouchInput.Instance.Joystick.Enabled = !dpadMode;
             if (dpadMode)
             {
-                TouchInput.Instance.Dpad.JumpButton.Enabled = false;
-                TouchInput.Instance.Dpad.CrouchButton.Enabled = false;
+                TouchInput.Instance.Dpad.JumpButton.Enabled = true;
+                TouchInput.Instance.Dpad.CrouchButton.Enabled = true;
             }
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !dpadMode;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
+
+            // A sniper still needs to jump and crouch while scoped.
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = !dpadMode;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = !dpadMode;
+            TouchInput.Instance.UpdateFireMode(dpadMode);
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
+            TouchInput.Instance.AimHelpText.IsEnabled = false;
+            TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
             ZoomInfo zoomInfo = WeaponController.Instance.GetCurrentWeapon().Item.Configuration.ZoomInformation;
             if (zoomInfo.DefaultMultiplier != 1 && zoomInfo.MaxMultiplier != zoomInfo.MinMultiplier)
@@ -968,11 +1065,11 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
             TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
@@ -1008,7 +1105,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = !GlobalUIRibbon.Instance.enabled;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
             TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
@@ -1097,16 +1194,21 @@ public class TouchInput : MonoSingleton<TouchInput>
     #endregion
 
     #region Life Cycle
-#if !UNITY_EDITOR
     private void OnApplicationFocus(bool isFocused)
     {
-
-        if (!isFocused && _keyboard == null)
+        if (!isFocused)
         {
-            OnMenu();
+            ReleasePrimaryFire("application lost focus");
+#if !UNITY_EDITOR
+            if (_keyboard == null)
+            {
+                OnMenu();
+            }
+#endif
         }
     }
 
+#if !UNITY_EDITOR
     private IEnumerator BeginPause()
     {
         yield return new WaitForSeconds(5.0f);
@@ -1116,9 +1218,12 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (!MenuPageManager.IsCurrentPage(PageType.Login))
             MenuPageManager.Instance.LoadPage(PageType.Home);
     }
+#endif
 
     private void OnApplicationPause(bool isPaused)
     {
+        if (isPaused) ReleasePrimaryFire("application paused");
+#if !UNITY_EDITOR
         if (isPaused)
         {
             StartCoroutine(BeginPause());
@@ -1127,8 +1232,8 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             StopCoroutine("BeginPause");
         }
-    }
 #endif
+    }
     #endregion
 
     #region Events
@@ -1145,6 +1250,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private void OnDisable()
     {
+        ReleasePrimaryFire("TouchInput disabled");
         CmuneEventHandler.RemoveListener<OnPlayerDeadEvent>(OnPlayerDead);
         CmuneEventHandler.RemoveListener<OnPlayerRespawnEvent>(OnPlayerRespawned);
         CmuneEventHandler.RemoveListener<OnPlayerPauseEvent>(OnPlayerPaused);
@@ -1183,7 +1289,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private void OnPlayerUnpaused(OnPlayerUnpauseEvent ev)
     {
-        _stateMachine.SetState((int)TouchState.Playing);
+        bool stillDead = GameState.LocalCharacter != null && !GameState.LocalCharacter.IsAlive;
+        _stateMachine.SetState(stillDead ? (int)TouchState.Death : (int)TouchState.Playing);
     }
 
     private void OnModeInitialized(OnModeInitializedEvent ev)

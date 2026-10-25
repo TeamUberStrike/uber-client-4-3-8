@@ -21,13 +21,15 @@ public class TouchController : Singleton<TouchController>
         // While the layout editor is open it owns the screen: don't process live touch input
         // (so dragging a button to reposition it doesn't also fire/move).
         if (MobileControlLayout.EditMode) return;
+
+        if (!GamePageManager.IsCurrentPage(PageType.None)) return;
 #endif
 
         foreach (TouchBaseControl control in _controls)
         {
             if (!control.Enabled) continue;
             control.FirstUpdate();
-            foreach (Touch touch in Input.touches)
+            foreach (Touch touch in TouchSource.Touches)
             {
                 control.UpdateTouches(touch);
             }
@@ -40,6 +42,8 @@ public class TouchController : Singleton<TouchController>
 #if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
         // The layout editor draws the customizable controls itself while open.
         if (MobileControlLayout.EditMode) return;
+
+        if (!GamePageManager.IsCurrentPage(PageType.None)) return;
 #endif
 
         foreach (TouchBaseControl control in _controls)

@@ -242,9 +242,9 @@ public static partial class GUITools
     public static Vector2 BeginScrollView(Rect position, Vector2 scrollPosition, Rect contentRect, bool showHorizontalScrollbar, bool showVerticalScrollbar, GUIStyle hStyle, GUIStyle vStyle, bool allowDrag=true)
     {
 #if UNITY_ANDROID || UNITY_IPHONE || UNITY_EDITOR
-        if (Input.touchCount > 0 && allowDrag && !DragAndDrop.Instance.IsDragging)
+        if (TouchSource.TouchCount > 0 && allowDrag && !DragAndDrop.Instance.IsDragging)
         {
-            foreach (Touch touch in Input.touches)
+            foreach (Touch touch in TouchSource.Touches)
             {
                 if (touch.phase == TouchPhase.Began && touchFingerId == -1)
                 {
@@ -367,9 +367,9 @@ public static partial class GUITools
             showList = false;
         }
 
-        if (Input.touchCount > 0)
+        if (TouchSource.TouchCount > 0)
         {
-            foreach (Touch touch in Input.touches)
+            foreach (Touch touch in TouchSource.Touches)
             {
                 if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) 
                     && !listRect.ContainsTouch(touch.position)

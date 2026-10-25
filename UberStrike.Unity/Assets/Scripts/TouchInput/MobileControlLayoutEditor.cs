@@ -92,6 +92,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
         float barH = 96;
         _toolbarRect = new Rect(0, Screen.height - barH, Screen.width, barH);
 
+        DrawMovementPreview();
+
         // Draw each control + its outline + label.
         foreach (TouchInput.LayoutHandle hd in handles)
         {
@@ -116,6 +118,37 @@ public class MobileControlLayoutEditor : MonoBehaviour
         HandleDrag(handles);
 
         DrawToolbar(handles);
+    }
+
+    private void DrawMovementPreview()
+    {
+        if (!TouchInput.Exists || TouchInput.Instance.Dpad == null) return;
+
+        Matrix4x4 matrix = GUI.matrix;
+
+        if (ApplicationDataManager.ApplicationOptions.UseMultiTouch)
+        {
+            Rect r = TouchInput.Instance.Dpad.DpadBoundary;
+            GUIUtility.RotateAroundPivot(15f, new Vector2(r.x + 155f, r.y + 103f));
+            GUI.color = new Color(1f, 1f, 1f, 0.9f);
+            GUI.DrawTexture(r, MobileIcons.KeyboardDpad, ScaleMode.ScaleToFit, true);
+            GUI.color = Color.white;
+            GUI.matrix = matrix;
+            DrawOutline(r, new Color(1f, 1f, 1f, 0.6f), 1f);
+            GUI.Label(new Rect(r.x - 10, r.yMax + 2, Mathf.Max(r.width + 20, 90), 18), "D-Pad");
+        }
+        else
+        {
+            Rect r = TouchInput.Instance.Joystick.Boundary;
+            Rect icon = new Rect(r.x + 30, r.yMax - 210, 180, 180);
+            GUI.color = new Color(1f, 1f, 1f, 0.25f);
+            GUI.DrawTexture(icon, MobileIcons.JoystickOuter, ScaleMode.ScaleToFit, true);
+            GUI.color = Color.white;
+            DrawOutline(r, new Color(1f, 1f, 1f, 0.4f), 1f);
+            GUI.Label(new Rect(r.x + 10, r.yMax - 24, 160, 18), "Joystick area");
+        }
+
+        GUI.matrix = matrix;
     }
 
     private void HandleDrag(List<TouchInput.LayoutHandle> handles)
@@ -176,6 +209,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
             ? "Drag a control to move it. Tap one to select, then scale below."
             : "Selected: " + DisplayName(handles, _selectedId));
         GUILayout.FlexibleSpace();
+        string modeLabel = ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Switch to Joystick" : "Switch to D-Pad";
+        if (GUILayout.Button(modeLabel, GUILayout.Width(150), GUILayout.Height(30)))
+        {
+            TouchInput.Instance.ToggleMovementMode();
+        }
         if (GUILayout.Button("Reset All", GUILayout.Width(110), GUILayout.Height(30)))
         {
             MobileControlLayout.ResetAll();

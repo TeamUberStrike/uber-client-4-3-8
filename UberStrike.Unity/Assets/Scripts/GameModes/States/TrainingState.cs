@@ -82,7 +82,7 @@ class TrainingState : IState
 
     private void ShowTrainingGameMessages()
     {
-        if (!ApplicationDataManager.IsMobile) {
+        if (!ApplicationDataManager.IsMobile && !TouchInput.IsSupported) {
             EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, string.Empty);
             EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.TrainingTutorialMsg01);
             EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.MessageQuickItemsTry);
@@ -123,7 +123,8 @@ class TrainingState : IState
     private StateMachine _stateMachine;
     private const HudDrawFlags _hudDrawFlag = HudDrawFlags.HealthArmor |
                     HudDrawFlags.Ammo | HudDrawFlags.Weapons | HudDrawFlags.EventStream |
-                    HudDrawFlags.Reticle | HudDrawFlags.XpPoints | HudDrawFlags.StateMsg;
+                    HudDrawFlags.Reticle | HudDrawFlags.XpPoints | HudDrawFlags.StateMsg |
+                    HudDrawFlags.InGameChat;
 
     #endregion
 }

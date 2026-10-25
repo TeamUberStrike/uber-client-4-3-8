@@ -751,7 +751,7 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             {
                 bool ready = IsWeaponReady;
 
-                if (Input.GetMouseButton(0))
+                if (!TouchInput.IsSupported && Input.GetMouseButton(0))
                 {
                     _bufferedTapTime = -1f;
 

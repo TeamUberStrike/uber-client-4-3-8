@@ -107,6 +107,11 @@ public class TouchDPad : TouchBaseControl
         CrouchButton = new TouchButton();
     }
 
+    public Rect DpadBoundary
+    {
+        get { return _dpadRect; }
+    }
+
     // does the touch fall within any of the four buttons
     public bool InsideBoundary(Vector2 position)
     {
@@ -185,7 +190,7 @@ public class TouchDPad : TouchBaseControl
             foreach (int id in _fingers.Keys)
             {
                 bool live = false;
-                foreach (Touch t in Input.touches)
+                foreach (Touch t in TouchSource.Touches)
                 {
                     if (t.fingerId == id && t.phase != TouchPhase.Ended && t.phase != TouchPhase.Canceled)
                     {
@@ -225,7 +230,14 @@ public class TouchDPad : TouchBaseControl
         if (leftTouched || rightTouched || forwardTouched || backwardTouched) Moving = true;
         else Moving = false;
 
-        // Don't stop the player immediately, keep a bit of intertia for tap jumping
+        if (!Moving)
+        {
+            _lastDirection = Vector2.zero;
+            Direction = Vector2.zero;
+            return;
+        }
+
+        // Keep a bit of inertia only while actively steering (smooth axis changes).
         if (dir.y == 0)
             dir.y = Mathf.Lerp(_lastDirection.y, dir.y, Time.deltaTime * MoveInteriaRolloff.y);
 

@@ -138,7 +138,7 @@ public class TouchControl : TouchBaseControl
 
     private static bool IsFingerLive(int fingerId)
     {
-        foreach (Touch t in Input.touches)
+        foreach (Touch t in TouchSource.Touches)
         {
             if (t.fingerId == fingerId) return true;
         }

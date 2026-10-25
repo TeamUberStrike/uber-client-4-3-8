@@ -40,6 +40,11 @@ class SceneGuiController : MonoBehaviour
             CameraRectController.Instance.Width = (Screen.width - _rect.width + _offset) / Screen.width;
         });
 
+        for (int i = 0; i < _guiPages.Length; i++)
+        {
+            _guiPages[i].IsOnGUIEnabled = false;
+        }
+
         _guiPageTabs = new GUIContent[_guiPages.Length];
         for (int i = 0; i < _guiPages.Length; i++)
         {
@@ -106,6 +111,17 @@ class SceneGuiController : MonoBehaviour
         _rect.x = MobileMenuScale.VirtualWidth - _rect.width + _offset;
 
         GUI.skin = BlueStonez.Skin;
+
+        for (int i = 0; i < _guiPages.Length; i++)
+        {
+            _guiPages[i].IsOnGUIEnabled = false;
+        }
+
+        if (GUITools.Button(new Rect(_rect.x - 44, _rect.y + 4, 40, 40), new GUIContent("X"), BlueStonez.buttondark_medium))
+        {
+            SlideOut();
+        }
+
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
             string title = _hideTitleWhenAlive && GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive ? string.Empty : _title;
@@ -165,7 +181,10 @@ class SceneGuiController : MonoBehaviour
         for (int i = 0; i < _guiPages.Length; i++)
         {
             _guiPages[i].IsOnGUIEnabled = false;
-            _guiPages[i].enabled = false;
+            if (i != index)
+            {
+                _guiPages[i].enabled = false;
+            }
         }
         if (index >= 0 && index < _guiPages.Length)
         {

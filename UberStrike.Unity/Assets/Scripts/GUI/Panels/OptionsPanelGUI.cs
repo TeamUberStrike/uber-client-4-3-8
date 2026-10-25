@@ -609,7 +609,8 @@ public class OptionsPanelGUI : PanelGuiBase
         GUI.enabled = _targetMap == null;
 
         GUI.skin = BlueStonez.Skin;
-#if !UNITY_ANDROID && !UNITY_IPHONE
+        if (!TouchInput.IsSupported)
+        {
         _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, 210 + _keyCount * 21)); //720 + 15));
         {
             DrawGroupControl(new Rect(GroupMarginX, 20, _rect.width - 65, 65), LocalizedStrings.Mouse, BlueStonez.label_group_interparkbold_18pt);
@@ -661,7 +662,9 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.EndGroup();
         }
         GUITools.EndScrollView();
-#else
+        }
+        else
+        {
         _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, 100));
         {
             GUI.BeginGroup(new Rect(8, 20, _rect.width - 65, 95), string.Empty, BlueStonez.group_grey81);
@@ -704,7 +707,7 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.Label(new Rect(8 + 18, 20 - 8, GetWidth(LocalizedStrings.TouchInput), 16), LocalizedStrings.TouchInput, BlueStonez.label_group_interparkbold_18pt);
         }
         GUITools.EndScrollView();
-#endif
+        }
         GUITools.PopGUIState();
     }
 

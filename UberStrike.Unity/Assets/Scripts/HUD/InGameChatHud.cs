@@ -17,8 +17,20 @@ public class InGameChatHud : Singleton<InGameChatHud>
         get { return _canInput; }
     }
 
-    public void OpenChat()
+    public void OpenChat(bool showHudInput)
     {
+        if (showHudInput)
+            _canInput = true;
+
+        BeginChat();
+    }
+
+    public void CancelChat()
+    {
+        _canInput = false;
+        _inputContent = string.Empty;
+        GUIUtility.keyboardControl = 0;
+        EndChat();
     }
 
     public void PushMessage(string input)
