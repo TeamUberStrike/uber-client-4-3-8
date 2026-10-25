@@ -248,10 +248,12 @@ public static partial class GUITools
             {
                 if (touch.phase == TouchPhase.Began && touchFingerId == -1)
                 {
-                    // convert from touch to GUI coordinates (flip y)
-                    Vector2 invertedTouchPos = new Vector2(touch.position.x, Screen.height - touch.position.y);
-                    // did we hit this GUI ScrollView?
-                    if (position.Contains(GUIUtility.ScreenToGUIPoint(invertedTouchPos)))
+                    // Convert the scroll view rect (group-local, possibly scaled GUI space) to actual
+                    // screen pixels, then hit-test the raw touch position against it.
+                    Vector2 guiTopLeft = GUIUtility.GUIToScreenPoint(new Vector2(position.x, position.y));
+                    Rect screenRect = new Rect(guiTopLeft.x, Screen.height - guiTopLeft.y - position.height, position.width, position.height);
+
+                    if (screenRect.Contains(touch.position))
                     {
                         touchFingerId = touch.fingerId;
                         scrollVelocity = Vector2.zero;

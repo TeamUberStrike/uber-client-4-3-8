@@ -21,6 +21,29 @@ class SceneGuiController : MonoBehaviour
             }
             _guiPages = keep.ToArray();
         }
+        else
+        {
+            // Join screen: only the join page (+ chat); no Loadout & Shop tab.
+            bool isJoinScreen = false;
+            for (int i = 0; i < _guiPages.Length; i++)
+            {
+                if (_guiPages[i] is PregameLoadoutPageGUI)
+                {
+                    isJoinScreen = true;
+                    break;
+                }
+            }
+            if (isJoinScreen)
+            {
+                var keep = new System.Collections.Generic.List<PageGUI>();
+                foreach (PageGUI p in _guiPages)
+                {
+                    if (p is ShopPageGUI) p.enabled = false;
+                    else keep.Add(p);
+                }
+                _guiPages = keep.ToArray();
+            }
+        }
         if (_includeInGameChat)
         {
             GameObject chatObject = new GameObject("InGameChat");
@@ -96,6 +119,19 @@ class SceneGuiController : MonoBehaviour
         {
             _closing = false;
             GamePageManager.Instance.UnloadCurrentPage();
+
+            if (GameState.HasCurrentGame &&
+                GameStateController.Instance.StateMachine.CurrentStateId == (int)GameStateId.PregameLoadout)
+            {
+                GamePageManager.Instance.LoadPage(PageType.PreGame);
+            }
+
+            System.Action onClosed = _onClosed;
+            _onClosed = null;
+            if (onClosed != null)
+            {
+                onClosed();
+            }
         }
     }
 
@@ -115,11 +151,6 @@ class SceneGuiController : MonoBehaviour
         for (int i = 0; i < _guiPages.Length; i++)
         {
             _guiPages[i].IsOnGUIEnabled = false;
-        }
-
-        if (GUITools.Button(new Rect(_rect.x - 44, _rect.y + 4, 40, 40), new GUIContent("X"), BlueStonez.buttondark_medium))
-        {
-            SlideOut();
         }
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
@@ -175,6 +206,18 @@ class SceneGuiController : MonoBehaviour
         _guiPageAnim.AnimTo(_rect.width, 0.3f, EaseType.Out);
     }
 
+    public static bool ClosePanel(System.Action onClosed)
+    {
+        SceneGuiController panel = _open ? _open : _deathShop;
+        if (panel != null && panel.isActiveAndEnabled && !GamePageManager.IsCurrentPage(PageType.None))
+        {
+            panel._onClosed = onClosed;
+            panel.SlideOut();
+            return true;
+        }
+        return false;
+    }
+
     private void SetCurrentPage(int index)
     {
         if (_currentGuiPageIndex == index) return;
@@ -214,5 +257,6 @@ class SceneGuiController : MonoBehaviour
     private GUIContent[] _guiPageTabs;
     private float _offset;
     private int _currentGuiPageIndex = -1;
+    private System.Action _onClosed;
     private FloatAnim _guiPageAnim;
 }

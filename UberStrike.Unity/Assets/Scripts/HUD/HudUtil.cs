@@ -104,15 +104,25 @@ class HudUtil : Singleton<HudUtil>
 
     private void OnRespawnButtonClicked()
     {
-        GamePageManager.Instance.UnloadCurrentPage();
-        GameState.LocalPlayer.UnPausePlayer();
-        GameState.CurrentGame.RespawnPlayer();
+        if (!SceneGuiController.ClosePanel(() =>
+        {
+            GameState.LocalPlayer.UnPausePlayer();
+            GameState.CurrentGame.RespawnPlayer();
+        }))
+        {
+            GamePageManager.Instance.UnloadCurrentPage();
+            GameState.LocalPlayer.UnPausePlayer();
+            GameState.CurrentGame.RespawnPlayer();
+        }
     }
 
     private void OnContinueButtonClicked()
     {
-        GamePageManager.Instance.UnloadCurrentPage();
-        GameState.LocalPlayer.UnPausePlayer();
+        if (!SceneGuiController.ClosePanel(() => GameState.LocalPlayer.UnPausePlayer()))
+        {
+            GamePageManager.Instance.UnloadCurrentPage();
+            GameState.LocalPlayer.UnPausePlayer();
+        }
     }
 
     private void CleanAllTemporaryHud()

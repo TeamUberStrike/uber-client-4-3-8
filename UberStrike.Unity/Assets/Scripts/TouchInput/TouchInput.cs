@@ -502,6 +502,25 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
         _stateMachine.Update();
 
+        if (GameState.HasCurrentGame)
+        {
+            bool showLoadout = !GamePageManager.IsCurrentPage(PageType.PreGame) &&
+                _stateMachine.CurrentStateId == (int)TouchState.Death;
+            Buttons[(int)TouchKeyType.Loadout].Enabled = showLoadout;
+        }
+
+        _loadoutDebugTimer -= Time.deltaTime;
+        if (_loadoutDebugTimer <= 0 && GameState.HasCurrentGame)
+        {
+            _loadoutDebugTimer = 1f;
+            Debug.Log("[TouchDebug] touchState=" + _stateMachine.CurrentStateId +
+                " gameState=" + GameStateController.Instance.StateMachine.CurrentStateId +
+                " isPaused=" + GameState.LocalPlayer.IsGamePaused +
+                " isDead=" + GameState.LocalPlayer.IsDead +
+                " loadoutEnabled=" + Buttons[(int)TouchKeyType.Loadout].Enabled +
+                " preGamePage=" + GamePageManager.IsCurrentPage(PageType.PreGame));
+        }
+
         if (!GameState.HasCurrentGame)
         {
             if (_stateMachine.CurrentStateId != (int)TouchState.None)
@@ -610,7 +629,10 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
         else
         {
-            GamePageManager.Instance.UnloadCurrentPage();
+            if (!SceneGuiController.ClosePanel(null))
+            {
+                GamePageManager.Instance.UnloadCurrentPage();
+            }
         }
     }
 
@@ -742,6 +764,25 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnMenu()
     {
+        if (!GamePageManager.IsCurrentPage(PageType.None))
+        {
+            if (!SceneGuiController.ClosePanel(() =>
+            {
+                if (GameState.LocalPlayer.IsGamePaused) GameState.LocalPlayer.UnPausePlayer();
+            }))
+            {
+                GamePageManager.Instance.UnloadCurrentPage();
+                GameState.LocalPlayer.UnPausePlayer();
+            }
+            return;
+        }
+
+        if (GameState.HasCurrentGame && GameState.LocalPlayer.IsGamePaused)
+        {
+            GameState.LocalPlayer.UnPausePlayer();
+            return;
+        }
+
         _stateMachine.PushState((int)TouchState.Paused);
 
         if (GameState.HasCurrentGame && !GameState.LocalPlayer.IsGamePaused) GameState.LocalPlayer.Pause();
@@ -1064,12 +1105,12 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
             TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
@@ -1332,6 +1373,7 @@ public class TouchInput : MonoSingleton<TouchInput>
     private UberstrikeItemClass _currWeapon;
 
     private TouchScreenKeyboard _keyboard;
+    private float _loadoutDebugTimer;
 
     private StateMachine _stateMachine;
 
