@@ -177,6 +177,28 @@ public class TouchDPad : TouchBaseControl
 
     public override void FinalUpdate()
     {
+        // Device input does not reliably deliver TouchPhase.Ended. Reconcile _fingers against
+        // the live touch list so a released finger cannot keep asserting movement forever.
+        if (_fingers.Count > 0)
+        {
+            _staleIds.Clear();
+            foreach (int id in _fingers.Keys)
+            {
+                bool live = false;
+                foreach (Touch t in Input.touches)
+                {
+                    if (t.fingerId == id && t.phase != TouchPhase.Ended && t.phase != TouchPhase.Canceled)
+                    {
+                        live = true;
+                        break;
+                    }
+                }
+                if (!live) _staleIds.Add(id);
+            }
+            for (int i = 0; i < _staleIds.Count; i++)
+                _fingers.Remove(_staleIds[i]);
+        }
+
         bool leftTouched = false;
         bool rightTouched = false;
         bool forwardTouched = false;
@@ -234,6 +256,7 @@ public class TouchDPad : TouchBaseControl
     private Rect _backwardRect;
     private Rect _dpadRect;
     private Dictionary<int, TouchFinger> _fingers;
+    private readonly List<int> _staleIds = new List<int>();
 
     private Vector2 _lastDirection;
 

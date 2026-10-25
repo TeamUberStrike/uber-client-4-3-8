@@ -215,11 +215,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         Shooter = new TouchShooter();
         Shooter.Boundary = new Rect(0, 0, Screen.width, Screen.height);
-        if (UseMultiTouch)
-        {
-            Shooter.OnFireStart += OnFireStart;
-            Shooter.OnFireEnd += OnFireEnd;
-        }
+        // Tap-anywhere-to-fire is intentionally not hooked: firing is always the on-screen Fire
+        // button in both joystick and D-pad modes.
         Shooter.IgnoreRect(WeaponChanger.Boundary);
         Shooter.IgnoreRect(Joystick.Boundary); // includes dpad boundary
         Shooter.IgnoreRect(new Rect(0, menu.Boundary.y, score.Boundary.width, score.Boundary.yMax - menu.Boundary.y));
@@ -230,7 +227,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         AimHelpText.Scale = new Vector2(0.6f, 0.6f);
         AimHelpText.Alpha = 0.0f;
 
-        ShootHelpText = new MeshGUIText("Tap second finger to shoot", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
+        ShootHelpText = new MeshGUIText("Tap the fire button to shoot", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(ShootHelpText);
         ShootHelpText.Position = new Vector2(Screen.width - 300, Screen.height - 100);
         ShootHelpText.Scale = new Vector2(0.6f, 0.6f);
@@ -318,6 +315,21 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", WeaponChanger.Position, 1f);
             WeaponChanger.Position = MobileControlLayout.ToPixels(wp);
+        }
+
+        // Keep the look/aim area clear of the action buttons: a touch that starts on fire/jump/
+        // crouch/secondary must not also become the aim or second-finger-fire finger.
+        if (Shooter != null && Buttons != null)
+        {
+            var btnRects = new List<Rect>();
+            TouchKeyType[] actionKeys = { TouchKeyType.PrimaryFire, TouchKeyType.SecondaryFire, TouchKeyType.MultiSecondaryFire, TouchKeyType.Jump, TouchKeyType.Crouch };
+            foreach (TouchKeyType k in actionKeys)
+            {
+                TouchButton b;
+                if (Buttons.TryGetValue((int)k, out b) && b != null)
+                    btnRects.Add(b.Boundary);
+            }
+            Shooter.SetButtonIgnores(btnRects.ToArray());
         }
     }
 
@@ -517,17 +529,10 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
 
-            // unhook extra functions of right finger if in single fire mode
-            if (UseMultiTouch)
-            {
-                Shooter.OnFireStart += OnFireStart;
-                Shooter.OnFireEnd += OnFireEnd;
-            }
-            else
-            {
-                Shooter.OnFireStart -= OnFireStart;
-                Shooter.OnFireEnd -= OnFireEnd;
-            }
+            // Tap-anywhere-to-fire is retired in both modes (firing is always the on-screen Fire
+            // button). Detach defensively in case an earlier session left the events bound.
+            Shooter.OnFireStart -= OnFireStart;
+            Shooter.OnFireEnd -= OnFireEnd;
 
             // force state update
             int state = _stateMachine.CurrentStateId;
@@ -787,37 +792,28 @@ public class TouchInput : MonoSingleton<TouchInput>
             _inputEnabled = InputManager.Instance.IsInputEnabled;
             if (_walkingEnabled && _inputEnabled)
             {
-                if (UseMultiTouch)
+                // Movement scheme is the only mode difference: D-pad cluster (left) in multi-touch,
+                // floating joystick otherwise. Fire/Jump/Crouch/Secondary stay on the right in both
+                // modes; the D-pad's integrated Jump/Crouch zones are disabled so they do not duplicate.
+                bool dpadMode = UseMultiTouch;
+                TouchInput.Instance.Dpad.Enabled = dpadMode;
+                TouchInput.Instance.Joystick.Enabled = !dpadMode;
+                if (dpadMode)
                 {
-                    TouchInput.Instance.Dpad.Enabled = true;
-
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
-                    TouchInput.Instance.Joystick.Enabled = false;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
+                    TouchInput.Instance.Dpad.JumpButton.Enabled = false;
+                    TouchInput.Instance.Dpad.CrouchButton.Enabled = false;
                 }
-                else
-                {
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
 
-                    TouchInput.Instance.Joystick.Enabled = true;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = true;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = true;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = true;
+                TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = true;
 
-                    TouchInput.Instance.Dpad.Enabled = false;
-                }
                 WeaponSlot slot = WeaponController.Instance.GetCurrentWeapon();
                 if (slot != null)
                 {
-                    if (UseMultiTouch)
-                    {
-                        TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
-                    }
-                    else
-                    {
-                        TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
-
-                    }
+                    // One shared Secondary-fire button in both modes; the multi-touch-only variant is retired.
+                    TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
+                    TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
                 }
             }
             else
@@ -914,29 +910,26 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Shooter.Enabled = true;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
+            // A sniper still needs to jump and crouch while scoped.
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
-            if (UseMultiTouch)
+            // Movement scheme is the only mode difference; Fire and the shared Secondary button stay
+            // visible in both modes so scoping a sniper on the D-pad still has a fire button.
+            bool dpadMode = UseMultiTouch;
+            TouchInput.Instance.Dpad.Enabled = dpadMode;
+            TouchInput.Instance.Joystick.Enabled = !dpadMode;
+            if (dpadMode)
             {
-                TouchInput.Instance.Dpad.Enabled = true;
-
-                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
-                TouchInput.Instance.Joystick.Enabled = false;
+                TouchInput.Instance.Dpad.JumpButton.Enabled = false;
+                TouchInput.Instance.Dpad.CrouchButton.Enabled = false;
             }
-            else
-            {
-                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
-                TouchInput.Instance.Joystick.Enabled = true;
-
-                TouchInput.Instance.Dpad.Enabled = false;
-
-            }
-            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = !UseMultiTouch;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
 
             ZoomInfo zoomInfo = WeaponController.Instance.GetCurrentWeapon().Item.Configuration.ZoomInformation;
             if (zoomInfo.DefaultMultiplier != 1 && zoomInfo.MaxMultiplier != zoomInfo.MinMultiplier)

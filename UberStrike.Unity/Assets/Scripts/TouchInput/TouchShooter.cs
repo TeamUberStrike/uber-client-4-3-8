@@ -24,11 +24,13 @@ public class TouchShooter : TouchBaseControl
             if (value != enabled)
             {
                 enabled = value;
-                if (!enabled)
-                {
-                    _primaryFinger = new TouchFinger();
-                    _secondaryFinger = new TouchFinger();
-                }
+                // Clear fingers AND the stale Aim on every enable/disable transition. A finger held
+                // through death -> respawn never re-binds as the primary (its Began already passed
+                // while the Shooter was disabled), so a leftover non-zero Aim would keep feeding
+                // WishLook and rotate the POV with no input.
+                _primaryFinger = new TouchFinger();
+                _secondaryFinger = new TouchFinger();
+                Aim = Vector2.zero;
             }
         }
     }
@@ -102,10 +104,51 @@ public class TouchShooter : TouchBaseControl
         }
     }
 
+    public override void FinalUpdate()
+    {
+        // iOS does not always deliver TouchPhase.Ended. If it is dropped for the AIM finger,
+        // _primaryFinger stays bound to a finger that is gone, and the next finger binds as the
+        // SECONDARY (fire) finger instead of the primary, so the POV stops moving. Prune any
+        // finger that has left the live touch set so a fresh finger can re-bind as primary.
+        if (_primaryFinger.FingerId != -1 && !IsFingerLive(_primaryFinger.FingerId))
+        {
+            _primaryFinger.Reset();
+            Aim = Vector2.zero;
+        }
+        if (_secondaryFinger.FingerId != -1 && !IsFingerLive(_secondaryFinger.FingerId))
+        {
+            _secondaryFinger.Reset();
+            if (OnFireEnd != null) OnFireEnd();
+        }
+    }
+
+    private static bool IsFingerLive(int fingerId)
+    {
+        foreach (Touch t in Input.touches)
+        {
+            if (t.fingerId == fingerId) return true;
+        }
+        return false;
+    }
+
     public void IgnoreRect(Rect r)
     {
         if (!_ignoreTouches.Contains(r))
             _ignoreTouches.Add(r);
+    }
+
+    // Replaceable action-button zones (fire/jump/crouch/secondary). A touch that starts on a
+    // button must not also bind as the look/aim or second-finger-fire finger.
+    public void SetButtonIgnores(Rect[] rects)
+    {
+        foreach (Rect r in _buttonIgnores) _ignoreTouches.Remove(r);
+        _buttonIgnores.Clear();
+        if (rects == null) return;
+        foreach (Rect r in rects)
+        {
+            _buttonIgnores.Add(r);
+            if (!_ignoreTouches.Contains(r)) _ignoreTouches.Add(r);
+        }
     }
 
     private bool ValidArea(Vector2 pos)
@@ -128,6 +171,7 @@ public class TouchShooter : TouchBaseControl
     private Vector2 _lastFirePosition = Vector2.zero;
 
     private ArrayList _ignoreTouches;
+    private readonly ArrayList _buttonIgnores = new ArrayList();
 
     #endregion
 }
