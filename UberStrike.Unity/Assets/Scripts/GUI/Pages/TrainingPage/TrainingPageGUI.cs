@@ -25,7 +25,7 @@ public class TrainingPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(1.3f);
 
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;

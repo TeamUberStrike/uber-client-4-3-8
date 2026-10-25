@@ -70,6 +70,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
             UpdatePinchScale();
+            UpdateTouchDrag();
 #if UNITY_EDITOR
             // Mouse scroll wheel resizes the selected control (quick debugging).
             float scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -85,6 +86,59 @@ public class MobileControlLayoutEditor : MonoBehaviour
         else if (_pinchActive)
         {
             _pinchActive = false;
+        }
+    }
+
+    // Raw-touch selection + drag fallback. On iOS the IMGUI mouse synthesis from touches is not
+    // reliable for this editor (HandleDrag's MouseDown never fired -> buttons couldn't be selected
+    // or moved, and everything else is gated while EditMode is on -> total lockup). Touch.position
+    // is bottom-left origin; the layout boundaries are top-left (GUI) space, so flip Y.
+    private void UpdateTouchDrag()
+    {
+        Touch[] touches = TouchSource.Touches;
+        if (touches.Length != 1 || _pinchActive) return; // pinch path owns two-finger input
+
+        Touch t = touches[0];
+        Vector2 pos = new Vector2(t.position.x, Screen.height - t.position.y);
+
+        switch (t.phase)
+        {
+            case TouchPhase.Began:
+                if (_toolbarRect.Contains(pos)) return;
+                {
+                    List<TouchInput.LayoutHandle> handles = TouchInput.Exists
+                        ? TouchInput.Instance.GetLayoutHandles()
+                        : null;
+                    if (handles == null) return;
+                    for (int i = handles.Count - 1; i >= 0; i--)
+                    {
+                        if (handles[i].Boundary.Contains(pos))
+                        {
+                            _selectedId = handles[i].Id;
+                            _dragging = true;
+                            _dragOffset = pos - handles[i].Boundary.center;
+                            return;
+                        }
+                    }
+                }
+                break;
+
+            case TouchPhase.Moved:
+                if (_dragging && !string.IsNullOrEmpty(_selectedId) && TouchInput.Exists)
+                {
+                    Vector2 center = pos - _dragOffset;
+                    center.x = Mathf.Clamp(center.x, 24f, Screen.width - 24f);
+                    center.y = Mathf.Clamp(center.y, _toolbarRect.height + 24f, Screen.height - 24f);
+                    float scale = GetScale(TouchInput.Instance.GetLayoutHandles(), _selectedId);
+                    MobileControlLayout.SetPixels(_selectedId, center, scale);
+                    TouchInput.Instance.ApplyLayout();
+                }
+                break;
+
+            case TouchPhase.Ended:
+            case TouchPhase.Canceled:
+                _dragging = false;
+                break;
         }
     }
 
@@ -137,8 +191,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
         List<TouchInput.LayoutHandle> handles = TouchInput.Instance.GetLayoutHandles();
 
         // Reserve a top toolbar (next to the ribbon's PROFILE / CHAT tabs); drags that start here
-        // are ignored (let buttons/slider work).
-        float barH = 96;
+        // are ignored (let buttons/slider work). The toolbar buttons are drawn in MobileMenuScale
+        // space, so the exclusion zone must be their RAW pixel footprint, not a fixed 96px.
+        float barH = (2f + 34f + 8f) * MobileMenuScale.Scale;
         _toolbarRect = new Rect(0, 0, Screen.width, barH);
 
         DrawMovementPreview();
@@ -229,7 +284,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
                 {
                     Vector2 center = mouse - _dragOffset;
                     center.x = Mathf.Clamp(center.x, 0, Screen.width);
-                    center.y = Mathf.Clamp(center.y, 96, Screen.height);
+                    center.y = Mathf.Clamp(center.y, _toolbarRect.height + 24f, Screen.height);
                     float scale = GetScale(handles, _selectedId);
                     MobileControlLayout.SetPixels(_selectedId, center, scale);
                     TouchInput.Instance.ApplyLayout();
