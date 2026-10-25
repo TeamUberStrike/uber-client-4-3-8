@@ -53,7 +53,7 @@ static class TeamGameModeUtil
     public static void DetectTeamChange(TeamDeathMatchGameMode gameMode)
     {
         if (!(KeyInput.AltPressed && KeyInput.CtrlPressed) && gameMode.IsGameStarted
-            && !InGameChatHud.Instance.CanInput && !ChatPageGUI.IsChatActive && !PanelManager.Instance.IsPanelOpen(PanelType.Options)
+            && !InGameChatPageGUI.IsOpen && !InGameChatHud.Instance.CanInput && !ChatPageGUI.IsChatActive && !PanelManager.Instance.IsPanelOpen(PanelType.Options)
             && InputManager.Instance.RawValue(GameInputKey.ChangeTeam) > 0 && GUITools.SaveClickIn(1))
         {
             GUITools.Clicked();

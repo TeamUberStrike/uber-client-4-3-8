@@ -208,7 +208,13 @@ public class WeaponFeedbackManager : MonoSingleton<WeaponFeedbackManager>
         {
             //but only if the weapons are actually different
             if (_pickupWeaponState.Weapon != weapon)
+            {
+                // hide old gun now, else it ghosts over new one
+                BaseWeaponDecorator prevDecorator = _pickupWeaponState.Decorator;
                 PutDownWeapon(_pickupWeaponState.Weapon, _pickupWeaponState.Decorator);
+                if ((bool)prevDecorator)
+                    prevDecorator.IsEnabled = false;
+            }
             else
                 return;
         }

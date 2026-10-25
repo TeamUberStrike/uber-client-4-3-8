@@ -16,6 +16,7 @@ public class CharacterMoveController
     public const float PLAYER_ZOOM_SCALE = 0.7f;
     public const float PLAYER_MIN_SCALE = 0.5f;
     public const float PLAYER_IRON_SIGHT = 1;
+    public const float MAX_HORIZONTAL_SPEED = 22.8f;
     public bool IsLowGravity = false;
 
     public event Action<float> CharacterLanded;
@@ -42,6 +43,7 @@ public class CharacterMoveController
     private ForceType _forceType = ForceType.Additive;
     private Vector3 _externalForce;
     private bool _hasExternalForce;
+    private float _externalForceTime;
 
     #endregion
 
@@ -195,6 +197,7 @@ public class CharacterMoveController
         _hasExternalForce = true;
         _externalForce = v;
         _forceType = type;
+        _externalForceTime = Time.realtimeSinceStartup + 4;
     }
 
     public void ClearForce()
@@ -347,6 +350,12 @@ public class CharacterMoveController
         //check collision
         bool isGrounded = (_collisionFlag & CollisionFlags.CollidedBelow) != 0;
 
+        if (isGrounded)
+            _externalForceTime = 0;
+
+        if (_externalForceTime < Time.realtimeSinceStartup)
+            _currentVelocity = Vector3.Lerp(_currentVelocity, ClampHorizontally(_currentVelocity, MAX_HORIZONTAL_SPEED), Time.fixedDeltaTime * 3);
+
         //SET GROUNDED FLAG
         if (isGrounded)
         {
@@ -380,6 +389,15 @@ public class CharacterMoveController
 
         GameState.LocalCharacter.Set(PlayerStates.GROUNDED, IsGrounded);
         GameState.LocalCharacter.Position = _controller.transform.position;
+    }
+
+    private static Vector3 ClampHorizontally(Vector3 v, float max)
+    {
+        float y = v.y;
+        v.y = 0;
+        v = v.normalized * Mathf.Clamp(v.magnitude, 0, max);
+        v.y = y;
+        return v;
     }
 
     private void OnInputChanged(InputChangeEvent ev)
@@ -553,7 +571,6 @@ public class CharacterMoveController
         {
             _canJump = false;
 
-            GameState.LocalCharacter.Set(PlayerStates.GROUNDED, false);
             GameState.LocalCharacter.Set(PlayerStates.JUMPING, true);
 
             _currentVelocity.y = _attributes.JumpForce;

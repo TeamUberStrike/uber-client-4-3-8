@@ -18,12 +18,12 @@ public class OptionsPanelGUI : PanelGuiBase
 
     int _currentQuality = 0;
     float _targetFrameRate = -1;
+    bool _limitFrameRate = false;
     float _textureQuality = 0;
     float _queuedFrames = 0;
     int _vsync = 0;
     int _antiAliasing = 0;
     int _waterQuality = 0;
-    float _fov = 75f;
 
     private Rect _rect;
 
@@ -258,7 +258,8 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         _currentQuality = QualitySettings.GetQualityLevel();
 
-        _targetFrameRate = Application.targetFrameRate;
+        _limitFrameRate = ApplicationDataManager.ApplicationOptions.GeneralLimitFrameRate;
+        _targetFrameRate = ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate;
         _textureQuality = MasterTextureLimit - QualitySettings.globalTextureMipmapLimit;
         _queuedFrames = QualitySettings.maxQueuedFrames;
 
@@ -279,7 +280,6 @@ public class OptionsPanelGUI : PanelGuiBase
 
         _waterQuality = ApplicationDataManager.ApplicationOptions.VideoWaterMode;
         _vsync = QualitySettings.vSyncCount;
-        _fov = ApplicationDataManager.ApplicationOptions.VideoFOV;
     }
 
     public static bool HorizontalScrollbar(Rect rect, string title, ref float value, float min, float max)
@@ -394,11 +394,20 @@ public class OptionsPanelGUI : PanelGuiBase
                 SfxManager.Play2dAudioClip(SoundEffectType.UIButtonClick);
             }
 
-            if (HorizontalScrollbar(new Rect(GroupMarginX, 30, width, 30), "Target Framerate:", ref _targetFrameRate, -1, 200))
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 33, 140, 24), _limitFrameRate, LocalizedStrings.LimitFramerate) != _limitFrameRate)
             {
+                _limitFrameRate = !_limitFrameRate;
+                UpdateApplicationFrameRate();
+            }
+            GUI.enabled = _limitFrameRate;
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 30, width, 30), string.Empty, ref _targetFrameRate, 30, 500))
+            {
+                // 5 fps steps, 144 sticky
+                _targetFrameRate = Mathf.Abs(_targetFrameRate - 144) < 3 ? 144 : Mathf.Round(_targetFrameRate / 5) * 5;
                 _vsync = 0;
                 graphicsChanged = true;
             }
+            GUI.enabled = true;
             if (HorizontalScrollbar(new Rect(GroupMarginX, 60, width, 30), "Max Queued Frames:", ref _queuedFrames, 0, 10))
             {
                 graphicsChanged = true;
@@ -412,7 +421,7 @@ public class OptionsPanelGUI : PanelGuiBase
             }
             if (HorizontalGridbar(new Rect(GroupMarginX, 120, width, 30), "VSync:", ref _vsync, vsyncSet))
             {
-                _targetFrameRate = -1;
+                _limitFrameRate = false;
                 graphicsChanged = true;
                 SetCurrentQuality(qualitySet.Length - 1);
             }
@@ -426,11 +435,12 @@ public class OptionsPanelGUI : PanelGuiBase
                 ApplicationDataManager.ApplicationOptions.VideoWaterMode = _waterQuality;
                 SetCurrentQuality(qualitySet.Length - 1);
             }
-            if (HorizontalScrollbar(new Rect(GroupMarginX, 210, width, 30), "Field of View:", ref _fov, ApplicationOptions.VideoFOVMin, ApplicationOptions.VideoFOVMax))
+            bool fovWide = ApplicationDataManager.ApplicationOptions.VideoFOV >= ApplicationOptions.VideoFOVWide;
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 213, 200, 24), fovWide, "FOV Mode") != fovWide)
             {
-                ApplicationDataManager.ApplicationOptions.VideoFOV = _fov;
-                if (LevelCamera.Exists && LevelCamera.Instance.MainCamera != null)
-                    LevelCamera.Instance.MainCamera.fieldOfView = _fov;
+                ApplicationDataManager.ApplicationOptions.VideoFOV = fovWide ? ApplicationOptions.VideoFOVNormal : ApplicationOptions.VideoFOVWide;
+                if (LevelCamera.Exists && !LevelCamera.Instance.IsZoomedIn)
+                    LevelCamera.Instance.ResetZoom();
             }
 
             // Post-Processing is a 0-100 strength slider (instead of a plain toggle).
@@ -574,11 +584,11 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.BeginGroup(new Rect(GroupMarginX, 20, _rect.width - 65, 65));
             {
                 GUI.Label(new Rect(15, 10, 130, 30), LocalizedStrings.MouseSensitivity, BlueStonez.label_interparkbold_11pt_left);
-                float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 1, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+                float s = GUI.HorizontalSlider(new Rect(155, 17, 200, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity, 0.1f, 10, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
                 GUI.Label(new Rect(370, 10, 100, 30), ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
                 if (s != ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity)
                 {
-                    ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity = s;
+                    ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity = Mathf.Round(s * 10f) / 10f;
                 }
 
                 bool invert = GUI.Toggle(new Rect(15, 38, 200, 30), ApplicationDataManager.ApplicationOptions.InputInvertMouse, LocalizedStrings.InvertMouseButtons, BlueStonez.toggle);
@@ -871,10 +881,9 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private void UpdateApplicationFrameRate()
     {
-        _targetFrameRate = Mathf.RoundToInt(_targetFrameRate);
-        if (_targetFrameRate >= 0) _targetFrameRate = Mathf.Max(_targetFrameRate, 20);
-        Application.targetFrameRate = (int)_targetFrameRate;
-        ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate = Application.targetFrameRate;
+        ApplicationDataManager.ApplicationOptions.GeneralLimitFrameRate = _limitFrameRate;
+        ApplicationDataManager.ApplicationOptions.GeneralTargetFrameRate = Mathf.RoundToInt(_targetFrameRate);
+        Application.targetFrameRate = ApplicationDataManager.ApplicationOptions.FrameRateCap;
     }
 
     private void UpdateMaxQueuedFrames()

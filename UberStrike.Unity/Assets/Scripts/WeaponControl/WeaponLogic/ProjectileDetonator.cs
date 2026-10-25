@@ -63,7 +63,8 @@ public class ProjectileDetonator
                     Vector3 forceDirection = hit.transform.position - position;//closestPoint - position;
                     if (forceDirection.sqrMagnitude < 0.01f)
                     {
-                        forceDirection = dir;
+                        // shot at own feet: push up (rocket jump)
+                        forceDirection = Vector3.up;
                     }
                     else
                     {

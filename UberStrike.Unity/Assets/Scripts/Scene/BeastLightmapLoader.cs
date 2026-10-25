@@ -1151,6 +1151,7 @@ public static class BeastLightmapLoader
         { "LevelCuberStrike", 0.283f },       // was doubled to 0.567 → causes blueish tint
         { "LevelSpaceportAlpha", 0.470f },     // was slashed to 0.1 → way too dark
         { "LevelTempleOfTheRaven", 0.261f },   // was reduced to 0.147 → too dark
+        { "LevelSuperPRISMReactor", 0.55f },
     };
 
     // Per-map target intensity for the scene's primary directional light, overriding
@@ -1473,16 +1474,32 @@ public static class BeastLightmapLoader
 #if UNITY_EDITOR
                 light.lightmapBakeType = LightmapBakeType.Realtime;
 #endif
-                light.intensity = 0.5f;
+                light.intensity = 0.8f;
+                light.color = Color.white;
             }
-            Debug.Log($"[BeastLightmapLoader] Lobby: Directional '{light.gameObject.name}' → realtime, intensity={light.intensity}");
+            Debug.Log($"[BeastLightmapLoader] Lobby: Directional '{light.gameObject.name}' -> realtime, intensity={light.intensity}, color={light.color}");
         }
 
-        // Restore ambient to match 3.5.5 LevelSpaceship RenderSettings
+        const float LobbyAmbient = 0.28f;
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-        RenderSettings.ambientLight = new Color(0.246f, 0.246f, 0.246f, 1f);
+        RenderSettings.ambientLight = new Color(LobbyAmbient, LobbyAmbient, LobbyAmbient, 1f);
         RenderSettings.ambientIntensity = 1.0f;
-        Debug.Log("[BeastLightmapLoader] Lobby: Ambient → 0.246 flat (matching 3.5.5 LevelSpaceship)");
+        Debug.Log($"[BeastLightmapLoader] Lobby: Ambient -> {LobbyAmbient} flat (near original 0.246; directional now carries the room)");
+
+        // lobby key light, realtime only (not in lightmaps)
+        foreach (var stale in Object.FindObjectsOfType<Light>())
+            if (stale != null && (stale.gameObject.name == "BeastLobbyAvatarLight" || stale.gameObject.name == "BeastWeaponsLight"))
+                Object.Destroy(stale.gameObject);
+
+        var avatarLightGO = new GameObject("BeastLobbyAvatarLight");
+        var avatarKey = avatarLightGO.AddComponent<Light>();
+        avatarKey.type = LightType.Directional;
+        avatarKey.color = Color.white;
+        avatarKey.intensity = 0.65f;
+        avatarKey.shadows = LightShadows.None;
+        avatarLightGO.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+        avatarKey.cullingMask = -1; // Everything
+        Debug.Log("[BeastLightmapLoader] Lobby: Spawned BeastLobbyAvatarLight (white directional, intensity=0.65, cullingMask=Everything; restores the migration-deactivated realtime rig)");
     }
 
     static IEnumerator DelayedLobbyAssign(LightmapData[] lightmapData)
@@ -1506,14 +1523,30 @@ public static class BeastLightmapLoader
         RenderSettings.ambientLight = new Color(0.246f, 0.246f, 0.246f, 1f);
         RenderSettings.ambientIntensity = 1.0f;
 
-        // Clean up BeastWeaponsLight objects from previous map loads
+        // Clean up BeastWeaponsLight + lobby key light from previous loads
         foreach (var light in Object.FindObjectsOfType<Light>())
         {
-            if (light != null && light.gameObject.name == "BeastWeaponsLight")
+            if (light != null && (light.gameObject.name == "BeastWeaponsLight" || light.gameObject.name == "BeastLobbyAvatarLight"))
             {
                 Object.Destroy(light.gameObject);
-                Debug.Log("[BeastLightmapLoader] Destroyed old BeastWeaponsLight");
+                Debug.Log("[BeastLightmapLoader] Destroyed old " + light.gameObject.name);
             }
+        }
+
+        // Aqualab only: point/spot lights also baked -> double lit
+        if (sceneName == "LevelAqualabResearchHub")
+        {
+            int killed = 0;
+            foreach (var light in Object.FindObjectsOfType<Light>())
+            {
+                if (light == null || light.type == LightType.Directional) continue;
+                // map lights sit in 'Latest': skip lobby, don't match map name
+                if (light.gameObject.scene.name == "LevelSpaceship") continue;
+                if (!light.enabled) continue;
+                light.enabled = false;
+                killed++;
+            }
+            Debug.Log($"[BeastLightmapLoader] {sceneName}: disabled {killed} realtime non-directional lights (baked into lightmaps; were double-lighting)");
         }
 
         // Original Unity 3.5.5 used "Single Lightmaps" (m_ActuallyLightmapped: 1) where
