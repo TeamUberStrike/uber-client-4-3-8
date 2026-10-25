@@ -1,0 +1,49 @@
+<linker>
+  <!--
+    link.xml — IL2CPP managed-code preservation rules for the UberStrike mobile build.
+
+    Reasoning:
+      * ProjectSettings.asset has `managedStrippingLevel` of 1 (Low) across build
+        platforms. The Unity linker walks roots (scenes, build settings, [Preserve]
+        attributes, link.xml) and prunes anything else.
+      * UberStrike runtime patterns that the linker CANNOT see through:
+          1. `Singleton<T>` and `RenderSettingsController` use
+             `GetConstructor(BindingFlags.NonPublic)` to invoke private constructors on
+             concrete subclass types. The linker sees `T` only as a generic parameter,
+             not as the concrete subclasses (BackgroundMusicPlayer, ChatManager,
+             AmmoHud, etc.).
+          2. Prime31 StoreKit / Etcetera native plugins invoke managed callbacks via
+             `UnitySendMessage("StoreKitManager", "productPurchased", json)` —
+             dispatched by GameObject name + method-name string, invisible to the linker.
+          3. UberStrike.UnitySdk performs serialization via reflection: the
+             ExtendableEnum const tables (CmuneDataType / UberStrikeDataType) are read
+             with Type.GetFields(). With these stripped, SecureMemory<T>.ReadData fails
+             at runtime with "Decode Object failed because found unrecognized datatype"
+             ("CmuneSecureVariable failed decrypting Data"). This was the login crash on
+             IL2CPP builds.
+
+    Scope:
+      * Preserve all of Assembly-CSharp ("preserve all" — broad but safe). Stripping
+        savings on this assembly are modest compared to engine code stripping, which
+        remains active.
+      * Preserve UberStrike.UnitySdk (reflection-based serialization).
+      * Preserve P31RestKit (UnitySendMessage callback dispatch; only 16 KB).
+      * Preserve System.Linq.Enumerable — LINQ extensions are referenced from generic
+        instantiations; without this, IL2CPP may drop Enumerable.Select<int,bool>
+        etc. specializations that are referenced only via lambdas.
+
+    Note: Photon3Unity3D.dll was removed from this project ("Photon out, nakama-unity
+    in"), so no Photon/AOT rules are needed; the rebuilt SDK no longer uses
+    MakeGenericType-based dictionary deserialization.
+  -->
+
+  <assembly fullname="Assembly-CSharp" preserve="all" />
+
+  <assembly fullname="UberStrike.UnitySdk" preserve="all" />
+
+  <assembly fullname="P31RestKit" preserve="all" />
+
+  <assembly fullname="System.Core">
+    <type fullname="System.Linq.Enumerable" preserve="all" />
+  </assembly>
+</linker>
