@@ -229,29 +229,18 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void DrawMovementPreview()
     {
-        if (!TouchInput.Exists || TouchInput.Instance.Dpad == null) return;
+        if (!TouchInput.Exists) return;
 
-        Matrix4x4 matrix = GUI.matrix;
+        // The D-pad is now a real editable handle (drawn by the handle loop), so only draw the
+        // joystick outline here, and only for single-input mode.
+        if (ApplicationDataManager.ApplicationOptions.UseMultiTouch) return;
 
-        if (ApplicationDataManager.ApplicationOptions.UseMultiTouch)
-        {
-            Rect r = TouchInput.Instance.Dpad.DpadBoundary;
-            GUIUtility.RotateAroundPivot(15f, new Vector2(r.x + 155f, r.y + 103f));
-            GUI.color = new Color(1f, 1f, 1f, 0.9f);
-            GUI.DrawTexture(r, MobileIcons.KeyboardDpad, ScaleMode.ScaleToFit, true);
-            GUI.color = Color.white;
-            GUI.matrix = matrix;
-            DrawOutline(r, new Color(1f, 1f, 1f, 0.6f), 1f);
-            GUI.Label(new Rect(r.x - 10, r.yMax + 2, Mathf.Max(r.width + 20, 90), 18), "D-Pad");
-        }
-        else
+        if (TouchInput.Instance.Joystick != null)
         {
             Rect r = TouchInput.Instance.Joystick.Boundary;
             DrawOutline(r, new Color(0.45f, 0.65f, 1f, 0.9f), 1f);
             GUI.Label(new Rect(r.x + 10, r.yMax - 24, 160, 18), "Joystick area");
         }
-
-        GUI.matrix = matrix;
     }
 
     private void HandleDrag(List<TouchInput.LayoutHandle> handles)
