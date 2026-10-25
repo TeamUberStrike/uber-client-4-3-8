@@ -130,12 +130,16 @@ public static class MobileControlLayout
     }
 
     // Clears all customization; controls revert to their default placement on the next ApplyLayout.
+    /// <summary>
+    /// Clears the in-memory placements so the next ApplyLayout re-seeds every control at its default.
+    /// Deliberately does NOT touch the persisted PlayerPrefs: the editor's Cancel (Load + ApplyLayout)
+    /// can therefore revert a reset back to the last saved layout, while Save persists the defaults
+    /// if the reset is confirmed.
+    /// </summary>
     public static void ResetAll()
     {
         EnsureLoaded();
         _map.Clear();
-        PlayerPrefs.DeleteKey(PrefsKey);
-        PlayerPrefs.Save();
     }
 }
 #endif
