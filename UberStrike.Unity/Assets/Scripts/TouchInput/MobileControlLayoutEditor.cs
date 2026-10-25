@@ -16,10 +16,16 @@ using DeviceApplication = UnityEngine.Device.Application;
 public class MobileControlLayoutEditor : MonoBehaviour
 {
     private string _selectedId;
+    private bool _pinchActive;
+    private bool _editModePrev;
+    private bool _ribbonWasEnabled;
+    private float _pinchStartDist;
+    private float _pinchBaseScale;
     private bool _dragging;
     private Vector2 _dragOffset;
     private Rect _toolbarRect;
     private Texture2D _pixel;
+    private MeshGUIText _hintText;
 
     private static bool ShouldShow
     {
@@ -41,11 +47,75 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void Update()
     {
+        bool editMode = MobileControlLayout.EditMode;
+
+        // Hide the ribbon (PROFILE / CHAT bar) while editing, restore it afterwards.
+        if (editMode && !_editModePrev)
+        {
+            _ribbonWasEnabled = GlobalUIRibbon.Exists && GlobalUIRibbon.Instance.IsEnabled;
+            if (_ribbonWasEnabled) GlobalUIRibbon.Instance.Hide();
+            if (_hintText != null) _hintText.Show();
+        }
+        else if (!editMode && _editModePrev)
+        {
+            if (_ribbonWasEnabled && GlobalUIRibbon.Exists) GlobalUIRibbon.Instance.Show();
+            if (_hintText != null) _hintText.Hide();
+            if (HudAssets.Exists) WeaponsHud.Instance.QuickItems.RefreshPosition();
+        }
+        _editModePrev = editMode;
+
         // Freeze look/move while editing so dragging never leaks into gameplay.
-        if (MobileControlLayout.EditMode)
+        if (editMode)
         {
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
+            UpdatePinchScale();
+#if UNITY_EDITOR
+            // Mouse scroll wheel resizes the selected control (quick debugging).
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (Mathf.Abs(scroll) > 0.0001f && !string.IsNullOrEmpty(_selectedId) && !_dragging)
+            {
+                float cur = GetScale(TouchInput.Instance.GetLayoutHandles(), _selectedId);
+                float next = Mathf.Clamp(cur + scroll * 0.1f, 0.5f, 2.5f);
+                MobileControlLayout.SetScale(_selectedId, next);
+                TouchInput.Instance.ApplyLayout();
+            }
+#endif
+        }
+        else if (_pinchActive)
+        {
+            _pinchActive = false;
+        }
+    }
+
+    // Two-finger pinch on a selected control scales it (smaller/bigger).
+    private void UpdatePinchScale()
+    {
+        if (_dragging) return;
+
+        Touch[] touches = TouchSource.Touches;
+        if (touches.Length < 2)
+        {
+            if (_pinchActive) _pinchActive = false;
+            return;
+        }
+
+        float dist = Vector2.Distance(touches[0].position, touches[1].position);
+        if (!_pinchActive)
+        {
+            _pinchActive = true;
+            _pinchStartDist = Mathf.Max(1f, dist);
+            _pinchBaseScale = string.IsNullOrEmpty(_selectedId)
+                ? 1f
+                : GetScale(TouchInput.Instance.GetLayoutHandles(), _selectedId);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(_selectedId))
+        {
+            float next = Mathf.Clamp(_pinchBaseScale * (dist / _pinchStartDist), 0.5f, 2.5f);
+            MobileControlLayout.SetScale(_selectedId, next);
+            TouchInput.Instance.ApplyLayout();
         }
     }
 
@@ -66,19 +136,14 @@ public class MobileControlLayoutEditor : MonoBehaviour
     {
         List<TouchInput.LayoutHandle> handles = TouchInput.Instance.GetLayoutHandles();
 
-        // Dim the world behind the editor.
-        Color prev = GUI.color;
-        GUI.color = new Color(0f, 0f, 0f, 0.5f);
-        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _pixel);
-        GUI.color = prev;
-
-        // Reserve a bottom toolbar; drags that start here are ignored (let buttons/slider work).
+        // Reserve a top toolbar (next to the ribbon's PROFILE / CHAT tabs); drags that start here
+        // are ignored (let buttons/slider work).
         float barH = 96;
-        _toolbarRect = new Rect(0, Screen.height - barH, Screen.width, barH);
+        _toolbarRect = new Rect(0, 0, Screen.width, barH);
 
         DrawMovementPreview();
 
-        // Draw each control + its outline + label.
+        // Draw each control: soft backdrop, icon, colored border and a name badge above it.
         foreach (TouchInput.LayoutHandle hd in handles)
         {
             bool selected = (hd.Id == _selectedId);
@@ -87,16 +152,19 @@ public class MobileControlLayoutEditor : MonoBehaviour
             {
                 GUI.DrawTexture(hd.Boundary, hd.Icon, ScaleMode.StretchToFill, true);
             }
-            else
-            {
-                GUI.color = new Color(0.35f, 0.55f, 1f, 0.85f);
-                GUI.Box(hd.Boundary, GUIContent.none);
-                GUI.color = Color.white;
-            }
 
-            DrawOutline(hd.Boundary, selected ? Color.yellow : new Color(1f, 1f, 1f, 0.6f), selected ? 3f : 1f);
+            Color border = selected ? new Color(1f, 0.85f, 0.2f) : new Color(0.45f, 0.65f, 1f, 0.9f);
+            DrawOutline(hd.Boundary, border, selected ? 3f : 2f);
 
-            GUI.Label(new Rect(hd.Boundary.x - 10, hd.Boundary.yMax + 2, Mathf.Max(hd.Boundary.width + 20, 90), 18), hd.DisplayName);
+            // Name badge: a small pill above the button.
+            GUIContent name = new GUIContent(hd.DisplayName);
+            Vector2 textSize = BlueStonez.label_interparkbold_11pt.CalcSize(name);
+            Rect tagRect = new Rect(hd.Boundary.center.x - textSize.x / 2 - 8, hd.Boundary.y - 22, textSize.x + 16, 20);
+            GUI.color = selected ? new Color(1f, 0.85f, 0.2f, 0.95f) : new Color(0.10f, 0.13f, 0.20f, 0.9f);
+            GUI.DrawTexture(tagRect, _pixel);
+            GUI.color = selected ? Color.black : Color.white;
+            GUI.Label(tagRect, name, BlueStonez.label_interparkbold_11pt);
+            GUI.color = Color.white;
         }
 
         HandleDrag(handles);
@@ -124,11 +192,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         else
         {
             Rect r = TouchInput.Instance.Joystick.Boundary;
-            Rect icon = new Rect(r.x + 30, r.yMax - 210, 180, 180);
-            GUI.color = new Color(1f, 1f, 1f, 0.25f);
-            GUI.DrawTexture(icon, MobileIcons.JoystickOuter, ScaleMode.ScaleToFit, true);
-            GUI.color = Color.white;
-            DrawOutline(r, new Color(1f, 1f, 1f, 0.4f), 1f);
+            DrawOutline(r, new Color(0.45f, 0.65f, 1f, 0.9f), 1f);
             GUI.Label(new Rect(r.x + 10, r.yMax - 24, 160, 18), "Joystick area");
         }
 
@@ -144,10 +208,13 @@ public class MobileControlLayoutEditor : MonoBehaviour
         {
             case EventType.MouseDown:
                 if (_toolbarRect.Contains(mouse)) break; // toolbar owns this click
+                Debug.Log("[LayoutDebug] mousedown at " + mouse);
                 for (int i = handles.Count - 1; i >= 0; i--) // top-most first
                 {
+                    Debug.Log("[LayoutDebug]   handle " + handles[i].Id + " boundary=" + handles[i].Boundary);
                     if (handles[i].Boundary.Contains(mouse))
                     {
+                        Debug.Log("[LayoutDebug]   HIT " + handles[i].Id);
                         _selectedId = handles[i].Id;
                         _dragging = true;
                         _dragOffset = mouse - handles[i].Boundary.center;
@@ -162,7 +229,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
                 {
                     Vector2 center = mouse - _dragOffset;
                     center.x = Mathf.Clamp(center.x, 0, Screen.width);
-                    center.y = Mathf.Clamp(center.y, 0, Screen.height - 96);
+                    center.y = Mathf.Clamp(center.y, 96, Screen.height);
                     float scale = GetScale(handles, _selectedId);
                     MobileControlLayout.SetPixels(_selectedId, center, scale);
                     TouchInput.Instance.ApplyLayout();
@@ -182,51 +249,50 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     private void DrawToolbar(List<TouchInput.LayoutHandle> handles)
     {
-        GUI.color = new Color(0.05f, 0.05f, 0.08f, 0.92f);
-        GUI.DrawTexture(_toolbarRect, _pixel);
-        GUI.color = Color.white;
+        // Draw in the ribbon's scaled space so the buttons sit on the exact same vertical row as the
+        // PROFILE / CHAT tabs (next to them on the right).
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        float vw = MobileMenuScale.VirtualWidth;
+        float bw = 140, bh = 34;
+        float totalW = 4 * bw + 3 * 8;
+        float x0 = (vw - totalW) / 2;
+        float by = 2;
 
-        GUILayout.BeginArea(new Rect(8, _toolbarRect.y + 6, Screen.width - 16, 90));
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label(string.IsNullOrEmpty(_selectedId)
-            ? "Drag a control to move it. Tap one to select, then scale below."
-            : "Selected: " + DisplayName(handles, _selectedId));
-        GUILayout.FlexibleSpace();
-        string modeLabel = ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Switch to Joystick" : "Switch to D-Pad";
-        if (GUILayout.Button(modeLabel, GUILayout.Width(150), GUILayout.Height(30)))
+        string modeLabel = ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Switch Single" : "Switch Multi";
+        if (GUITools.Button(new Rect(x0, by, bw, bh), new GUIContent(modeLabel), StormFront.ButtonBlue))
         {
             TouchInput.Instance.ToggleMovementMode();
+            _selectedId = null;
         }
-        if (GUILayout.Button("Reset All", GUILayout.Width(110), GUILayout.Height(30)))
+        if (GUITools.Button(new Rect(x0 + (bw + 8), by, bw, bh), new GUIContent(LocalizedStrings.ResetDefaults), StormFront.ButtonBlue))
         {
             MobileControlLayout.ResetAll();
             TouchInput.Instance.ApplyLayout();
             _selectedId = null;
         }
-        if (GUILayout.Button("Done", GUILayout.Width(90), GUILayout.Height(30)))
+        if (GUITools.Button(new Rect(x0 + 2 * (bw + 8), by, bw, bh), new GUIContent(LocalizedStrings.CancelCaps), StormFront.ButtonBlue))
+        {
+            MobileControlLayout.Load();
+            TouchInput.Instance.ApplyLayout();
+            _selectedId = null;
+            MobileControlLayout.EditMode = false;
+        }
+        if (GUITools.Button(new Rect(x0 + 3 * (bw + 8), by, bw, bh), new GUIContent("Save"), StormFront.ButtonBlue))
         {
             MobileControlLayout.Save();
             MobileControlLayout.EditMode = false;
         }
-        GUILayout.EndHorizontal();
 
-        GUILayout.BeginHorizontal();
-        if (!string.IsNullOrEmpty(_selectedId))
+        if (_hintText == null)
         {
-            GUILayout.Label("Size", GUILayout.Width(40));
-            float cur = GetScale(handles, _selectedId);
-            float next = GUILayout.HorizontalSlider(cur, 0.6f, 2.2f, GUILayout.Width(Mathf.Min(360, Screen.width - 160)));
-            if (!Mathf.Approximately(next, cur))
-            {
-                MobileControlLayout.SetScale(_selectedId, next);
-                TouchInput.Instance.ApplyLayout();
-            }
-            GUILayout.Label(cur.ToString("N2"), GUILayout.Width(50));
+            _hintText = new MeshGUIText("Drag buttons to move them, pinch to resize.", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
+            HudStyleUtility.Instance.SetBlueStyle(_hintText);
+            _hintText.Scale = new Vector2(0.6f, 0.6f);
         }
-        GUILayout.EndHorizontal();
+        _hintText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 100);
+        _hintText.Draw();
 
-        GUILayout.EndArea();
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private static float GetScale(List<TouchInput.LayoutHandle> handles, string id)

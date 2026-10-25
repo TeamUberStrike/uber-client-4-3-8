@@ -23,6 +23,7 @@ public class TouchWeaponChanger : TouchButton
     public event Action OnPrevWeapon;
 
     private Vector2 _position;
+    public float LayoutScale = 1f;
     public Vector2 Position
     {
         get
@@ -35,10 +36,17 @@ public class TouchWeaponChanger : TouchButton
             if (_quad != null)
             {
                 _quad.Position = _position;
+                _quad.Scale = new Vector2(LayoutScale, LayoutScale);
             }
-            Boundary = new Rect(_position.x - weapons[0].width / 2, _position.y - weapons[0].height / 2, weapons[0].width, weapons[0].height);
-            _leftIconPos = new Rect(Boundary.x - MobileIcons.LeftIcon.width, Boundary.y + Boundary.height/2 - MobileIcons.LeftIcon.height/2, MobileIcons.LeftIcon.width, MobileIcons.LeftIcon.height);
-            _rightIconPos = new Rect(Boundary.xMax, Boundary.y + (Boundary.height - MobileIcons.RightIcon.height) / 2, MobileIcons.RightIcon.width, MobileIcons.RightIcon.height);
+            float w = weapons[0].width * LayoutScale;
+            float h = weapons[0].height * LayoutScale;
+            Boundary = new Rect(_position.x - w / 2, _position.y - h / 2, w, h);
+            float lw = MobileIcons.LeftIcon.width * LayoutScale;
+            float lh = MobileIcons.LeftIcon.height * LayoutScale;
+            _leftIconPos = new Rect(Boundary.x - lw, Boundary.y + (Boundary.height - lh) / 2, lw, lh);
+            float rw = MobileIcons.RightIcon.width * LayoutScale;
+            float rh = MobileIcons.RightIcon.height * LayoutScale;
+            _rightIconPos = new Rect(Boundary.xMax, Boundary.y + (Boundary.height - rh) / 2, rw, rh);
         }
     }
 
@@ -137,7 +145,7 @@ public class TouchWeaponChanger : TouchButton
         }
         _quad = new MeshGUIQuad(weapons[(int)WeaponController.Instance.GetCurrentWeapon().Item.ItemClass], TextAnchor.MiddleCenter);
         _quad.Position = Position;
-        _quad.Scale = new Vector2(1, 1);
+        _quad.Scale = new Vector2(LayoutScale, LayoutScale);
 
         _startWeaponSwitch = 0;
     }
@@ -173,7 +181,7 @@ public class TouchWeaponChanger : TouchButton
         _incomingQuad = new MeshGUIQuad(weapons[(int)weaponClass], TextAnchor.MiddleCenter);
         _incomingQuad.Position = Position;
         _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(1, 0);
-        _incomingQuad.Scale = new Vector2(1, 1);
+        _incomingQuad.Scale = new Vector2(LayoutScale, LayoutScale);
         _incomingQuad.Alpha = 0;
 
         _startWeaponSwitch = Time.time;

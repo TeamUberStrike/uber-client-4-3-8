@@ -104,6 +104,34 @@ public class QuickItemHud
         get { return _quickItemGroup; }
     }
 
+    public void HideEditorDecorations()
+    {
+        _recharge.Alpha = 0;
+        _cooldown.Alpha = 0;
+        _cooldownFlash.Alpha = 0;
+        _descriptionText.Text = string.Empty;
+        _descriptionText.Hide();
+        _selection.IsEnabled = false;
+    }
+
+    public void HideDescription()
+    {
+        _descriptionText.Text = string.Empty;
+        _descriptionText.Hide();
+    }
+
+    public Texture GetIcon()
+    {
+        return _icon.Texture;
+    }
+
+    public Rect GetButtonRect()
+    {
+        Vector2 center = _quickItemGroup.Position + _background.Position;
+        Vector2 size = _background.Size;
+        return new Rect(center.x - size.x / 2, center.y - size.y / 2, size.x, size.y);
+    }
+
     public QuickItemHud(string name)
     {
         Name = name;
@@ -186,6 +214,9 @@ public class QuickItemHud
     {
         if (!ApplicationDataManager.IsMobile)
         {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+            if (MobileControlLayout.EditMode) return;
+#endif
             _descriptionText.Text = "Key: " + binding;
         }
     }
@@ -272,7 +303,7 @@ public class QuickItemHud
     {
         if (IsEmpty) selected = false;
 
-        if (ApplicationDataManager.IsMobile)
+        if (ApplicationDataManager.IsMobile && !TouchInput.IsSupported)
         {
             if (!selected)
             {

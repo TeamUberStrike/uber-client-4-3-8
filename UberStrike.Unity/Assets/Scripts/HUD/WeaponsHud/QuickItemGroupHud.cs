@@ -13,6 +13,14 @@ public class QuickItemGroupHud
         get { return _quickItemsGroup.IsVisible; }
         set
         {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+            if (TouchInput.IsSupported)
+            {
+                // The touch build draws the items via DrawSimple(); keep the meshes hidden.
+                _quickItemsGroup.Hide();
+                return;
+            }
+#endif
             if (value)
             {
                 _quickItemsGroup.Show();
@@ -58,8 +66,58 @@ public class QuickItemGroupHud
 
     public void Draw()
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (TouchInput.IsSupported)
+        {
+            DrawSimple();
+            return;
+        }
+#endif
         _quickItemsGroup.Draw();
     }
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+    // Draws the three items as plain icons at their saved placements - identical to the controls editor.
+    public void DrawSimple()
+    {
+        for (int i = 0; i < _quickItemSlots.Count; i++)
+        {
+            QuickItemHud q = _quickItemSlots[i];
+            if (q == null) continue;
+            Texture icon = q.GetIcon();
+            if (icon == null) continue;
+            MobileControlLayout.Placement qp = MobileControlLayout.GetOrDefault("quickSlot" + (i + 1), DefaultSlotCenter(i), 1f);
+            Vector2 center = MobileControlLayout.ToPixels(qp);
+            float baseSize = Mathf.Max(icon.width, icon.height);
+            float side = baseSize * 0.8f * qp.Scale;
+            GUI.DrawTexture(new Rect(center.x - side / 2, center.y - side / 2, side, side), icon, ScaleMode.StretchToFill, true);
+        }
+    }
+
+    public Rect GetSimpleCombinedRect()
+    {
+        Rect r = new Rect(0, 0, 0, 0);
+        bool first = true;
+        for (int i = 0; i < _quickItemSlots.Count; i++)
+        {
+            QuickItemHud q = _quickItemSlots[i];
+            if (q == null) continue;
+            MobileControlLayout.Placement qp = MobileControlLayout.GetOrDefault("quickSlot" + (i + 1), DefaultSlotCenter(i), 1f);
+            Vector2 center = MobileControlLayout.ToPixels(qp);
+            float side = 130f * qp.Scale;
+            Rect sr = new Rect(center.x - side / 2, center.y - side / 2, side, side);
+            if (first) { r = sr; first = false; }
+            else
+            {
+                r.xMin = Mathf.Min(r.xMin, sr.xMin);
+                r.yMin = Mathf.Min(r.yMin, sr.yMin);
+                r.xMax = Mathf.Max(r.xMax, sr.xMax);
+                r.yMax = Mathf.Max(r.yMax, sr.yMax);
+            }
+        }
+        return r;
+    }
+#endif
 
     public void ConfigureQuickItem(int slot, QuickItemConfiguration quickItem, TeamID team = TeamID.NONE)
     {
@@ -70,7 +128,8 @@ public class QuickItemGroupHud
             if (quickItem != null)
             {
                 quickItemSlot.SetRechargeBarVisible(quickItem.RechargeTime > 0);
-                quickItemSlot.SetKeyBinding(InputManager.Instance.GetKeyAssignmentString(GameInputKey.QuickItem1 + slot));
+                if (!TouchInput.IsSupported)
+                    quickItemSlot.SetKeyBinding(InputManager.Instance.GetKeyAssignmentString(GameInputKey.QuickItem1 + slot));
 
                 if (team == TeamID.RED)
                 {
@@ -113,6 +172,9 @@ public class QuickItemGroupHud
 
     public void Expand()
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (TouchInput.IsSupported) return;
+#endif
         if (ApplicationDataManager.IsMobile) return;
         int n = 0;
         for (int i = 0; i < _quickItemSlots.Count; i++)
@@ -127,6 +189,9 @@ public class QuickItemGroupHud
 
     public void Collapse()
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (TouchInput.IsSupported) return;
+#endif
         if (ApplicationDataManager.IsMobile) return;
         int n = 0;
         for (int i = 0; i < _quickItemSlots.Count; i++)
@@ -216,6 +281,15 @@ public class QuickItemGroupHud
 
     private void ResetQuickItemsTransform()
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (TouchInput.IsSupported)
+        {
+            // The touch build draws the items via DrawSimple(); the meshes stay hidden.
+            _quickItemsGroup.Hide();
+            return;
+        }
+#endif
+
         var slot = _quickItemSlots[0];
 
         foreach (var quickItemHud in _quickItemSlots)
@@ -233,8 +307,43 @@ public class QuickItemGroupHud
         }
 
         float height = Screen.height * 0.9f - 10;
-        if (ApplicationDataManager.IsMobile) height = 160;
+        if (ApplicationDataManager.IsMobile) height = 160f;
         _quickItemsGroup.Position = new Vector2(Screen.width * 0.95f - slot.Group.Rect.width / 2, height);
+    }
+
+    public static Vector2 DefaultSlotCenter(int index)
+    {
+        // Vertical stack anchored to the right upper corner, directly below the weapon changer.
+        float s = Mathf.Clamp(Screen.height / 720f, 1f, 2.2f);
+        float x = Screen.width - 60f * s;
+        float y0 = 105f + 150f * s;
+        return new Vector2(x, y0 + index * 40f * s);
+    }
+
+    public Rect GetCombinedRect()
+    {
+        Rect r = new Rect(0, 0, 0, 0);
+        bool first = true;
+        foreach (QuickItemHud q in _quickItemSlots)
+        {
+            if (q.IsEmpty) continue;
+            Rect sr = q.Group.Rect;
+            if (first) { r = sr; first = false; }
+            else
+            {
+                r.xMin = Mathf.Min(r.xMin, sr.xMin);
+                r.yMin = Mathf.Min(r.yMin, sr.yMin);
+                r.xMax = Mathf.Max(r.xMax, sr.xMax);
+                r.yMax = Mathf.Max(r.yMax, sr.yMax);
+            }
+        }
+        return r;
+    }
+
+    public void RefreshPosition()
+    {
+        if (_quickItemsGroup == null) return;
+        ResetQuickItemsTransform();
     }
 
     private Animatable2DGroup _quickItemsGroup;
