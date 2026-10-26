@@ -171,8 +171,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         Dpad.Rotation = 15.0f;
         Dpad.JumpButton.OnTouchBegan += OnJump;
         Dpad.JumpButton.OnTouchEnded += OnJumpTouchEnded;
-        Dpad.CrouchButton.OnTouchBegan += OnCrouchBegan;
-        Dpad.CrouchButton.OnTouchEnded += OnCrouchEnded;
+        // Crouch behaves identically in both modes: tap to toggle, like the single-input
+        // crouch circle (the D-pad crouch zone must NOT be a hold-to-crouch).
+        Dpad.CrouchButton.OnTouchBegan += OnCrouchPushed;
 
         TouchButtonCircle jump = new TouchButtonCircle(MobileIcons.JumpIcon);
         jump.CenterPosition = _jumpPos;
@@ -879,16 +880,6 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
             WishCrouch = !WishCrouch;
-    }
-
-    void OnCrouchBegan(Vector2 obj)
-    {
-        WishCrouch = true;
-    }
-
-    void OnCrouchEnded(Vector2 obj)
-    {
-        WishCrouch = false;
     }
 
     void OnJump(Vector2 pos)
