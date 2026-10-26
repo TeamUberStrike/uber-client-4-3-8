@@ -286,10 +286,9 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private float DefaultButtonScale()
     {
-        // Comfortably big default controls: ~1.25x the old size with a higher floor, so the
-        // buttons are easy to hit out of the box (the layout editor can resize them within the
-        // MobileControlLayout.MinScale..MaxScale limits).
-        return Mathf.Clamp(Screen.height / 720f * 1.25f, 1.25f, 2.5f);
+        // Comfortably big default controls: ~1.25x the old size, clamped to the same
+        // MinScale..MaxScale limits the layout editor enforces.
+        return Mathf.Clamp(Screen.height / 720f * 1.25f, MobileControlLayout.MinScale, MobileControlLayout.MaxScale);
     }
 
     private Vector2 DefaultGuiCenterFor(string id)
@@ -436,14 +435,26 @@ public class TouchInput : MonoSingleton<TouchInput>
             if (circle == null) continue;
 
             MobileControlLayout.Placement p = MobileControlLayout.GetOrDefault(entry.Key, DefaultGuiCenterFor(entry.Key), baseScale);
-            circle.SetLayout(MobileControlLayout.ToPixels(p), p.Scale);
+            Vector2 center = MobileControlLayout.ToPixels(p);
+
+            // Scale can now reach 3.75x, so a saved center near an edge could push the button
+            // off-screen. Clamp the applied center by the button's real (scaled) footprint so
+            // every button stays fully on screen at any scale/resolution.
+            Texture icon = (circle.Content != null) ? circle.Content.image : null;
+            float halfW = ((icon != null) ? icon.width : 64f) * p.Scale * 0.5f;
+            float halfH = ((icon != null) ? icon.height : 64f) * p.Scale * 0.5f;
+            center = ClampCenterToScreen(center, halfW, halfH);
+            circle.SetLayout(center, p.Scale);
         }
 
         if (WeaponChanger != null)
         {
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", DefaultGuiCenterFor("weaponChanger"), baseScale);
+            Vector2 wc = MobileControlLayout.ToPixels(wp);
+            float wHalf = WeaponIconSize() * wp.Scale * 0.5f;
+            wc = ClampCenterToScreen(wc, wHalf, wHalf);
             WeaponChanger.LayoutScale = wp.Scale;
-            WeaponChanger.Position = MobileControlLayout.ToPixels(wp);
+            WeaponChanger.Position = wc;
         }
 
         if (Dpad != null)
@@ -455,6 +466,16 @@ public class TouchInput : MonoSingleton<TouchInput>
             Vector2 c = MobileControlLayout.ToPixels(dp);
             float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
             float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+
+            // Clamp with the ROTATED footprint (AABB at the D-pad's current degree) so the
+            // whole cluster stays inside the display at any scale.
+            float rad = dp.Rotation * Mathf.Deg2Rad;
+            float cosR = Mathf.Abs(Mathf.Cos(rad));
+            float sinR = Mathf.Abs(Mathf.Sin(rad));
+            float dHalfW = (dw * cosR + dh * sinR) * dp.Scale * 0.5f;
+            float dHalfH = (dh * cosR + dw * sinR) * dp.Scale * 0.5f;
+            c = ClampCenterToScreen(c, dHalfW, dHalfH);
+
             Dpad.Scale = dp.Scale;
             Dpad.TopLeftPosition = new Vector2(c.x - dw * dp.Scale / 2f, c.y - dh * dp.Scale / 2f);
             Dpad.Rotation = dp.Rotation;
@@ -546,6 +567,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Texture icon = q.GetIcon();
                 float baseSize = (icon != null) ? Mathf.Max(icon.width, icon.height) : 64f;
                 float side = baseSize * 0.8f * qp.Scale;
+                center = ClampCenterToScreen(center, side * 0.5f, side * 0.5f);
 
                 list.Add(new LayoutHandle
                 {

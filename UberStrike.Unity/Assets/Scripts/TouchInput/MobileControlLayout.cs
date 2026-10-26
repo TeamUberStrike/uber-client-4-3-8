@@ -23,9 +23,10 @@ public static class MobileControlLayout
     }
 
     private const string PrefsKey = "MobileControlLayout";
-    // Controls can't be shrunk below 0.8x (keeps buttons comfortably usable) and cap at 2.5x.
-    public const float MinScale = 0.8f;
-    public const float MaxScale = 2.5f;
+    // Size limits: 1.6x minimum (twice the previous 0.8x floor) and 3.75x maximum
+    // (1.5x the previous 2.5x cap). Buttons can't be shrunk into dots or inflated off-screen.
+    public const float MinScale = 1.6f;
+    public const float MaxScale = 3.75f;
     public const float MinRotation = -90f;
     public const float MaxRotation = 90f;
 

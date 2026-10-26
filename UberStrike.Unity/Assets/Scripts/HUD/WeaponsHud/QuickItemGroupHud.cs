@@ -90,6 +90,7 @@ public class QuickItemGroupHud
             Vector2 center = MobileControlLayout.ToPixels(qp);
             float baseSize = Mathf.Max(icon.width, icon.height);
             float side = baseSize * 0.8f * qp.Scale;
+            center = ClampSlotCenter(center, side * 0.5f);
             GUI.DrawTexture(new Rect(center.x - side / 2, center.y - side / 2, side, side), icon, ScaleMode.StretchToFill, true);
         }
     }
@@ -105,6 +106,7 @@ public class QuickItemGroupHud
             MobileControlLayout.Placement qp = MobileControlLayout.GetOrDefault("quickSlot" + (i + 1), DefaultSlotCenter(i), 1f);
             Vector2 center = MobileControlLayout.ToPixels(qp);
             float side = 130f * qp.Scale;
+            center = ClampSlotCenter(center, side * 0.5f);
             Rect sr = new Rect(center.x - side / 2, center.y - side / 2, side, side);
             if (first) { r = sr; first = false; }
             else
@@ -116,6 +118,15 @@ public class QuickItemGroupHud
             }
         }
         return r;
+    }
+
+    // Keeps a slot center such that the whole slot (half extents given) stays inside the display
+    // at any scale — with the 3.75x maximum the saved placement alone could push slots off-screen.
+    private static Vector2 ClampSlotCenter(Vector2 center, float half)
+    {
+        center.x = Mathf.Clamp(center.x, half, Mathf.Max(half, Screen.width - half));
+        center.y = Mathf.Clamp(center.y, half, Mathf.Max(half, Screen.height - half));
+        return center;
     }
 #endif
 

@@ -34,7 +34,7 @@ public class TouchButtonCircle : TouchButton
     // The floor matches MobileControlLayout.MinScale so buttons can't be shrunk into dots.
     public void SetLayout(Vector2 center, float scale)
     {
-        LayoutScale = Mathf.Max(0.8f, scale);
+        LayoutScale = Mathf.Max(1.6f, scale);
         _centerPosition = center;
         RecomputeBoundary();
     }
