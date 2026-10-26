@@ -222,18 +222,6 @@ public class QuickItemGroupHud
 
     private void ResetQuickItemsTransform()
     {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
-        if (TouchInput.IsSupported)
-        {
-            foreach (QuickItemHud q in _quickItemSlots)
-            {
-                q.DisableMeshes();
-            }
-            _quickItemsGroup.Hide();
-            return;
-        }
-#endif
-
         var slot = _quickItemSlots[0];
 
         foreach (var quickItemHud in _quickItemSlots)
