@@ -20,7 +20,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private bool _editModePrev;
     private bool _ribbonWasEnabled;
     private float _pinchStartDist;
+    private float _pinchStartAngle;
     private float _pinchBaseScale;
+    private float _pinchBaseRotation;
     private bool _dragging;
     private Vector2 _dragOffset;
     private Rect _toolbarRect;
@@ -77,7 +79,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             if (Mathf.Abs(scroll) > 0.0001f && !string.IsNullOrEmpty(_selectedId) && !_dragging)
             {
                 float cur = GetScale(TouchInput.Instance.GetLayoutHandles(), _selectedId);
-                float next = Mathf.Clamp(cur + scroll * 0.1f, 0.5f, 2.5f);
+                float next = Mathf.Clamp(cur + scroll * 0.1f, MobileControlLayout.MinScale, MobileControlLayout.MaxScale);
                 MobileControlLayout.SetScale(_selectedId, next);
                 TouchInput.Instance.ApplyLayout();
             }
@@ -126,9 +128,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             case TouchPhase.Moved:
                 if (_dragging && !string.IsNullOrEmpty(_selectedId) && TouchInput.Exists)
                 {
-                    Vector2 center = pos - _dragOffset;
-                    center.x = Mathf.Clamp(center.x, 24f, Screen.width - 24f);
-                    center.y = Mathf.Clamp(center.y, _toolbarRect.height + 24f, Screen.height - 24f);
+                    Vector2 center = ClampDragCenter(pos - _dragOffset);
                     float scale = GetScale(TouchInput.Instance.GetLayoutHandles(), _selectedId);
                     MobileControlLayout.SetPixels(_selectedId, center, scale);
                     TouchInput.Instance.ApplyLayout();
@@ -142,7 +142,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
         }
     }
 
-    // Two-finger pinch on a selected control scales it (smaller/bigger).
+    // Two-finger pinch on a selected control scales it (smaller/bigger). When the D-pad is
+    // selected, twisting the two fingers additionally rotates it.
     private void UpdatePinchScale()
     {
         if (_dragging) return;
@@ -155,22 +156,37 @@ public class MobileControlLayoutEditor : MonoBehaviour
         }
 
         float dist = Vector2.Distance(touches[0].position, touches[1].position);
+        Vector2 fingerVec = touches[1].position - touches[0].position;
+        float angle = Mathf.Atan2(fingerVec.y, fingerVec.x) * Mathf.Rad2Deg;
+
         if (!_pinchActive)
         {
             _pinchActive = true;
             _pinchStartDist = Mathf.Max(1f, dist);
+            _pinchStartAngle = angle;
             _pinchBaseScale = string.IsNullOrEmpty(_selectedId)
                 ? 1f
                 : GetScale(TouchInput.Instance.GetLayoutHandles(), _selectedId);
+            _pinchBaseRotation = (_selectedId == "dpad" && TouchInput.Exists && TouchInput.Instance.Dpad != null)
+                ? TouchInput.Instance.Dpad.Rotation
+                : 0f;
             return;
         }
 
-        if (!string.IsNullOrEmpty(_selectedId))
+        if (string.IsNullOrEmpty(_selectedId))
+            return;
+
+        float nextScale = Mathf.Clamp(_pinchBaseScale * (dist / _pinchStartDist), MobileControlLayout.MinScale, MobileControlLayout.MaxScale);
+        MobileControlLayout.SetScale(_selectedId, nextScale);
+
+        // Only the D-pad is rotatable; buttons keep their upright orientation.
+        if (_selectedId == "dpad")
         {
-            float next = Mathf.Clamp(_pinchBaseScale * (dist / _pinchStartDist), 0.5f, 2.5f);
-            MobileControlLayout.SetScale(_selectedId, next);
-            TouchInput.Instance.ApplyLayout();
+            float delta = Mathf.DeltaAngle(_pinchStartAngle, angle);
+            MobileControlLayout.SetRotation(_selectedId, _pinchBaseRotation + delta);
         }
+
+        TouchInput.Instance.ApplyLayout();
     }
 
     private void OnGUI()
@@ -206,7 +222,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
             // Render the D-pad exactly like the game does: rotated around the cluster pivot
             // (TouchDPad.Draw uses GUIUtility.RotateAroundPivot(_rotation, _centerPosition)).
-            // The outline + name badge stay upright.
+            // For the D-pad, rotate the draw matrix around the cluster pivot so BOTH the icon
+            // and the rect marker follow its current rotation. The name badge stays upright.
             Matrix4x4 m = GUI.matrix;
             if (isDpad && TouchInput.Exists && TouchInput.Instance.Dpad != null)
             {
@@ -220,12 +237,12 @@ public class MobileControlLayoutEditor : MonoBehaviour
                 GUI.DrawTexture(hd.Boundary, hd.Icon, ScaleMode.StretchToFill, true);
             }
 
-            if (isDpad) GUI.matrix = m;
-
             Color border = selected ? new Color(1f, 0.85f, 0.2f) : new Color(0.45f, 0.65f, 1f, 0.9f);
             DrawOutline(hd.Boundary, border, selected ? 3f : 2f);
 
-            // Name badge: a small pill above the button.
+            GUI.matrix = m;
+
+            // Name badge: a small pill above the button, always upright for readability.
             GUIContent name = new GUIContent(hd.DisplayName);
             Vector2 textSize = BlueStonez.label_interparkbold_11pt.CalcSize(name);
             Rect tagRect = new Rect(hd.Boundary.center.x - textSize.x / 2 - 8, hd.Boundary.y - 22, textSize.x + 16, 20);
@@ -285,9 +302,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             case EventType.MouseDrag:
                 if (_dragging && !string.IsNullOrEmpty(_selectedId))
                 {
-                    Vector2 center = mouse - _dragOffset;
-                    center.x = Mathf.Clamp(center.x, 0, Screen.width);
-                    center.y = Mathf.Clamp(center.y, _toolbarRect.height + 24f, Screen.height);
+                    Vector2 center = ClampDragCenter(mouse - _dragOffset);
                     float scale = GetScale(handles, _selectedId);
                     MobileControlLayout.SetPixels(_selectedId, center, scale);
                     TouchInput.Instance.ApplyLayout();
@@ -343,7 +358,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
         if (_hintText == null)
         {
-            _hintText = new MeshGUIText("Drag buttons to move them, pinch to resize.", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
+            _hintText = new MeshGUIText("Drag to move, pinch to resize, twist to rotate the D-Pad.", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
             HudStyleUtility.Instance.SetBlueStyle(_hintText);
             _hintText.Scale = new Vector2(0.6f, 0.6f);
         }
@@ -358,6 +373,35 @@ public class MobileControlLayoutEditor : MonoBehaviour
         foreach (TouchInput.LayoutHandle h in handles)
             if (h.Id == id) return h.Scale;
         return 1f;
+    }
+
+    // Keeps the dragged control's full footprint on screen: the center can't come closer to an
+    // edge than half the control's size (plus it stays below the editor toolbar), so a control
+    // can never be dragged off-screen and lost.
+    private Vector2 ClampDragCenter(Vector2 center)
+    {
+        float halfW = 24f;
+        float halfH = 24f;
+        if (!string.IsNullOrEmpty(_selectedId) && TouchInput.Exists)
+        {
+            List<TouchInput.LayoutHandle> handles = TouchInput.Instance.GetLayoutHandles();
+            for (int i = 0; i < handles.Count; i++)
+            {
+                if (handles[i].Id == _selectedId)
+                {
+                    halfW = handles[i].Boundary.width * 0.5f;
+                    halfH = handles[i].Boundary.height * 0.5f;
+                    break;
+                }
+            }
+        }
+
+        float maxX = Mathf.Max(halfW, Screen.width - halfW);
+        float maxY = Mathf.Max(halfH, Screen.height - halfH);
+        float minY = Mathf.Max(_toolbarRect.height + halfH, halfH);
+        center.x = Mathf.Clamp(center.x, Mathf.Min(halfW, maxX), maxX);
+        center.y = Mathf.Clamp(center.y, Mathf.Min(minY, maxY), maxY);
+        return center;
     }
 
     private static string DisplayName(List<TouchInput.LayoutHandle> handles, string id)

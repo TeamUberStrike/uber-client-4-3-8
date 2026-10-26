@@ -31,9 +31,10 @@ public class TouchButtonCircle : TouchButton
     }
 
     // Sets position (GUI-space center) and scale together; used by the layout editor.
+    // The floor matches MobileControlLayout.MinScale so buttons can't be shrunk into dots.
     public void SetLayout(Vector2 center, float scale)
     {
-        LayoutScale = Mathf.Max(0.25f, scale);
+        LayoutScale = Mathf.Max(0.8f, scale);
         _centerPosition = center;
         RecomputeBoundary();
     }

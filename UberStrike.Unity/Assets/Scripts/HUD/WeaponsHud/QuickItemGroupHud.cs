@@ -322,8 +322,13 @@ public class QuickItemGroupHud
         // Vertical stack anchored to the right upper corner, directly below the weapon changer.
         float s = Mathf.Clamp(Screen.height / 720f, 1f, 2.2f);
         float x = Screen.width - 60f * s;
-        float y0 = 105f + 150f * s;
-        return new Vector2(x, y0 + index * 40f * s);
+        float y = (105f + 150f * s) + index * 40f * s;
+
+        // Keep the whole slot icon (~64px+ at scale 1) inside the display on any resolution.
+        float half = 64f;
+        x = Mathf.Clamp(x, half, Mathf.Max(half, Screen.width - half));
+        y = Mathf.Clamp(y, half, Mathf.Max(half, Screen.height - half));
+        return new Vector2(x, y);
     }
 
     public Rect GetCombinedRect()

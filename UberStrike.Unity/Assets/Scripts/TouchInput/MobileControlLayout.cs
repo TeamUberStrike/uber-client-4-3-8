@@ -19,11 +19,15 @@ public static class MobileControlLayout
         public float Nx;        // normalized GUI-space center X (0..1 of screen width)
         public float Ny;        // normalized GUI-space center Y (0..1 of screen height)
         public float Scale = 1f;
+        public float Rotation;  // degrees, D-pad only
     }
 
     private const string PrefsKey = "MobileControlLayout";
-    private const float MinScale = 0.5f;
-    private const float MaxScale = 2.5f;
+    // Controls can't be shrunk below 0.8x (keeps buttons comfortably usable) and cap at 2.5x.
+    public const float MinScale = 0.8f;
+    public const float MaxScale = 2.5f;
+    public const float MinRotation = -90f;
+    public const float MaxRotation = 90f;
 
     // True while the in-game layout editor is open (read by TouchController to suspend live input).
     public static bool EditMode;
@@ -39,9 +43,9 @@ public static class MobileControlLayout
 
     /// <summary>
     /// Returns the saved placement for <paramref name="id"/>, or seeds one from the supplied default
-    /// pixel center / scale if none exists yet.
+    /// pixel center / scale / rotation if none exists yet.
     /// </summary>
-    public static Placement GetOrDefault(string id, Vector2 defaultGuiCenter, float defaultScale)
+    public static Placement GetOrDefault(string id, Vector2 defaultGuiCenter, float defaultScale, float defaultRotation = 0f)
     {
         EnsureLoaded();
         Placement p;
@@ -52,6 +56,7 @@ public static class MobileControlLayout
                 Nx = Mathf.Clamp01(defaultGuiCenter.x / Mathf.Max(1f, Screen.width)),
                 Ny = Mathf.Clamp01(defaultGuiCenter.y / Mathf.Max(1f, Screen.height)),
                 Scale = Mathf.Clamp(defaultScale, MinScale, MaxScale),
+                Rotation = defaultRotation,
             };
             _map[id] = p;
         }
@@ -81,6 +86,14 @@ public static class MobileControlLayout
             p.Scale = Mathf.Clamp(scale, MinScale, MaxScale);
     }
 
+    public static void SetRotation(string id, float rotation)
+    {
+        EnsureLoaded();
+        Placement p;
+        if (_map.TryGetValue(id, out p))
+            p.Rotation = Mathf.Clamp(rotation, MinRotation, MaxRotation);
+    }
+
     public static void Save()
     {
         EnsureLoaded();
@@ -90,7 +103,8 @@ public static class MobileControlLayout
             sb.Append(kv.Key).Append(':')
               .Append(kv.Value.Nx.ToString("R", CultureInfo.InvariantCulture)).Append(',')
               .Append(kv.Value.Ny.ToString("R", CultureInfo.InvariantCulture)).Append(',')
-              .Append(kv.Value.Scale.ToString("R", CultureInfo.InvariantCulture)).Append(';');
+              .Append(kv.Value.Scale.ToString("R", CultureInfo.InvariantCulture)).Append(',')
+              .Append(kv.Value.Rotation.ToString("R", CultureInfo.InvariantCulture)).Append(';');
         }
         PlayerPrefs.SetString(PrefsKey, sb.ToString());
         PlayerPrefs.Save();
@@ -119,11 +133,21 @@ public static class MobileControlLayout
                 && float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out ny)
                 && float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out sc))
             {
+                // Layouts saved before rotation support keep the classic 15° D-pad tilt.
+                float rot = 15f;
+                if (parts.Length >= 4)
+                {
+                    float parsedRot;
+                    if (float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out parsedRot))
+                        rot = Mathf.Clamp(parsedRot, MinRotation, MaxRotation);
+                }
+
                 _map[id] = new Placement
                 {
                     Nx = Mathf.Clamp01(nx),
                     Ny = Mathf.Clamp01(ny),
                     Scale = Mathf.Clamp(sc, MinScale, MaxScale),
+                    Rotation = rot,
                 };
             }
         }

@@ -286,28 +286,100 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private float DefaultButtonScale()
     {
-        return Mathf.Clamp(Screen.height / 720f, 1f, 2.2f);
+        // Comfortably big default controls: ~1.25x the old size with a higher floor, so the
+        // buttons are easy to hit out of the box (the layout editor can resize them within the
+        // MobileControlLayout.MinScale..MaxScale limits).
+        return Mathf.Clamp(Screen.height / 720f * 1.25f, 1.25f, 2.5f);
     }
 
     private Vector2 DefaultGuiCenterFor(string id)
     {
         // Spread the default positions with the same scale as the button sizes, so bigger
-        // buttons do not overlap each other.
+        // buttons do not overlap each other. Every center is then clamped so the control's
+        // full footprint stays inside the screen on any resolution/scale.
         float s = DefaultButtonScale();
+        Vector2 c;
+        float halfW, halfH;
         switch (id)
         {
-            case "fire": return new Vector2(Screen.width - 160 * s, Screen.height - 170 * s);
-            case "secondaryFire": return new Vector2(Screen.width - 64 * s, Screen.height - 234 * s);
-            case "multiSecondaryFire": return new Vector2(Screen.width - 60 * s, 440 * s);
-            case "jump": return new Vector2(Screen.width - 88 * s, Screen.height - 72 * s);
-            case "crouch": return new Vector2(Screen.width - 255 * s, Screen.height - 116 * s);
-            case "menu": return new Vector2(30 * s, 200 * s);
-            case "chat": return new Vector2(30 * s, 260 * s);
-            case "score": return new Vector2(30 * s, 320 * s);
-            case "weaponChanger": return new Vector2(Screen.width - 95 * s, 105 * s);
-            case "dpad": return new Vector2(25f + 399f * s / 2f, Screen.height - 256f + 209f * s / 2f);
-            default: return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            case "fire":
+                c = new Vector2(Screen.width - 160 * s, Screen.height - 170 * s);
+                halfW = TexSize(MobileIcons.FireIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "secondaryFire":
+                c = new Vector2(Screen.width - 64 * s, Screen.height - 234 * s);
+                halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "multiSecondaryFire":
+                c = new Vector2(Screen.width - 60 * s, 440 * s);
+                halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "jump":
+                c = new Vector2(Screen.width - 88 * s, Screen.height - 72 * s);
+                halfW = TexSize(MobileIcons.JumpIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "crouch":
+                c = new Vector2(Screen.width - 255 * s, Screen.height - 116 * s);
+                halfW = TexSize(MobileIcons.CrouchIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "menu":
+                c = new Vector2(30 * s, 200 * s);
+                halfW = TexSize(MobileIcons.MenuIcon, 64) * s * 0.5f; halfH = halfW;
+                break;
+            case "chat":
+                c = new Vector2(30 * s, 260 * s);
+                halfW = TexSize(MobileIcons.ChatIcon, 64) * s * 0.5f; halfH = halfW;
+                break;
+            case "score":
+                c = new Vector2(30 * s, 320 * s);
+                halfW = TexSize(MobileIcons.ScoreboardIcon, 64) * s * 0.5f; halfH = halfW;
+                break;
+            case "weaponChanger":
+                c = new Vector2(Screen.width - 95 * s, 105 * s);
+                halfW = WeaponIconSize() * s * 0.5f; halfH = halfW;
+                break;
+            case "dpad":
+            {
+                float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
+                float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+                c = new Vector2(25f + dw * s / 2f, Screen.height - 256f + dh * s / 2f);
+                // The default D-pad sits at 15°. Its axis-aligned footprint is wider than the
+                // unrotated rect, so clamp with the rotated extents to guarantee it stays
+                // fully inside the display at any scale/resolution.
+                float rad = 15f * Mathf.Deg2Rad;
+                float cosR = Mathf.Cos(rad);
+                float sinR = Mathf.Sin(rad);
+                halfW = (dw * cosR + dh * sinR) * s * 0.5f;
+                halfH = (dh * cosR + dw * sinR) * s * 0.5f;
+                break;
+            }
+            default:
+                return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         }
+        return ClampCenterToScreen(c, halfW, halfH);
+    }
+
+    private static float TexSize(Texture tex, float fallback)
+    {
+        return (tex != null) ? tex.width : fallback;
+    }
+
+    private static float WeaponIconSize()
+    {
+        if (MobileIcons.WeaponIcons != null && MobileIcons.WeaponIcons.Length > 0 && MobileIcons.WeaponIcons[0] != null)
+            return MobileIcons.WeaponIcons[0].width;
+        return 64f;
+    }
+
+    // Keeps a control's center such that its whole footprint (half extents given) stays on
+    // screen. If the control is bigger than the screen, its center is forced to the middle.
+    private static Vector2 ClampCenterToScreen(Vector2 center, float halfW, float halfH)
+    {
+        float maxX = Mathf.Max(halfW, Screen.width - halfW);
+        float maxY = Mathf.Max(halfH, Screen.height - halfH);
+        center.x = Mathf.Clamp(center.x, Mathf.Min(halfW, maxX), maxX);
+        center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
+        return center;
     }
 
     private static string DisplayNameFor(string id)
@@ -377,13 +449,15 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (Dpad != null)
         {
             // The D-pad is editable like the buttons: stored placement (id "dpad") drives its
-            // top-left position AND its uniform Scale (layout editor drag + pinch).
-            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), baseScale);
+            // top-left position, its uniform Scale (layout editor drag + pinch) and its
+            // Rotation (layout editor twist), seeded with the classic 15° tilt.
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), baseScale, 15f);
             Vector2 c = MobileControlLayout.ToPixels(dp);
             float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
             float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
             Dpad.Scale = dp.Scale;
             Dpad.TopLeftPosition = new Vector2(c.x - dw * dp.Scale / 2f, c.y - dh * dp.Scale / 2f);
+            Dpad.Rotation = dp.Rotation;
         }
 
         if (HudAssets.Exists && WeaponsHud.Instance.QuickItems.Group != null)
