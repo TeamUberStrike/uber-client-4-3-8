@@ -22,20 +22,13 @@ public class ProgressPopupDialog : GeneralPopupDialog
     protected override void DrawPopupWindow()
     {
         GUI.Label(new Rect(17, 95, _size.x - 34, 32), Text, BlueStonez.label_interparkbold_11pt);
-        if (ApplicationDataManager.IsMobile || ForceWaitingTexture)
+        if (_progress != null)
         {
-            WaitingTexture.Draw(new Vector2(_size.x / 2, 160));
+            DrawLevelBar(new Rect(17, 125, _size.x - 34, 16), _progress(), ColorScheme.ProgressBar);
         }
         else
         {
-            if (_progress != null)
-            {
-                DrawLevelBar(new Rect(17, 125, _size.x - 34, 16), _progress(), ColorScheme.ProgressBar);
-            }
-            else
-            {
-                DrawLevelBar(new Rect(17, 125, _size.x - 34, 16), ManualProgress, ColorScheme.ProgressBar);
-            }
+            DrawLevelBar(new Rect(17, 125, _size.x - 34, 16), ManualProgress, ColorScheme.ProgressBar);
         }
     }
 
