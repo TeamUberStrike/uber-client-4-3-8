@@ -346,12 +346,6 @@ public class QuickItemGroupHud
         return r;
     }
 
-    public void RefreshPosition()
-    {
-        if (_quickItemsGroup == null) return;
-        ResetQuickItemsTransform();
-    }
-
     private Animatable2DGroup _quickItemsGroup;
     private List<QuickItemHud> _quickItemSlots;
 

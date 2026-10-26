@@ -221,9 +221,8 @@ public class TouchInput : MonoSingleton<TouchInput>
         Shooter.Boundary = new Rect(0, 0, Screen.width, Screen.height);
         // Tap-anywhere-to-fire is intentionally not hooked: firing is always the on-screen Fire
         // button in both joystick and D-pad modes.
-        Shooter.IgnoreRect(WeaponChanger.Boundary);
-        Shooter.IgnoreRect(Joystick.Boundary); // includes dpad boundary
-        Shooter.IgnoreRect(new Rect(0, menu.Boundary.y, score.Boundary.width, score.Boundary.yMax - menu.Boundary.y));
+        // Button/D-pad/joystick/quick-item zones are fed to the Shooter by RefreshShooterIgnores()
+        // (on state changes and layout edits) so they always match the current state, mode and layout.
 
         AimHelpText = new MeshGUIText("Drag finger to aim", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(AimHelpText);
@@ -391,24 +390,9 @@ public class TouchInput : MonoSingleton<TouchInput>
             WeaponsHud.Instance.QuickItems.RefreshPosition();
         }
 
-        // Keep the look/aim area clear of the action buttons: a touch that starts on fire/jump/
-        // crouch/secondary must not also become the aim or second-finger-fire finger.
-        if (Shooter != null && Buttons != null)
-        {
-            var btnRects = new List<Rect>();
-            TouchKeyType[] actionKeys = { TouchKeyType.PrimaryFire, TouchKeyType.SecondaryFire, TouchKeyType.MultiSecondaryFire, TouchKeyType.Jump, TouchKeyType.Crouch };
-            foreach (TouchKeyType k in actionKeys)
-            {
-                TouchButton b;
-                // Only ENABLED buttons claim their area. In D-pad mode the standalone
-                // fire/jump/crouch buttons are disabled but kept their old boundaries, so their
-                // rects swallowed taps on the right side of the screen — the natural tap-to-fire
-                // spot — and the second finger never bound as fire.
-                if (Buttons.TryGetValue((int)k, out b) && b != null && b.Enabled)
-                    btnRects.Add(b.Boundary);
-            }
-            Shooter.SetButtonIgnores(btnRects.ToArray());
-        }
+        // Control positions/scales may have changed (layout editor, mode toggle, resolution),
+        // so rebuild the Shooter's ignore zones once here.
+        RefreshShooterIgnores();
     }
 
     // Snapshot of every editable control for the layout editor (id, current rect, icon, scale).
@@ -574,6 +558,9 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
         }
+
+        // The scope buttons may have flipped on/off; rebuild the Shooter's ignore zones.
+        RefreshShooterIgnores();
     }
 
     private void SetupRects()
@@ -616,7 +603,11 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             bool showLoadout = !GamePageManager.IsCurrentPage(PageType.PreGame) &&
                 _stateMachine.CurrentStateId == (int)TouchState.Death;
-            Buttons[(int)TouchKeyType.Loadout].Enabled = showLoadout;
+            if (Buttons[(int)TouchKeyType.Loadout].Enabled != showLoadout)
+            {
+                Buttons[(int)TouchKeyType.Loadout].Enabled = showLoadout;
+                RefreshShooterIgnores();
+            }
         }
 
         if (!GameState.HasCurrentGame)
@@ -674,6 +665,46 @@ public class TouchInput : MonoSingleton<TouchInput>
             int state = _stateMachine.CurrentStateId;
             _stateMachine.SetState(state);
         }
+    }
+
+    // Rebuilds the Shooter's ignore zones from every on-screen control that is currently
+    // enabled. Triggered on discrete events only — entering a state, layout changes
+    // (ApplyLayout), walking/input toggles, weapon changes and the loadout-button flip — so
+    // the zones always match the current state, input mode and custom layout without any
+    // per-frame cost. Fingers that start on the D-pad, joystick, fire/jump/... buttons,
+    // quick items, weapon changer or scope swipe belong to those controls and must never count
+    // as the look (first) or shoot (second) finger.
+    private void RefreshShooterIgnores()
+    {
+        if (Shooter == null) return;
+
+        _shooterIgnoreBuffer.Clear();
+
+        if (Buttons != null)
+        {
+            // Iterate ALL buttons rather than a fixed key list: the pause/menu button, chat,
+            // score, fire, jump, crouch, secondary, loadout — every button claims its current
+            // (layout-editor-variable) area while enabled, so a finger that starts on any of
+            // them never counts as the aim or fire finger.
+            foreach (TouchButton b in Buttons.Values)
+            {
+                if (b != null && b.Enabled)
+                    _shooterIgnoreBuffer.Add(b.Boundary);
+            }
+        }
+
+        if (WeaponChanger != null && WeaponChanger.Enabled)
+            _shooterIgnoreBuffer.Add(WeaponChanger.Boundary);
+        if (ConsumableChanger != null && ConsumableChanger.Enabled)
+            _shooterIgnoreBuffer.Add(ConsumableChanger.Boundary);
+        if (Dpad != null && Dpad.Enabled)
+            _shooterIgnoreBuffer.Add(Dpad.DpadBoundary);
+        if (Joystick != null && Joystick.Enabled)
+            _shooterIgnoreBuffer.Add(Joystick.Boundary);
+        if (ScopeSwipe != null && ScopeSwipe.Enabled)
+            _shooterIgnoreBuffer.Add(ScopeSwipe.Boundary);
+
+        Shooter.SetIgnoreRects(_shooterIgnoreBuffer);
     }
 
     private void LateUpdate()
@@ -953,6 +984,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1017,12 +1050,13 @@ public class TouchInput : MonoSingleton<TouchInput>
             if (qiRect.width <= 0 || qiRect.height <= 0)
                 qiRect = new Rect(Screen.width * 0.9f, Screen.height * 0.3f, 63, 60);
             TouchInput.Instance.ConsumableChanger.Boundary = new Rect(qiRect.x, qiRect.y, qiRect.width, qiRect.height);
-            TouchInput.Instance.Shooter.IgnoreRect(TouchInput.Instance.ConsumableChanger.Boundary);
 
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
 
             TouchInput.Instance.ScopeSwipe.Enabled = false;
             TouchInput.Instance.Shooter.Enabled = true;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1074,6 +1108,8 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
                 TouchInput.Instance.UpdateFireMode(false);
             }
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnUpdate()
@@ -1129,6 +1165,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1193,6 +1231,8 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.ScopeSwipe.Enabled = true;
             else
                 TouchInput.Instance.ScopeSwipe.Enabled = false;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1242,6 +1282,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1282,6 +1324,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1332,6 +1376,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
                 TouchInput.Instance.Dpad.Enabled = false;
             }
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1513,6 +1559,9 @@ public class TouchInput : MonoSingleton<TouchInput>
     private StateMachine _stateMachine;
 
     private int _previousState;
+
+    // Reused buffer for RefreshShooterIgnores() to avoid re-allocating on every refresh.
+    private readonly List<Rect> _shooterIgnoreBuffer = new List<Rect>();
 
     #endregion
 }
