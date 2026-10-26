@@ -334,9 +334,13 @@ public class TouchInput : MonoSingleton<TouchInput>
                 halfW = TexSize(MobileIcons.ScoreboardIcon, 64) * s * 0.5f; halfH = halfW;
                 break;
             case "weaponChanger":
+            {
                 c = new Vector2(Screen.width - 95 * s, 105 * s);
-                halfW = WeaponIconSize() * s * 0.5f; halfH = halfW;
+                Vector2 wd = WeaponIconDimensions();
+                halfW = wd.x * s * 0.5f;
+                halfH = wd.y * s * 0.5f;
                 break;
+            }
             case "dpad":
             {
                 float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
@@ -363,11 +367,11 @@ public class TouchInput : MonoSingleton<TouchInput>
         return (tex != null) ? tex.width : fallback;
     }
 
-    private static float WeaponIconSize()
+    private static Vector2 WeaponIconDimensions()
     {
         if (MobileIcons.WeaponIcons != null && MobileIcons.WeaponIcons.Length > 0 && MobileIcons.WeaponIcons[0] != null)
-            return MobileIcons.WeaponIcons[0].width;
-        return 64f;
+            return new Vector2(MobileIcons.WeaponIcons[0].width, MobileIcons.WeaponIcons[0].height);
+        return new Vector2(64f, 64f);
     }
 
     // Keeps a control's center such that its whole footprint (half extents given) stays on
@@ -451,8 +455,10 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", DefaultGuiCenterFor("weaponChanger"), baseScale);
             Vector2 wc = MobileControlLayout.ToPixels(wp);
-            float wHalf = WeaponIconSize() * wp.Scale * 0.5f;
-            wc = ClampCenterToScreen(wc, wHalf, wHalf);
+            // Use the icon's REAL half extents per axis (width/height differ: 155x77), matching
+            // the drag clamp — clamping with the width for both axes pulled the changer back down.
+            Vector2 wd = WeaponIconDimensions();
+            wc = ClampCenterToScreen(wc, wd.x * wp.Scale * 0.5f, wd.y * wp.Scale * 0.5f);
             WeaponChanger.LayoutScale = wp.Scale;
             WeaponChanger.Position = wc;
         }

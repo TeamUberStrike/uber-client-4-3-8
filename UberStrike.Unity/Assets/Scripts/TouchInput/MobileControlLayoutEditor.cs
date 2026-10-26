@@ -28,7 +28,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private int _dragFingerId = -1; // finger that armed the drag; only it may move the control
     private Vector2 _dragStartPos;  // GUI-space position where the pointer went down
     private Vector2 _dragOffset;
-    private Rect _toolbarRect;
+    private Rect _toolbarButtonsRect;   // raw-pixel rect of the editor toolbar buttons (reserved field)
 
     // Finger/pointer must move this far (squared, 10px) before a touch becomes a drag, so a
     // second finger can still start a pinch on the control.
@@ -148,7 +148,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         switch (t.phase)
         {
             case TouchPhase.Began:
-                if (_toolbarRect.Contains(pos)) return;
+                if (_toolbarButtonsRect.Contains(pos)) return; // toolbar owns this area
                 if (SelectControlAtGui(pos))
                 {
                     _dragArmed = true;
@@ -250,7 +250,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private bool SelectControlAtGui(Vector2 guiPos)
     {
         if (!TouchInput.Exists) return false;
-        if (guiPos.y < _toolbarRect.yMax) return false; // the toolbar owns this area
+        if (_toolbarButtonsRect.Contains(guiPos)) return false; // the toolbar buttons own this area
 
         List<TouchInput.LayoutHandle> handles = TouchInput.Instance.GetLayoutHandles();
         for (int i = handles.Count - 1; i >= 0; i--) // top-most first
@@ -309,11 +309,15 @@ public class MobileControlLayoutEditor : MonoBehaviour
     {
         List<TouchInput.LayoutHandle> handles = TouchInput.Instance.GetLayoutHandles();
 
-        // Reserve a top toolbar (next to the ribbon's PROFILE / CHAT tabs); drags that start here
-        // are ignored (let buttons/slider work). The toolbar buttons are drawn in MobileMenuScale
-        // space, so the exclusion zone must be their RAW pixel footprint, not a fixed 96px.
-        float barH = (2f + 34f + 8f) * MobileMenuScale.Scale;
-        _toolbarRect = new Rect(0, 0, Screen.width, barH);
+        // The toolbar buttons (Switch mode / Reset / Cancel / Save) are drawn in MobileMenuScale
+        // space, so compute their RAW pixel footprint: only this rect is reserved — controls can
+        // be moved freely everywhere else, including the top corners next to the toolbar.
+        float ms = MobileMenuScale.Scale;
+        float bw = 140f;
+        float bh = 34f;
+        float totalW = 4f * bw + 3f * 8f;
+        float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
+        _toolbarButtonsRect = new Rect(x0 * ms, 2f * ms, totalW * ms, bh * ms);
 
         DrawMovementPreview();
 
@@ -394,7 +398,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             case EventType.MouseDown:
                 if (e.button != 0) break; // only the left pointer selects/arms; the right button is the second pinch finger
                 if (_pinchActive) break; // a pinch owns the input
-                if (_toolbarRect.Contains(mouse)) break; // toolbar owns this click
+                if (_toolbarButtonsRect.Contains(mouse)) break; // toolbar buttons own this click
                 if (SelectControlAtGui(mouse))
                 {
                     // Armed, not yet dragging — a second pointer can still start a pinch.
@@ -493,9 +497,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
     }
 
     // Keeps the dragged control's full footprint on screen: the center can't come closer to an
-    // edge than half the control's size (plus it stays below the editor toolbar), so a control
-    // can never be dragged off-screen and lost. For the rotated D-pad the clamp uses its
-    // axis-aligned footprint at the current degree, so its corners can't poke out either.
+    // edge than half the control's size, so a control can never be dragged off-screen and lost.
+    // Movement is otherwise free — controls may go anywhere on screen, including up to the top.
+    // For the rotated D-pad the clamp uses its axis-aligned footprint at the current degree.
     private Vector2 ClampDragCenter(Vector2 center)
     {
         float halfW = 24f;
@@ -527,9 +531,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
         float maxX = Mathf.Max(halfW, Screen.width - halfW);
         float maxY = Mathf.Max(halfH, Screen.height - halfH);
-        float minY = Mathf.Max(_toolbarRect.height + halfH, halfH);
         center.x = Mathf.Clamp(center.x, Mathf.Min(halfW, maxX), maxX);
-        center.y = Mathf.Clamp(center.y, Mathf.Min(minY, maxY), maxY);
+        center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
         return center;
     }
 
