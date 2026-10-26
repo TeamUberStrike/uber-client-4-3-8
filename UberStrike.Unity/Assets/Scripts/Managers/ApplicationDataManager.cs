@@ -126,10 +126,10 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
 #endif
 
-#if UNITY_ANDROID || UNITY_IPHONE
-
     [SerializeField]
     private Texture2D backgroundTexture;
+
+#if UNITY_ANDROID || UNITY_IPHONE
 
     private float _backgroundAlpha = 1.0f;
 
