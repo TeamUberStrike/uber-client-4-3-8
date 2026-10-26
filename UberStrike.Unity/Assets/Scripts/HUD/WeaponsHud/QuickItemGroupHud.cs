@@ -262,6 +262,12 @@ public class QuickItemGroupHud
         }
     }
 
+    public void RefreshPosition()
+    {
+        if (_quickItemsGroup == null) return;
+        ResetQuickItemsTransform();
+    }
+
     private void OnScreenResolutionChange(ScreenResolutionEvent ev)
     {
         ResetQuickItemsTransform();
