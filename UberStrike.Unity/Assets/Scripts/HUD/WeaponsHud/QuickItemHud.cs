@@ -183,6 +183,18 @@ public class QuickItemHud
         }
     }
 
+    public void DisableMeshes()
+    {
+        _recharge.IsEnabled = false;
+        _cooldown.IsEnabled = false;
+        _cooldownFlash.IsEnabled = false;
+        _background.IsEnabled = false;
+        _icon.IsEnabled = false;
+        _selection.IsEnabled = false;
+        _descriptionText.Hide();
+        _countText.Hide();
+    }
+
     public void SetKeyBinding(string binding)
     {
         if (!ApplicationDataManager.IsMobile)
@@ -193,6 +205,13 @@ public class QuickItemHud
 
     public void SetRechargeBarVisible(bool isVisible)
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (TouchInput.IsSupported)
+        {
+            _recharge.IsEnabled = false;
+            return;
+        }
+#endif
         _recharge.IsEnabled = isVisible;
     }
 
@@ -286,6 +305,9 @@ public class QuickItemHud
         }
         else
         {
+    #if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (!TouchInput.IsSupported)
+#endif
             _selection.IsEnabled = selected;
         }
     }
