@@ -182,6 +182,16 @@ public class TouchInput : MonoSingleton<TouchInput>
             new Rect(c.x - halfW, c.y - halfH, halfW * 2f, halfH * 2f)));
     }
 
+    private static Rect FindSeededRect(string id)
+    {
+        for (int i = 0; i < _defaultSeedRects.Count; i++)
+        {
+            if (_defaultSeedRects[i].Key == id)
+                return _defaultSeedRects[i].Value;
+        }
+        return new Rect(0f, 0f, 0f, 0f);
+    }
+
     // Quick-item slots seed their defaults from QuickItemGroupHud.DefaultSlotCenter; give them
     // the same separate-and-register treatment as the other default markers.
     public static Vector2 SeparateAndRegisterSlot(string id, Vector2 c, float half)
@@ -455,15 +465,15 @@ public class TouchInput : MonoSingleton<TouchInput>
                 halfW = TexSize(MobileIcons.CrouchIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "menu":
-                c = new Vector2(30 * s, 200 * s);
+                c = new Vector2(30 * s, 140 * s);
                 halfW = TexSize(MobileIcons.MenuIcon, 64) * s * 0.5f; halfH = halfW;
                 break;
             case "chat":
-                c = new Vector2(30 * s, 260 * s);
+                c = new Vector2(30 * s, 200 * s);
                 halfW = TexSize(MobileIcons.ChatIcon, 64) * s * 0.5f; halfH = halfW;
                 break;
             case "score":
-                c = new Vector2(30 * s, 320 * s);
+                c = new Vector2(30 * s, 260 * s);
                 halfW = TexSize(MobileIcons.ScoreboardIcon, 64) * s * 0.5f; halfH = halfW;
                 break;
             case "weaponChanger":
@@ -500,6 +510,17 @@ public class TouchInput : MonoSingleton<TouchInput>
         // Keep every freshly seeded default marker away from the ones seeded before it, then
         // clamp inside the screen and remember its rect for the next default.
         c = SeparateFromSeeded(id, c, halfW, halfH);
+
+        // The left column keeps its classic top-to-bottom order even when separation moves the
+        // buttons around on short screens: pause (menu) highest, chat in the middle,
+        // screen (score) lowest.
+        if (id == "chat" || id == "score")
+        {
+            Rect sibling = FindSeededRect(id == "chat" ? "menu" : "chat");
+            if (sibling.width > 0f && c.y < sibling.yMax + 16f * s + halfH)
+                c.y = sibling.yMax + 16f * s + halfH;
+        }
+
         c = ClampCenterToScreen(c, halfW, halfH);
         RegisterSeededRect(id, c, halfW, halfH);
         return c;
