@@ -80,6 +80,11 @@ public class QuickItemGroupHud
     // Draws the three items as plain icons at their saved placements - identical to the controls editor.
     public void DrawSimple()
     {
+        // The three items share ONE vertical column; its x follows the first item's placement
+        // so the whole column can be moved independently of the weapon changer.
+        MobileControlLayout.Placement p0 = MobileControlLayout.GetOrDefault("quickSlot1", DefaultSlotCenter(0), 1f);
+        float itemColumnX = MobileControlLayout.ToPixels(p0).x;
+
         for (int i = 0; i < _quickItemSlots.Count; i++)
         {
             QuickItemHud q = _quickItemSlots[i];
@@ -90,13 +95,18 @@ public class QuickItemGroupHud
             Vector2 center = MobileControlLayout.ToPixels(qp);
             float baseSize = Mathf.Max(icon.width, icon.height);
             float side = baseSize * 0.8f * qp.Scale;
+            center.x = itemColumnX;
             center = ClampSlotCenter(center, side * 0.5f);
+            center = KeepBelowWeaponChanger(center, side * 0.5f, i);
             GUI.DrawTexture(new Rect(center.x - side / 2, center.y - side / 2, side, side), icon, ScaleMode.StretchToFill, true);
         }
     }
 
     public Rect GetSimpleCombinedRect()
     {
+        MobileControlLayout.Placement p0 = MobileControlLayout.GetOrDefault("quickSlot1", DefaultSlotCenter(0), 1f);
+        float itemColumnX = MobileControlLayout.ToPixels(p0).x;
+
         Rect r = new Rect(0, 0, 0, 0);
         bool first = true;
         for (int i = 0; i < _quickItemSlots.Count; i++)
@@ -106,7 +116,9 @@ public class QuickItemGroupHud
             MobileControlLayout.Placement qp = MobileControlLayout.GetOrDefault("quickSlot" + (i + 1), DefaultSlotCenter(i), 1f);
             Vector2 center = MobileControlLayout.ToPixels(qp);
             float side = 130f * qp.Scale;
+            center.x = itemColumnX;
             center = ClampSlotCenter(center, side * 0.5f);
+            center = KeepBelowWeaponChanger(center, side * 0.5f, i);
             Rect sr = new Rect(center.x - side / 2, center.y - side / 2, side, side);
             if (first) { r = sr; first = false; }
             else
@@ -330,16 +342,45 @@ public class QuickItemGroupHud
 
     public static Vector2 DefaultSlotCenter(int index)
     {
-        // Vertical stack anchored to the right upper corner, directly below the weapon changer.
+        // Vertical stack anchored to the right edge, ALWAYS below the weapon changer.
         float s = Mathf.Clamp(Screen.height / 720f, 1f, 2.2f);
         float x = Screen.width - 60f * s;
-        float y = (105f + 150f * s) + index * 40f * s;
+
+        // Stack under the changer's actual bottom edge (or its computed default when the
+        // changer does not exist yet), with fixed spacing so the item rects never touch
+        // each other at any scale.
+        float changerBottom;
+        if (TouchInput.Exists && TouchInput.Instance.WeaponChanger != null)
+            changerBottom = TouchInput.Instance.WeaponChanger.Boundary.yMax;
+        else
+            changerBottom = (105f + 77f / 2f) * Mathf.Clamp(Screen.height / 720f * 1.25f, 1.6f, 3.75f);
+
+        float y = changerBottom + 48f + index * 70f;
 
         // Keep the whole slot icon (~64px+ at scale 1) inside the display on any resolution.
         float half = 64f;
         x = Mathf.Clamp(x, half, Mathf.Max(half, Screen.width - half));
         y = Mathf.Clamp(y, half, Mathf.Max(half, Screen.height - half));
-        return new Vector2(x, y);
+
+        // Finally, check the marker distance against every default seeded so far and move the
+        // slot out of the way when it would overlap another marker.
+        return TouchInput.SeparateAndRegisterSlot("quickSlot" + (index + 1), new Vector2(x, y), 32f);
+    }
+
+    // Keeps a slot below the weapon changer's ACTUAL current rect. Only its Y is constrained —
+    // the items keep their own x and can be moved freely anywhere below the changer. The
+    // per-index step only kicks in for slots that would otherwise land on the changer, so a
+    // saved row that sits above it snaps into a non-overlapping stack instead of piling up.
+    public static Vector2 KeepBelowWeaponChanger(Vector2 center, float half, int index)
+    {
+        if (TouchInput.Exists && TouchInput.Instance.WeaponChanger != null)
+        {
+            float changerBottom = TouchInput.Instance.WeaponChanger.Boundary.yMax;
+            float minY = changerBottom + half + 16f + index * (half * 2f + 24f);
+            if (center.y < minY)
+                center.y = minY;
+        }
+        return center;
     }
 
     public Rect GetCombinedRect()

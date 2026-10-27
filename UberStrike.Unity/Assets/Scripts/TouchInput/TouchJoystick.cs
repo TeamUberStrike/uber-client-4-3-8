@@ -59,8 +59,15 @@ public class TouchJoystick : TouchBaseControl
                 FingerId = touch.fingerId,
             };
 
-            _joystickBoundary = new Rect(touch.position.x - JoystickTexture.width / 2, touch.position.y - JoystickTexture.height / 2, JoystickTexture.width, JoystickTexture.height);
-
+            // Anchor the wheel at the lower corner of the zone instead of wherever the finger
+            // lands, so the movement wheel always appears in the lower corner. The direction
+            // is measured from the anchor, not from the finger's landing spot.
+            Vector2 anchor = new Vector2(Boundary.xMin + JoystickTexture.width / 2,
+                                         Screen.height - Boundary.yMax + JoystickTexture.height / 2);
+            _finger.StartPos = anchor;
+            _finger.LastPos = anchor;
+            _joystickPos = anchor;
+            _joystickBoundary = new Rect(anchor.x - JoystickTexture.width / 2, anchor.y - JoystickTexture.height / 2, JoystickTexture.width, JoystickTexture.height);
         }
         else if (_finger.FingerId == touch.fingerId)
         {

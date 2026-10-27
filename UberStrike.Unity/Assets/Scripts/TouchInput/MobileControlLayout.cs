@@ -165,6 +165,9 @@ public static class MobileControlLayout
     {
         EnsureLoaded();
         _map.Clear();
+        // The default placements keep their distance from each other via a seeded-rect list in
+        // TouchInput — clear it so the reset re-seeds from scratch.
+        TouchInput.ClearDefaultSeedRects();
     }
 }
 #endif

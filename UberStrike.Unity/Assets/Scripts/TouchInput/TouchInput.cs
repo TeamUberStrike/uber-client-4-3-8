@@ -83,6 +83,118 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     public static bool UseMultiTouch;
 
+    // Screen rects of the default (reset) placements seeded so far. Every new default is
+    // checked against these by distance and pushed away when they would overlap, so no two
+    // default marker rects in the controls editor can ever intersect. Cleared by
+    // MobileControlLayout.ResetAll so a reset re-seeds cleanly.
+    private static readonly List<KeyValuePair<string, Rect>> _defaultSeedRects =
+        new List<KeyValuePair<string, Rect>>();
+
+    public static void ClearDefaultSeedRects()
+    {
+        _defaultSeedRects.Clear();
+    }
+
+    // Gap kept between neighbouring default markers (in pixels).
+    private const float DefaultMarkerGap = 24f;
+
+    // Pairs that are never visible at the same time (per input mode) may share a spot: the
+    // single/multi scope buttons, and the D-pad versus the standalone fire / jump / crouch /
+    // single-input scope buttons (the D-pad only exists in multi-touch mode, those buttons
+    // only in single-input mode).
+    private static bool AreModeSiblings(string a, string b)
+    {
+        if ((a == "secondaryFire" && b == "multiSecondaryFire") ||
+            (a == "multiSecondaryFire" && b == "secondaryFire"))
+            return true;
+
+        bool aSingleOnly = a == "fire" || a == "jump" || a == "crouch" || a == "secondaryFire";
+        bool bSingleOnly = b == "fire" || b == "jump" || b == "crouch" || b == "secondaryFire";
+        return (a == "dpad" && bSingleOnly) || (b == "dpad" && aSingleOnly);
+    }
+
+    // Slides the given rect away from every previously seeded default rect it intersects.
+    // Pushes are tried in an order that keeps the marker on screen (up, left, down, right)
+    // and the pass repeats until the rect no longer touches any of its neighbours.
+    private static Vector2 SeparateFromSeeded(string id, Vector2 c, float halfW, float halfH)
+    {
+        Rect r = new Rect(c.x - halfW, c.y - halfH, halfW * 2f, halfH * 2f);
+
+        int maxPasses = _defaultSeedRects.Count * 2 + 4;
+        for (int pass = 0; pass < maxPasses; pass++)
+        {
+            bool moved = false;
+
+            for (int i = 0; i < _defaultSeedRects.Count; i++)
+            {
+                if (AreModeSiblings(id, _defaultSeedRects[i].Key)) continue;
+                Rect o = _defaultSeedRects[i].Value;
+                if (!r.Overlaps(o)) continue;
+                PushApart(ref r, o);
+                moved = true;
+            }
+
+            if (!moved) break;
+        }
+
+        return r.center;
+    }
+
+    private static void PushApart(ref Rect r, Rect o)
+    {
+        // Up first (tall screens have room), then left / down / right — first candidate whose
+        // resulting rect stays fully inside the display wins.
+        float ny = o.yMin - r.height - DefaultMarkerGap;
+        if (ny >= 0f) { r.y = ny; return; }
+
+        float nx = o.xMin - r.width - DefaultMarkerGap;
+        if (nx >= 0f) { r.x = nx; return; }
+
+        ny = o.yMax + DefaultMarkerGap;
+        if (ny + r.height <= Screen.height) { r.y = ny; return; }
+
+        nx = o.xMax + DefaultMarkerGap;
+        if (nx + r.width <= Screen.width) { r.x = nx; return; }
+
+        // No fully on-screen escape — fall back to the axis of least penetration (the final
+        // screen clamp may leave a residual overlap, but it is the best possible).
+        float left = r.xMax - o.xMin;
+        float right = o.xMax - r.xMin;
+        float top = r.yMax - o.yMin;
+        float bottom = o.yMax - r.yMin;
+        float min = Mathf.Min(left, Mathf.Min(right, Mathf.Min(top, bottom)));
+        if (min == top) r.y = o.yMin - r.height - DefaultMarkerGap;
+        else if (min == bottom) r.y = o.yMax + DefaultMarkerGap;
+        else if (min == left) r.x = o.xMin - r.width - DefaultMarkerGap;
+        else r.x = o.xMax + DefaultMarkerGap;
+    }
+
+    // Records the rect of a freshly seeded default so later defaults keep their distance.
+    // DefaultGuiCenterFor / DefaultSlotCenter run as GetOrDefault arguments on every
+    // ApplyLayout even after their control is seeded, so skip ids that are already recorded.
+    private static void RegisterSeededRect(string id, Vector2 c, float halfW, float halfH)
+    {
+        for (int i = 0; i < _defaultSeedRects.Count; i++)
+        {
+            if (_defaultSeedRects[i].Key == id) return;
+        }
+        _defaultSeedRects.Add(new KeyValuePair<string, Rect>(id,
+            new Rect(c.x - halfW, c.y - halfH, halfW * 2f, halfH * 2f)));
+    }
+
+    // Quick-item slots seed their defaults from QuickItemGroupHud.DefaultSlotCenter; give them
+    // the same separate-and-register treatment as the other default markers.
+    public static Vector2 SeparateAndRegisterSlot(string id, Vector2 c, float half)
+    {
+        c = SeparateFromSeeded(id, c, half, half);
+        float maxX = Mathf.Max(half, Screen.width - half);
+        float maxY = Mathf.Max(half, Screen.height - half);
+        c.x = Mathf.Clamp(c.x, Mathf.Min(half, maxX), maxX);
+        c.y = Mathf.Clamp(c.y, Mathf.Min(half, maxY), maxY);
+        RegisterSeededRect(id, c, half, half);
+        return c;
+    }
+
     public void CheckKeyboardDone()
     {
         // if keyboard is open, detect if it was done
@@ -121,6 +233,8 @@ public class TouchInput : MonoSingleton<TouchInput>
         UseMultiTouch = ApplicationDataManager.ApplicationOptions.UseMultiTouch;
 
         _screenLeftRect = new Rect(0, 0, Screen.width * leftSideRatio, Screen.height);
+
+        CmuneEventHandler.AddListener<ScreenResolutionEvent>(OnScreenResolutionChanged);
 
         _currWeapon = 0;
         IsFiring = false;
@@ -291,6 +405,20 @@ public class TouchInput : MonoSingleton<TouchInput>
         return Mathf.Clamp(Screen.height / 720f * 1.25f, MobileControlLayout.MinScale, MobileControlLayout.MaxScale);
     }
 
+    // The D-pad's default scale: the regular button scale, capped so the D-pad's rotated
+    // footprint (plus a small margin) still fits across the screen width. On a tall phone the
+    // height-based scale reaches 3.75x — a D-pad marker wider than the display that overlapped
+    // every other marker in the editor.
+    public static float DefaultDpadScale(float baseScale)
+    {
+        float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
+        float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+        float rad = 15f * Mathf.Deg2Rad;
+        float aabbW = dw * Mathf.Cos(rad) + dh * Mathf.Sin(rad) + 16f;
+        return Mathf.Clamp(baseScale, MobileControlLayout.MinScale,
+            Mathf.Min(MobileControlLayout.MaxScale, Screen.width / aabbW));
+    }
+
     private Vector2 DefaultGuiCenterFor(string id)
     {
         // Spread the default positions with the same scale as the button sizes, so bigger
@@ -302,11 +430,13 @@ public class TouchInput : MonoSingleton<TouchInput>
         switch (id)
         {
             case "fire":
-                c = new Vector2(Screen.width - 160 * s, Screen.height - 170 * s);
+                c = new Vector2(Screen.width - 160 * s, Screen.height - 184 * s);
                 halfW = TexSize(MobileIcons.FireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "secondaryFire":
-                c = new Vector2(Screen.width - 64 * s, Screen.height - 234 * s);
+                // Slightly further right than the classic spot so its rect stays clear of the
+                // fire button's rect.
+                c = new Vector2(Screen.width - 48 * s, Screen.height - 234 * s);
                 halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "multiSecondaryFire":
@@ -318,7 +448,9 @@ public class TouchInput : MonoSingleton<TouchInput>
                 halfW = TexSize(MobileIcons.JumpIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "crouch":
-                c = new Vector2(Screen.width - 255 * s, Screen.height - 116 * s);
+                // Slightly further left than the classic spot so its rect stays clear of the
+                // fire button's rect.
+                c = new Vector2(Screen.width - 272 * s, Screen.height - 116 * s);
                 halfW = TexSize(MobileIcons.CrouchIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "menu":
@@ -345,21 +477,31 @@ public class TouchInput : MonoSingleton<TouchInput>
             {
                 float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
                 float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
-                c = new Vector2(25f + dw * s / 2f, Screen.height - 256f + dh * s / 2f);
+                // The D-pad's default scale is additionally capped by the screen width: the
+                // height-based scale reaches 3.75x on a tall phone, making the D-pad marker
+                // wider than the display. Seeding happens before the other controls, so they
+                // separate around this (capped) footprint.
+                float ds = DefaultDpadScale(s);
+                c = new Vector2(25f + dw * ds / 2f, Screen.height - 256f + dh * ds / 2f);
                 // The default D-pad sits at 15°. Its axis-aligned footprint is wider than the
                 // unrotated rect, so clamp with the rotated extents to guarantee it stays
                 // fully inside the display at any scale/resolution.
                 float rad = 15f * Mathf.Deg2Rad;
                 float cosR = Mathf.Cos(rad);
                 float sinR = Mathf.Sin(rad);
-                halfW = (dw * cosR + dh * sinR) * s * 0.5f;
-                halfH = (dh * cosR + dw * sinR) * s * 0.5f;
+                halfW = (dw * cosR + dh * sinR) * ds * 0.5f;
+                halfH = (dh * cosR + dw * sinR) * ds * 0.5f;
                 break;
             }
             default:
                 return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         }
-        return ClampCenterToScreen(c, halfW, halfH);
+        // Keep every freshly seeded default marker away from the ones seeded before it, then
+        // clamp inside the screen and remember its rect for the next default.
+        c = SeparateFromSeeded(id, c, halfW, halfH);
+        c = ClampCenterToScreen(c, halfW, halfH);
+        RegisterSeededRect(id, c, halfW, halfH);
+        return c;
     }
 
     private static float TexSize(Texture tex, float fallback)
@@ -439,6 +581,32 @@ public class TouchInput : MonoSingleton<TouchInput>
         // default button size with the screen height (same idea as the mobile menu scale).
         float baseScale = DefaultButtonScale();
 
+        // Seed the D-pad FIRST: it is the biggest default marker, so the other controls
+        // separate around it instead of the D-pad being pushed into the screen edge.
+        if (Dpad != null)
+        {
+            // The D-pad is editable like the buttons: stored placement (id "dpad") drives its
+            // top-left position, its uniform Scale (layout editor drag + pinch) and its
+            // Rotation (layout editor twist), seeded with the classic 15° tilt.
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), DefaultDpadScale(baseScale), 15f);
+            Vector2 c = MobileControlLayout.ToPixels(dp);
+            float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
+            float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+
+            // Clamp with the ROTATED footprint (AABB at the D-pad's current degree) so the
+            // whole cluster stays inside the display at any scale.
+            float rad = dp.Rotation * Mathf.Deg2Rad;
+            float cosR = Mathf.Abs(Mathf.Cos(rad));
+            float sinR = Mathf.Abs(Mathf.Sin(rad));
+            float dHalfW = (dw * cosR + dh * sinR) * dp.Scale * 0.5f;
+            float dHalfH = (dh * cosR + dw * sinR) * dp.Scale * 0.5f;
+            c = ClampCenterToScreen(c, dHalfW, dHalfH);
+
+            Dpad.Scale = dp.Scale;
+            Dpad.TopLeftPosition = new Vector2(c.x - dw * dp.Scale / 2f, c.y - dh * dp.Scale / 2f);
+            Dpad.Rotation = dp.Rotation;
+        }
+
         foreach (var entry in _layoutKeyMap)
         {
             TouchButton b;
@@ -459,6 +627,50 @@ public class TouchInput : MonoSingleton<TouchInput>
             circle.SetLayout(center, p.Scale);
         }
 
+        // The left column keeps its classic order no matter what a saved layout says:
+        // pause (menu) highest, chat in the middle, score (screen) lowest.
+        TouchButton menuBtn, chatBtn, scoreBtn;
+        if (Buttons.TryGetValue((int)TouchKeyType.Menu, out menuBtn) &&
+            Buttons.TryGetValue((int)TouchKeyType.Chat, out chatBtn) &&
+            Buttons.TryGetValue((int)TouchKeyType.Score, out scoreBtn))
+        {
+            TouchButtonCircle menuCircle = menuBtn as TouchButtonCircle;
+            TouchButtonCircle chatCircle = chatBtn as TouchButtonCircle;
+            TouchButtonCircle scoreCircle = scoreBtn as TouchButtonCircle;
+            if (menuCircle != null && chatCircle != null && scoreCircle != null)
+            {
+                menuCircle.CenterPosition = new Vector2(30f * baseScale, 200f * baseScale);
+                chatCircle.CenterPosition = new Vector2(30f * baseScale, 260f * baseScale);
+                scoreCircle.CenterPosition = new Vector2(30f * baseScale, 320f * baseScale);
+            }
+        }
+
+        // Anchor the right-side action cluster to the lower corner, shoot button included, no
+        // matter what a saved layout says (so they can never end up on top of the quick
+        // items). Single-input mode only — in D-pad mode fire / jump / crouch live on the
+        // D-pad and the multi-input scope keeps its own top-right spot.
+        if (!UseMultiTouch)
+        {
+            TouchButton fireBtn, scopeBtn, jumpBtn, crouchBtn;
+            if (Buttons.TryGetValue((int)TouchKeyType.PrimaryFire, out fireBtn) &&
+                Buttons.TryGetValue((int)TouchKeyType.SecondaryFire, out scopeBtn) &&
+                Buttons.TryGetValue((int)TouchKeyType.Jump, out jumpBtn) &&
+                Buttons.TryGetValue((int)TouchKeyType.Crouch, out crouchBtn))
+            {
+                TouchButtonCircle fireCircle = fireBtn as TouchButtonCircle;
+                TouchButtonCircle scopeCircle = scopeBtn as TouchButtonCircle;
+                TouchButtonCircle jumpCircle = jumpBtn as TouchButtonCircle;
+                TouchButtonCircle crouchCircle = crouchBtn as TouchButtonCircle;
+                if (fireCircle != null && scopeCircle != null && jumpCircle != null && crouchCircle != null)
+                {
+                    fireCircle.CenterPosition = new Vector2(Screen.width - 160f * baseScale, Screen.height - 184f * baseScale);
+                    scopeCircle.CenterPosition = new Vector2(Screen.width - 48f * baseScale, Screen.height - 234f * baseScale);
+                    jumpCircle.CenterPosition = new Vector2(Screen.width - 88f * baseScale, Screen.height - 72f * baseScale);
+                    crouchCircle.CenterPosition = new Vector2(Screen.width - 272f * baseScale, Screen.height - 116f * baseScale);
+                }
+            }
+        }
+
         if (WeaponChanger != null)
         {
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", DefaultGuiCenterFor("weaponChanger"), baseScale);
@@ -469,30 +681,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             wc = ClampCenterToScreen(wc, wd.x * wp.Scale * 0.5f, wd.y * wp.Scale * 0.5f);
             WeaponChanger.LayoutScale = wp.Scale;
             WeaponChanger.Position = wc;
-        }
-
-        if (Dpad != null)
-        {
-            // The D-pad is editable like the buttons: stored placement (id "dpad") drives its
-            // top-left position, its uniform Scale (layout editor drag + pinch) and its
-            // Rotation (layout editor twist), seeded with the classic 15° tilt.
-            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), baseScale, 15f);
-            Vector2 c = MobileControlLayout.ToPixels(dp);
-            float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
-            float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
-
-            // Clamp with the ROTATED footprint (AABB at the D-pad's current degree) so the
-            // whole cluster stays inside the display at any scale.
-            float rad = dp.Rotation * Mathf.Deg2Rad;
-            float cosR = Mathf.Abs(Mathf.Cos(rad));
-            float sinR = Mathf.Abs(Mathf.Sin(rad));
-            float dHalfW = (dw * cosR + dh * sinR) * dp.Scale * 0.5f;
-            float dHalfH = (dh * cosR + dw * sinR) * dp.Scale * 0.5f;
-            c = ClampCenterToScreen(c, dHalfW, dHalfH);
-
-            Dpad.Scale = dp.Scale;
-            Dpad.TopLeftPosition = new Vector2(c.x - dw * dp.Scale / 2f, c.y - dh * dp.Scale / 2f);
-            Dpad.Rotation = dp.Rotation;
         }
 
         if (HudAssets.Exists && WeaponsHud.Instance.QuickItems.Group != null)
@@ -557,7 +745,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             // The D-pad only exists in multi-touch (D-pad) mode — single-input uses the joystick
             // instead, so don't offer a D-Pad handle there.
-            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), DefaultButtonScale());
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), DefaultDpadScale(DefaultButtonScale()));
             list.Add(new LayoutHandle
             {
                 Id = "dpad",
@@ -570,6 +758,11 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         if (HudAssets.Exists && WeaponsHud.Instance.QuickItems.Group != null)
         {
+            // The three items share ONE vertical column; its x follows the first item's
+            // placement so the whole column can be moved independently of the weapon changer.
+            MobileControlLayout.Placement p0 = MobileControlLayout.GetOrDefault("quickSlot1", QuickItemGroupHud.DefaultSlotCenter(0), 1f);
+            float itemColumnX = MobileControlLayout.ToPixels(p0).x;
+
             for (int i = 0; i < 3; i++)
             {
                 QuickItemHud q = WeaponsHud.Instance.QuickItems.GetLoadoutQuickItemHud(i);
@@ -581,7 +774,11 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Texture icon = q.GetIcon();
                 float baseSize = (icon != null) ? Mathf.Max(icon.width, icon.height) : 64f;
                 float side = baseSize * 0.8f * qp.Scale;
+                center.x = itemColumnX;
                 center = ClampCenterToScreen(center, side * 0.5f, side * 0.5f);
+                // Items stay below the weapon changer (Y only — their own column x and
+                // downward placement remain free), even for saved layouts.
+                center = QuickItemGroupHud.KeepBelowWeaponChanger(center, side * 0.5f, i);
 
                 list.Add(new LayoutHandle
                 {
@@ -674,9 +871,30 @@ public class TouchInput : MonoSingleton<TouchInput>
         RefreshShooterIgnores();
     }
 
+    // Compact corner zone for the single-input movement wheel, scaled like the other default
+    // controls. Kept self-contained (no layout-editor constants) so it also compiles on
+    // non-touch platforms, where it is simply unused.
+    private static Rect ComputeJoystickRect()
+    {
+        // Original wheel zone: the whole lower-left quarter of the screen.
+        return new Rect(0, Screen.height / 2, Screen.width * 0.4f, Screen.height / 2);
+    }
+
+    private void OnScreenResolutionChanged(ScreenResolutionEvent ev)
+    {
+        // The joystick zone is anchored to the corner in pixels; recompute it when the screen
+        // (or the simulated device in the Editor) changes so its marker doesn't end up
+        // off-screen after switching devices.
+        _joystickRect = ComputeJoystickRect();
+        if (Joystick != null)
+            Joystick.Boundary = _joystickRect;
+    }
+
     private void SetupRects()
     {
-        _joystickRect = new Rect(0, Screen.height / 2, _screenLeftRect.width, Screen.height / 2);
+        // Anchor the single-input movement wheel to the lower-left corner: a compact corner
+        // zone instead of the whole lower-left quarter.
+        _joystickRect = ComputeJoystickRect();
 
         _backButtonPos = new Vector2(30, 200);
         _chatPos = new Vector2(30, 260);

@@ -327,8 +327,6 @@ public class MobileControlLayoutEditor : MonoBehaviour
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _pixel);
         GUI.color = prev;
 
-        DrawMovementPreview();
-
         // Draw each control: soft backdrop, icon, colored border and a name badge above it.
         foreach (TouchInput.LayoutHandle hd in handles)
         {
@@ -368,6 +366,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
             GUI.color = Color.white;
         }
 
+        // The joystick zone marker is drawn LAST so it stays visible on top of the corner
+        // buttons it shares its corner with.
+        DrawMovementPreview();
+
         HandleDrag(handles);
 
         DrawToolbar(handles);
@@ -384,8 +386,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
         if (TouchInput.Instance.Joystick != null)
         {
             Rect r = TouchInput.Instance.Joystick.Boundary;
-            DrawOutline(r, new Color(0.45f, 0.65f, 1f, 0.9f), 1f);
-            GUI.Label(new Rect(r.x + 10, r.yMax - 24, 160, 18), "Joystick area");
+            DrawOutline(r, new Color(0.2f, 0.5f, 1f, 1f), 3f);
+            GUI.color = new Color(0.10f, 0.13f, 0.20f, 0.9f);
+            GUI.DrawTexture(new Rect(r.x + 4, r.y + 4, 110, 20), _pixel);
+            GUI.color = Color.white;
+            GUI.Label(new Rect(r.x + 4, r.y + 4, 110, 20), "Joystick area");
         }
     }
 
