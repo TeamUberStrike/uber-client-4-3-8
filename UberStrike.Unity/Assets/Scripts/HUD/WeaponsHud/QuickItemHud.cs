@@ -272,9 +272,9 @@ public class QuickItemHud
         Vector2 descriptionTextPos = new Vector2(_background.Size.x / 2, _background.Size.y + 5);
         if (_quickItemGroup.IsVisible)
         {
-            _quickItemGroup.MoveTo(_collapseGroupPos, 0.3f, EaseType.Berp, delay);
-            _descriptionText.FadeAlphaTo(0, 0.3f, EaseType.Out);
-            _descriptionText.MoveTo(descriptionTextPos, 0.3f, EaseType.Berp, delay);
+            _quickItemGroup.Position = _collapseGroupPos;
+            _descriptionText.Alpha = 0;
+            _descriptionText.Position = descriptionTextPos;
         }
         else
         {
