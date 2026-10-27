@@ -22,7 +22,11 @@ public static class MobileControlLayout
         public float Rotation;  // degrees, D-pad only
     }
 
-    private const string PrefsKey = "MobileControlLayout";
+    // v2 key: layouts saved under the old key hold positions seeded by older default formulas
+    // that overlap with the current defaults. Starting fresh on a new key discards the stale
+    // layout so the clean, non-overlapping defaults apply once — and every control stays
+    // freely draggable afterwards.
+    private const string PrefsKey = "MobileControlLayout2";
     // Size limits: 1.6x minimum (twice the previous 0.8x floor) and 3.75x maximum
     // (1.5x the previous 2.5x cap). Buttons can't be shrunk into dots or inflated off-screen.
     public const float MinScale = 1.6f;

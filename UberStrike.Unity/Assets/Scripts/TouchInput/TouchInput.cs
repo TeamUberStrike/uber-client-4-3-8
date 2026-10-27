@@ -430,13 +430,13 @@ public class TouchInput : MonoSingleton<TouchInput>
         switch (id)
         {
             case "fire":
-                c = new Vector2(Screen.width - 160 * s, Screen.height - 184 * s);
+                c = new Vector2(Screen.width - 160 * s, Screen.height - 156 * s);
                 halfW = TexSize(MobileIcons.FireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "secondaryFire":
                 // Slightly further right than the classic spot so its rect stays clear of the
                 // fire button's rect.
-                c = new Vector2(Screen.width - 48 * s, Screen.height - 234 * s);
+                c = new Vector2(Screen.width - 48 * s, Screen.height - 206 * s);
                 halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "multiSecondaryFire":
@@ -444,13 +444,14 @@ public class TouchInput : MonoSingleton<TouchInput>
                 halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "jump":
-                c = new Vector2(Screen.width - 88 * s, Screen.height - 72 * s);
+                // Hugs the bottom-right corner.
+                c = new Vector2(Screen.width - 50 * s, Screen.height - 50 * s);
                 halfW = TexSize(MobileIcons.JumpIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "crouch":
                 // Slightly further left than the classic spot so its rect stays clear of the
                 // fire button's rect.
-                c = new Vector2(Screen.width - 272 * s, Screen.height - 116 * s);
+                c = new Vector2(Screen.width - 272 * s, Screen.height - 88 * s);
                 halfW = TexSize(MobileIcons.CrouchIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "menu":
@@ -627,50 +628,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             circle.SetLayout(center, p.Scale);
         }
 
-        // The left column keeps its classic order no matter what a saved layout says:
-        // pause (menu) highest, chat in the middle, score (screen) lowest.
-        TouchButton menuBtn, chatBtn, scoreBtn;
-        if (Buttons.TryGetValue((int)TouchKeyType.Menu, out menuBtn) &&
-            Buttons.TryGetValue((int)TouchKeyType.Chat, out chatBtn) &&
-            Buttons.TryGetValue((int)TouchKeyType.Score, out scoreBtn))
-        {
-            TouchButtonCircle menuCircle = menuBtn as TouchButtonCircle;
-            TouchButtonCircle chatCircle = chatBtn as TouchButtonCircle;
-            TouchButtonCircle scoreCircle = scoreBtn as TouchButtonCircle;
-            if (menuCircle != null && chatCircle != null && scoreCircle != null)
-            {
-                menuCircle.CenterPosition = new Vector2(30f * baseScale, 200f * baseScale);
-                chatCircle.CenterPosition = new Vector2(30f * baseScale, 260f * baseScale);
-                scoreCircle.CenterPosition = new Vector2(30f * baseScale, 320f * baseScale);
-            }
-        }
-
-        // Anchor the right-side action cluster to the lower corner, shoot button included, no
-        // matter what a saved layout says (so they can never end up on top of the quick
-        // items). Single-input mode only — in D-pad mode fire / jump / crouch live on the
-        // D-pad and the multi-input scope keeps its own top-right spot.
-        if (!UseMultiTouch)
-        {
-            TouchButton fireBtn, scopeBtn, jumpBtn, crouchBtn;
-            if (Buttons.TryGetValue((int)TouchKeyType.PrimaryFire, out fireBtn) &&
-                Buttons.TryGetValue((int)TouchKeyType.SecondaryFire, out scopeBtn) &&
-                Buttons.TryGetValue((int)TouchKeyType.Jump, out jumpBtn) &&
-                Buttons.TryGetValue((int)TouchKeyType.Crouch, out crouchBtn))
-            {
-                TouchButtonCircle fireCircle = fireBtn as TouchButtonCircle;
-                TouchButtonCircle scopeCircle = scopeBtn as TouchButtonCircle;
-                TouchButtonCircle jumpCircle = jumpBtn as TouchButtonCircle;
-                TouchButtonCircle crouchCircle = crouchBtn as TouchButtonCircle;
-                if (fireCircle != null && scopeCircle != null && jumpCircle != null && crouchCircle != null)
-                {
-                    fireCircle.CenterPosition = new Vector2(Screen.width - 160f * baseScale, Screen.height - 184f * baseScale);
-                    scopeCircle.CenterPosition = new Vector2(Screen.width - 48f * baseScale, Screen.height - 234f * baseScale);
-                    jumpCircle.CenterPosition = new Vector2(Screen.width - 88f * baseScale, Screen.height - 72f * baseScale);
-                    crouchCircle.CenterPosition = new Vector2(Screen.width - 272f * baseScale, Screen.height - 116f * baseScale);
-                }
-            }
-        }
-
         if (WeaponChanger != null)
         {
             MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", DefaultGuiCenterFor("weaponChanger"), baseScale);
@@ -758,11 +715,6 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         if (HudAssets.Exists && WeaponsHud.Instance.QuickItems.Group != null)
         {
-            // The three items share ONE vertical column; its x follows the first item's
-            // placement so the whole column can be moved independently of the weapon changer.
-            MobileControlLayout.Placement p0 = MobileControlLayout.GetOrDefault("quickSlot1", QuickItemGroupHud.DefaultSlotCenter(0), 1f);
-            float itemColumnX = MobileControlLayout.ToPixels(p0).x;
-
             for (int i = 0; i < 3; i++)
             {
                 QuickItemHud q = WeaponsHud.Instance.QuickItems.GetLoadoutQuickItemHud(i);
@@ -774,11 +726,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Texture icon = q.GetIcon();
                 float baseSize = (icon != null) ? Mathf.Max(icon.width, icon.height) : 64f;
                 float side = baseSize * 0.8f * qp.Scale;
-                center.x = itemColumnX;
                 center = ClampCenterToScreen(center, side * 0.5f, side * 0.5f);
-                // Items stay below the weapon changer (Y only — their own column x and
-                // downward placement remain free), even for saved layouts.
-                center = QuickItemGroupHud.KeepBelowWeaponChanger(center, side * 0.5f, i);
 
                 list.Add(new LayoutHandle
                 {
