@@ -319,6 +319,14 @@ public class MobileControlLayoutEditor : MonoBehaviour
         float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
         _toolbarButtonsRect = new Rect(x0 * ms, 2f * ms, totalW * ms, bh * ms);
 
+        // Dim the world behind the editor so the markers stay legible no matter what the paused
+        // game shows behind them (a bright sky used to swallow the blue outline of the top-right
+        // weapon changer).
+        Color prev = GUI.color;
+        GUI.color = new Color(0f, 0f, 0f, 0.65f);
+        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), _pixel);
+        GUI.color = prev;
+
         DrawMovementPreview();
 
         // Draw each control: soft backdrop, icon, colored border and a name badge above it.
@@ -344,8 +352,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
                 GUI.DrawTexture(hd.Boundary, hd.Icon, ScaleMode.StretchToFill, true);
             }
 
-            Color border = selected ? new Color(1f, 0.85f, 0.2f) : new Color(0.45f, 0.65f, 1f, 0.9f);
-            DrawOutline(hd.Boundary, border, selected ? 3f : 2f);
+            Color border = selected ? new Color(1f, 0.85f, 0.2f) : new Color(0.2f, 0.5f, 1f, 1f);
+            DrawOutline(hd.Boundary, border, selected ? 3f : 3f);
 
             GUI.matrix = m;
 
