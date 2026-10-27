@@ -374,6 +374,14 @@ public class TouchInput : MonoSingleton<TouchInput>
         return new Vector2(64f, 64f);
     }
 
+    // The layout editor draws the weapon changer with the machinegun icon as a generic symbol.
+    private static Texture MachineGunIcon()
+    {
+        if (MobileIcons.WeaponIcons != null && MobileIcons.WeaponIcons.Length > (int)UberstrikeItemClass.WeaponMachinegun)
+            return MobileIcons.WeaponIcons[(int)UberstrikeItemClass.WeaponMachinegun];
+        return null;
+    }
+
     // Keeps a control's center such that its whole footprint (half extents given) stays on
     // screen. If the control is bigger than the screen, its center is forced to the middle.
     private static Vector2 ClampCenterToScreen(Vector2 center, float halfW, float halfH)
@@ -540,7 +548,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Id = "weaponChanger",
                 DisplayName = DisplayNameFor("weaponChanger"),
                 Boundary = WeaponChanger.Boundary,
-                Icon = null,
+                Icon = MachineGunIcon(),
                 Scale = WeaponChanger.LayoutScale,
             });
         }
