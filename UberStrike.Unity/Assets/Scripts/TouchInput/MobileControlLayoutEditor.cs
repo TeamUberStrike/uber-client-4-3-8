@@ -492,7 +492,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
         if (_hintText == null)
         {
-            _hintText = new MeshGUIText("Drag to move, pinch to resize, twist to rotate the D-Pad.", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
+            _hintText = new MeshGUIText("Drag to move, pinch to resize. Twist to rotate the D-Pad.", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
             HudStyleUtility.Instance.SetBlueStyle(_hintText);
             _hintText.Scale = new Vector2(0.6f, 0.6f);
         }
