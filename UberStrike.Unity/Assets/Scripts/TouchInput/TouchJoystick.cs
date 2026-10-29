@@ -30,6 +30,7 @@ public class TouchJoystick : TouchBaseControl
                         OnJoystickStopped();
                     }
                     _finger.Reset();
+                    _touchOrigin = Vector2.zero;
                 }
             }
         }
@@ -60,12 +61,14 @@ public class TouchJoystick : TouchBaseControl
             };
 
             // Anchor the wheel at the lower corner of the zone instead of wherever the finger
-            // lands, so the movement wheel always appears in the lower corner. The direction
-            // is measured from the anchor, not from the finger's landing spot.
-            Vector2 anchor = new Vector2(Boundary.xMin + JoystickTexture.width / 2,
-                                         Screen.height - Boundary.yMax + JoystickTexture.height / 2);
-            _finger.StartPos = anchor;
-            _finger.LastPos = anchor;
+            // lands, so the movement wheel always appears in the lower corner. Movement is
+            // measured from the actual touch-down point so touching anywhere in the activation
+            // zone does not immediately create a direction.
+            const float edgeInset = 128f;
+            Vector2 anchor = new Vector2(Boundary.xMin + JoystickTexture.width / 2 + edgeInset,
+                                         Screen.height - Boundary.yMax + JoystickTexture.height / 2 + edgeInset);
+            _touchOrigin = touch.position;
+            _finger.LastPos = touch.position;
             _joystickPos = anchor;
             _joystickBoundary = new Rect(anchor.x - JoystickTexture.width / 2, anchor.y - JoystickTexture.height / 2, JoystickTexture.width, JoystickTexture.height);
         }
@@ -73,15 +76,18 @@ public class TouchJoystick : TouchBaseControl
         {
             if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
             {
-                _joystickPos.x = Mathf.Clamp(touch.position.x, _joystickBoundary.x, _joystickBoundary.x + _joystickBoundary.width);
-                _joystickPos.y = Mathf.Clamp(touch.position.y, _joystickBoundary.y, _joystickBoundary.y + _joystickBoundary.height);
+                Vector2 anchor = _joystickBoundary.center;
+                Vector2 offset = touch.position - _touchOrigin;
+                float radius = Mathf.Min(_joystickBoundary.width, _joystickBoundary.height) / 2;
+                if (offset.magnitude > radius)
+                    offset = offset.normalized * radius;
+
+                _joystickPos = anchor + offset;
 
                 _finger.LastPos = touch.position;
 
                 // get relative direction from -1 to 1 on x and y
-                Vector2 dir = Vector2.zero;
-                dir.x = (_joystickPos.x - _finger.StartPos.x) * 2 / _joystickBoundary.width;
-                dir.y = (_joystickPos.y - _finger.StartPos.y) * 2 / _joystickBoundary.height;
+                Vector2 dir = offset / radius;
                 dir *= ApplicationDataManager.ApplicationOptions.TouchMoveSensitivity;
 
                 if (touch.phase == TouchPhase.Moved && OnJoystickMoved != null)
@@ -96,6 +102,7 @@ public class TouchJoystick : TouchBaseControl
                     OnJoystickStopped();
                 }
                 _finger.Reset();
+                _touchOrigin = Vector2.zero;
             }
         }
     }
@@ -107,7 +114,8 @@ public class TouchJoystick : TouchBaseControl
             GUI.Label(new Rect(_joystickPos.x - JoystickTexture.width / 2, (Screen.height - _joystickPos.y) - JoystickTexture.height / 2, JoystickTexture.width, JoystickTexture.height), JoystickTexture);
 
             GUI.color = new Color(1, 1, 1, Mathf.Clamp(TouchController.Instance.GUIAlpha, MinGUIAlpha, 1.0f));
-            GUI.Label(new Rect(_finger.StartPos.x - BackgroundTexture.width / 2, (Screen.height - _finger.StartPos.y) - BackgroundTexture.height / 2, BackgroundTexture.width, BackgroundTexture.height), BackgroundTexture);
+            Vector2 basePosition = _joystickBoundary.center;
+            GUI.Label(new Rect(basePosition.x - BackgroundTexture.width / 2, (Screen.height - basePosition.y) - BackgroundTexture.height / 2, BackgroundTexture.width, BackgroundTexture.height), BackgroundTexture);
             GUI.color = Color.white;
         }
     }
@@ -117,7 +125,7 @@ public class TouchJoystick : TouchBaseControl
     private TouchFinger _finger;
     private Rect _joystickBoundary;
     private Vector2 _joystickPos;
+    private Vector2 _touchOrigin;
 
     #endregion
 }
-
