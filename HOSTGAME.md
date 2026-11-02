@@ -1,0 +1,21 @@
+# Host game Unity wiring
+- Adapter compiles; Unity wiring below remains. Host games unranked, zero rewards.
+- `Network/Nakama/NakamaSession.cs`: keep `Instance` central for comm, lobby, anticheat.
+- Add a separate host link from `NakamaConfig.FromHost(selectedRow)` and `UnityPlatform`.
+- Ticket delegate: `id => NakamaLink.RequestHostTicket(Instance, id)`. Never copy web tokens, central JWTs, or central config.
+- Keep central peers attached while playing. Central failure must leave the host match.
+- Shutdown and clear the host link on leave/reset; preserve central until logout/quit.
+- `Network/Nakama/NakamaSessionHost.cs`: tick both links; host Tick drives 45 s ticket refresh and 3 s game heartbeat.
+- Destroy the host driver when its link closes; shutdown both links on application quit.
+- `Network/Nakama/NakamaBootstrap.cs`: route only game peers to `new NakamaPeer(hostLink)`; comm/lobby/probes retain central.
+- `Network/Nakama/NakamaServerList.cs`: call central `host_list`; pass JSON to `rows.ApplyHosts`; retain `rows.Game` and `rows.Node`.
+- Keep `rows.Hosts` separate. Refresh/removal must not overwrite central endpoint or comm server.
+- `Managers/GameServerManager.cs`: add host entries keyed by `NakamaHostRow.Key` (endpoint + match ID).
+- Measure host RTT separately, sort by measured RTT, retain host row metadata for joins.
+- Game join: use selected host link and decoded `row.Meta` with existing op 88; keep class registration and MatchState handling.
+- `GUI/Pages/PlayPage/PlayPageGUI.cs`: show host list below official servers; label unranked/zero rewards.
+- Join selects the host row; disclose direct host connection; failure/leave returns to central list.
+- Host button uses real map/settings, writes config, launches `uber-host`, waits for `/health`.
+- Call central `host_register` with port, then `host_heartbeat` every 15 s; stop only the owned process on exit.
+- Gate hosting to desktop; keep anticheat on central; exclude host results from rewards, stats, and leaderboards.
+- Compile and test these Unity files in the full project before shipping.

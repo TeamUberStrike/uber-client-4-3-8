@@ -52,6 +52,35 @@ namespace UberStrike.Realtime.NakamaAdapter
 
         public static NakamaConfig Current;
 
+        public string HostId { get; private set; }
+        public string MatchId { get; private set; }
+        public bool IsHost { get { return HostId != null; } }
+
+        public static NakamaConfig FromHost(NakamaHostRow row)
+        {
+            if (row == null)
+                throw new ArgumentNullException("row");
+            Uri uri;
+            if (!Uri.TryCreate(row.Endpoint, UriKind.Absolute, out uri) ||
+                (uri.Scheme != "http" && uri.Scheme != "https" && uri.Scheme != "ws" && uri.Scheme != "wss") ||
+                !IsIPv4(uri.Host) || uri.Port <= 0 || uri.Port > 65535 ||
+                uri.UserInfo.Length != 0 || uri.AbsolutePath != "/" || uri.Query.Length != 0 || uri.Fragment.Length != 0)
+                throw new FormatException("host endpoint must be http(s) or ws(s) IPv4:port");
+            return new NakamaConfig
+            {
+                Scheme = uri.Scheme == "https" || uri.Scheme == "wss" ? "https" : "http",
+                Host = uri.Host,
+                Port = uri.Port,
+                HostId = row.HostId,
+                MatchId = row.MatchId,
+                Pinned = true,
+                SchemePinned = true,
+                Source = "host_list",
+                Origin = "host_list",
+                CloseGraceMs = 0,
+            };
+        }
+
         public string Endpoint { get { return Scheme + "://" + Host + ":" + Port.ToString(CultureInfo.InvariantCulture); } }
 
         // IPv4:port for CmuneRoomID / Play rows: node row, else Host:Port (127.0.0.1 when Host is a name)
