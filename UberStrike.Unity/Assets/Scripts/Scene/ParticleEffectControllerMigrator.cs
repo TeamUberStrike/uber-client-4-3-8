@@ -1,6 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
+
+static class InvariantFloat
+{
+    public static float Parse(string s) { return float.Parse(s, CultureInfo.InvariantCulture); }
+}
 
 /// <summary>
 /// Restores weapon impact/explosion particle effects broken by Unity 3.5.5 -> 2022 migration.
@@ -366,21 +372,21 @@ public static class ParticleEffectControllerMigrator
             string goName = entry[0];
             if (!psMap.TryGetValue(goName, out ParticleSystem ps)) continue;
 
-            float sizeGrow = float.Parse(entry[1]);
-            float damping = float.Parse(entry[2]);
+            float sizeGrow = InvariantFloat.Parse(entry[1]);
+            float damping = InvariantFloat.Parse(entry[2]);
             int uvX = int.Parse(entry[3]);
             int uvY = int.Parse(entry[4]);
-            float uvCycles = float.Parse(entry[5]);
+            float uvCycles = InvariantFloat.Parse(entry[5]);
             int legacyStretch = int.Parse(entry[6]);
-            float lenScale = float.Parse(entry[7]);
-            float velScale = float.Parse(entry[8]);
-            float forceY = float.Parse(entry[9]);
-            float a0 = float.Parse(entry[10]) / 255f;
-            float a1 = float.Parse(entry[11]) / 255f;
-            float a2 = float.Parse(entry[12]) / 255f;
-            float a3 = float.Parse(entry[13]) / 255f;
-            float a4 = float.Parse(entry[14]) / 255f;
-            float maxPS = float.Parse(entry[15]);
+            float lenScale = InvariantFloat.Parse(entry[7]);
+            float velScale = InvariantFloat.Parse(entry[8]);
+            float forceY = InvariantFloat.Parse(entry[9]);
+            float a0 = InvariantFloat.Parse(entry[10]) / 255f;
+            float a1 = InvariantFloat.Parse(entry[11]) / 255f;
+            float a2 = InvariantFloat.Parse(entry[12]) / 255f;
+            float a3 = InvariantFloat.Parse(entry[13]) / 255f;
+            float a4 = InvariantFloat.Parse(entry[14]) / 255f;
+            float maxPS = InvariantFloat.Parse(entry[15]);
 
             // --- Disable ALL non-essential modules to eliminate migration artifacts ---
             // Migration from EllipsoidParticleEmitter may have enabled various modules
@@ -512,9 +518,9 @@ public static class ParticleEffectControllerMigrator
                     colorKeys = new GradientColorKey[5];
                     for (int k = 0; k < 5; k++)
                     {
-                        float r = float.Parse(entry[16 + k * 3]) / 255f;
-                        float g = float.Parse(entry[17 + k * 3]) / 255f;
-                        float b = float.Parse(entry[18 + k * 3]) / 255f;
+                        float r = InvariantFloat.Parse(entry[16 + k * 3]) / 255f;
+                        float g = InvariantFloat.Parse(entry[17 + k * 3]) / 255f;
+                        float b = InvariantFloat.Parse(entry[18 + k * 3]) / 255f;
                         colorKeys[k] = new GradientColorKey(new Color(r, g, b), k * 0.25f);
                     }
                 }
@@ -895,8 +901,8 @@ public static class ParticleEffectControllerMigrator
     {
         string[] parts = rgba.Split(',');
         if (parts.Length == 4)
-            return new Color(float.Parse(parts[0]), float.Parse(parts[1]),
-                             float.Parse(parts[2]), float.Parse(parts[3]));
+            return new Color(InvariantFloat.Parse(parts[0]), InvariantFloat.Parse(parts[1]),
+                             InvariantFloat.Parse(parts[2]), InvariantFloat.Parse(parts[3]));
         return new Color(0.5f, 0.5f, 0.5f, 0.5f);
     }
 
@@ -1285,21 +1291,21 @@ public static class ParticleEffectControllerMigrator
     /// </summary>
     static void ApplyPSSettings(ParticleSystem ps, ParticleSystemRenderer renderer, string[] animEntry)
     {
-        float sizeGrow = float.Parse(animEntry[1]);
-        float damping = float.Parse(animEntry[2]);
+        float sizeGrow = InvariantFloat.Parse(animEntry[1]);
+        float damping = InvariantFloat.Parse(animEntry[2]);
         int uvX = int.Parse(animEntry[3]);
         int uvY = int.Parse(animEntry[4]);
-        float uvCycles = float.Parse(animEntry[5]);
+        float uvCycles = InvariantFloat.Parse(animEntry[5]);
         int legacyStretch = int.Parse(animEntry[6]);
-        float lenScale = float.Parse(animEntry[7]);
-        float velScale = float.Parse(animEntry[8]);
-        float forceY = float.Parse(animEntry[9]);
-        float a0 = float.Parse(animEntry[10]) / 255f;
-        float a1 = float.Parse(animEntry[11]) / 255f;
-        float a2 = float.Parse(animEntry[12]) / 255f;
-        float a3 = float.Parse(animEntry[13]) / 255f;
-        float a4 = float.Parse(animEntry[14]) / 255f;
-        float maxPS = float.Parse(animEntry[15]);
+        float lenScale = InvariantFloat.Parse(animEntry[7]);
+        float velScale = InvariantFloat.Parse(animEntry[8]);
+        float forceY = InvariantFloat.Parse(animEntry[9]);
+        float a0 = InvariantFloat.Parse(animEntry[10]) / 255f;
+        float a1 = InvariantFloat.Parse(animEntry[11]) / 255f;
+        float a2 = InvariantFloat.Parse(animEntry[12]) / 255f;
+        float a3 = InvariantFloat.Parse(animEntry[13]) / 255f;
+        float a4 = InvariantFloat.Parse(animEntry[14]) / 255f;
+        float maxPS = InvariantFloat.Parse(animEntry[15]);
 
         // Main module
         var main = ps.main;
@@ -1394,9 +1400,9 @@ public static class ParticleEffectControllerMigrator
                 colorKeys = new GradientColorKey[5];
                 for (int k = 0; k < 5; k++)
                 {
-                    float r = float.Parse(animEntry[16 + k * 3]) / 255f;
-                    float g = float.Parse(animEntry[17 + k * 3]) / 255f;
-                    float b = float.Parse(animEntry[18 + k * 3]) / 255f;
+                    float r = InvariantFloat.Parse(animEntry[16 + k * 3]) / 255f;
+                    float g = InvariantFloat.Parse(animEntry[17 + k * 3]) / 255f;
+                    float b = InvariantFloat.Parse(animEntry[18 + k * 3]) / 255f;
                     colorKeys[k] = new GradientColorKey(new Color(r, g, b), k * 0.25f);
                 }
             }
