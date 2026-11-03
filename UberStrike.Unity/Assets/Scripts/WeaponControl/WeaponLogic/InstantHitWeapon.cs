@@ -49,7 +49,7 @@ public class InstantHitWeapon : BaseWeaponLogic
         }
         else
         {
-            hit.point = ray.origin + ray.direction * 1000f;
+            hit.point = ray.origin + dir * 1000f;
         }
 
         if (Decorator)
