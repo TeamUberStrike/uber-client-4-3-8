@@ -221,6 +221,17 @@ public class SceneExporter
         WriteConfigurationXml(WindowsStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + "_Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WindowsStandalone);
     }
 
+    // CI entry point (game-ci): the Internal Dev build, failing the job when a player or map build fails.
+    public static void BuildWindowsStandaloneCI()
+    {
+        bool failed = false;
+        Application.LogCallback onLog = (message, stackTrace, type) => { if (type == LogType.Error && message.StartsWith("BuildPlayer failed")) failed = true; };
+        Application.logMessageReceived += onLog;
+        try { BuildWindowsStandaloneDev(); }
+        finally { Application.logMessageReceived -= onLog; }
+        if (failed) EditorApplication.Exit(1);
+    }
+
     [MenuItem("File/Build UberStrike/External QA/Windows Standalone (Main Only)")]
     public static void BuildWindowsStandaloneDevMain()
     {
