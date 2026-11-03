@@ -39,8 +39,8 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         get { return _temporaryMsgText.IsVisible; }
         set
         {
-            if (value) _temporaryMsgText.Show();
-            else _temporaryMsgText.Hide();
+            if (value) { _temporaryMsgText.Show(); _killerMsgText.Show(); }
+            else { _temporaryMsgText.Hide(); _killerMsgText.Hide(); }
         }
     }
 
@@ -87,6 +87,12 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
     {
         _temporaryMsgText.Text = "";
         _permanentMsgText.Text = "";
+        _killerMsgText.Text = "";
+    }
+
+    public void SetKiller(UberStrike.Realtime.Common.CharacterInfo killer)
+    {
+        _killerStats = killer == null ? "" : string.Format(LocalizedStrings.KillerHealthArmor, Mathf.Max(0, (int)killer.Health), killer.Armor.ArmorPoints);
     }
 
     public void DisplayRespawnTimeMsg(int remainingSeconds)
@@ -94,6 +100,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _temporaryMsgText.Text = LocalizedStrings.Respawn + ": " + remainingSeconds;
         _temporaryMsgText.Color = Color.white;
         _temporaryMsgText.Position = TemporaryMsgPosition;
+        DisplayKillerMsg();
         ButtonEnabled = false;
     }
 
@@ -102,7 +109,15 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _temporaryMsgText.Text = LocalizedStrings.ClickToRespawn;
         _temporaryMsgText.Color = Color.white;
         _temporaryMsgText.Position = TemporaryMsgPosition;
+        DisplayKillerMsg();
         ButtonEnabled = false;
+    }
+
+    private void DisplayKillerMsg()
+    {
+        _killerMsgText.Text = _killerStats;
+        _killerMsgText.Color = Color.white;
+        _killerMsgText.Position = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight);
     }
 
     public void DisplayDisconnectionTimeoutMsg(int remainingSeconds)
@@ -140,11 +155,13 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
     {
         _temporaryMsgText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         _permanentMsgText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
+        _killerMsgText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
 
         ResetHud();
         TemporaryMsgEnabled = true;
         PermanentMsgEnabled = true;
 
+        CmuneEventHandler.AddListener<OnPlayerRespawnEvent>(ev => _killerStats = "");
         CmuneEventHandler.AddListener<OnSetPlayerTeamEvent>(OnTeamChange);
         CmuneEventHandler.AddListener<CameraWidthChangeEvent>(OnCameraRectChange);
     }
@@ -163,6 +180,9 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         HudStyleUtility.Instance.SetNoShadowStyle(_permanentMsgText);
         _permanentMsgText.Color = Color.white;
         _permanentMsgText.ShadowColorAnim.Alpha = 0.0f;
+        HudStyleUtility.Instance.SetNoShadowStyle(_killerMsgText);
+        _killerMsgText.Color = Color.white;
+        _killerMsgText.ShadowColorAnim.Alpha = 0.0f;
         _buttonGuiStyle = StormFront.ButtonBlue;
     }
 
@@ -193,10 +213,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         float pmtMsgScale = PermanentMsgHeight / _temporaryMsgText.TextBounds.y;
         _permanentMsgText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
         _permanentMsgText.Position = PermanentMsgPosition;
+        _killerMsgText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
+        _killerMsgText.Position = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight);
     }
 
     private MeshGUIText _temporaryMsgText;
     private MeshGUIText _permanentMsgText;
+    private MeshGUIText _killerMsgText;
+    private string _killerStats = "";
     private GUIStyle _buttonGuiStyle;
 
     #endregion
