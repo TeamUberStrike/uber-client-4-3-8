@@ -31,6 +31,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static ChannelType Channel { get; set; }
     public static string VersionLong = string.Empty;
     public static string VersionShort = string.Empty;
+    public static string BuildVersion = string.Empty;
     public static BuildType BuildType;
 
     private static CmuneSystemInfo localSystemInfo;
@@ -127,6 +128,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 BaseMapsURL = clientConfiguration.ContentBaseUrl + "Maps/" + clientConfiguration.Version + "/";
                 BuildType = clientConfiguration.BuildType;
                 VersionShort = clientConfiguration.Version;
+                BuildVersion = clientConfiguration.BuildVersion;
+                Debug.Log("UberStrike build " + (string.IsNullOrEmpty(BuildVersion) ? "unversioned" : BuildVersion) + ", client " + VersionShort);
                 CmuneDebug.DebugLevel = (int)clientConfiguration.DebugLevel;
                 SetChannel(clientConfiguration);
                 SetVersionLong(clientConfiguration);
@@ -289,6 +292,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                         clientConfiguration.DebugLevelString = xmlReader.Value;
                     if (xmlReader.MoveToAttribute("Version"))
                         clientConfiguration.Version = xmlReader.Value;
+                    if (xmlReader.MoveToAttribute("BuildVersion"))
+                        clientConfiguration.BuildVersion = xmlReader.Value;
                     if (xmlReader.MoveToAttribute("WebServiceBaseUrl"))
                         clientConfiguration.WebServiceBaseUrl = xmlReader.Value;
                     if (xmlReader.MoveToAttribute("ContentBaseUrl"))
