@@ -221,6 +221,17 @@ public class SceneExporter
         WriteConfigurationXml(WindowsStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + "_Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WindowsStandalone);
     }
 
+    // CI entry point (game-ci): the Internal Dev build, failing the job when a player or map build fails.
+    public static void BuildWindowsStandaloneCI()
+    {
+        bool failed = false;
+        Application.LogCallback onLog = (message, stackTrace, type) => { if (type == LogType.Error && message.StartsWith("BuildPlayer failed")) failed = true; };
+        Application.logMessageReceived += onLog;
+        try { BuildWindowsStandaloneDev(); }
+        finally { Application.logMessageReceived -= onLog; }
+        if (failed) EditorApplication.Exit(1);
+    }
+
     [MenuItem("File/Build UberStrike/External QA/Windows Standalone (Main Only)")]
     public static void BuildWindowsStandaloneDevMain()
     {
@@ -730,11 +741,56 @@ public class SceneExporter
             BuildType = buildType,
             DebugLevel = DebugLevel.Debug,
             Version = ClientVersion,
+            BuildVersion = ResolveBuildVersion(),
             WebServiceBaseUrl = GetWebserviceBaseUrl(webserviceLocation),
             ContentBaseUrl = GetContentBaseUrl(webserviceLocation),
             ChannelType = channelType,
             IsLocalWebplayer = runLocally
         }, path);
+    }
+
+    // Semantic version of this build (GitVersion, see GitVersion.yml) plus the commit. ClientVersion stays the version the web services expect.
+    private static string ResolveBuildVersion()
+    {
+        string repo = Path.GetFullPath(Application.dataPath + "/../..");
+        string version = GetCommandLineArg("-buildVersion");
+        if (string.IsNullOrEmpty(version)) version = System.Environment.GetEnvironmentVariable("GitVersion_FullSemVer");
+        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "\"" + repo + "\" /nocache /showvariable FullSemVer");
+        if (string.IsNullOrEmpty(version)) version = RunTool("dotnet-gitversion", "\"" + repo + "\" /nocache /showvariable FullSemVer");
+        string sha = GetCommandLineArg("-buildSha");
+        if (string.IsNullOrEmpty(sha)) sha = RunTool("git", "-C \"" + repo + "\" rev-parse --short HEAD");
+        if (string.IsNullOrEmpty(version))
+        {
+            Debug.LogWarning("GitVersion not found (install GitTools.GitVersion); build version falls back to " + ClientVersion);
+            version = ClientVersion;
+        }
+        return string.IsNullOrEmpty(sha) ? version : version + " (" + sha + ")";
+    }
+
+    private static string GetCommandLineArg(string name)
+    {
+        string[] args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length - 1; i++)
+            if (args[i] == name) return args[i + 1].Trim().Trim('"');
+        return null;
+    }
+
+    private static string RunTool(string file, string arguments)
+    {
+        try
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+            using (var p = System.Diagnostics.Process.Start(psi))
+            {
+                string output = p.StandardOutput.ReadToEnd().Trim();
+                p.WaitForExit(60000);
+                return p.ExitCode == 0 && output.Length > 0 && output.IndexOf('\n') < 0 ? output : null;
+            }
+        }
+        catch (System.Exception)
+        {
+            return null;
+        }
     }
 
     public static void WriteConfigurationXml(ClientConfiguration clientConfiguration, string configurationXmlFilePath)
@@ -754,6 +810,8 @@ public class SceneExporter
                 xml.WriteAttributeString("BuildType", clientConfiguration.BuildType.ToString());
                 xml.WriteAttributeString("DebugLevel", clientConfiguration.DebugLevel.ToString());
                 xml.WriteAttributeString("Version", clientConfiguration.Version);
+                if (!string.IsNullOrEmpty(clientConfiguration.BuildVersion))
+                    xml.WriteAttributeString("BuildVersion", clientConfiguration.BuildVersion);
                 xml.WriteAttributeString("WebServiceBaseUrl", clientConfiguration.WebServiceBaseUrl);
                 xml.WriteAttributeString("ContentBaseUrl", clientConfiguration.ContentBaseUrl);
                 xml.WriteAttributeString("ChannelType", clientConfiguration.ChannelType.ToString());
