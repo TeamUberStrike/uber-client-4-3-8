@@ -107,7 +107,7 @@ public class PlayerDropPickupItem : PickupItem
 
             if (WeaponController.Instance.CheckPlayerWeaponInPickupSlot(WeaponItemId))
             {
-                WeaponController.Instance.ResetPickupWeaponSlotInSeconds(20);
+                WeaponController.Instance.ResetPickupWeaponSlotInSeconds(30);
             }
 
             if (GameState.HasCurrentGame)
