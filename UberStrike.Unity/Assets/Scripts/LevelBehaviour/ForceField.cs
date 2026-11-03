@@ -16,8 +16,8 @@ public class ForceField : MonoBehaviour
 
     private const bool VerboseJumpPad = false;
 
-    // Jump pad whoosh (2.5 s, full scale) and the pad's looping hum were far louder than other effects; play both at about -10 dB.
-    private const float JumpPadVolume = 0.3f;
+    // Jump pad whoosh (2.5 s, full scale) and the pad's looping hum were far louder than other effects; play both at about -8 dB.
+    private const float JumpPadVolume = 0.4f;
 
     #endregion
 
