@@ -361,6 +361,8 @@ public class TempleTeleporter : SecretDoor
     }
 
     private const string TempleSceneName = "LevelTempleOfTheRaven";
+    // The secret room orb (and its exit trigger) stays just above the statue's head instead of sweeping 20 m up and down.
+    private const float SecretOrbLocalY = 14.5f;
 
     private static void OnTempleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -392,6 +394,9 @@ public class TempleTeleporter : SecretDoor
             // rendered flat-lit once TeleporterParticles came online — regression
             // from 2026-04-21 when the glowing sparks landed).
             t.gameObject.SetActive(true);
+
+            var orb = t.GetComponent<SpawnPlayer>();
+            if (orb != null) orb.PinAt(SecretOrbLocalY);
 
             Transform lightning = FindChildByName(t, "LightningParticles");
             if (lightning != null)
