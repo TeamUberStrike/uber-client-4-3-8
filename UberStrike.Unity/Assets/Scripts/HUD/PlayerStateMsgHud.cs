@@ -86,8 +86,12 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         {
             if (_hpIcon == null) _hpIcon = Resources.Load<Texture2D>("KillerHud/HealthIcon");
             if (_apIcon == null) _apIcon = Resources.Load<Texture2D>("KillerHud/ArmorIcon");
+            Color previous = GUI.color;
+            GUI.color = KillerHpColor;
             if (_hpIcon != null) GUI.DrawTexture(_hpIconRect, _hpIcon);
+            GUI.color = KillerApColor;
             if (_apIcon != null) GUI.DrawTexture(_apIconRect, _apIcon);
+            GUI.color = previous;
         }
     }
 
@@ -145,10 +149,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _killerMsgText.Position = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight);
         _killerHpText.Text = _killerHp;
         _killerApText.Text = _killerAp;
-        _killerHpText.Color = Color.white;
-        _killerApText.Color = Color.white;
+        _killerHpText.Color = KillerHpColor;
+        _killerApText.Color = KillerApColor;
         LayoutKillerStats();
     }
+
+    // HP in the game's red, AP in the orange of the armor pickups.
+    private static readonly Color KillerHpColor = ColorScheme.UberStrikeRed;
+    private static readonly Color KillerApColor = ColorConverter.RgbToColor(255, 128, 34);
 
     private void LayoutKillerStats()
     {
