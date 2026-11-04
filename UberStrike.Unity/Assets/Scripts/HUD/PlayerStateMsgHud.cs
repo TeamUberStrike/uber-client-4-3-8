@@ -39,8 +39,8 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         get { return _temporaryMsgText.IsVisible; }
         set
         {
-            if (value) { _temporaryMsgText.Show(); _killerMsgText.Show(); }
-            else { _temporaryMsgText.Hide(); _killerMsgText.Hide(); }
+            if (value) { _temporaryMsgText.Show(); _killerMsgText.Show(); _killerHpText.Show(); _killerApText.Show(); }
+            else { _temporaryMsgText.Hide(); _killerMsgText.Hide(); _killerHpText.Hide(); _killerApText.Hide(); }
         }
     }
 
@@ -81,6 +81,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                 }
             }
         }
+        // killer HP/AP icons (4.7.1 HUD sprites) next to the numbers
+        if (_killerHp.Length > 0 && _killerMsgText.IsVisible && _killerMsgText.Text.Length > 0)
+        {
+            if (_hpIcon == null) _hpIcon = Resources.Load<Texture2D>("KillerHud/HealthIcon");
+            if (_apIcon == null) _apIcon = Resources.Load<Texture2D>("KillerHud/ArmorIcon");
+            if (_hpIcon != null) GUI.DrawTexture(_hpIconRect, _hpIcon);
+            if (_apIcon != null) GUI.DrawTexture(_apIconRect, _apIcon);
+        }
     }
 
     public void DisplayNone()
@@ -88,11 +96,27 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _temporaryMsgText.Text = "";
         _permanentMsgText.Text = "";
         _killerMsgText.Text = "";
+        _killerHpText.Text = "";
+        _killerApText.Text = "";
     }
 
     public void SetKiller(UberStrike.Realtime.Common.CharacterInfo killer)
     {
-        _killerStats = killer == null ? "" : string.Format(LocalizedStrings.KillerHealthArmor, Mathf.Max(0, (int)killer.Health), killer.Armor.ArmorPoints);
+        if (killer == null)
+        {
+            ClearKiller();
+            return;
+        }
+        _killerStats = string.Format(LocalizedStrings.NKilledYou, killer.PlayerName);
+        _killerHp = Mathf.Max(0, (int)killer.Health).ToString();
+        _killerAp = killer.Armor.ArmorPoints.ToString();
+    }
+
+    private void ClearKiller()
+    {
+        _killerStats = "";
+        _killerHp = "";
+        _killerAp = "";
     }
 
     public void DisplayRespawnTimeMsg(int remainingSeconds)
@@ -113,11 +137,32 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         ButtonEnabled = false;
     }
 
+    // "Aries killed you", below it: [HP icon] 45   [AP icon] 20
     private void DisplayKillerMsg()
     {
         _killerMsgText.Text = _killerStats;
         _killerMsgText.Color = Color.white;
         _killerMsgText.Position = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight);
+        _killerHpText.Text = _killerHp;
+        _killerApText.Text = _killerAp;
+        _killerHpText.Color = Color.white;
+        _killerApText.Color = Color.white;
+        LayoutKillerStats();
+    }
+
+    private void LayoutKillerStats()
+    {
+        float icon = PermanentMsgHeight;
+        float gap = icon * 0.25f;
+        float groupGap = icon * 0.8f;
+        float total = icon + gap + _killerHpText.Size.x + groupGap + icon + gap + _killerApText.Size.x;
+        Vector2 line = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight + PermanentMsgHeight * 1.2f);
+        float x = line.x - total * 0.5f;
+        _hpIconRect = new Rect(x, line.y - icon * 0.5f, icon, icon);
+        _killerHpText.Position = new Vector2(x + icon + gap, line.y);
+        x += icon + gap + _killerHpText.Size.x + groupGap;
+        _apIconRect = new Rect(x, line.y - icon * 0.5f, icon, icon);
+        _killerApText.Position = new Vector2(x + icon + gap, line.y);
     }
 
     public void DisplayDisconnectionTimeoutMsg(int remainingSeconds)
@@ -156,12 +201,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _temporaryMsgText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         _permanentMsgText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         _killerMsgText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
+        _killerHpText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleLeft);
+        _killerApText = new MeshGUIText("", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleLeft);
 
         ResetHud();
         TemporaryMsgEnabled = true;
         PermanentMsgEnabled = true;
 
-        CmuneEventHandler.AddListener<OnPlayerRespawnEvent>(ev => _killerStats = "");
+        CmuneEventHandler.AddListener<OnPlayerRespawnEvent>(ev => ClearKiller());
         CmuneEventHandler.AddListener<OnSetPlayerTeamEvent>(OnTeamChange);
         CmuneEventHandler.AddListener<CameraWidthChangeEvent>(OnCameraRectChange);
     }
@@ -183,6 +230,12 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         HudStyleUtility.Instance.SetNoShadowStyle(_killerMsgText);
         _killerMsgText.Color = Color.white;
         _killerMsgText.ShadowColorAnim.Alpha = 0.0f;
+        foreach (MeshGUIText t in new MeshGUIText[] { _killerHpText, _killerApText })
+        {
+            HudStyleUtility.Instance.SetNoShadowStyle(t);
+            t.Color = Color.white;
+            t.ShadowColorAnim.Alpha = 0.0f;
+        }
         _buttonGuiStyle = StormFront.ButtonBlue;
     }
 
@@ -215,12 +268,23 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _permanentMsgText.Position = PermanentMsgPosition;
         _killerMsgText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
         _killerMsgText.Position = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight);
+        _killerHpText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
+        _killerApText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
+        LayoutKillerStats();
     }
 
     private MeshGUIText _temporaryMsgText;
     private MeshGUIText _permanentMsgText;
     private MeshGUIText _killerMsgText;
     private string _killerStats = "";
+    private MeshGUIText _killerHpText;
+    private MeshGUIText _killerApText;
+    private string _killerHp = "";
+    private string _killerAp = "";
+    private Rect _hpIconRect;
+    private Rect _apIconRect;
+    private Texture2D _hpIcon;
+    private Texture2D _apIcon;
     private GUIStyle _buttonGuiStyle;
 
     #endregion
