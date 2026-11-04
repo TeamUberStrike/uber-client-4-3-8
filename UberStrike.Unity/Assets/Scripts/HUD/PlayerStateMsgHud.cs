@@ -34,6 +34,11 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         }
     }
 
+    public Vector2 KillerMsgPosition
+    {
+        get { return new Vector2(Screen.width / 2, Screen.height * 0.8f); }
+    }
+
     public bool TemporaryMsgEnabled
     {
         get { return _temporaryMsgText.IsVisible; }
@@ -95,6 +100,12 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         }
     }
 
+    // Respawn button replaces the countdown text; the killer lines stay until the player respawns.
+    public void HideRespawnText()
+    {
+        _temporaryMsgText.Hide();
+    }
+
     public void DisplayNone()
     {
         _temporaryMsgText.Text = "";
@@ -121,6 +132,9 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _killerStats = "";
         _killerHp = "";
         _killerAp = "";
+        _killerMsgText.Text = "";
+        _killerHpText.Text = "";
+        _killerApText.Text = "";
     }
 
     public void DisplayRespawnTimeMsg(int remainingSeconds)
@@ -146,7 +160,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
     {
         _killerMsgText.Text = _killerStats;
         _killerMsgText.Color = Color.white;
-        _killerMsgText.Position = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight);
+        _killerMsgText.Position = KillerMsgPosition;
         _killerHpText.Text = _killerHp;
         _killerApText.Text = _killerAp;
         _killerHpText.Color = KillerHpColor;
@@ -154,17 +168,20 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         LayoutKillerStats();
     }
 
-    // HP in the game's red, AP in the orange of the armor pickups.
-    private static readonly Color KillerHpColor = ColorScheme.UberStrikeRed;
+    // HP in the turquoise of the health pickups (HealthPickups.psd), AP in the orange of the armor pickups.
+    private static readonly Color KillerHpColor = ColorConverter.RgbToColor(76, 212, 185);
     private static readonly Color KillerApColor = ColorConverter.RgbToColor(255, 128, 34);
+
+    // Stats line size and spacing match the 4.7.1 (Steam) killed-by panel: numbers 0.6x the name line.
+    private const float KillerStatsScale = 0.6f;
 
     private void LayoutKillerStats()
     {
-        float icon = PermanentMsgHeight;
-        float gap = icon * 0.25f;
-        float groupGap = icon * 0.8f;
+        float icon = PermanentMsgHeight * 0.54f;
+        float gap = icon * 0.3f;
+        float groupGap = icon * 1.05f;
         float total = icon + gap + _killerHpText.Size.x + groupGap + icon + gap + _killerApText.Size.x;
-        Vector2 line = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight + PermanentMsgHeight * 1.2f);
+        Vector2 line = KillerMsgPosition + new Vector2(0, PermanentMsgHeight * 1.6f);
         float x = line.x - total * 0.5f;
         _hpIconRect = new Rect(x, line.y - icon * 0.5f, icon, icon);
         _killerHpText.Position = new Vector2(x + icon + gap, line.y);
@@ -275,9 +292,9 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         _permanentMsgText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
         _permanentMsgText.Position = PermanentMsgPosition;
         _killerMsgText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
-        _killerMsgText.Position = TemporaryMsgPosition + new Vector2(0, TemporaryMsgHeight);
-        _killerHpText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
-        _killerApText.Scale = new Vector2(pmtMsgScale, pmtMsgScale);
+        _killerMsgText.Position = KillerMsgPosition;
+        _killerHpText.Scale = new Vector2(pmtMsgScale, pmtMsgScale) * KillerStatsScale;
+        _killerApText.Scale = new Vector2(pmtMsgScale, pmtMsgScale) * KillerStatsScale;
         LayoutKillerStats();
     }
 
