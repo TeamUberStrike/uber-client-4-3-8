@@ -849,27 +849,30 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             GameObject.Destroy(weapon);
     }
 
-    private IEnumerator StartApplyDamage(float delay, CmunePairList<BaseGameProp, ShotPoint> hits)
+    private IEnumerator StartApplyDamage(float delay, WeaponSlot weapon, CmunePairList<BaseGameProp, ShotPoint> hits)
     {
         yield return new WaitForSeconds(delay);
 
-        ApplyDamage(hits);
+        ApplyDamage(weapon, hits);
     }
 
-    private void ApplyDamage(CmunePairList<BaseGameProp, ShotPoint> hits)
+    // Damage comes from the weapon that hit, not the one held when a delayed hit lands (melee swap exploit).
+    private void ApplyDamage(WeaponSlot weapon, CmunePairList<BaseGameProp, ShotPoint> hits)
     {
+        if (weapon == null || weapon.Logic == null) return;
+        var config = weapon.Logic.Config;
         foreach (KeyValuePair<BaseGameProp, ShotPoint> p in hits)
         {
-            DamageInfo shot = new DamageInfo((short)(_weapon.Logic.Config.DamagePerProjectile * p.Value.Count))
+            DamageInfo shot = new DamageInfo((short)(config.DamagePerProjectile * p.Value.Count))
             {
-                Force = GameState.LocalPlayer.WeaponCamera.transform.forward * _weapon.Logic.Config.DamageKnockback,
+                Force = GameState.LocalPlayer.WeaponCamera.transform.forward * config.DamageKnockback,
                 Hitpoint = p.Value.MidPoint,
                 ShotID = p.Value.ProjectileId,
-                WeaponID = _weapon.Logic.Config.ID,
-                WeaponClass = _weapon.Logic.Config.ItemClass,
-                DamageEffectFlag = _weapon.Logic.Config.DamageEffectFlag,
-                DamageEffectValue = _weapon.Logic.Config.DamageEffectValue,
-                CriticalStrikeBonus = WeaponConfigurationHelper.GetCriticalStrikeBonus(_weapon.Logic.Config),
+                WeaponID = config.ID,
+                WeaponClass = config.ItemClass,
+                DamageEffectFlag = config.DamageEffectFlag,
+                DamageEffectValue = config.DamageEffectValue,
+                CriticalStrikeBonus = WeaponConfigurationHelper.GetCriticalStrikeBonus(config),
             };
 
             switch (shot.WeaponClass)
@@ -949,7 +952,7 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
 
                     if (h != null)
                     {
-                        MonoRoutine.Start(StartApplyDamage(delay, h));
+                        MonoRoutine.Start(StartApplyDamage(delay, weapon, h));
                     }
 
                     LevelCamera.Instance.DoFeedback(LevelCamera.FeedbackType.ShootWeapon, Vector3.back, 0, movement / 8f, 0.1f, 0.3f, kickback / 3f, Vector3.left);
@@ -970,7 +973,7 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
 
                     if (h != null)
                     {
-                        ApplyDamage(h);
+                        ApplyDamage(weapon, h);
                     }
 
                     LevelCamera.Instance.DoFeedback(LevelCamera.FeedbackType.ShootWeapon, Vector3.back, 0, movement / 8f, 0.1f, 0.3f, kickback / 3f, Vector3.left);
