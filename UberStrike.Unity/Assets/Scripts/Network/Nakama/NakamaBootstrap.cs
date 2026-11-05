@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Cmune.Realtime.Photon.Client;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace UberStrike.Realtime.NakamaAdapter
 {
@@ -43,8 +44,22 @@ namespace UberStrike.Realtime.NakamaAdapter
             {
                 args = Environment.GetCommandLineArgs();
                 string path = Path.Combine(Application.streamingAssetsPath, "nakama.json");
+#if UNITY_ANDROID && !UNITY_EDITOR
+                using (UnityWebRequest request = UnityWebRequest.Get(path))
+                {
+                    request.timeout = 10;
+                    UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+                    while (!operation.isDone)
+                    {
+                    }
+                    if (request.isNetworkError || request.isHttpError)
+                        throw new IOException("nakama.json: " + request.error);
+                    json = request.downloadHandler.text;
+                }
+#else
                 if (File.Exists(path))
                     json = File.ReadAllText(path);
+#endif
             }
             catch (Exception e)
             {
