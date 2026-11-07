@@ -466,7 +466,13 @@ public class SceneExporter
     private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
     {
         var buildResult = BuildPipeline.BuildPlayer(scenes, path, buildTarget, buildOptions);
-        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded && Application.isBatchMode) EditorApplication.Exit(1);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(1);
+            }
+        }
         return buildResult;
     }
 
