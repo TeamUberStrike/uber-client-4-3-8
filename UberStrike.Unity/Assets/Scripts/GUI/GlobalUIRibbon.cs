@@ -134,7 +134,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         }
 
         // Draw the build info if not in game
-        string buildInfo = string.Format("{0} v{1}", ApplicationDataManager.FrameRate,
+        string buildInfo = string.Format("{0} {1}", ApplicationDataManager.FrameRate,
             string.IsNullOrEmpty(ApplicationDataManager.BuildVersion) ? ApplicationDataManager.VersionLong : ApplicationDataManager.BuildVersion);
         GUI.color = Color.white.SetAlpha(0.3f);
         GUI.Label(new Rect(Screen.width - 405, 5, 400, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);

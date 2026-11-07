@@ -84,6 +84,33 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
     }
 
+    // GitVersion informational version, resolved fresh so editor and standalone builds always show the current build.
+    public static string ResolveBuildVersion()
+    {
+        string version = System.Environment.GetEnvironmentVariable("GitVersion_InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("git", "rev-parse HEAD");
+        return version;
+    }
+
+    private static string RunTool(string file, string arguments)
+    {
+        try
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+            using (var p = System.Diagnostics.Process.Start(psi))
+            {
+                string output = p.StandardOutput.ReadToEnd().Trim();
+                p.WaitForExit(60000);
+                return p.ExitCode == 0 && output.Length > 0 && output.IndexOf('\n') < 0 ? output : "";
+            }
+        }
+        catch (System.Exception)
+        {
+            return "";
+        }
+    }
+
     private IEnumerator Start()
     {
         initApplicationProgressPopup = PopupSystem.ShowProgress("Initializing", "Initializing UberStrike...");
@@ -128,7 +155,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 BaseMapsURL = clientConfiguration.ContentBaseUrl + "Maps/" + clientConfiguration.Version + "/";
                 BuildType = clientConfiguration.BuildType;
                 VersionShort = clientConfiguration.Version;
-                BuildVersion = clientConfiguration.BuildVersion;
+                BuildVersion = ResolveBuildVersion();
+                if (string.IsNullOrEmpty(BuildVersion)) BuildVersion = clientConfiguration.BuildVersion;
                 Debug.Log("UberStrike build " + BuildVersion + ", client " + VersionShort);
                 CmuneDebug.DebugLevel = (int)clientConfiguration.DebugLevel;
                 SetChannel(clientConfiguration);
