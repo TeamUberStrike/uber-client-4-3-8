@@ -44,12 +44,9 @@ jobs:
           projectPath: UberStrike.Unity
           targetPlatform: StandaloneWindows
           buildMethod: SceneExporter.BuildWindowsStandaloneCI
-          versioning: Custom
-          version: ${{ steps.gitversion.outputs.fullSemVer }}
-          customParameters: -buildSha ${{ steps.gitversion.outputs.shortSha }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: UberStrike-${{ steps.gitversion.outputs.fullSemVer }}
+          name: UberStrike-${{ steps.gitversion.outputs.informationalVersion }}
           path: UberStrike.Unity/Latest/WindowsStandalone

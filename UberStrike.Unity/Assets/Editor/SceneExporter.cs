@@ -749,30 +749,13 @@ public class SceneExporter
         }, path);
     }
 
-    // Semantic version of this build (GitVersion, see GitVersion.yml) plus the commit. ClientVersion stays the version the web services expect.
+    // Informational version from GitVersion (see GitVersion.yml), including commit distance and SHA.
     private static string ResolveBuildVersion()
     {
-        string repo = Path.GetFullPath(Application.dataPath + "/../..");
-        string version = GetCommandLineArg("-buildVersion");
-        if (string.IsNullOrEmpty(version)) version = System.Environment.GetEnvironmentVariable("GitVersion_FullSemVer");
-        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "\"" + repo + "\" /nocache /showvariable FullSemVer");
-        if (string.IsNullOrEmpty(version)) version = RunTool("dotnet-gitversion", "\"" + repo + "\" /nocache /showvariable FullSemVer");
-        string sha = GetCommandLineArg("-buildSha");
-        if (string.IsNullOrEmpty(sha)) sha = RunTool("git", "-C \"" + repo + "\" rev-parse --short HEAD");
-        if (string.IsNullOrEmpty(version))
-        {
-            Debug.LogWarning("GitVersion not found (install GitTools.GitVersion); build version falls back to " + ClientVersion);
-            version = ClientVersion;
-        }
-        return string.IsNullOrEmpty(sha) ? version : version + " (" + sha + ")";
-    }
-
-    private static string GetCommandLineArg(string name)
-    {
-        string[] args = System.Environment.GetCommandLineArgs();
-        for (int i = 0; i < args.Length - 1; i++)
-            if (args[i] == name) return args[i + 1].Trim().Trim('"');
-        return null;
+        string version = System.Environment.GetEnvironmentVariable("GitVersion_InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("git", "rev-parse HEAD");
+        return version;
     }
 
     private static string RunTool(string file, string arguments)
