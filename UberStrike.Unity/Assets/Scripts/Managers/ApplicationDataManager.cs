@@ -129,7 +129,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 BuildType = clientConfiguration.BuildType;
                 VersionShort = clientConfiguration.Version;
                 BuildVersion = clientConfiguration.BuildVersion;
-                Debug.Log("UberStrike build " + (string.IsNullOrEmpty(BuildVersion) ? "unversioned" : BuildVersion) + ", client " + VersionShort);
+                Debug.Log("UberStrike build " + BuildVersion + ", client " + VersionShort);
                 CmuneDebug.DebugLevel = (int)clientConfiguration.DebugLevel;
                 SetChannel(clientConfiguration);
                 SetVersionLong(clientConfiguration);

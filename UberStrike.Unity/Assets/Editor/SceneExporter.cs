@@ -221,17 +221,6 @@ public class SceneExporter
         WriteConfigurationXml(WindowsStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + "_Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WindowsStandalone);
     }
 
-    // CI entry point (game-ci): the Internal Dev build, failing the job when a player or map build fails.
-    public static void BuildWindowsStandaloneCI()
-    {
-        bool failed = false;
-        Application.LogCallback onLog = (message, stackTrace, type) => { if (type == LogType.Error && message.StartsWith("BuildPlayer failed")) failed = true; };
-        Application.logMessageReceived += onLog;
-        try { BuildWindowsStandaloneDev(); }
-        finally { Application.logMessageReceived -= onLog; }
-        if (failed) EditorApplication.Exit(1);
-    }
-
     [MenuItem("File/Build UberStrike/External QA/Windows Standalone (Main Only)")]
     public static void BuildWindowsStandaloneDevMain()
     {
@@ -474,6 +463,15 @@ public class SceneExporter
         Debug.Log("Finished Web Player Build.");
     }
 
+    private static bool BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
+    {
+        var buildResult = BuildPipeline.BuildPlayer(scenes, path, buildTarget, buildOptions);
+        if (buildResult.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded) return true;
+        Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+        if (Application.isBatchMode) EditorApplication.Exit(1);
+        return false;
+    }
+
     private static void BuildSplashPlayer(string buildFolder, BuildTarget buildTarget)
     {
         string scenename = string.Empty;
@@ -497,12 +495,7 @@ public class SceneExporter
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
-        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
-        {
-            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
-            return;
-        }
+        BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
     }
 
     private static void BuildMainPlayer(string buildFolder, BuildTarget buildTarget, BuildOptions buildOptions = BuildOptions.None)
@@ -524,12 +517,7 @@ public class SceneExporter
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
-        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
-        {
-            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
-            return;
-        }
+        BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
     }
 
     private static void BuildMainScene(string buildFolder, BuildTarget buildTarget, BuildOptions buildOptions = BuildOptions.BuildAdditionalStreamedScenes)
@@ -551,12 +539,7 @@ public class SceneExporter
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
-        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
-        {
-            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
-            return;
-        }
+        BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
     }
 
     private static void BuildMapScenes(string buildFolder, BuildTarget buildTarget, bool enableLevelHashing = true)
@@ -587,27 +570,20 @@ public class SceneExporter
             if (obj != null)
             {
                 Debug.Log("Build Map: " + map.Value);
-                var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+                if (!BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes)) continue;
 
-                if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+                if (enableLevelHashing)
                 {
-                    Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+                    string hash = CreateMd5Checksum(SceneFolder + map.Value + ".unity");
+
+                    string mapAssetBundleName = string.Format("{0}/{1}Map-{2:00}-{3}-{4}.unity3d", buildFolder, path, map.Key, hash, mapTypeSuffix);
+                    Debug.Log("Built Map AssetBundle. Filename=" + mapAssetBundleName);
+                    File.Move(string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), mapAssetBundleName);
                 }
                 else
                 {
-                    if (enableLevelHashing)
-                    {
-                        string hash = CreateMd5Checksum(SceneFolder + map.Value + ".unity");
-
-                        string mapAssetBundleName = string.Format("{0}/{1}Map-{2:00}-{3}-{4}.unity3d", buildFolder, path, map.Key, hash, mapTypeSuffix);
-                        Debug.Log("Built Map AssetBundle. Filename=" + mapAssetBundleName);
-                        File.Move(string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), mapAssetBundleName);
-                    }
-                    else
-                    {
-                        string levelPath = string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value);
-                        Debug.Log("Built Non-Hashed level at: " + levelPath);
-                    }
+                    string levelPath = string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value);
+                    Debug.Log("Built Non-Hashed level at: " + levelPath);
                 }
             }
             else
@@ -624,16 +600,9 @@ public class SceneExporter
         if (obj != null)
         {
             Debug.Log("Build Map: " + sceneName);
-            var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+            if (!BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes)) return;
 
-            if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
-            {
-                Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
-            }
-            else
-            {
-                Debug.Log("Built level at: " + string.Format("{0}/{1}.unity3d", buildFolder, sceneName));
-            }
+            Debug.Log("Built level at: " + string.Format("{0}/{1}.unity3d", buildFolder, sceneName));
         }
         else
         {
@@ -767,12 +736,12 @@ public class SceneExporter
             {
                 string output = p.StandardOutput.ReadToEnd().Trim();
                 p.WaitForExit(60000);
-                return p.ExitCode == 0 && output.Length > 0 && output.IndexOf('\n') < 0 ? output : null;
+                return p.ExitCode == 0 && output.Length > 0 && output.IndexOf('\n') < 0 ? output : "";
             }
         }
         catch (System.Exception)
         {
-            return null;
+            return "";
         }
     }
 

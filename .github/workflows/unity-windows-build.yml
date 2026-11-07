@@ -43,7 +43,7 @@ jobs:
         with:
           projectPath: UberStrike.Unity
           targetPlatform: StandaloneWindows
-          buildMethod: SceneExporter.BuildWindowsStandaloneCI
+          buildMethod: SceneExporter.BuildWindowsStandaloneDev
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
