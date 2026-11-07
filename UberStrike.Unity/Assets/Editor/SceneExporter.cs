@@ -463,13 +463,11 @@ public class SceneExporter
         Debug.Log("Finished Web Player Build.");
     }
 
-    private static bool BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
+    private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
     {
         var buildResult = BuildPipeline.BuildPlayer(scenes, path, buildTarget, buildOptions);
-        if (buildResult.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded) return true;
-        Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
-        if (Application.isBatchMode) EditorApplication.Exit(1);
-        return false;
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded && Application.isBatchMode) EditorApplication.Exit(1);
+        return buildResult;
     }
 
     private static void BuildSplashPlayer(string buildFolder, BuildTarget buildTarget)
@@ -495,7 +493,12 @@ public class SceneExporter
                 break;
         }
 
-        BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
     }
 
     private static void BuildMainPlayer(string buildFolder, BuildTarget buildTarget, BuildOptions buildOptions = BuildOptions.None)
@@ -517,7 +520,12 @@ public class SceneExporter
                 break;
         }
 
-        BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
     }
 
     private static void BuildMainScene(string buildFolder, BuildTarget buildTarget, BuildOptions buildOptions = BuildOptions.BuildAdditionalStreamedScenes)
@@ -539,7 +547,12 @@ public class SceneExporter
                 break;
         }
 
-        BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
     }
 
     private static void BuildMapScenes(string buildFolder, BuildTarget buildTarget, bool enableLevelHashing = true)
@@ -570,20 +583,27 @@ public class SceneExporter
             if (obj != null)
             {
                 Debug.Log("Build Map: " + map.Value);
-                if (!BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes)) continue;
+                var buildResult = BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
-                if (enableLevelHashing)
+                if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 {
-                    string hash = CreateMd5Checksum(SceneFolder + map.Value + ".unity");
-
-                    string mapAssetBundleName = string.Format("{0}/{1}Map-{2:00}-{3}-{4}.unity3d", buildFolder, path, map.Key, hash, mapTypeSuffix);
-                    Debug.Log("Built Map AssetBundle. Filename=" + mapAssetBundleName);
-                    File.Move(string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), mapAssetBundleName);
+                    Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
                 }
                 else
                 {
-                    string levelPath = string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value);
-                    Debug.Log("Built Non-Hashed level at: " + levelPath);
+                    if (enableLevelHashing)
+                    {
+                        string hash = CreateMd5Checksum(SceneFolder + map.Value + ".unity");
+
+                        string mapAssetBundleName = string.Format("{0}/{1}Map-{2:00}-{3}-{4}.unity3d", buildFolder, path, map.Key, hash, mapTypeSuffix);
+                        Debug.Log("Built Map AssetBundle. Filename=" + mapAssetBundleName);
+                        File.Move(string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), mapAssetBundleName);
+                    }
+                    else
+                    {
+                        string levelPath = string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value);
+                        Debug.Log("Built Non-Hashed level at: " + levelPath);
+                    }
                 }
             }
             else
@@ -600,9 +620,16 @@ public class SceneExporter
         if (obj != null)
         {
             Debug.Log("Build Map: " + sceneName);
-            if (!BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes)) return;
+            var buildResult = BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
-            Debug.Log("Built level at: " + string.Format("{0}/{1}.unity3d", buildFolder, sceneName));
+            if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+            {
+                Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            }
+            else
+            {
+                Debug.Log("Built level at: " + string.Format("{0}/{1}.unity3d", buildFolder, sceneName));
+            }
         }
         else
         {
