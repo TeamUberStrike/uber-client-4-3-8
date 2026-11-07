@@ -1,3 +1,19 @@
 workflow: GitHubFlow/v1
-mode: ContinuousDeployment
+mode: ContinuousDelivery
 next-version: 4.3.8
+
+assembly-informational-format: '{SemVer}-{VersionSourceDistance}.{Sha}'
+
+branches:
+  main:
+    label: 'main'
+
+  feature:
+    regex: '^(?<BranchName>features?[\/-].+)'
+
+  release:
+    regex: '^(?<BranchName>releases?[\/-].+)'
+    label: '{BranchName}'
+
+  pull-request:
+    label: 'PullRequest{Number}.{env:GITHUB_HEAD_REF ?? "unknown"}'
