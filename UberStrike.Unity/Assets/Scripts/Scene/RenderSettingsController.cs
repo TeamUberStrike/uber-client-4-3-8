@@ -78,6 +78,15 @@ public class RenderSettingsController : MonoBehaviour
     // in its CheckSupport/OnEnable path on this build.
     public void EnableImageEffects()
     {
+        // PC-only. Full-screen post-processing (the PostProcessingRTX image
+        // effect added below) is too expensive for mobile GPUs and routes
+        // through OnRenderImage paths that misbehave on GLES. Skip the entire
+        // image-effect setup on mobile builds; desktop is unaffected because
+        // IsMobile is false there. If a mobile build ever wants a cheaper
+        // effect, add a separate mobile branch here — do NOT delete this guard,
+        // or the desktop effect comes back on phones.
+        if (ApplicationDataManager.IsMobile) return;
+
         int strength = ApplicationDataManager.ApplicationOptions != null
             ? ApplicationDataManager.ApplicationOptions.VideoPostProcessingStrength
             : 0;
