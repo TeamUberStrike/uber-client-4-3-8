@@ -19,7 +19,9 @@ public class DebugApplication : IDebugPage
 
         if (PlayerDataManager.AccessLevel > 0)
         {
+#if !UNITY_IPHONE
             GUILayout.Label("Time: " + CheatDetection.GameTime + " " + CheatDetection.RealTime + " (Dif: " + (CheatDetection.GameTime - CheatDetection.RealTime) + ")");
+#endif
             GUILayout.Label("Member Name: " + PlayerDataManager.Name);
             GUILayout.Label("Member Cmid: " + PlayerDataManager.Cmid);
             GUILayout.Label("Member Access: " + PlayerDataManager.AccessLevel);

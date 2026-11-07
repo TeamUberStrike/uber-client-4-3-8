@@ -23,7 +23,18 @@ public class MasBundleManager : Singleton<MasBundleManager>
 
     public int Count { get; private set; }
 
-    public bool CanMakeMasPayments { get; private set; }
+    private bool _canMakeMasPayments = false;
+    public bool CanMakeMasPayments
+    {
+        get
+        {
+            if (!_canMakeMasPayments)
+            {
+                RefreshCanMakeMasPayments();
+            }
+            return _canMakeMasPayments;
+        }
+    }
 
     public List<MasBundleUnityView> GetBundlesInCategory(BundleCategoryType category)
     {
@@ -59,24 +70,35 @@ public class MasBundleManager : Singleton<MasBundleManager>
 
     private MasBundleManager()
     {
-#if UNITY_EDITOR
-        CanMakeMasPayments = false;
-#elif UNITY_STANDALONE_OSX
+#if UNITY_STANDALONE_OSX
         StoreKitMacManager.productListReceived += OnMasProductListReceived;
         StoreKitMacManager.productListRequestFailed += OnMasProductListRequestFailed;
         StoreKitMacManager.purchaseFailed += OnMasPurchaseFailed;
         StoreKitMacManager.purchaseCancelled += OnMasPurchaseCancelled;
         StoreKitMacManager.purchaseSuccessful += OnMasPurchaseSuccessful;
-        CanMakeMasPayments = StoreKitMacBinding.canMakePayments();
+#elif UNITY_IPHONE
+        StoreKitManager.productListReceived += OniOSProductListReceived;
+        StoreKitManager.productListRequestFailed += OnMasProductListRequestFailed;
+        StoreKitManager.purchaseFailed += OnMasPurchaseFailed;
+        StoreKitManager.purchaseCancelled += OnMasPurchaseCancelled;
+        StoreKitManager.purchaseSuccessful += OniOSPurchaseSuccessful;
+#elif UNITY_EDITOR
+        _canMakeMasPayments = true;
 #endif
     }
 
     public void Initialize()
     {
         // Get the Mac App Store packs 
-        if (CanMakeMasPayments)
+        if (Application.isEditor || ApplicationDataManager.Channel == ChannelType.MacAppStore)
         {
             ShopWebServiceClient.GetBundles(ChannelType.MacAppStore,
+                (bundles) => SetBundles(bundles),
+                (exception) => CmuneDebug.LogError("Error getting bundles from the server."));
+        }
+        if (ApplicationDataManager.Channel == ChannelType.IPad || ApplicationDataManager.Channel == ChannelType.IPhone)
+        {
+            ShopWebServiceClient.GetBundles(ChannelType.IPad,
                 (bundles) => SetBundles(bundles),
                 (exception) => CmuneDebug.LogError("Error getting bundles from the server."));
         }
@@ -88,7 +110,17 @@ public class MasBundleManager : Singleton<MasBundleManager>
         {
             foreach (var view in bundleViews)
             {
-                if (!string.IsNullOrEmpty(view.MacAppStoreUniqueId))
+                string uniqueId = "";
+                if (ApplicationDataManager.Channel == ChannelType.IPad || ApplicationDataManager.Channel == ChannelType.IPhone)
+                {
+                    uniqueId = view.IosAppStoreUniqueId;
+                }
+                else
+                {
+                    uniqueId = view.MacAppStoreUniqueId;
+                }
+
+                if (!string.IsNullOrEmpty(uniqueId))
                 {
                     List<MasBundleUnityView> bundles;
                     if (!_bundlesPerCategory.TryGetValue(view.Category, out bundles))
@@ -125,18 +157,39 @@ public class MasBundleManager : Singleton<MasBundleManager>
             _appStorePopup.SetAlertType(PopupSystem.AlertType.Cancel);
     }
 
-    public void BuyStoreKitItem(string uniqueId, int bundleId)
+    public void BuyStoreKitItem(BundleView bundle)
     {
-        _appStorePopup = PopupSystem.ShowMessage("In App Purchase", "Opening the Mac App Store, please wait...", PopupSystem.AlertType.None) as BasePopupDialog;
+        _appStorePopup = PopupSystem.ShowMessage("In App Purchase", "Opening the App Store, please wait...", PopupSystem.AlertType.None) as BasePopupDialog;
         MonoRoutine.Start(StartCancelDialogTimer());
 #if UNITY_STANDALONE_OSX
-        StoreKitMacBinding.purchaseProduct(uniqueId, 1);
+        StoreKitMacBinding.purchaseProduct(bundle.MacAppStoreUniqueId, 1);
+#elif UNITY_IPHONE
+        StoreKitiOSBinding.purchaseProduct(bundle.IosAppStoreUniqueId, 1);
 #endif
+    }
+
+    public void RefreshCanMakeMasPayments()
+    {
+#if UNITY_STANDALONE_OSX
+        _canMakeMasPayments = StoreKitMacBinding.canMakePayments();
+#elif UNITY_IPHONE
+        _canMakeMasPayments = StoreKitiOSBinding.canMakePayments();
+#endif
+        Debug.Log("Refreshing payment support: " + _canMakeMasPayments);
     }
 
     private void GetStoreKitProductData()
     {
 #if UNITY_EDITOR
+#elif UNITY_IPHONE
+        string[] productIdentifiers = new string[AllBundles.Count()];
+        int i = 0;
+        foreach (var bundle in AllBundles)
+        {
+            productIdentifiers[i] = bundle.BundleView.IosAppStoreUniqueId;
+            i++;
+        }
+        StoreKitiOSBinding.requestProductData(productIdentifiers);
         Count = 0;
         foreach (var bundle in AllBundles)
         {
@@ -168,29 +221,82 @@ public class MasBundleManager : Singleton<MasBundleManager>
 
         var popupDialog = PopupSystem.ShowMessage("Updating", "Completing your In App Purchase, please wait...", PopupSystem.AlertType.None);
 
-        // Attribute the item and record the receipt
-        yield return UberStrike.WebService.Unity.ShopWebServiceClient.BuyMasBundle(PlayerDataManager.CmidSecure,
-            bundleId,
-            transactionIdentifier,
-            UberStrikeCommonConfig.ApplicationId,
-            (success) =>
-            {
-                PopupSystem.HideMessage(popupDialog);
-                if (success)
-                {
-                    OnBundlePurchased(bundleId);
-                }
-                else
+        if (ApplicationDataManager.Channel == ChannelType.MacAppStore)
+        {
+            // Attribute the item and record the receipt
+            yield return UberStrike.WebService.Unity.ShopWebServiceClient.BuyMasBundle(PlayerDataManager.CmidSecure,
+                bundleId,
+                transactionIdentifier,
+                UberStrikeCommonConfig.ApplicationId,
+                (success) =>
                 {
                     PopupSystem.HideMessage(popupDialog);
-                    PopupSystem.ShowMessage(LocalizedStrings.Error, "There was an error completing your purchase.\nPlease contact support@cmune.com");
-                }
-            },
-            (exception) =>
-            {
-                PopupSystem.HideMessage(popupDialog);
-                CmuneDebug.LogError("Error - ShopWebServiceClient.BuyMasBundle(): " + exception.Message);
-            });
+                    if (success)
+                    {
+                        OnBundlePurchased(bundleId);
+                    }
+                    else
+                    {
+                        PopupSystem.HideMessage(popupDialog);
+                        PopupSystem.ShowMessage(LocalizedStrings.Error, "There was an error completing your purchase.\nPlease contact support@cmune.com");
+                    }
+                },
+                (exception) =>
+                {
+                    PopupSystem.HideMessage(popupDialog);
+                    CmuneDebug.LogError("Error - ShopWebServiceClient.BuyMasBundle(): " + exception.Message);
+                });
+        }
+        else if (ApplicationDataManager.Channel == ChannelType.IPad)
+        {
+            yield return UberStrike.WebService.Unity.ShopWebServiceClient.BuyiPadBundle(PlayerDataManager.CmidSecure,
+                bundleId,
+                transactionIdentifier,
+                UberStrikeCommonConfig.ApplicationId,
+                (success) =>
+                {
+                    PopupSystem.HideMessage(popupDialog);
+                    if (success)
+                    {
+                        OnBundlePurchased(bundleId);
+                    }
+                    else
+                    {
+                        PopupSystem.HideMessage(popupDialog);
+                        PopupSystem.ShowMessage(LocalizedStrings.Error, "There was an error completing your purchase.\nPlease contact support@cmune.com");
+                    }
+                },
+                (exception) =>
+                {
+                    PopupSystem.HideMessage(popupDialog);
+                    CmuneDebug.LogError("Error - ShopWebServiceClient.BuyMasBundle(): " + exception.Message);
+                });
+        }
+        else if (ApplicationDataManager.Channel == ChannelType.IPad)
+        {
+            yield return UberStrike.WebService.Unity.ShopWebServiceClient.BuyiPhoneBundle(PlayerDataManager.CmidSecure,
+                bundleId,
+                transactionIdentifier,
+                UberStrikeCommonConfig.ApplicationId,
+                (success) =>
+                {
+                    PopupSystem.HideMessage(popupDialog);
+                    if (success)
+                    {
+                        OnBundlePurchased(bundleId);
+                    }
+                    else
+                    {
+                        PopupSystem.HideMessage(popupDialog);
+                        PopupSystem.ShowMessage(LocalizedStrings.Error, "There was an error completing your purchase.\nPlease contact support@cmune.com");
+                    }
+                },
+                (exception) =>
+                {
+                    PopupSystem.HideMessage(popupDialog);
+                    CmuneDebug.LogError("Error - ShopWebServiceClient.BuyMasBundle(): " + exception.Message);
+                });
+        }
     }
 
     private void OnBundlePurchased(int bundleId)
@@ -433,6 +539,25 @@ public class MasBundleManager : Singleton<MasBundleManager>
         PopupSystem.ShowMessage("Purchase Cancelled", "Your purchase was cancelled.");
     }
 
+    private void OniOSPurchaseSuccessful(StoreKitiOSTransaction transaction)
+    {
+        if (_appStorePopup != null)
+            PopupSystem.HideMessage(_appStorePopup);
+
+        CmuneDebug.Log(string.Format("OniOSPurchaseSuccessful: ProductIdenitifier={0} Receipt={1} Quantity={2}", transaction.productIdentifier, transaction.base64EncodedTransactionReceipt, transaction.quantity));
+
+        // Attribute the pack to the player
+        var bundle = AllBundles.FirstOrDefault(p => p.BundleView.IosAppStoreUniqueId == transaction.productIdentifier);
+        if (bundle != null)
+        {
+            BuyMasBundle(bundle, transaction.base64EncodedTransactionReceipt);
+        }
+        else
+        {
+            Debug.LogError("No MasBundle found with ProductIdentifier: " + transaction.productIdentifier);
+        }
+    }
+
     private void OnMasPurchaseSuccessful(string productIdentifier, string unusedReceipt, int unusedQuantity)
     {
         if (_appStorePopup != null)
@@ -483,24 +608,46 @@ public class MasBundleManager : Singleton<MasBundleManager>
         CmuneDebug.LogError("Error Getting MAS Product List (" + error + ")");
     }
 
-    private void OnMasProductListReceived(List<StoreKitMacProductModel> productList)
+    void OniOSProductListReceived(List<StoreKitiOSProduct> productList)
     {
-        //productList.Sort(delegate(StoreKitMacProductModel s1, StoreKitMacProductModel s2) { return s1.Price.CompareTo(s2.Price); });
+        productList.Sort(delegate(StoreKitiOSProduct s1, StoreKitiOSProduct s2) { return s1.price.CompareTo(s2.price); });
 
-        foreach (var bundle in AllBundles)
+        foreach (StoreKitiOSProduct storeKitiOSProduct in productList)
         {
             Count = 0;
-            var product = productList.Find(b => b.ProductIdentifier == bundle.BundleView.MacAppStoreUniqueId);
-            if (product != null)
+            var bundleView = AllBundles.FirstOrDefault(b => b.BundleView.IosAppStoreUniqueId == storeKitiOSProduct.productIdentifier);
+            if (bundleView != null)
             {
-                bundle.CurrencySymbol = product.CurrencySymbol;
-                bundle.Price = product.Price;
-                bundle.IsOwned = IsItemPackOwned(bundle.BundleView.BundleItemViews);
+                bundleView.CurrencySymbol = storeKitiOSProduct.currencySymbol;
+                bundleView.Price = storeKitiOSProduct.price;
+                bundleView.IsOwned = IsItemPackOwned(bundleView.BundleView.BundleItemViews);
                 Count++;
             }
             else
             {
-                bundle.Price = string.Empty;
+                CmuneDebug.LogWarning("Could not find matching Server Bundle: " + storeKitiOSProduct.productIdentifier);
+            }
+        }
+    }
+
+    private void OnMasProductListReceived(List<StoreKitMacProductModel> productList)
+    {
+        productList.Sort(delegate(StoreKitMacProductModel s1, StoreKitMacProductModel s2) { return s1.Price.CompareTo(s2.Price); });
+
+        foreach (StoreKitMacProductModel storeKitMacProduct in productList)
+        {
+            Count = 0;
+            var bundleView = AllBundles.FirstOrDefault(b => b.BundleView.MacAppStoreUniqueId == storeKitMacProduct.ProductIdentifier);
+            if (bundleView != null)
+            {
+                bundleView.CurrencySymbol = storeKitMacProduct.CurrencySymbol;
+                bundleView.Price = storeKitMacProduct.Price;
+                bundleView.IsOwned = IsItemPackOwned(bundleView.BundleView.BundleItemViews);
+                Count++;
+            }
+            else
+            {
+                CmuneDebug.LogWarning("Could not find matching Server Bundle: " + storeKitMacProduct.ProductIdentifier);
             }
         }
     }

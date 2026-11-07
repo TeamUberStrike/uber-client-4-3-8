@@ -74,7 +74,7 @@ class ValuablePlayerListGUI
             viewWidth -= 20;
         }
 
-        _scroll = GUI.BeginScrollView(rect, _scroll, new Rect(0, 0, viewWidth, _playerListViewHeight));
+        _scroll = GUITools.BeginScrollView(rect, _scroll, new Rect(0, 0, viewWidth, _playerListViewHeight));
         {
             float yOffset = 0.0f;
 
@@ -85,7 +85,7 @@ class ValuablePlayerListGUI
                 yOffset += 32f;
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawStatsSummary(Rect rect, int rank, float[] columnWidthPercent)

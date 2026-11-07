@@ -62,17 +62,49 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void Draw()
     {
-        if (GameState.HasCurrentGame && GameState.LocalPlayer.IsGamePaused &&
-            !PopupSystem.IsAnyPopupOpen && GUITools.Button(
-                new Rect(Screen.width * CameraRectController.Instance.Width - 240, Screen.height - 150, 220, 50),
-                new GUIContent("Chat"), StormFront.ButtonBlue))
+        if (GameState.HasCurrentGame && !PopupSystem.IsAnyPopupOpen)
         {
-            SceneGuiController.OpenChat();
+            if (TouchInput.IsSupported && TouchInput.Exists)
+            {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+                if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
+                    !InGameChatHud.Instance.CanInput)
+                {
+                    float stackTop = Screen.height * 0.6f + 62;
+
+                    if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
+                        GUITools.Button(new Rect(20, stackTop, 200, 50),
+                            new GUIContent(ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Use Single Input" : LocalizedStrings.UseMultiTouchInput), StormFront.ButtonBlue))
+                    {
+                        TouchInput.Instance.ToggleMovementMode();
+                    }
+
+                    TeamDeathMatchGameMode teamMode = GameState.CurrentGame as TeamDeathMatchGameMode;
+                    if (GameState.LocalPlayer.IsDead && teamMode != null &&
+                        GUITools.Button(new Rect(20, stackTop + 62, 200, 50),
+                            new GUIContent(LocalizedStrings.ChangeTeam), StormFront.ButtonBlue))
+                    {
+                        teamMode.ChangeTeam();
+                    }
+                }
+#endif
+            }
+            else if (GameState.LocalPlayer.IsGamePaused &&
+                GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width - 240, Screen.height - 150, 220, 50),
+                    new GUIContent(LocalizedStrings.Chat), StormFront.ButtonBlue))
+            {
+                SceneGuiController.OpenChat();
+            }
         }
-        if (ButtonEnabled)
+        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled)
         {
+#if !UNITY_ANDROID && !UNITY_IPHONE
             if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 100,
                 Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 200, 50),
+#else
+            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 150,
+                Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 300, 75),
+#endif
                     new GUIContent(ButtonCaption), _buttonGuiStyle))
             {
                 if (OnButtonClicked != null)
@@ -99,7 +131,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void DisplayClickToRespawnMsg()
     {
-        _temporaryMsgText.Text = LocalizedStrings.ClickToRespawn;
+        if (ApplicationDataManager.IsMobile)
+        {
+            _temporaryMsgText.Text = LocalizedStrings.TapToRespawn;
+        }
+        else
+        {
+            _temporaryMsgText.Text = LocalizedStrings.ClickToRespawn;
+        }
         _temporaryMsgText.Color = Color.white;
         _temporaryMsgText.Position = TemporaryMsgPosition;
         ButtonEnabled = false;

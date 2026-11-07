@@ -37,11 +37,16 @@ public class ReportPlayerPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        _rect = new Rect((Screen.width - 570) * 0.5f, (Screen.height - 345) * 0.5f, 570, 345);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        // centre against the virtual screen for mobile menu scale
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 570) * 0.5f, (MobileMenuScale.VirtualHeight - 345) * 0.5f, 570, 345);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         DrawReportPanel();
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void Show()
@@ -134,7 +139,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
 
     //        int i = 0;
     //        GUI.Label(new Rect(325, 50, 175, 178), GUIContent.none, BlueStonez.box_grey50);
-    //        _scrollUsers = GUI.BeginScrollView(new Rect(325, 50, 195, 178), _scrollUsers, new Rect(0, 0, 150, Mathf.Max(PlayerChatLog.ParticipantsCount * 20, 178)), false, true);
+    //        _scrollUsers = GUITools.BeginScrollView(new Rect(325, 50, 195, 178), _scrollUsers, new Rect(0, 0, 150, Mathf.Max(PlayerChatLog.ParticipantsCount * 20, 178)), false, true);
     //        {
     //            StringBuilder b = new StringBuilder();
     //            string pattern = _searchPattern.ToLowerInvariant();
@@ -157,7 +162,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
 
     //            _selectedPlayers = b.ToString();
     //        }
-    //        GUI.EndScrollView();
+    //        GUITools.EndScrollView();
 
     //        if (PlayerChatLog.ParticipantsCount == 0)
     //        {
@@ -247,7 +252,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
 
             int i = 0;
             GUI.Label(new Rect(325, 50, 175, 178), GUIContent.none, BlueStonez.box_grey50);
-            _scrollUsers = GUI.BeginScrollView(new Rect(325, 50, 195, 178), _scrollUsers, new Rect(0, 0, 150, Mathf.Max(_commUsersCount * 20, 178)), false, true);
+            _scrollUsers = GUITools.BeginScrollView(new Rect(325, 50, 195, 178), _scrollUsers, new Rect(0, 0, 150, Mathf.Max(_commUsersCount * 20, 178)), false, true);
             if (_commUsers != null)
             {
                 StringBuilder b = new StringBuilder();
@@ -273,7 +278,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
                 _commUsersCount = i;
                 _selectedPlayers = b.ToString();
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
 
             if (_commUsersCount == 0)
             {
@@ -362,7 +367,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
         {
             Rect rect = new Rect(position.x, position.y + position.height - 1, size.width - 16, size.height);
             GUI.Box(rect, string.Empty, BlueStonez.window_standard_grey38);
-            _listScroll = GUI.BeginScrollView(rect, _listScroll, new Rect(0, 0, rect.width - 20, items.Length * 20));
+            _listScroll = GUITools.BeginScrollView(rect, _listScroll, new Rect(0, 0, rect.width - 20, items.Length * 20));
             for (int i = 0; i < items.Length; i++)
             {
 
@@ -372,7 +377,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
                     index = i;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         GUI.enabled = temp;
 

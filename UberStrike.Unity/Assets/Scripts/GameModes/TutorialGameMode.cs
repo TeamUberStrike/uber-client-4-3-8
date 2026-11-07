@@ -571,8 +571,16 @@ public class TutorialGameMode : FpsGameMode, ITutorialCinematicSequenceListener
 
         _txtObjectives = new MeshGUIText("OBJECTIVES", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
         _txtObjUnderscore = new MeshGUIText("_", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
+#if UNITY_ANDROID
+        _txtMouseLook = new MeshGUIText("> DRAG YOUR FINGER TO LOOK AROUND", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
+#else
         _txtMouseLook = new MeshGUIText("> USE THE MOUSE TO LOOK AROUND", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
+#endif
+#if UNITY_ANDROID
+        _txtWasdWalk = new MeshGUIText("> TAP THE ARROW KEYS TO MOVE TO THE DOOR", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
+#else
         _txtWasdWalk = new MeshGUIText("> USE THE W A S D KEYS TO MOVE TO THE DOOR", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
+#endif
         _txtToArmory = new MeshGUIText("> NAVIGATE TO THE ARMORY", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
         _txtPickupMG = new MeshGUIText("> PICK UP THE MACHINE GUN", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
         _txtShoot3 = new MeshGUIText("> SHOOT THE THREE TARGETS", LevelTutorial.Instance.Font, TextAnchor.UpperLeft);
@@ -725,8 +733,11 @@ public class TutorialGameMode : FpsGameMode, ITutorialCinematicSequenceListener
 
         InputManager.Instance.IsInputEnabled = true;
 
+        Debug.Log("Starting input : " + InputManager.Instance.IsInputEnabled);
+
         /* Wait for mouse look */
         float mouseValue = 0;
+        Vector2 prevMouse = UserInput.Mouse;
 
         bool mouseIconMoving = false;
         float time = 0;
@@ -762,7 +773,8 @@ public class TutorialGameMode : FpsGameMode, ITutorialCinematicSequenceListener
                 }
             }
 
-            mouseValue += Mathf.Abs(InputManager.Instance.GetValue(GameInputKey.HorizontalLook)) + Mathf.Abs(InputManager.Instance.GetValue(GameInputKey.VerticalLook));
+            mouseValue += Mathf.Abs(prevMouse.x - UserInput.Mouse.x) + Mathf.Abs(prevMouse.y - UserInput.Mouse.y);
+            prevMouse = UserInput.Mouse;
             yield return new WaitForEndOfFrame();
         }
 

@@ -46,12 +46,15 @@ public abstract class BaseEventPopup : IPopupDialog
 
     public void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         //on the first draw call we set the start time
         if (_startTime == 0) _startTime = Time.time;
 
         GUI.color = Color.white.SetAlpha(Scale);
-        float offsetX = (Screen.width - Width) * 0.5f;
-        float offsetY = GlobalUIRibbon.HEIGHT + (Screen.height - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
+        //center against the virtual (scaled) screen
+        float offsetX = (MobileMenuScale.VirtualWidth - Width) * 0.5f;
+        float offsetY = GlobalUIRibbon.HEIGHT + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
         Rect rect = new Rect(offsetX, offsetY, Width, 64 + Height - (64 * Scale));
 
         GUI.Label(new Rect(0, 0, 200, 20), offsetX + " " + offsetY);
@@ -61,12 +64,7 @@ public abstract class BaseEventPopup : IPopupDialog
             //always guarantee the exit through 'x'
             if (GUI.Button(new Rect(rect.width - 20, 0, 20, 20), "X", BlueStonez.friends_hidden_button))
             {
-                PopupSystem.HideMessage(this);
-
-                if (_onCloseButtonClicked != null)
-                {
-                    _onCloseButtonClicked();
-                }
+                Close();
             }
 
             //draw content
@@ -78,11 +76,24 @@ public abstract class BaseEventPopup : IPopupDialog
         //if clicked anything that is not a button, we exit
         if (ClickAnywhereToExit && Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))
         {
-            PopupSystem.HideMessage(this);
+            Event.current.Use();
+            Close();
         }
 
         OnAfterGUI();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public virtual void OnAfterGUI() { }
+
+    private void Close()
+    {
+        PopupSystem.HideMessage(this);
+
+        if (_onCloseButtonClicked != null)
+        {
+            _onCloseButtonClicked();
+        }
+    }
 }

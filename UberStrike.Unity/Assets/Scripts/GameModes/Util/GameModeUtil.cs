@@ -177,14 +177,7 @@ static class GameModeUtil
                                     DisconnectionTimeout : DisconnectionTimeoutAdmin));
             if (checkTimeout == false || timeout > 0)
             {
-                if (!GameState.LocalPlayer.IsGamePaused)
-                {
-                    HudUtil.Instance.ShowClickToRespawnText(gameMode);
-                }
-                else
-                {
-                    HudUtil.Instance.ShowRespawnButton();
-                }
+                HudUtil.Instance.ShowRespawnButton();
 
                 if (checkTimeout == true && timeout < 10)
                 {

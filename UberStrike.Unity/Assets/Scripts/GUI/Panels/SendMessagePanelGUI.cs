@@ -30,12 +30,19 @@ public class SendMessagePanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        if (!_showComposeMessage) return;
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
+        if (!_showComposeMessage)
+        {
+            MobileMenuScale.End(scaleMatrix);
+            return;
+        }
 
         GUI.depth = (int)GuiDepth.Panel;
         GUI.skin = BlueStonez.Skin;
 
-        Rect rect = new Rect((Screen.width - 480) / 2, (Screen.height - 320) / 2, 480, 320);
+        // centre against the virtual screen for mobile menu scale
+        Rect rect = new Rect((MobileMenuScale.VirtualWidth - 480) / 2, (MobileMenuScale.VirtualHeight - 320) / 2, 480, 320);
 
         GUI.Box(rect, GUIContent.none, BlueStonez.window);
 
@@ -48,6 +55,8 @@ public class SendMessagePanelGUI : PanelGuiBase
             _rcvDropdownHeight = 0;
 
         GUI.enabled = true;
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DoCompose(Rect rect)
@@ -132,7 +141,7 @@ public class SendMessagePanelGUI : PanelGuiBase
         if (PlayerDataManager.Instance.FriendsCount > 0)
         {
             int j = 0;
-            _friendDropdownScroll = GUI.BeginScrollView(new Rect(0, 0, rcvRect.width, rcvRect.height), _friendDropdownScroll, new Rect(0, 0, _rcvDropdownWidth, _receiverCount * 24));
+            _friendDropdownScroll = GUITools.BeginScrollView(new Rect(0, 0, rcvRect.width, rcvRect.height), _friendDropdownScroll, new Rect(0, 0, _rcvDropdownWidth, _receiverCount * 24));
             foreach (var friend in PlayerDataManager.Instance.FriendList)
             {
                 if (_msgReceiver.Length > 0 && !friend.Name.ToLower().Contains(_msgReceiver.ToLower())) continue;
@@ -159,7 +168,7 @@ public class SendMessagePanelGUI : PanelGuiBase
             else
                 _rcvDropdownWidth = rcvRect.width - 8;
 
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         else GUI.Label(new Rect(0, 0, rcvRect.width, rcvRect.height), LocalizedStrings.YouHaveNoFriends, BlueStonez.label_interparkmed_11pt);
 
