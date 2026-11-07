@@ -1,4 +1,4 @@
-name: Unity Windows Build
+name: Unity Builds
 
 on:
   pull_request:
