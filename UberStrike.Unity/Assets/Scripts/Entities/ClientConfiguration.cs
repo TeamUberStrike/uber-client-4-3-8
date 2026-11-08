@@ -5,6 +5,7 @@ using System;
 public class ClientConfiguration
 {
     public string Version = string.Empty;
+    public string BuildVersion = string.Empty;
     public BuildType BuildType = BuildType.Dev;
     public DebugLevel DebugLevel = DebugLevel.Debug;
     public string WebServiceBaseUrl = string.Empty;
