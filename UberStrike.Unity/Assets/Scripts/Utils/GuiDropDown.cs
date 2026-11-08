@@ -39,14 +39,8 @@ public class GuiDropDown
     private Rect _rect;
 
     public GUIContent Caption { get; set; }
-#if UNITY_ANDROID || UNITY_IPHONE
-    public float ButtonWidth = 200;
-    public float ButtonHeight = 44;
-#else
     public float ButtonWidth = 100;
     public float ButtonHeight = 20;
-#endif
-
 
     public GuiDropDown() { }
 
@@ -77,9 +71,10 @@ public class GuiDropDown
 
         if (_isDown)
         {
+            float popupScale = ApplicationDataManager.IsMobile ? 2f : 1f;
             MouseOrbit.Disable = true;
-            
-            if (!new Rect(_rect.xMax - ButtonWidth, _rect.yMax, ButtonWidth, ButtonHeight * _data.Count).Contains(Event.current.mousePosition) 
+
+            if (!new Rect(_rect.xMax - ButtonWidth * popupScale, _rect.yMax, ButtonWidth * popupScale, ButtonHeight * popupScale * _data.Count).Contains(Event.current.mousePosition)
                 && !_rect.Contains(Event.current.mousePosition) 
                 && (Event.current.type == EventType.MouseUp || Event.current.type == EventType.Used))
             {
@@ -87,12 +82,15 @@ public class GuiDropDown
                 MouseOrbit.Disable = false;
             }
 
+            Matrix4x4 previousMatrix = GUI.matrix;
+            if (popupScale != 1f)
+                GUIUtility.ScaleAroundPivot(new Vector2(popupScale, popupScale), new Vector2(_rect.xMax, _rect.yMax));
+
             for (int i = 0; i < _data.Count; i++)
             {
                 if (_data[i].IsEnabled())
                 {
                     GUIStyle style = BlueStonez.dropdown;
-                    if (ApplicationDataManager.IsMobile) style = BlueStonez.dropdown_large;
                     if (GUI.Button(new Rect(_rect.xMax - ButtonWidth, _rect.yMax + (i * ButtonHeight), ButtonWidth, ButtonHeight), _data[i].Content, style))
                     {
                         _isDown = false;
@@ -101,6 +99,8 @@ public class GuiDropDown
                     }
                 }
             }
+
+            GUI.matrix = previousMatrix;
         }
     }
 }
