@@ -135,7 +135,6 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         // Draw the build info if not in game
         string versionText = string.IsNullOrEmpty(ApplicationDataManager.BuildVersion) ? ApplicationDataManager.VersionLong : ApplicationDataManager.BuildVersion;
-        string buildInfo = string.Format("{0} {1}", ApplicationDataManager.FrameRate, versionText);
 
         if (_buildInfoStyle == null)
         {
@@ -145,9 +144,27 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         }
 
         const int copyButtonWidth = 36;
-        float labelWidth = Mathf.Min(400, Screen.width - copyButtonWidth - 5);
+        GUIContent fpsContent = new GUIContent(ApplicationDataManager.FrameRate);
+        GUIContent versionContent = new GUIContent(versionText);
+
+        _buildInfoStyle.fontSize = 11;
+        float fpsWidth = _buildInfoStyle.CalcSize(fpsContent).x;
+        float maxVersionWidth = Mathf.Max(0, Screen.width - copyButtonWidth - 10 - fpsWidth - 6);
+        float versionWidth = _buildInfoStyle.CalcSize(versionContent).x;
+        if (versionWidth > maxVersionWidth && versionWidth > 0)
+        {
+            _buildInfoStyle.fontSize = Mathf.Max(6, Mathf.FloorToInt(_buildInfoStyle.fontSize * maxVersionWidth / versionWidth));
+            versionWidth = Mathf.Min(_buildInfoStyle.CalcSize(versionContent).x, maxVersionWidth);
+        }
+        else
+        {
+            versionWidth = Mathf.Min(versionWidth, maxVersionWidth);
+        }
+
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(Screen.width - copyButtonWidth - 5 - labelWidth, 5, labelWidth, 20), buildInfo, _buildInfoStyle);
+        GUI.Label(new Rect(Screen.width - copyButtonWidth - 5 - versionWidth, 5, versionWidth, 20), versionContent, _buildInfoStyle);
+        _buildInfoStyle.fontSize = 11;
+        GUI.Label(new Rect(Screen.width - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, 5, fpsWidth, 20), fpsContent, _buildInfoStyle);
         GUI.color = Color.white;
 
         if (GUITools.Button(new Rect(Screen.width - copyButtonWidth, 5, copyButtonWidth, 20), new GUIContent("Copy", "Copy the build version to the clipboard"), BlueStonez.buttondark_small))
