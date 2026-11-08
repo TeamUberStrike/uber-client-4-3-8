@@ -132,8 +132,6 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             DoStatusBar(new Rect(0, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, MobileMenuScale.VirtualWidth, STATUSBAR_HEIGHT));
         }
 
-        _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
-
         if (_ribbonEvents.Count > 0)
         {
             RibbonEvent e;
@@ -149,13 +147,34 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         // Draw the build info if not in game
         string buildInfo = string.Format("{0} v{1}", ApplicationDataManager.FrameRate, ApplicationDataManager.VersionLong);
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - 195 - MobileMenuScale.RightInset, 5, 190, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
         GUI.color = Color.white;
 
-        _dropDown.Draw();
+        DoSettingsDropDown();
 
         MobileMenuScale.End(scaleMatrix);
+
         GuiManager.DrawTooltip();
+    }
+
+    // Settings wheel + popup, drawn inside the menu scale block in the same virtual space as the
+    // status bar, so the wheel, its icon and the popup all follow MobileMenuScale.Scale.
+    private void DoSettingsDropDown()
+    {
+        float rightInset = MobileMenuScale.RightInset;
+        _dropDown.SetLocalRect(new Rect(
+            MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT - rightInset,
+            _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT,
+            STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
+
+        // Mobile: popup rows at least DROPDOWN_MIN_ROW_MM tall physically (1 on PC), and a wider
+        // invisible hit area for the wheel - to the left over the non-interactive credits label, and
+        // to the right across the edge-inset gap up to the screen edge.
+        _dropDown.PopupScale = MobileMenuScale.TouchBoost(_dropDown.ButtonHeight, DROPDOWN_MIN_ROW_MM, DROPDOWN_MAX_BOOST);
+        _dropDown.HitPaddingLeft = MobileMenuScale.Active ? WHEEL_HIT_PADDING_LEFT : 0f;
+        _dropDown.HitPaddingRight = rightInset;
+
+        _dropDown.Draw();
     }
 
     private void DoPages()
@@ -168,7 +187,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             int i = 0;
             foreach (var p in _pageList)
             {
-                _pageToggleRect = new Rect(tabWidth * i, 0, tabWidth, 37);
+                _pageToggleRect = new Rect(MobileMenuScale.LeftInset + tabWidth * i, 0, tabWidth, 37);
 
                 const float clickDelay = 0;
                 bool show = MenuPageManager.IsCurrentPage(p.Key);
@@ -186,11 +205,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             }
 
             //BUY CREDITS 
-            if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
+            if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - 136 - MobileMenuScale.RightInset, 2, 130, 33), new GUIContent(LocalizedStrings.BuyCreditsCaps, LocalizedStrings.ClickHereBuyCreditsMsg), BlueStonez.buttongold_large, SoundEffectType.UIGetCredits))
             {
                 //GoogleAnalytics.Instance.LogEvent("ui-globaluiribbon-click", "Get Credits", true);
                 ApplicationDataManager.Instance.OpenBuyCredits();
             }
+
         }
         GUI.EndGroup();
 
@@ -202,14 +222,14 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         if (InboxManager.Instance.HasUnreadMessages || InboxManager.Instance.HasUnreadRequests)
         {
             GUI.color = new Color(1, 1, 1, _alphaIcons);
-            GUI.DrawTexture(new Rect(2 + ((tabWidth * 5) - 31), (ButtonY + _yOffset) + 15, 28, 23), _newMessageIcon);
+            GUI.DrawTexture(new Rect(2 + MobileMenuScale.LeftInset + ((tabWidth * 5) - 31), (ButtonY + _yOffset) + 15, 28, 23), _newMessageIcon);
             GUI.color = Color.white;
         }
 
         if (ChatManager.Instance.MarkPrivateMessageTab || ChatManager.Instance.MarkClanMessageTab)
         {
             GUI.color = new Color(1, 1, 1, _alphaIcons);
-            GUI.DrawTexture(new Rect(2 + ((tabWidth * 7) - 31), (ButtonY + _yOffset) + 15, 28, 23), _newMessageIcon);
+            GUI.DrawTexture(new Rect(2 + MobileMenuScale.LeftInset + ((tabWidth * 7) - 31), (ButtonY + _yOffset) + 15, 28, 23), _newMessageIcon);
             GUI.color = Color.white;
         }
     }
@@ -219,21 +239,21 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window);
         {
             //NAME
-            GUI.DrawTexture(new Rect(7, 5, 16, 16), UberstrikeIcons.GetIconForChannel(ApplicationDataManager.Channel));
+            GUI.DrawTexture(new Rect(7 + MobileMenuScale.LeftInset, 5, 16, 16), UberstrikeIcons.GetIconForChannel(ApplicationDataManager.Channel));
             string name = PlayerDataManager.IsPlayerInClan ? string.Format(" [{0}] {1}", PlayerDataManager.ClanTag, PlayerDataManager.Name) : string.Format(" {0}", PlayerDataManager.Name);
-            GUI.Label(new Rect(25, 2, 200, 20), name, BlueStonez.label_interparkbold_13pt_left);
+            GUI.Label(new Rect(25 + MobileMenuScale.LeftInset, 2, 200, 20), name, BlueStonez.label_interparkbold_13pt_left);
 
             //XP BAR
-            DrawXPMeter(new Rect(200, 0, 350, 20));
+            DrawXPMeter(new Rect(200 + MobileMenuScale.LeftInset, 0, 350, 20));
 
             //POINTS
-            Rect rectPoints = new Rect(rect.width - 220, 2, 100, 20);
+            Rect rectPoints = new Rect(rect.width - 220 - MobileMenuScale.RightInset, 2, 100, 20);
             GUIContent points = new GUIContent(PointsValue.ToString("N0"), UberstrikeTextures.IconPoints20x20);
             GUI.color = new Color(1, 1, 1, PointsAlpha);
             GUI.Label(rectPoints, points, BlueStonez.label_interparkbold_13pt);
 
             //CREDITS
-            Rect rectCredits = new Rect(rect.width - 130, 2, 100, 20);
+            Rect rectCredits = new Rect(rect.width - 130 - MobileMenuScale.RightInset, 2, 100, 20);
             GUIContent credits = new GUIContent(CreditsValue.ToString("N0"), UberstrikeTextures.IconCredits20x20);
             GUI.color = new Color(1, 1, 1, CreditsAlpha);
             GUI.Label(rectCredits, credits, BlueStonez.label_interparkbold_13pt);
@@ -288,6 +308,11 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     public void Hide()
     {
+        // The dropdown is not drawn while hidden, so it could never close itself and would leave
+        // MouseOrbit.Disable stuck on.
+        if (_dropDown != null)
+            _dropDown.Close();
+
         enabled = false;
         _yOffset = -HEIGHT;
     }
@@ -304,11 +329,11 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaXP > 0)
         {
-            _ribbonEvents[EventType.XpEvent] = new GainEvent(370, Color.white, deltaXP, PlayerDataManager.PlayerExperienceSecure);
+            _ribbonEvents[EventType.XpEvent] = new GainEvent((int)(370 + MobileMenuScale.LeftInset), Color.white, deltaXP, PlayerDataManager.PlayerExperienceSecure);
         }
         else if (deltaXP < 0)
         {
-            _ribbonEvents[EventType.XpEvent] = new LoseEvent(370, Color.white, deltaXP, PlayerDataManager.PlayerExperienceSecure);
+            _ribbonEvents[EventType.XpEvent] = new LoseEvent((int)(370 + MobileMenuScale.LeftInset), Color.white, deltaXP, PlayerDataManager.PlayerExperienceSecure);
         }
     }
 
@@ -316,12 +341,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaCredits > 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - MobileMenuScale.RightInset - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetCredits);
         }
         else if (deltaCredits < 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - MobileMenuScale.RightInset - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
         }
     }
 
@@ -329,12 +354,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaPoints > 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - MobileMenuScale.RightInset - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetPoints);
         }
         else if (deltaPoints < 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - MobileMenuScale.RightInset - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
         }
     }
 
@@ -377,6 +402,11 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private int _minXPforThisLevel;
 
     private const int ButtonY = 0;
+
+    // Mobile settings dropdown sizing (see DoSettingsDropDown).
+    private const float DROPDOWN_MIN_ROW_MM = 2.5f;
+    private const float DROPDOWN_MAX_BOOST = 1.25f;
+    private const float WHEEL_HIT_PADDING_LEFT = 20f;
     private float _yOffset;
 
     private float _alphaIcons = 0.0f;
@@ -536,7 +566,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         public void Draw()
         {
-            GUIUtility.ScaleAroundPivot(new Vector2(_scale, _scale), new Vector2(_rect.x + _rect.width / 2, _rect.y + _rect.height / 2));
+            // Restore (not reset to identity) afterwards: this runs inside the mobile menu scale block,
+            // and resetting would drop the menu scale for everything drawn after it in the frame.
+            Matrix4x4 previousMatrix = GUI.matrix;
+            MobileMenuScale.ScaleAroundLocalPivot(new Vector2(_scale, _scale), new Vector2(_rect.x + _rect.width / 2, _rect.y + _rect.height / 2));
 
             GUI.contentColor = new Color(0, 0, 0, _alpha);
             GUI.Label(new Rect(_rect.x + 1, _rect.y + 1, _rect.width, _rect.height), _content, _style);
@@ -544,7 +577,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             GUI.Label(_rect, _content, _style);
             GUI.contentColor = Color.white;
 
-            GUI.matrix = Matrix4x4.identity;
+            GUI.matrix = previousMatrix;
         }
 
         public abstract void Animate();
