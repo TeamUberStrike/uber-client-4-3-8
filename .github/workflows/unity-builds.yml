@@ -46,6 +46,8 @@ jobs:
           projectPath: UberStrike.Unity
           targetPlatform: StandaloneWindows
           buildMethod: SceneExporter.BuildWindowsStandaloneDev
+          versioning: Custom
+          version: ${{ steps.gitversion.outputs.informationalVersion }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4

@@ -87,7 +87,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     // GitVersion informational version, resolved fresh so editor and standalone builds always show the current build.
     public static string ResolveBuildVersion()
     {
-        string version = System.Environment.GetEnvironmentVariable("GitVersion_InformationalVersion");
+        string version = System.Environment.GetEnvironmentVariable("VERSION");
         if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
         if (string.IsNullOrEmpty(version)) version = RunTool("git", "rev-parse HEAD");
         return version;
