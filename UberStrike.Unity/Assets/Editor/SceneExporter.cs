@@ -571,6 +571,19 @@ public class SceneExporter
         Debug.Log("Finished Web Player Build.");
     }
 
+    private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
+    {
+        var buildResult = BuildPipeline.BuildPlayer(scenes, path, buildTarget, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(1);
+            }
+        }
+        return buildResult;
+    }
+
     private static void BuildSplashPlayer(string buildFolder, BuildTarget buildTarget)
     {
         string scenename = string.Empty;
@@ -594,7 +607,7 @@ public class SceneExporter
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
@@ -621,7 +634,7 @@ public class SceneExporter
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
@@ -651,7 +664,7 @@ public class SceneExporter
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
@@ -687,7 +700,7 @@ public class SceneExporter
             if (obj != null)
             {
                 Debug.Log("Build Map: " + map.Value);
-                var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+                var buildResult = BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
                 if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 {
@@ -724,7 +737,7 @@ public class SceneExporter
         if (obj != null)
         {
             Debug.Log("Build Map: " + sceneName);
-            var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+            var buildResult = BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
             if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
             {
@@ -851,6 +864,7 @@ public class SceneExporter
             BuildType = buildType,
             DebugLevel = DebugLevel.Debug,
             Version = ClientVersion,
+            BuildVersion = ApplicationDataManager.ResolveBuildVersion(),
             WebServiceBaseUrl = GetWebserviceBaseUrl(webserviceLocation),
             ContentBaseUrl = GetContentBaseUrl(webserviceLocation),
             ChannelType = channelType,
@@ -875,6 +889,8 @@ public class SceneExporter
                 xml.WriteAttributeString("BuildType", clientConfiguration.BuildType.ToString());
                 xml.WriteAttributeString("DebugLevel", clientConfiguration.DebugLevel.ToString());
                 xml.WriteAttributeString("Version", clientConfiguration.Version);
+                if (!string.IsNullOrEmpty(clientConfiguration.BuildVersion))
+                    xml.WriteAttributeString("BuildVersion", clientConfiguration.BuildVersion);
                 xml.WriteAttributeString("WebServiceBaseUrl", clientConfiguration.WebServiceBaseUrl);
                 xml.WriteAttributeString("ContentBaseUrl", clientConfiguration.ContentBaseUrl);
                 xml.WriteAttributeString("ChannelType", clientConfiguration.ChannelType.ToString());
