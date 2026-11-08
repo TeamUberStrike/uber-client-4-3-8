@@ -134,11 +134,26 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         }
 
         // Draw the build info if not in game
-        string buildInfo = string.Format("{0} {1}", ApplicationDataManager.FrameRate,
-            string.IsNullOrEmpty(ApplicationDataManager.BuildVersion) ? ApplicationDataManager.VersionLong : ApplicationDataManager.BuildVersion);
+        string versionText = string.IsNullOrEmpty(ApplicationDataManager.BuildVersion) ? ApplicationDataManager.VersionLong : ApplicationDataManager.BuildVersion;
+        string buildInfo = string.Format("{0} {1}", ApplicationDataManager.FrameRate, versionText);
+
+        if (_buildInfoStyle == null)
+        {
+            _buildInfoStyle = new GUIStyle(BlueStonez.label_interparkmed_11pt_right);
+            _buildInfoStyle.wordWrap = false;
+            _buildInfoStyle.clipping = TextClipping.Clip;
+        }
+
+        const int copyButtonWidth = 36;
+        float labelWidth = Mathf.Min(400, Screen.width - copyButtonWidth - 5);
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(Screen.width - 405, 5, 400, 20), buildInfo, BlueStonez.label_interparkmed_11pt_right);
+        GUI.Label(new Rect(Screen.width - copyButtonWidth - 5 - labelWidth, 5, labelWidth, 20), buildInfo, _buildInfoStyle);
         GUI.color = Color.white;
+
+        if (GUITools.Button(new Rect(Screen.width - copyButtonWidth, 5, copyButtonWidth, 20), new GUIContent("Copy", "Copy the build version to the clipboard"), BlueStonez.buttondark_small))
+        {
+            GUIUtility.systemCopyBuffer = versionText;
+        }
 
         _dropDown.Draw();
 
@@ -367,6 +382,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private Rect _pageToggleRect;
 
     private Dictionary<EventType, RibbonEvent> _ribbonEvents = new Dictionary<EventType, RibbonEvent>();
+
+    private static GUIStyle _buildInfoStyle;
 
     private LiveFeed _liveFeed;
 
