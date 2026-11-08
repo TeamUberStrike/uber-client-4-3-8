@@ -421,7 +421,10 @@ public class InboxPageGUI : MonoBehaviour
             }
             else
             {
-                GUI.Label(r, "You have no friends ... yet!\n\nOpen the chat window and connect to other Uberstrikers.\nUse the 'Add as Friend' function to send out a friend request :)", BlueStonez.label_interparkbold_13pt);
+                // The list area starts at x=240 to leave room for the side texture; without one, centre
+                // the empty-state message on the whole panel instead of the right-hand part.
+                Rect emptyRect = _sideTexture ? r : new Rect(0, 0, friRect.width, friRect.height);
+                GUI.Label(emptyRect, "You have no friends ... yet!\n\nOpen the chat window and connect to other Uberstrikers.\nUse the 'Add as Friend' function to send out a friend request :)", BlueStonez.label_interparkbold_13pt);
             }
         }
         GUI.EndGroup();

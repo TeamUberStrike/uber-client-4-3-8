@@ -14,6 +14,8 @@ public class HelpPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
+        GUI.depth = (int)GuiDepth.Panel;
+
         Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
 
         int height = Mathf.RoundToInt((MobileMenuScale.VirtualHeight - 56) * 0.75f);
@@ -31,8 +33,6 @@ public class HelpPanelGUI : PanelGuiBase
 
     private void DrawHelpPanel()
     {
-        GUI.depth = (int)GuiDepth.Panel;
-
         GUI.Label(new Rect(0, 0, _rect.width, 56), LocalizedStrings.HelpCaps, BlueStonez.tab_strip);
 
         //Draw Stats Tabs
