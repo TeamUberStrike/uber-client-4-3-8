@@ -12,6 +12,14 @@ public class ChatPageGUI : PageGUI
 
     private const float TitleHeight = 24;
 
+    // Mobile only: the chat page (small authored fonts and controls) is drawn this much larger than
+    // the rest of the menu. MobileMenuScale.Begin ignores the extra multiplier on PC.
+    private const float MobileChatScale = 1.3f;
+
+    // Mobile only: narrower player list (more room for the chat), widened only when many tabs need it.
+    private const float MobilePaneWidth = 220f;
+    private const float MobileMinTabWidth = 65f;
+
     private int _lastMessageCount = 0;
 
     protected virtual void Awake()
@@ -47,7 +55,8 @@ public class ChatPageGUI : PageGUI
 
     protected virtual void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        float extraScale = MobileMenuScale.Active ? MobileChatScale : 1f;
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(extraScale);
 
         if (IsOnGUIEnabled)
         {
@@ -55,7 +64,9 @@ public class ChatPageGUI : PageGUI
             GUI.depth = (int)GuiDepth.Chat;
 
             // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
-            _mainRect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
+            // The ribbon height is in base menu units; convert it to this page's (extra-scaled) units.
+            float ribbonHeight = GlobalUIRibbon.Instance.GetHeight() / extraScale;
+            _mainRect = new Rect(0, ribbonHeight, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - ribbonHeight);
 
             DrawGUI(_mainRect);
 
@@ -72,16 +83,17 @@ public class ChatPageGUI : PageGUI
         {
             if (CommConnectionManager.Client.ConnectionState == Cmune.Realtime.Photon.Client.PhotonClient.ConnectionStatus.RUNNING)
             {
-                DoTabs(new Rect(2, 0, TAB_WIDTH, 22));
+                float paneWidth = PaneWidth;
+                DoTabs(new Rect(2, 0, paneWidth, 22));
 
                 if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape)
                     GUIUtility.keyboardControl = 0;
 
-                Rect paneRect = new Rect(0, 21, TAB_WIDTH, rect.height - 21);
+                Rect paneRect = new Rect(0, 21, paneWidth, rect.height - 21);
 
-                Rect headerRect = new Rect(TAB_WIDTH - 1, 0, rect.width - TAB_WIDTH, 22);
-                Rect dialogRect = new Rect(TAB_WIDTH, 22, rect.width - TAB_WIDTH, rect.height - 22 - 36);
-                Rect footerRect = new Rect(TAB_WIDTH - 1, rect.height - 37, rect.width - TAB_WIDTH + 1, 37);
+                Rect headerRect = new Rect(paneWidth - 1, 0, rect.width - paneWidth, 22);
+                Rect dialogRect = new Rect(paneWidth, 22, rect.width - paneWidth, rect.height - 22 - 36);
+                Rect footerRect = new Rect(paneWidth - 1, rect.height - 37, rect.width - paneWidth + 1, 37);
 
                 ChatGroupPanel pane = ChatManager.Instance._commPanes[(int)SelectedTab];
 
@@ -153,6 +165,28 @@ public class ChatPageGUI : PageGUI
     }
 
     protected virtual bool IsInGamePanel { get { return false; } }
+
+    /// <summary>Width of the left pane (tabs + player list). PC: TAB_WIDTH.</summary>
+    private float PaneWidth
+    {
+        get
+        {
+            if (!MobileMenuScale.Active)
+                return TAB_WIDTH;
+            return Mathf.Max(MobilePaneWidth, ChatManager.Instance.TabCounter * MobileMinTabWidth);
+        }
+    }
+
+    /// <summary>
+    /// Position for the player popup menu. GUIToScreenPoint returns screen pixels (GUI.matrix applied);
+    /// on the chat page the menu is drawn at the top level of the scaled block, so convert back to page
+    /// units. Identity on PC (scale 1) and for the in-game panel.
+    /// </summary>
+    private Vector2 PopupMenuPosition()
+    {
+        Vector2 screenPoint = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
+        return IsInGamePanel ? screenPoint : screenPoint / MobileMenuScale.Scale;
+    }
 
     protected void DrawInGamePanel(Rect rect)
     {
@@ -348,15 +382,18 @@ public class ChatPageGUI : PageGUI
 
                 bool hasSearchString = !string.IsNullOrEmpty(pane.SearchText);
 
+                // Keep the search box clear of the left curved edge / cutout, like the ribbon (0 on PC).
+                float searchInset = MobileMenuScale.LeftInset;
+
                 GUI.SetNextControlName("@ModSearch");
 
                 GUI.changed = false;
-                pane.SearchText = GUI.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
+                pane.SearchText = GUI.TextField(new Rect(6 + searchInset, rect.height - 30, rect.width - searchInset - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
 
                 if (!hasSearchString && GUI.GetNameOfFocusedControl() != "@ModSearch")
                 {
                     GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(12, rect.height - 30, rect.width - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
+                    GUI.Label(new Rect(12 + searchInset, rect.height - 30, rect.width - searchInset - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
                     GUI.color = Color.white;
                 }
 
@@ -505,15 +542,18 @@ public class ChatPageGUI : PageGUI
 
             bool hasSearchString = !string.IsNullOrEmpty(pane.SearchText);
 
+            // Keep the search box clear of the left curved edge / cutout, like the ribbon (0 on PC).
+            float searchInset = MobileMenuScale.LeftInset;
+
             GUI.SetNextControlName("@LobbySearch");
 
             GUI.changed = false;
-            pane.SearchText = GUI.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
+            pane.SearchText = GUI.TextField(new Rect(6 + searchInset, rect.height - 30, rect.width - searchInset - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
 
             if (!hasSearchString && GUI.GetNameOfFocusedControl() != "@LobbySearch")
             {
                 GUI.color = new Color(1, 1, 1, 0.3f);
-                GUI.Label(new Rect(12, rect.height - 30, rect.width - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
+                GUI.Label(new Rect(12 + searchInset, rect.height - 30, rect.width - searchInset - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
                 GUI.color = Color.white;
             }
 
@@ -813,13 +853,18 @@ public class ChatPageGUI : PageGUI
 
     private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog)
     {
-        DoDialogFooter(rect, pane, dialog, SelectedTab);
+        // Chat page: keep the message box and Send button clear of the right curved edge / cutout,
+        // like the ribbon (0 on PC). The footer background still spans the full width.
+        DoDialogFooter(rect, pane, dialog, SelectedTab, MobileMenuScale.RightInset);
     }
 
-    private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog, TabArea context)
+    private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog, TabArea context, float rightInset = 0f)
     {
         GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
         {
+            // Width available to the input controls (the in-game panel passes no inset).
+            float width = rect.width - rightInset;
+
             GUI.SetNextControlName("@CurrentChatMessage");
 
             bool tmp = GUI.enabled;
@@ -833,13 +878,13 @@ public class ChatPageGUI : PageGUI
             bool canSend = GUI.enabled && _lastMessageSentTimer > 0.29f;
 
             // Chat Input Textfield
-            _currentChatMessage = GUI.TextField(new Rect(6, 6, rect.width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
+            _currentChatMessage = GUI.TextField(new Rect(6, 6, width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
             _currentChatMessage = _currentChatMessage.Trim(new char[] { '\n' });
 
             if (_spammingNotificationTime > Time.time)
             {
                 GUI.color = Color.red;
-                GUI.Label(new Rect(15, 6, rect.width - 66, rect.height - 12), LocalizedStrings.DontSpamTheLobbyChat, BlueStonez.label_interparkmed_10pt_left);
+                GUI.Label(new Rect(15, 6, width - 66, rect.height - 12), LocalizedStrings.DontSpamTheLobbyChat, BlueStonez.label_interparkmed_10pt_left);
                 GUI.color = Color.white;
             }
             // Input tip label
@@ -862,7 +907,7 @@ public class ChatPageGUI : PageGUI
                 if (string.IsNullOrEmpty(_currentChatMessage) && GUI.GetNameOfFocusedControl() != "@CurrentChatMessage")
                 {
                     GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(10, 6, rect.width - 66, rect.height - 12), chatMsg, BlueStonez.label_interparkmed_10pt_left);
+                    GUI.Label(new Rect(10, 6, width - 66, rect.height - 12), chatMsg, BlueStonez.label_interparkmed_10pt_left);
                     GUI.color = Color.white;
                 }
             }
@@ -873,7 +918,7 @@ public class ChatPageGUI : PageGUI
                 GUI.FocusControl("@CurrentChatMessage");
             }
 
-            if (GUITools.Button(new Rect(rect.width - 51, 6, 45, rect.height - 12), new GUIContent(LocalizedStrings.Send), BlueStonez.buttondark_small))
+            if (GUITools.Button(new Rect(width - 51, 6, 45, rect.height - 12), new GUIContent(LocalizedStrings.Send), BlueStonez.buttondark_small))
             {
                 if (canSend && !string.IsNullOrWhiteSpace(_currentChatMessage))
                 {
@@ -926,7 +971,7 @@ public class ChatPageGUI : PageGUI
         {
             SelectCommUser(user);
 
-            _playerMenu.Show(GUIUtility.GUIToScreenPoint(Event.current.mousePosition), user);
+            _playerMenu.Show(PopupMenuPosition(), user);
         }
 
         // DBLCLK to chat with
@@ -981,7 +1026,7 @@ public class ChatPageGUI : PageGUI
             {
                 SelectCommUser(user);
 
-                _playerMenu.Show(GUIUtility.GUIToScreenPoint(Event.current.mousePosition), user);
+                _playerMenu.Show(PopupMenuPosition(), user);
             }
         }
 
