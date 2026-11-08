@@ -143,10 +143,19 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             _buildInfoStyle.clipping = TextClipping.Clip;
         }
 
-        const int copyButtonWidth = 36;
+        if (_copyButtonStyle == null)
+        {
+            _copyButtonStyle = new GUIStyle(BlueStonez.buttondark_small);
+            _copyButtonStyle.fontSize = 11;
+            _copyButtonStyle.wordWrap = false;
+            _copyButtonStyle.clipping = TextClipping.Clip;
+        }
+
+        GUIContent copyContent = new GUIContent("Copy", "Copy the build version to the clipboard");
         GUIContent fpsContent = new GUIContent(ApplicationDataManager.FrameRate);
         GUIContent versionContent = new GUIContent(versionText);
 
+        float copyButtonWidth = _copyButtonStyle.CalcSize(copyContent).x + 8;
         _buildInfoStyle.fontSize = 11;
         float fpsWidth = _buildInfoStyle.CalcSize(fpsContent).x;
         float maxVersionWidth = Mathf.Max(0, Screen.width - copyButtonWidth - 10 - fpsWidth - 6);
@@ -167,7 +176,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUI.Label(new Rect(Screen.width - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, 5, fpsWidth, 20), fpsContent, _buildInfoStyle);
         GUI.color = Color.white;
 
-        if (GUITools.Button(new Rect(Screen.width - copyButtonWidth, 5, copyButtonWidth, 20), new GUIContent("Copy", "Copy the build version to the clipboard"), BlueStonez.buttondark_small))
+        if (GUITools.Button(new Rect(Screen.width - copyButtonWidth, 5, copyButtonWidth, 20), copyContent, _copyButtonStyle))
         {
             GUIUtility.systemCopyBuffer = versionText;
         }
@@ -401,6 +410,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private Dictionary<EventType, RibbonEvent> _ribbonEvents = new Dictionary<EventType, RibbonEvent>();
 
     private static GUIStyle _buildInfoStyle;
+    private static GUIStyle _copyButtonStyle;
 
     private LiveFeed _liveFeed;
 
