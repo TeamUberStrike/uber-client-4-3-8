@@ -7,20 +7,20 @@ assembly-informational-format: '{SemVer}.{Sha}'
 branches:
   main:
     label: 'main'
-    mode: ContinuousDelivery
 
   feature:
     regex: '^(?<BranchName>features?[\/-].+)'
-    mode: ManualDeployment
+    label: '{BranchName}'
+    mode: ContinuousDelivery
 
   release:
     regex: '^(?<BranchName>releases?[\/-].+)'
     label: '{BranchName}'
-    mode: ManualDeployment
+    mode: ContinuousDelivery
 
   pull-request:
     label: 'PullRequest{Number}.{env:GITHUB_HEAD_REF ?? "unknown"}'
-    mode: ManualDeployment
 
   unknown:
-    mode: ManualDeployment
+    label: '{BranchName}'
+    mode: ContinuousDelivery
