@@ -1,0 +1,26 @@
+workflow: GitHubFlow/v1
+mode: ContinuousDelivery
+next-version: 4.3.8
+
+assembly-informational-format: '{SemVer}.{Sha}'
+
+branches:
+  main:
+    label: 'main'
+
+  feature:
+    regex: '^(?<BranchName>features?[\/-].+)'
+    label: '{BranchName}'
+    mode: ContinuousDelivery
+
+  release:
+    regex: '^(?<BranchName>releases?[\/-].+)'
+    label: '{BranchName}'
+    mode: ContinuousDelivery
+
+  pull-request:
+    label: 'PullRequest{Number}.{env:GITHUB_HEAD_REF ?? "unknown"}'
+
+  unknown:
+    label: '{BranchName}'
+    mode: ContinuousDelivery
