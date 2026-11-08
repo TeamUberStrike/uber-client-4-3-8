@@ -13,6 +13,7 @@ public class ShopPageGUI : PageGUI
     private const int SlotHeight = 70;
     private const int LoadoutWidth = 190;
     private const int ShopWidth = 590;
+    private static readonly Color PanelBackingColor = new Color(0.12f, 0.12f, 0.12f, 1f);
 
     MasBundleShopGUI _masBundleGui = new MasBundleShopGUI();
     MasCreditsShopGui _masCreditsGui = new MasCreditsShopGui();
@@ -192,7 +193,8 @@ public class ShopPageGUI : PageGUI
         StartCoroutine(StartNotifyLoadoutArea());
 
         // override mouseorbit to prevent scrolling interfering with orbit
-        MouseOrbit.Instance.MaxX = Screen.width - ShopWidth;
+        // (panel width in screen pixels: scaled by the mobile menu scale on mobile, unchanged on PC)
+        MouseOrbit.Instance.MaxX = Screen.width - (MobileMenuScale.Active ? ShopWidth * MobileMenuScale.Scale : ShopWidth);
 
         if (IsOnGUIEnabled)
         {
@@ -299,6 +301,17 @@ public class ShopPageGUI : PageGUI
         GUITools.PushGUIState();
 
         GUI.enabled = !PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen;
+
+        // Mobile: the panel window styles are semi-transparent. Under the menu scale the panels cover a
+        // much larger part of the 3D scene (incl. its bright blue lights), which then shows through.
+        // An opaque backing keeps the panels solid. PC keeps the original look.
+        if (MobileMenuScale.Active)
+        {
+            Color previousColor = GUI.color;
+            GUI.color = PanelBackingColor;
+            GUI.DrawTexture(_rectLabs, Texture2D.whiteTexture);
+            GUI.color = previousColor;
+        }
 
         GUI.BeginGroup(_rectLabs);
         {
