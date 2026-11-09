@@ -250,6 +250,30 @@ namespace UberStrike.Realtime.NakamaAdapter
             if (string.IsNullOrEmpty(Host)) Host = "127.0.0.1";
         }
 
+        public void CopyFrom(NakamaConfig other)
+        {
+            if (other == null)
+                return;
+
+            Scheme = other.Scheme;
+            Host = other.Host;
+            Port = other.Port;
+            ServerKey = other.ServerKey;
+            DevAuth = other.DevAuth;
+            Token = other.Token;
+            Pinned = other.Pinned;
+            SchemePinned = other.SchemePinned;
+            TlsHost = other.TlsHost;
+            TlsFrom = other.TlsFrom;
+            ReplaceServerList = other.ReplaceServerList;
+            TimePingMs = other.TimePingMs;
+            ConnectTimeoutSec = other.ConnectTimeoutSec;
+            CloseGraceMs = other.CloseGraceMs;
+            Source = other.Source;
+            Origin = other.Origin;
+            _node = other._node;
+        }
+
         public override string ToString()
         {
             return Endpoint + " (" + Origin + (Pinned ? ", pinned" : "") + ") devAuth=" + DevAuth

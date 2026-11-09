@@ -57,5 +57,27 @@ public static class WebGLBuildSpike
                 }
             }
         }
+        else
+        {
+            WriteConfig(outDir);
+        }
+    }
+
+    private static void WriteConfig(string outDir)
+    {
+        const string xml = "<?xml version=\"1.0\" encoding=\"us-ascii\"?>\n" +
+            "<UberStrike>\n" +
+            "  <Application\n" +
+            "    BuildType=\"Dev\"\n" +
+            "    DebugLevel=\"Debug\"\n" +
+            "    Version=\"4.3.8\"\n" +
+            "    WebServiceBaseUrl=\"https://ws-dev.uberforever.eu/\"\n" +
+            "    ContentBaseUrl=\"http://client-dev.uberforever.eu/\"\n" +
+            "    ChannelType=\"WindowsStandalone\" />\n" +
+            "</UberStrike>";
+
+        string path = System.IO.Path.Combine(outDir, "UberStrike.xml");
+        System.IO.File.WriteAllText(path, xml);
+        Debug.Log("[WebGLSpike] wrote " + path);
     }
 }
