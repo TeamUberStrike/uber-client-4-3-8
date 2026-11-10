@@ -389,7 +389,7 @@ public class SceneExporter
     public static void BuildWebPlayerDevLocal()
     {
         BuildWebPlayer(false);
-        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WindowsStandalone, true);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad, true);
         Debug.Log("Finished Web Player Build.");
     }
 
@@ -397,7 +397,7 @@ public class SceneExporter
     public static void BuildWebPlayerDev()
     {
         BuildWebPlayer();
-        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WebPortal);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad);
         Debug.Log("Finished Web Player Build.");
     }
 
@@ -545,14 +545,22 @@ public class SceneExporter
 
         FinalizeWebGLBuild(WebPlayerFolder);
 
-        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), buildType, wsLocation, ChannelType.WebPortal);
+        ChannelType channelType = buildType == BuildType.Dev ? ChannelType.IPad : ChannelType.WebPortal;
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), buildType, wsLocation, channelType);
 
         Debug.Log("Finished Web Player Build.");
     }
 
     private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
     {
+        bool stripEngineCode = PlayerSettings.stripEngineCode;
+        if (buildTarget == BuildTarget.WebGL)
+        {
+            PlayerSettings.stripEngineCode = false;
+        }
+
         var buildResult = BuildPipeline.BuildPlayer(scenes, path, buildTarget, buildOptions);
+        PlayerSettings.stripEngineCode = stripEngineCode;
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             if (Application.isBatchMode)
