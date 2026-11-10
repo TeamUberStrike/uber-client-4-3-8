@@ -29,6 +29,26 @@ namespace NakamaTests
             return link;
         }
 
+        // webgl: attach before nakama.json, dial on release
+        [Test]
+        static void HeldConnectsDialOnRelease()
+        {
+            var p = new FakePlatform();
+            var a = new LinkPeer();
+            var link = new NakamaLink(Cfg(), p);
+            link.HoldConnects();
+            link.Attach(a, "1234", a.OnReady);
+            A.Eq(0, p.Client.Auths.Count, "held: no login before the config arrives");
+            A.Eq(0, a.Ready.Count, "held: not ready yet");
+            link.ReleaseConnects();
+            A.Eq(1, p.Client.Auths.Count, "release dials once");
+            A.Eq("dev:1234:2:Hazard Test", p.Client.Auths[0].Item1, "with the attaching peer's cmid");
+            p.Socket.Open();
+            A.True(a.Ready.Count == 1 && a.Ready[0].Ok, "ready after release");
+            link.ReleaseConnects();
+            A.Eq(1, p.Client.Auths.Count, "release is idempotent");
+        }
+
         [Test]
         static void FirstAttachAuthConnectSyncThenShared()
         {

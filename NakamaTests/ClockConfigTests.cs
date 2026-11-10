@@ -153,6 +153,34 @@ namespace NakamaTests
             A.Eq(100, c.TimePingMs, "ping floor");
         }
 
+        // webgl: nakama.json lands after web row
+        [Test]
+        static void LateJsonKeepsWebRow()
+        {
+            NakamaConfig c = NakamaConfig.Load(null, null);   // WebGL Install: no file yet -> defaults
+            c.ApplyNode("203.0.113.7", 7350, "web.example", "web row #3");
+            c.CopyFrom(NakamaConfig.Load("{\"serverKey\":\"k\",\"tlsHost\":\"nk.example\"}", null));
+            A.Eq("http://203.0.113.7:7350", c.Endpoint, "row endpoint kept, not reset to 127.0.0.1");
+            A.Eq("203.0.113.7:7350", c.Label, "row label kept");
+            A.Eq("k", c.ServerKey, "json settings applied");
+            A.Eq("web row #3", c.Origin, "origin = row");
+
+            c = NakamaConfig.Load(null, null);
+            c.ApplyNode("203.0.113.7", 443, "web.example", "web row #3");
+            c.CopyFrom(NakamaConfig.Load("{\"tlsHost\":\"nk.example\"}", null));
+            A.Eq("https://nk.example:443", c.Endpoint, "row re-applied with the json tlsHost");
+
+            c = NakamaConfig.Load(null, null);
+            c.ApplyNode("203.0.113.7", 7350, "web.example", "web row #3");
+            c.CopyFrom(NakamaConfig.Load("{\"endpoint\":\"https://uber.example:443\"}", null));
+            A.Eq("https://uber.example:443", c.Endpoint, "pinned json endpoint still wins");
+            A.Eq("203.0.113.7:7350", c.Label, "pinned: row stays the label");
+
+            c = NakamaConfig.Load(null, null);
+            c.CopyFrom(NakamaConfig.Load("{\"host\":\"uber.example\"}", null));
+            A.Eq("http://uber.example:7350", c.Endpoint, "json before any row: plain copy");
+        }
+
         [Test]
         static void ApplyNodeFromWebRow()
         {
