@@ -54,12 +54,8 @@ public class SplashLoaderWeb : MonoBehaviour
             Debug.LogError("Unity Caching Authorization Failed!");
         }
 
-        // Setup VideoPlayer for splash movie.
-        // Embedded VideoClips are not supported by the WebGL player (only URL
-        // playback is), and on browsers with no working video path the player
-        // never becomes "isPlaying". Skip the video on WebGL so the fallback
-        // text/progress path below always drives the splash.
-        if (uberStrikeLogoMovie != null && Application.platform != RuntimePlatform.WebGLPlayer)
+        // Setup VideoPlayer for splash movie
+        if (uberStrikeLogoMovie != null)
         {
             // Create VideoPlayer component
             videoPlayer = gameObject.AddComponent<VideoPlayer>();
