@@ -530,25 +530,51 @@ public class SceneExporter
     {
         PrepareBuildFolder(WebPlayerFolder);
 
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
+        BuildWebGLPlayer();
         if (buildMaps) BuildMapScenes(WebPlayerFolder, BuildTarget.WebGL, enableLevelHashing);
-
-        FinalizeWebGLBuild(WebPlayerFolder);
     }
 
     public static void BuildWebPlayerMain(BuildType buildType, WebserviceLocation wsLocation)
     {
         PrepareBuildFolder(WebPlayerFolder);
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
 
-        FinalizeWebGLBuild(WebPlayerFolder);
+        BuildWebGLPlayer();
 
         ChannelType channelType = buildType == BuildType.Dev ? ChannelType.IPad : ChannelType.WebPortal;
         WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), buildType, wsLocation, channelType);
 
         Debug.Log("Finished Web Player Build.");
+    }
+
+    // Spike-style single-player WebGL build (constripacity's WebGLBuildSpike):
+    // one player with Latest as the entry scene. The legacy 3-part pipeline
+    // (SplashWeb header player -> WWW download of the 69 MB UberStrikeMain.unity3d
+    // -> Latest) never completes the bundle download on iOS Safari, so the game
+    // was stuck at "Downloading UberStrike. Please Wait..." forever. Baking Latest
+    // removes the download entirely. Maps are NOT baked in: they still load from
+    // the content CDN (BaseMapsURL + FileName), see LevelManager.MapLoader.
+    private static void BuildWebGLPlayer()
+    {
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.dataCaching = true;
+        // Bake a JS decompressor into the loader so .gz artifacts load from any static host
+        // (e.g. python -m http.server) that doesn't send Content-Encoding: gzip.
+        PlayerSettings.WebGL.decompressionFallback = true;
+
+        var buildResult = BuildPlayer(
+            new string[]
+            {
+                SceneFolder + MainScene + ".unity",
+                SceneFolder + SpaceshipScene + ".unity",
+            },
+            WebPlayerFolder,
+            BuildTarget.WebGL,
+            BuildOptions.None);
+
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+        }
     }
 
     private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)

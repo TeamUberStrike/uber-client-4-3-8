@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import os
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 BUILD_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -31,8 +31,34 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-cache")
         super().end_headers()
 
-    def log_message(self, format, *args):
-        print(f"[{self.log_date_time_string()}] {format % args}")
+    protocol_version = "HTTP/1.1"
+
+    def do_GET(self):
+        import time
+        start = time.time()
+        self._start = start
+        super().do_GET()
+
+    def log_request(self, code="-", size="-"):
+        import time
+        start = getattr(self, "_start", None)
+        dur = f"{time.time() - start:6.1f}s" if start else "      "
+        print(f"[{self.log_date_time_string()}] {dur} {code} {size:>9} {self.address_string()} {self.requestline}", flush=True)
+
+    def copyfile(self, source, outputfile):
+        import shutil
+        import time
+        t0 = time.time()
+        shutil.copyfileobj(source, outputfile)
+        n = getattr(outputfile, "_written", None)
+        print(f"    body done in {time.time() - t0:.1f}s", flush=True)
+
+    def send_response(self, code, message=None):
+        self._bytes = 0
+        super().send_response(code, message)
+
+    def log_error(self, format, *args):
+        print(f"[{self.log_date_time_string()}] ERROR {self.address_string()} {format % args}", flush=True)
 
 
 def main():
@@ -42,8 +68,12 @@ def main():
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
 
+    class Server(ThreadingHTTPServer):
+        daemon_threads = True
+        allow_reuse_address = True
+
     os.chdir(args.dir)
-    server = HTTPServer((args.host, args.port), UnityWebGLHandler)
+    server = Server((args.host, args.port), UnityWebGLHandler)
     print(f"Serving {os.path.abspath(args.dir)} at http://localhost:{args.port}")
     try:
         server.serve_forever()
