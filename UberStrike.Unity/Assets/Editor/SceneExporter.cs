@@ -530,25 +530,44 @@ public class SceneExporter
     {
         PrepareBuildFolder(WebPlayerFolder);
 
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
+        BuildWebGLPlayer();
         if (buildMaps) BuildMapScenes(WebPlayerFolder, BuildTarget.WebGL, enableLevelHashing);
-
-        FinalizeWebGLBuild(WebPlayerFolder);
     }
 
     public static void BuildWebPlayerMain(BuildType buildType, WebserviceLocation wsLocation)
     {
         PrepareBuildFolder(WebPlayerFolder);
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
 
-        FinalizeWebGLBuild(WebPlayerFolder);
+        BuildWebGLPlayer();
 
         ChannelType channelType = buildType == BuildType.Dev ? ChannelType.IPad : ChannelType.WebPortal;
         WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), buildType, wsLocation, channelType);
 
         Debug.Log("Finished Web Player Build.");
+    }
+
+    // Single-player WebGL build: Latest baked as the entry scene, no header bundle
+    // download (it never completes on iOS Safari). Maps still load from the CDN.
+    private static void BuildWebGLPlayer()
+    {
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.dataCaching = true;
+        PlayerSettings.WebGL.decompressionFallback = true;
+
+        var buildResult = BuildPlayer(
+            new string[]
+            {
+                SceneFolder + MainScene + ".unity",
+                SceneFolder + SpaceshipScene + ".unity",
+            },
+            WebPlayerFolder,
+            BuildTarget.WebGL,
+            BuildOptions.None);
+
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+        }
     }
 
     private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
