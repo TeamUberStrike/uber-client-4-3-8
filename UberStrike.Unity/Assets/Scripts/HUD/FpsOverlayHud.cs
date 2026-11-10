@@ -35,8 +35,11 @@ public class FpsOverlayHud : MonoBehaviour
         if (_style == null)
         {
             _style = new GUIStyle(GUI.skin.label);
-            _style.fontSize = 14;
-            _style.fontStyle = FontStyle.Bold;
+            if (_style.font == null || _style.font.dynamic)
+            {
+                _style.fontSize = 14;
+                _style.fontStyle = FontStyle.Bold;
+            }
             _style.normal.textColor = new Color(1f, 1f, 1f, 0.9f);
         }
 
