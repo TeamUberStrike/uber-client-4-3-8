@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 import argparse
+import json
 import os
+import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 BUILD_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "UberStrike.Unity", "Latest", "WebPlayer",
 )
+
+CLIENT_LOG = "/tmp/opencode/client-logs.log"
 
 
 class UnityWebGLHandler(SimpleHTTPRequestHandler):
@@ -38,6 +42,26 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
         start = time.time()
         self._start = start
         super().do_GET()
+
+    def do_POST(self):
+        if self.path != "/__log":
+            self.send_error(404)
+            return
+        length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(length)
+        try:
+            entries = json.loads(body)
+        except Exception:
+            entries = [{"raw": body.decode(errors="replace")}]
+        with open(CLIENT_LOG, "a") as f:
+            for e in entries:
+                line = json.dumps(e, ensure_ascii=False)
+                f.write(line + "\n")
+                print(f"[client:{self.address_string()}] {line}", flush=True)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(b'{"ok":true}')
 
     def log_request(self, code="-", size="-"):
         import time
