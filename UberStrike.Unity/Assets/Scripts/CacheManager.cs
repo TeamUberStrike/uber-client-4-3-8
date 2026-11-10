@@ -46,12 +46,7 @@ public static class CacheManager
 
     public static IEnumerator LoadAssetBundle(string url, Action<float> progress)
     {
-        WWW www;
-
-        if (Application.platform == RuntimePlatform.WebGLPlayer && IsAuthorized)
-            www = WWW.LoadFromCacheOrDownload(url, 1);
-        else
-            www = new WWW(url);
+        WWW www = new WWW(url);
 
         while (!www.isDone)
         {
