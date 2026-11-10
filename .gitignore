@@ -1,6 +1,9 @@
 .vscode/
 .vs/
 
+# Local secrets / deploy credentials
+.env
+
 # Claude Code local settings
 .claude/
 
