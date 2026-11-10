@@ -243,7 +243,7 @@ public class LevelManager : Singleton<LevelManager>
             {
                 yield return Application.LoadLevelAdditiveAsync(MapToLoad.SceneName);
             }
-            else if (ApplicationDataManager.IsMobile)
+            else if (ApplicationDataManager.IsMobile && Application.platform != RuntimePlatform.WebGLPlayer)
             {
                 // Mobile/iOS bakes every map scene into the build (SceneExporter.BuildiOS), so load
                 // the baked scene directly. Without this branch the player falls to the CDN asset-bundle
