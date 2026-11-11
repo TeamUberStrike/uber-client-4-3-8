@@ -41,6 +41,7 @@
     <Compile Include="$(AdapterDir)NakamaPeer.cs" Link="Adapter\NakamaPeer.cs" />
     <Compile Include="$(AdapterDir)NakamaConfig.cs" Link="Adapter\NakamaConfig.cs" />
     <Compile Include="$(AdapterDir)NakamaNodeRows.cs" Link="Adapter\NakamaNodeRows.cs" />
+    <Compile Include="$(AdapterDir)ClientLogFilter.cs" Link="Adapter\ClientLogFilter.cs" />
   </ItemGroup>
 
   <ItemGroup>
