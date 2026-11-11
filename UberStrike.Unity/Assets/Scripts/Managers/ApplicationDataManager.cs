@@ -37,9 +37,25 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         get
         {
+            // WebGL runs in PC browsers and iOS/Android browsers: decide from the device,
+            // not the channel (the web config uses the iPad channel only for the login flow).
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                return UberGetDeviceType() != 0;
+#else
+                return Application.isMobilePlatform;
+#endif
+            }
+
             return Channel == ChannelType.Android || Channel == ChannelType.IPad || Channel == ChannelType.IPhone;
         }
     }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern int UberGetDeviceType();
+#endif
 
     private static CmuneSystemInfo localSystemInfo;
 
