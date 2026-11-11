@@ -180,6 +180,10 @@ public static class MobileMenuScale
     // report no cutout get no inset and keep the stock layout. The bottom inset (iPhone home
     // indicator) is intentionally not applied.
     //
+    // The player can override the measured inset in Options > General > Screen Edge Margin
+    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or an exact margin in millimetres on both
+    // sides. That covers devices with rounded corners or curved edges but no reported cutout.
+    //
     // NOTE (Android): Player Settings > Resolution and Presentation > "Render outside safe area" must be
     // ON, otherwise Unity letterboxes the cutout and safeArea always equals the full screen.
     // ---------------------------------------------------------------------------------------------
@@ -192,6 +196,12 @@ public static class MobileMenuScale
 
     /// <summary>Upper bound for one side's inset as a fraction of the screen width (bogus platform values).</summary>
     private const float MaxInsetFraction = 0.15f;
+
+    /// <summary>Screen edge margin option value meaning "use the cutout the device reports".</summary>
+    public const float EdgeMarginAuto = -1f;
+
+    /// <summary>Largest manual screen edge margin, in millimetres.</summary>
+    public const float MaxEdgeMarginMm = 10f;
 
     // Rects this close (menu units) to a side of the menu area count as touching it.
     private const float EdgeTolerance = 2f;
@@ -226,13 +236,27 @@ public static class MobileMenuScale
 
             if (Active)
             {
-                Rect safe = Screen.safeArea;
-                float cutoutLeft = Mathf.Max(safe.xMin, 0f);
-                float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
-                float minimum = Mathf.Max(cutoutLeft, cutoutRight) * OppositeEdgeFactor;
                 float maximum = Screen.width * MaxInsetFraction;
-                _insetLeftPixels = Mathf.Min(Mathf.Max(cutoutLeft, minimum), maximum);
-                _insetRightPixels = Mathf.Min(Mathf.Max(cutoutRight, minimum), maximum);
+                ApplicationOptions options = ApplicationDataManager.ApplicationOptions;
+                float manualMm = options != null ? options.MobileScreenEdgeMargin : EdgeMarginAuto;
+
+                if (manualMm >= 0f)
+                {
+                    // Manual: the same exact margin on both sides.
+                    float manual = Mathf.Min(Mathf.Min(manualMm, MaxEdgeMarginMm) * PixelsPerMm, maximum);
+                    _insetLeftPixels = manual;
+                    _insetRightPixels = manual;
+                }
+                else
+                {
+                    // Auto: the reported cutout.
+                    Rect safe = Screen.safeArea;
+                    float cutoutLeft = Mathf.Max(safe.xMin, 0f);
+                    float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
+                    float minimum = Mathf.Max(cutoutLeft, cutoutRight) * OppositeEdgeFactor;
+                    _insetLeftPixels = Mathf.Min(Mathf.Max(cutoutLeft, minimum), maximum);
+                    _insetRightPixels = Mathf.Min(Mathf.Max(cutoutRight, minimum), maximum);
+                }
             }
         }
 
