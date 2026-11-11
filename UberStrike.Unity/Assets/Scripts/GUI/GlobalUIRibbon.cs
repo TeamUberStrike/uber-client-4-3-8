@@ -157,10 +157,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         if (_copyButtonStyle == null)
         {
             _copyButtonStyle = new GUIStyle(BlueStonez.buttondark_small);
+            _copyButtonStyle.fontSize = 11;
             _copyButtonStyle.wordWrap = false;
             _copyButtonStyle.clipping = TextClipping.Clip;
-            if (_copyButtonStyle.font != null && _copyButtonStyle.font.dynamic)
-                _copyButtonStyle.fontSize = 11;
         }
 
         GUIContent copyContent = new GUIContent("Copy", "Copy the build version to the clipboard");
@@ -168,12 +167,11 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUIContent versionContent = new GUIContent(versionText);
 
         float copyButtonWidth = _copyButtonStyle.CalcSize(copyContent).x + 8;
-        if (_buildInfoStyle.font == null || _buildInfoStyle.font.dynamic)
-            _buildInfoStyle.fontSize = 11;
+        _buildInfoStyle.fontSize = 11;
         float fpsWidth = _buildInfoStyle.CalcSize(fpsContent).x;
         float maxVersionWidth = Mathf.Max(0, MobileMenuScale.VirtualWidth - copyButtonWidth - 10 - fpsWidth - 6 - MobileMenuScale.RightInset);
         float versionWidth = _buildInfoStyle.CalcSize(versionContent).x;
-        if ((_buildInfoStyle.font == null || _buildInfoStyle.font.dynamic) && versionWidth > maxVersionWidth && versionWidth > 0)
+        if (versionWidth > maxVersionWidth && versionWidth > 0)
         {
             _buildInfoStyle.fontSize = Mathf.Max(6, Mathf.FloorToInt(_buildInfoStyle.fontSize * maxVersionWidth / versionWidth));
             versionWidth = Mathf.Min(_buildInfoStyle.CalcSize(versionContent).x, maxVersionWidth);
@@ -185,8 +183,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         GUI.color = Color.white.SetAlpha(0.3f);
         GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - MobileMenuScale.RightInset, 5, versionWidth, 20), versionContent, _buildInfoStyle);
-        if (_buildInfoStyle.font == null || _buildInfoStyle.font.dynamic)
-            _buildInfoStyle.fontSize = 11;
+        _buildInfoStyle.fontSize = 11;
         GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - fpsWidth - 6 - MobileMenuScale.RightInset, 5, fpsWidth, 20), fpsContent, _buildInfoStyle);
         GUI.color = Color.white;
 
