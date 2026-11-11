@@ -243,7 +243,6 @@ public class LocalPlayer : MonoBehaviour
                                 info = cc.AimTrigger.HudInfo;
 
                                 ReticleHud.Instance.FocusCharacter(cc.Team);
-                                SfxManager.Play2dAudioClip(SoundEffectType.GameFocusEnemy);
                             }
                         }
                         else
