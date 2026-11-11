@@ -70,6 +70,7 @@ namespace UberStrike.Realtime.NakamaAdapter
         long _emptySince = -1;
         long _authRetryAt;
         bool _held;
+        int _dialCmid;
         int _heldCmid;
         int _authFailures;
 
@@ -257,11 +258,19 @@ namespace UberStrike.Realtime.NakamaAdapter
                 _loggedEndpoint = ep;
                 _platform.Log("[nakama] endpoint " + ep + " (" + _cfg.Origin + ")");
             }
-            if (_client == null || ep == _clientEndpoint || _socket != null || _connecting)
+            if (_client == null || ep == _clientEndpoint || _socket != null)
                 return;
             _client = null;
             _clientEndpoint = null;
             _session = null;
+            if (!_connecting)
+                return;
+            // dial to old endpoint in flight: drop it, dial new one now (else wait its 10-20 s timeout)
+            _platform.Log("[nakama] endpoint changed while connecting, redial " + ep);
+            ++_epoch;
+            _connecting = false;
+            if (_waiting.Count > 0)
+                Connect(_dialCmid);
         }
 
         // connect
@@ -269,6 +278,7 @@ namespace UberStrike.Realtime.NakamaAdapter
         async void Connect(int cmidHint)
         {
             _connecting = true;
+            _dialCmid = cmidHint;
             int epoch = ++_epoch;
             ISocket socket = null;
             LinkResult result;

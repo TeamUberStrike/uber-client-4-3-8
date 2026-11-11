@@ -49,6 +49,29 @@ namespace NakamaTests
             A.Eq(1, p.Client.Auths.Count, "release is idempotent");
         }
 
+        // endpoint changes mid-dial (web row after first dial): redial now, not after old timeout
+        [Test]
+        static void RetargetWhileConnectingRedials()
+        {
+            var p = new FakePlatform();
+            var a = new LinkPeer();
+            NakamaConfig cfg = Cfg();
+            var link = new NakamaLink(cfg, p);
+            link.Attach(a, "1234", a.OnReady);
+            FakeSocket stale = p.Socket;
+            A.Eq("http://127.0.0.1:7350", p.Endpoints[0], "first dial = default");
+            cfg.ApplyNode("203.0.113.7", 7350, null, "web row #3");
+            link.Retarget();
+            A.Eq(2, p.Sockets.Count, "redial at once");
+            A.Eq("http://203.0.113.7:7350", p.Endpoints[p.Endpoints.Count - 1], "redial = row");
+            A.Eq(2, p.Client.Auths.Count, "re-login on new client");
+            stale.Open();
+            A.Eq(0, a.Ready.Count, "stale socket ignored");
+            p.Socket.Open();
+            A.True(a.Ready.Count == 1 && a.Ready[0].Ok, "ready on new endpoint");
+            A.True(link.IsReady, "link ready");
+        }
+
         [Test]
         static void FirstAttachAuthConnectSyncThenShared()
         {
