@@ -362,7 +362,9 @@ public class InGameChatHud : Singleton<InGameChatHud>
         {
             _paused = false;
 
-            if (GameState.HasCurrentGame && GameState.CurrentGame.IsMatchRunning)
+            // dead: the death screen unlocked the cursor, keep it so the Respawn button stays
+            if (GameState.HasCurrentGame && GameState.CurrentGame.IsMatchRunning &&
+                GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive)
                 GameState.LocalPlayer.UnPausePlayer();
         }
 
