@@ -700,6 +700,7 @@ public static class LocalizedStrings
 	public static string JoinedTheGame = "joined the game.";
 	public static string JoinGame = "Join Game";
 	public static string KilledByN = "killed by {0}.";
+	public static string NKilledYou = "{0} killed you";
 	public static string LeaveCaps = "LEAVE";
 	public static string LeaveGameWarningMsg = "If you leave before the round ends you will lose all the XP and Points that you earned in this round!\nAre you sure you want to leave?";
 	public static string LeavingGame = "Leaving Game";
