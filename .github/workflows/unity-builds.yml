@@ -25,7 +25,7 @@ jobs:
             artifactPath: UberStrike.Unity/Latest/Android/*.apk
           - name: iOS
             target: iOS
-            runner: macos-14
+            runner: macos-15-intel
             buildMethod: SceneExporter.BuildiOS
             artifactPath: UberStrike.Unity/BuildIos/DerivedData/Build/Products/Debug-iphoneos/uberstrike.app
     runs-on: ${{ matrix.runner }}
