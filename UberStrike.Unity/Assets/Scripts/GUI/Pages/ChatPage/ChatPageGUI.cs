@@ -79,7 +79,9 @@ public class ChatPageGUI : PageGUI
 
     public override void DrawGUI(Rect rect)
     {
-        GUI.BeginGroup(rect, BlueStonez.window);
+        // Background reaches the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.window);
+        GUI.BeginGroup(rect);
         {
             if (CommConnectionManager.Client.ConnectionState == Cmune.Realtime.Photon.Client.PhotonClient.ConnectionStatus.RUNNING)
             {

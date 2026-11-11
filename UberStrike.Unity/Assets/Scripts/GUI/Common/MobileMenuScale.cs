@@ -167,6 +167,9 @@ public static class MobileMenuScale
     // The menu is laid out in the screen area between the left and right insets:
     //   - Begin() shifts the menu right by the left inset, and VirtualWidth excludes both insets, so
     //     menu x = 0 .. VirtualWidth is always clear of cutouts. No per-element offsets are needed.
+    //   - Backgrounds that touch a side of the menu area are extended to the real screen edge
+    //     (DrawBackground / DrawBleed), so pages and panels still look edge to edge and no strip of
+    //     the 3D scene shows beside them.
     //   - Code that needs screen pixels (camera viewports, touch areas) converts with MenuToScreenX /
     //     ScreenToMenu instead of multiplying by Scale itself.
     //
@@ -189,6 +192,9 @@ public static class MobileMenuScale
 
     /// <summary>Upper bound for one side's inset as a fraction of the screen width (bogus platform values).</summary>
     private const float MaxInsetFraction = 0.15f;
+
+    // Rects this close (menu units) to a side of the menu area count as touching it.
+    private const float EdgeTolerance = 2f;
 
     /// <summary>
     /// Rendered pixels per millimetre. Falls back to an estimate (landscape phone ~65 mm tall) when the
@@ -275,6 +281,60 @@ public static class MobileMenuScale
     {
         float s = Scale;
         return new Vector2((screenPoint.x - InsetLeftPixels) / s, screenPoint.y / s);
+    }
+
+    /// <summary>
+    /// Extends a top-level menu rect to the real screen edge on every side where it touches the menu
+    /// area's side (x = 0 / x = VirtualWidth). Returns the rect unchanged on PC (no insets).
+    /// </summary>
+    public static Rect ExpandToScreenEdges(Rect rect)
+    {
+        float bleedLeft = BleedLeft;
+        float bleedRight = BleedRight;
+        float xMin = rect.xMin;
+        float xMax = rect.xMax;
+        if (bleedLeft > 0f && xMin <= EdgeTolerance)
+            xMin = Mathf.Min(xMin, -bleedLeft);
+        if (bleedRight > 0f && xMax >= VirtualWidth - EdgeTolerance)
+            xMax = Mathf.Max(xMax, VirtualWidth + bleedRight);
+        return Rect.MinMaxRect(xMin, rect.yMin, xMax, rect.yMax);
+    }
+
+    /// <summary>
+    /// Draws a page/panel background, extended to the real screen edge where the rect touches a side of
+    /// the menu area. Use it for the background itself (instead of GUI.Box / a BeginGroup style); call at
+    /// the top level of a Begin/End block. Same as drawing the style at <paramref name="rect"/> on PC.
+    /// </summary>
+    public static void DrawBackground(Rect rect, GUIStyle style)
+    {
+        if (style == null || Event.current.type != EventType.Repaint)
+            return;
+        style.Draw(ExpandToScreenEdges(rect), GUIContent.none, false, false, false, false);
+    }
+
+    /// <summary>
+    /// Continues a band that the page draws itself (e.g. a title strip inside a clipping group) onto the
+    /// safe-area strips beside it: draws <paramref name="style"/> only on the part of the extended rect
+    /// that lies outside <paramref name="rect"/>. <paramref name="rect"/> is in top-level menu space;
+    /// call at the top level of a Begin/End block. Draws nothing on PC.
+    /// </summary>
+    public static void DrawBleed(Rect rect, GUIStyle style)
+    {
+        if (style == null || Event.current.type != EventType.Repaint)
+            return;
+
+        Rect full = ExpandToScreenEdges(rect);
+        if (full.xMin < rect.xMin)
+            DrawClipped(Rect.MinMaxRect(full.xMin, rect.yMin, rect.xMin, rect.yMax), full, style);
+        if (full.xMax > rect.xMax)
+            DrawClipped(Rect.MinMaxRect(rect.xMax, rect.yMin, full.xMax, rect.yMax), full, style);
+    }
+
+    private static void DrawClipped(Rect clip, Rect full, GUIStyle style)
+    {
+        GUI.BeginClip(clip);
+        style.Draw(new Rect(full.x - clip.x, full.y - clip.y, full.width, full.height), GUIContent.none, false, false, false, false);
+        GUI.EndClip();
     }
 
     /// <summary>

@@ -309,9 +309,17 @@ public class ShopPageGUI : PageGUI
         {
             Color previousColor = GUI.color;
             GUI.color = PanelBackingColor;
-            GUI.DrawTexture(_rectLabs, Texture2D.whiteTexture);
+            // Runs on to the real right screen edge (safe-area strip beside the panel).
+            GUI.DrawTexture(MobileMenuScale.ExpandToScreenEdges(_rectLabs), Texture2D.whiteTexture);
             GUI.color = previousColor;
         }
+
+        // Continue the shop panel's own backgrounds (group + box window and the title strip, see
+        // DrawShop / DrawShopTabs) on the safe-area strip, so the panel looks attached to the screen edge.
+        Rect shopPanelRect = new Rect(_rectLabs.x + LoadoutWidth, _rectLabs.y, _rectLabs.width - 200, _rectLabs.height);
+        MobileMenuScale.DrawBleed(shopPanelRect, BlueStonez.window);
+        MobileMenuScale.DrawBleed(shopPanelRect, BlueStonez.window);
+        MobileMenuScale.DrawBleed(new Rect(shopPanelRect.x, shopPanelRect.y, shopPanelRect.width, 72), BlueStonez.tab_strip_large);
 
         GUI.BeginGroup(_rectLabs);
         {

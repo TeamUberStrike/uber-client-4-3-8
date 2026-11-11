@@ -36,7 +36,8 @@ public class TrainingPageGUI : MonoBehaviour
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
         // Anchor against the virtual (scaled) screen size so the panel stays centered/sized under the mobile menu scale.
-        GUI.Box(new Rect(0, TopOffset, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - TopOffset), string.Empty, BlueStonez.box_grey31);
+        // Background reaches the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(new Rect(0, TopOffset, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - TopOffset), BlueStonez.box_grey31);
 
         //Stats GUI Panel
         GUI.BeginGroup(new Rect((MobileMenuScale.VirtualWidth - PageWidth) * 0.5f, ((MobileMenuScale.VirtualHeight + TopOffset) - PageHeight) * 0.5f, PageWidth, PageHeight), string.Empty, BlueStonez.window);

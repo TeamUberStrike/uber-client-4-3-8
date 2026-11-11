@@ -145,7 +145,12 @@ public class StatsPageGUI : MonoBehaviour
         statsPage = new Rect(MobileMenuScale.VirtualWidth - statsPositionX, GlobalUIRibbon.Instance.GetHeight(), statsPositionX, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
 
         //Stats GUI Panel
-        GUI.BeginGroup(statsPage, GUIContent.none, BlueStonez.window_standard_grey38);
+        // The backgrounds (panel, title strip, content window) run on to the real right screen edge;
+        // content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(statsPage, BlueStonez.window_standard_grey38);
+        MobileMenuScale.DrawBleed(new Rect(statsPage.x, statsPage.y, statsPage.width, 56), BlueStonez.tab_strip);
+        MobileMenuScale.DrawBleed(new Rect(statsPage.x, statsPage.y + 55, statsPage.width, statsPage.height - 55), BlueStonez.window_standard_grey38);
+        GUI.BeginGroup(statsPage);
         {
             GUI.Label(new Rect(0, 0, statsPage.width, 56), LocalizedStrings.YourProfileCaps, BlueStonez.tab_strip);
 

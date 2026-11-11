@@ -111,9 +111,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.GlobalRibbon;
-        // Scale the ribbon for mobile. Content anchors against VirtualWidth (the safe menu area).
+        // Scale the ribbon for mobile. Content anchors against VirtualWidth (the safe menu area); the
+        // backgrounds are extended to the real screen edges.
         Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
-        GUI.Label(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), GUIContent.none, BlueStonez.tab_strip_large);
+        MobileMenuScale.DrawBackground(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), BlueStonez.tab_strip_large);
 
         if (ApplicationDataManager.Channel != ChannelType.MacAppStore 
             && ApplicationDataManager.Channel != ChannelType.OSXStandalone 
@@ -276,7 +277,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     private void DoStatusBar(Rect rect)
     {
-        GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window);
+        // Background reaches the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.window);
+        GUI.BeginGroup(rect);
         {
             //NAME
             GUI.DrawTexture(new Rect(7, 5, 16, 16), UberstrikeIcons.GetIconForChannel(ApplicationDataManager.Channel));

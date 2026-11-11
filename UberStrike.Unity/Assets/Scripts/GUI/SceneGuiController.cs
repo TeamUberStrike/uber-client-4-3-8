@@ -144,7 +144,7 @@ class SceneGuiController : MonoBehaviour
         _rect.y = GlobalUIRibbon.Instance.GetHeight();
         //anchor against the virtual (scaled) screen
         _rect.height = MobileMenuScale.VirtualHeight - _rect.y;
-        _rect.x = MobileMenuScale.VirtualWidth - _rect.width + _offset;
+        _rect.x = PanelX;
 
         GUI.skin = BlueStonez.Skin;
 
@@ -153,7 +153,11 @@ class SceneGuiController : MonoBehaviour
             _guiPages[i].IsOnGUIEnabled = false;
         }
 
-        GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
+        // The background (and the title strip drawn below) run on to the real right screen edge, so no
+        // strip of the game shows beside the panel. Content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(_rect, BlueStonez.window_standard_grey38);
+        MobileMenuScale.DrawBleed(new Rect(_rect.x, _rect.y, _rect.width, 56), BlueStonez.tab_strip);
+        GUI.BeginGroup(_rect);
         {
             string title = _hideTitleWhenAlive && GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive ? string.Empty : _title;
             GUI.Label(new Rect(0, 0, _rect.width, 56), title, BlueStonez.tab_strip);
@@ -239,6 +243,20 @@ class SceneGuiController : MonoBehaviour
     private void OnScreenResolutionChange(ScreenResolutionEvent ev)
     {
         CameraRectController.Instance.Width = (Screen.width - _rect.width + _offset) / Screen.width;
+    }
+
+    /// <summary>
+    /// Panel x in menu space. Open (offset 0) the panel sits at VirtualWidth - width; closed (offset =
+    /// width) it is fully off screen. On mobile its background extends BleedRight past the panel to the
+    /// screen edge, so the slide distance includes that. PC: VirtualWidth - width + offset, as before.
+    /// </summary>
+    private float PanelX
+    {
+        get
+        {
+            float slide = _rect.width > 0f ? _offset * (_rect.width + MobileMenuScale.BleedRight) / _rect.width : _offset;
+            return MobileMenuScale.VirtualWidth - _rect.width + slide;
+        }
     }
 
     [SerializeField]
