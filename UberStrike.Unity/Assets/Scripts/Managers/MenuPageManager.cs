@@ -109,12 +109,16 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
     /// <summary>
     /// Width in screen pixels of a page's side panel, which the camera viewport leaves free so the avatar
     /// stays centred in the visible part of the scene. Panel widths are authored in menu units; on
-    /// mobile the panels are drawn under MobileMenuScale, so the width is scaled to match. PC: unchanged.
+    /// mobile the panels are drawn under MobileMenuScale, so this is everything right of the panel's left
+    /// edge: the scaled panel plus the right safe-area strip its background covers. Pages without a
+    /// panel keep the full screen. PC: unchanged.
     /// </summary>
     private static float GetPanelPixelWidth(PageType type)
     {
         float width = MenuConfiguration.Instance.GetPagePanelWidth(type);
-        return MobileMenuScale.Active ? width * MobileMenuScale.Scale : width;
+        if (!MobileMenuScale.Active || width <= 0)
+            return width;
+        return Screen.width - MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - width);
     }
 
     #endregion

@@ -196,7 +196,8 @@ public class StatsPageGUI : MonoBehaviour
         UpdateWeaponStatList();
 
         // override mouseorbit to prevent scrolling interfering with orbit
-        MouseOrbit.Instance.MaxX = Screen.width - StatsWidth;
+        // (the panel's left edge in screen pixels: menu scale + safe-area inset on mobile, unchanged on PC)
+        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - StatsWidth);
     }
 
     private void OnDisable()

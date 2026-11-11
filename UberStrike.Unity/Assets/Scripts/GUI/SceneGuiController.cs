@@ -60,7 +60,7 @@ class SceneGuiController : MonoBehaviour
         _guiPageAnim = new FloatAnim((float oldValue, float newValue) =>
         {
             _offset = newValue;
-            CameraRectController.Instance.Width = (Screen.width - _rect.width + _offset) / Screen.width;
+            CameraRectController.Instance.Width = GetCameraWidth();
         });
 
         for (int i = 0; i < _guiPages.Length; i++)
@@ -242,7 +242,7 @@ class SceneGuiController : MonoBehaviour
 
     private void OnScreenResolutionChange(ScreenResolutionEvent ev)
     {
-        CameraRectController.Instance.Width = (Screen.width - _rect.width + _offset) / Screen.width;
+        CameraRectController.Instance.Width = GetCameraWidth();
     }
 
     /// <summary>
@@ -257,6 +257,16 @@ class SceneGuiController : MonoBehaviour
             float slide = _rect.width > 0f ? _offset * (_rect.width + MobileMenuScale.BleedRight) / _rect.width : _offset;
             return MobileMenuScale.VirtualWidth - _rect.width + slide;
         }
+    }
+
+    /// <summary>
+    /// Camera viewport width (fraction of the screen): the screen area left of the panel. The panel is
+    /// laid out in menu units, so its left edge is converted to screen pixels (menu scale + safe-area
+    /// inset). PC: (Screen.width - width + offset) / Screen.width, as before.
+    /// </summary>
+    private float GetCameraWidth()
+    {
+        return Mathf.Clamp01(MobileMenuScale.MenuToScreenX(PanelX) / Screen.width);
     }
 
     [SerializeField]

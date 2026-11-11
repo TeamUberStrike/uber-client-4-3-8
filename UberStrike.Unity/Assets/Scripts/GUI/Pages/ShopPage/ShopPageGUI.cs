@@ -193,8 +193,8 @@ public class ShopPageGUI : PageGUI
         StartCoroutine(StartNotifyLoadoutArea());
 
         // override mouseorbit to prevent scrolling interfering with orbit
-        // (panel width in screen pixels: scaled by the mobile menu scale on mobile, unchanged on PC)
-        MouseOrbit.Instance.MaxX = Screen.width - (MobileMenuScale.Active ? ShopWidth * MobileMenuScale.Scale : ShopWidth);
+        // (the panel's left edge in screen pixels: menu scale + safe-area inset on mobile, unchanged on PC)
+        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - ShopWidth);
 
         if (IsOnGUIEnabled)
         {
