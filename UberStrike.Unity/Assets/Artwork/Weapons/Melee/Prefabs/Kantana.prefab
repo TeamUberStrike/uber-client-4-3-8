@@ -156,6 +156,7 @@ MonoBehaviour:
   _impactSounds:
   - {fileID: 8300000, guid: 5bd6c56095a60224ca84eadd74599306, type: 3}
   _equipSound: {fileID: 8300000, guid: 5297a7bb52711b24697502c319c1024b, type: 3}
+  _equipVolume: 0.5
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
