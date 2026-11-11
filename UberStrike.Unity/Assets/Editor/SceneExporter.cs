@@ -743,7 +743,7 @@ public class SceneExporter
             BuildType = buildType,
             DebugLevel = DebugLevel.Debug,
             Version = ClientVersion,
-            BuildVersion = ApplicationDataManager.ResolveBuildVersion(),
+            BuildVersion = ResolveBuildVersion(),
             WebServiceBaseUrl = GetWebserviceBaseUrl(webserviceLocation),
             ContentBaseUrl = GetContentBaseUrl(webserviceLocation),
             ChannelType = channelType,
@@ -790,6 +790,34 @@ public class SceneExporter
         else
         {
             Debug.LogError("Invalid url supplied for the Configuration XML file.\n'" + configurationXmlFilePath + "'");
+        }
+    }
+
+    // GitVersion informational version, resolved at build time so the generated
+    // UberStrike.xml carries the current build. Runtime never resolves versions.
+    private static string ResolveBuildVersion()
+    {
+        string version = System.Environment.GetEnvironmentVariable("VERSION");
+        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("git", "rev-parse HEAD");
+        return version;
+    }
+
+    private static string RunTool(string file, string arguments)
+    {
+        try
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+            using (var p = System.Diagnostics.Process.Start(psi))
+            {
+                string output = p.StandardOutput.ReadToEnd().Trim();
+                p.WaitForExit(60000);
+                return p.ExitCode == 0 && output.Length > 0 && output.IndexOf('\n') < 0 ? output : "";
+            }
+        }
+        catch (System.Exception)
+        {
+            return "";
         }
     }
 
