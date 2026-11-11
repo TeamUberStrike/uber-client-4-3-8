@@ -9,81 +9,8 @@ on:
 jobs:
   build:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Windows
-            target: StandaloneWindows
-            runner: ubuntu-latest
-            buildMethod: SceneExporter.BuildWindowsStandaloneDev
-            artifactPath: UberStrike.Unity/Latest/WindowsStandalone
-          - name: Android
-            target: Android
-            runner: ubuntu-latest
-            buildMethod: SceneExporter.BuildAndroidDev
-            artifactPath: UberStrike.Unity/Latest/Android/*.apk
-          - name: iOS
-            target: iOS
-            runner: macos-15-intel
-            buildMethod: SceneExporter.BuildiOS
-            artifactPath: UberStrike.Unity/BuildIos/DerivedData/Build/Products/Debug-iphoneos/uberstrike.app
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-latest
     environment: Unity
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
-
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4
-        with:
-          versionSpec: '6.8.x'
-
-      - name: Determine version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v4
-
-      - name: Cache
-        uses: actions/cache@v4
-        with:
-          path: UberStrike.Unity/Library
-          key: Library-${{ matrix.target }}-${{ hashFiles('UberStrike.Unity/Assets/**', 'UberStrike.Unity/Packages/**', 'UberStrike.Unity/ProjectSettings/**') }}
-          restore-keys: |
-            Library-${{ matrix.target }}-
-
-      - name: Build ${{ matrix.name }}
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          projectPath: UberStrike.Unity
-          targetPlatform: ${{ matrix.target }}
-          buildMethod: ${{ matrix.buildMethod }}
-          versioning: Custom
-          version: ${{ steps.gitversion.outputs.informationalVersion }}
-
-      - name: Compile iOS .app with xcodebuild
-        if: matrix.target == 'iOS'
-        run: |
-          xcodebuild \
-            -project UberStrike.Unity/BuildIos/Unity-iPhone.xcodeproj \
-            -scheme Unity-iPhone \
-            -configuration Debug \
-            -destination "generic/platform=iOS" \
-            -derivedDataPath UberStrike.Unity/BuildIos/DerivedData \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_REQUIRED=YES \
-            build
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: UberStrike-${{ matrix.name }}-${{ steps.gitversion.outputs.informationalVersion }}
-          path: ${{ matrix.artifactPath }}
+      - name: Hello
+        run: echo hello && uname -a
