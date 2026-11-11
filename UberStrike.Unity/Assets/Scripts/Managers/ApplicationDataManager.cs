@@ -271,7 +271,6 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 #elif UNITY_IPHONE
         InitializeiOSStoreKit();
 #endif
-    }
 
 #if UNITY_EDITOR
     // Editor-only: stamps the build version into the generated UberStrike.xml at build time.
