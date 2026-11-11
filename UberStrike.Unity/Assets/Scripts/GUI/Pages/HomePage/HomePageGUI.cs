@@ -78,8 +78,7 @@ public class HomePageGUI : MonoBehaviour
             // below the (equally scaled) ribbon under the mobile menu scale.
             int top = Mathf.RoundToInt((((MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT) * 0.5f) + GlobalUIRibbon.HEIGHT) - (height * 0.5f));
 
-            // Kept clear of curved edges / cutouts like the ribbon (LeftInset is 0 on PC).
-            GUI.BeginGroup(new Rect(mainMenuX + MobileMenuScale.LeftInset, top, MainMenuButtonWidth + MainMenuButtonExtension, height));
+            GUI.BeginGroup(new Rect(mainMenuX, top, MainMenuButtonWidth + MainMenuButtonExtension, height));
             {
                 GUI.color = new Color(1, 1, 1, 1);
 
@@ -143,10 +142,11 @@ public class HomePageGUI : MonoBehaviour
     {
         float textureHeight = PromoTextureAspect * PromotionWidth;
         float height = 28 + textureHeight + 58;
-        // Right/centre-anchored against the virtual (scaled) screen so it stays placed under the scale,
-        // and kept clear of curved edges / cutouts like the ribbon (RightInset is 0 on PC).
-        Rect rect = new Rect(MobileMenuScale.VirtualWidth - PromotionWidth - MobileMenuScale.RightInset, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
+        // Right/centre-anchored against the virtual (scaled) menu area so it stays placed under the scale.
+        Rect rect = new Rect(MobileMenuScale.VirtualWidth - PromotionWidth, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
 
+        // Stays inside the safe menu area; the scene shows in the strip beside it (like beside the main
+        // menu buttons on the left), so no background is extended to the screen edge here.
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
             GUI.Label(new Rect(0, 0, rect.width, 28), ItemPromotionManager.Instance.WeeklySpecial.Title, BlueStonez.tab_strip_small);
@@ -186,7 +186,7 @@ public class HomePageGUI : MonoBehaviour
     {
         get
         {
-            return (MobileMenuScale.LeftInset > 0f && !ReferenceEquals(MobileMainMenuButton, BlueStonez.button_mainmenu))
+            return (MobileMenuScale.BleedLeft > 0f && !ReferenceEquals(MobileMainMenuButton, BlueStonez.button_mainmenu))
                 ? MobileButtonExtension : 0f;
         }
     }
