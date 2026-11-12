@@ -250,10 +250,17 @@ public static partial class GUITools
     private static float _touchScrollLastTime;
     private static float _touchScrollLastMoveTime;
     private static float _touchScrollVelocity;      // GUI units per second, positive = further down the list
+    private static int _touchScrollFingerId = -1;   // finger that drags the list when it is not the pointer; -1 = none
 
     // See IsHoverSuppressedByTouchScroll.
     private static bool _touchScrollHoverStale;
     private static Vector3 _touchScrollStalePointer;
+
+    /// <summary>
+    /// Set around a BeginScrollView call to let a second finger drag that list (the scoreboard, shown
+    /// only while its button is held). Menu lists leave it off.
+    /// </summary>
+    public static bool AllowSecondFingerScroll;
 
     /// <summary>Ends any finger scroll, e.g. when a row in the list takes the press (item drag).</summary>
     public static void CancelTouchScroll()
@@ -265,6 +272,7 @@ public static partial class GUITools
         _touchScrollPressed = false;
         _touchScrollDragging = false;
         _touchScrollVelocity = 0f;
+        _touchScrollFingerId = -1;
     }
 
     /// <summary>
@@ -326,6 +334,93 @@ public static partial class GUITools
             CancelTouchScroll();
     }
 
+    // Records the drag position and the speed for the glide.
+    private static void TrackTouchScroll(float y, float now)
+    {
+        if (y != _touchScrollLastY)
+            _touchScrollLastMoveTime = now;
+
+        // Near-simultaneous events are measured together with the next one.
+        float dt = now - _touchScrollLastTime;
+        if (dt > 0.0001f)
+        {
+            _touchScrollVelocity = Mathf.Lerp(_touchScrollVelocity, (y - _touchScrollLastY) / dt, Mathf.Clamp01(dt * 15f));
+            _touchScrollLastTime = now;
+            _touchScrollLastY = y;
+        }
+    }
+
+    // A raw touch position (screen pixels, origin bottom left) in top-level GUI units.
+    private static Vector2 TouchToTopLevel(Vector2 touchPosition)
+    {
+        Vector3 pixels = new Vector3(touchPosition.x, Screen.height - touchPosition.y, 0f);
+        Matrix4x4 matrix = GUI.matrix;
+        return matrix.isIdentity ? pixels : matrix.inverse.MultiplyPoint3x4(pixels);
+    }
+
+    // Second-finger drag for lists with AllowSecondFingerScroll, read from raw touches (it gets no
+    // pointer events). Runs on Repaint; returns true while that finger owns the list.
+    private static bool ScrollWithSecondFinger(int id, bool owner, Rect position, ref Vector2 scrollPosition, float max, float now)
+    {
+        Touch[] touches = TouchSource.Touches;
+
+        if (_touchScrollFingerId >= 0)
+        {
+            if (!owner)
+                return false;
+
+            for (int i = 0; i < touches.Length; i++)
+            {
+                Touch touch = touches[i];
+                if (touch.fingerId != _touchScrollFingerId)
+                    continue;
+                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                    break;
+
+                float y = Mathf.Clamp(_touchScrollStartY - (TouchToTopLevel(touch.position).y - _touchScrollStartMouse.y), 0f, max);
+                TrackTouchScroll(y, now);
+                scrollPosition.y = y;
+                return true;
+            }
+
+            // Finger lifted: glide.
+            _touchScrollFingerId = -1;
+            ReleaseTouchScroll(now);
+            return true;
+        }
+
+        if (!AllowSecondFingerScroll || touches.Length < 2 || max <= 0f || !GUI.enabled || DragAndDrop.Instance.IsDragging)
+            return false;
+
+        for (int i = 0; i < touches.Length; i++)
+        {
+            Touch touch = touches[i];
+            if (touch.phase != TouchPhase.Began)
+                continue;
+
+            // Touch position in this list's space.
+            Vector2 topLevel = TouchToTopLevel(touch.position);
+            Rect origin = ToTopLevel(new Rect(0f, 0f, 0f, 0f));
+            if (!position.Contains(new Vector2(topLevel.x - origin.x, topLevel.y - origin.y)))
+                continue;
+
+            _touchScrollId = id;
+            _touchScrollSeenFrame = Time.frameCount;
+            _touchScrollFingerId = touch.fingerId;
+            _touchScrollPressed = true;
+            _touchScrollDragging = true;
+            _touchScrollStartMouse = topLevel;
+            _touchScrollStartY = Mathf.Clamp(scrollPosition.y, 0f, max);
+            _touchScrollLastY = _touchScrollStartY;
+            _touchScrollLastTime = now;
+            _touchScrollLastMoveTime = now;
+            _touchScrollVelocity = 0f;
+            return true;
+        }
+
+        return false;
+    }
+
     private static Vector2 HandleTouchScroll(int id, Rect position, Vector2 scrollPosition, Rect contentRect)
     {
         ExpireTouchScroll();
@@ -338,6 +433,10 @@ public static partial class GUITools
         float max = Mathf.Max(0f, contentRect.height - position.height);
         float now = Time.realtimeSinceStartup;
         Event e = Event.current;
+
+        // While a second finger drags, the pointer events belong to the first one.
+        if (_touchScrollFingerId >= 0 && e.type != EventType.Repaint)
+            return scrollPosition;
 
         switch (e.type)
         {
@@ -415,18 +514,7 @@ public static partial class GUITools
                 }
 
                 float y = Mathf.Clamp(_touchScrollStartY - moved.y, 0f, max);
-                if (y != _touchScrollLastY)
-                    _touchScrollLastMoveTime = now;
-
-                // Near-simultaneous events are measured together with the next one.
-                float dt = now - _touchScrollLastTime;
-                if (dt > 0.0001f)
-                {
-                    _touchScrollVelocity = Mathf.Lerp(_touchScrollVelocity, (y - _touchScrollLastY) / dt, Mathf.Clamp01(dt * 15f));
-                    _touchScrollLastTime = now;
-                    _touchScrollLastY = y;
-                }
-
+                TrackTouchScroll(y, now);
                 scrollPosition.y = y;
                 e.Use();
                 break;
@@ -447,6 +535,9 @@ public static partial class GUITools
 
             case EventType.Repaint:
             {
+                if (ScrollWithSecondFinger(id, owner, position, ref scrollPosition, max, now))
+                    break;
+
                 if (!owner)
                     break;
 
