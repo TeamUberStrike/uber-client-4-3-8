@@ -15,6 +15,10 @@ using DeviceApplication = UnityEngine.Device.Application;
 /// <see cref="VirtualHeight"/> (the screen size in the scaled coordinate space) instead of
 /// <c>Screen.width</c>/<c>Screen.height</c>, so right/centre-anchored elements stay put under the scale.
 ///
+/// The menu is also laid out inside the display's safe area (see "Safe-area layout"): Begin shifts it clear
+/// of the left cutout / curved edge and <see cref="VirtualWidth"/> excludes both side insets, so every menu
+/// that uses Begin/VirtualWidth is covered without per-element offsets.
+///
 /// Desktop is never affected — gated on <see cref="ApplicationDataManager.IsMobile"/> and
 /// <c>UnityEngine.Device.Application.isMobilePlatform</c>. In the Editor it can also be force-previewed
 /// (Tools ▸ Mobile ▸ Preview Menu Scale) on a desktop channel.
@@ -115,7 +119,7 @@ public static class MobileMenuScale
         {
             float ppmm = RenderPixelsPerMm;
             float wanted = ppmm > 0f ? ppmm / ReferenceUnitsPerMm : Screen.height / ReferenceHeight;
-            float fit = Mathf.Min(Screen.height / MinVirtualHeight, Screen.width / MinVirtualWidth);
+            float fit = Mathf.Min(Screen.height / MinVirtualHeight, SafeWidthPixels / MinVirtualWidth);
             return Mathf.Clamp(Mathf.Min(wanted, fit), 1f, MaxScale);
         }
     }
@@ -148,29 +152,59 @@ public static class MobileMenuScale
 
     public static float Scale { get { return BaseScale * _activeExtra; } }
 
-    /// <summary>Screen width in the scaled coordinate space — anchor menu rects against this.</summary>
-    public static float VirtualWidth { get { return Screen.width / Scale; } }
+    /// <summary>
+    /// Width of the menu area (the screen minus the left/right safe-area insets) in the scaled coordinate
+    /// space — anchor menu rects against this. Equals Screen.width on PC.
+    /// </summary>
+    public static float VirtualWidth { get { return SafeWidthPixels / Scale; } }
 
     /// <summary>Screen height in the scaled coordinate space — anchor menu rects against this.</summary>
     public static float VirtualHeight { get { return Screen.height / Scale; } }
 
     // ---------------------------------------------------------------------------------------------
-    // Horizontal edge insets (curved edges / camera cutouts)
+    // Safe-area layout (camera cutouts / notch / curved edges)
     //
-    // Screen.safeArea only reports display CUTOUTS (punch-hole, notch). In landscape the cutout inset
-    // is usually ~status-bar height, which is more than a curved edge needs, so it is damped by
-    // SafeAreaInsetFactor. Devices without a cutout (safeArea == full screen - tablets, older phones)
-    // have square screen edges in practice, so they get no inset and keep the stock layout.
+    // The menu is laid out in the screen area between the left and right insets:
+    //   - Begin() shifts the menu right by the left inset, and VirtualWidth excludes both insets, so
+    //     menu x = 0 .. VirtualWidth is always clear of cutouts. No per-element offsets are needed.
+    //   - Backgrounds that touch a side of the menu area are extended to the real screen edge
+    //     (DrawBackground / DrawBleed), so pages and panels still look edge to edge and no strip of
+    //     the 3D scene shows beside them.
+    //   - Code that needs screen pixels (camera viewports, touch areas) converts with MenuToScreenX /
+    //     ScreenToMenu instead of multiplying by Scale itself.
     //
-    // Both sides use the same value: the curvature is symmetric, and the cutout side flips when the
-    // device is rotated, so a per-side inset would leave the non-cutout (but still curved) edge bare.
+    // Insets come from Screen.safeArea at full size, so a notch is always cleared (iOS reports notch +
+    // rounded corners on both sides; Android reports the cutout side only). Both sides get the same
+    // inset (OppositeEdgeFactor = 1): the menu stays centred on the screen, does not shift when the
+    // phone is flipped, and the side without a cutout is clear of its rounded corners. Devices that
+    // report no cutout get no inset and keep the stock layout. The bottom inset (iPhone home
+    // indicator) is intentionally not applied.
+    //
+    // The player can override the measured inset in Options > General > Screen Edge Margin
+    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or an exact margin in millimetres on both
+    // sides. That covers devices with rounded corners or curved edges but no reported cutout.
     //
     // NOTE (Android): Player Settings > Resolution and Presentation > "Render outside safe area" must be
     // ON, otherwise Unity letterboxes the cutout and safeArea always equals the full screen.
     // ---------------------------------------------------------------------------------------------
 
-    /// <summary>Fraction of the reported cutout inset that is actually applied.</summary>
-    public const float SafeAreaInsetFactor = 0.7f;
+    /// <summary>
+    /// Share of the cutout side's inset applied to the opposite side. 1 = uniform insets (menu centred,
+    /// no shift when the phone is flipped); lower values give that side more width back.
+    /// </summary>
+    public const float OppositeEdgeFactor = 1f;
+
+    /// <summary>Upper bound for one side's inset as a fraction of the screen width (bogus platform values).</summary>
+    private const float MaxInsetFraction = 0.15f;
+
+    /// <summary>Screen edge margin option value meaning "use the cutout the device reports".</summary>
+    public const float EdgeMarginAuto = -1f;
+
+    /// <summary>Largest manual screen edge margin, in millimetres.</summary>
+    public const float MaxEdgeMarginMm = 10f;
+
+    // Rects this close (menu units) to a side of the menu area count as touching it.
+    private const float EdgeTolerance = 2f;
 
     /// <summary>
     /// Rendered pixels per millimetre. Falls back to an estimate (landscape phone ~65 mm tall) when the
@@ -185,25 +219,147 @@ public static class MobileMenuScale
         }
     }
 
-    /// <summary>Horizontal edge inset in physical pixels (0 when mobile scaling is inactive).</summary>
-    private static float EdgeInsetPixels
-    {
-        get
-        {
-            if (!Active)
-                return 0f;
+    // The insets are read many times per OnGUI (every VirtualWidth), so they are computed once per frame.
+    private static int _insetsFrame = -1;
+    private static int _insetsScreenWidth;
+    private static float _insetLeftPixels;
+    private static float _insetRightPixels;
 
-            Rect safe = Screen.safeArea;
-            float cutout = Mathf.Max(Mathf.Max(safe.xMin, 0f), Mathf.Max(Screen.width - safe.xMax, 0f));
-            return cutout * SafeAreaInsetFactor;
+    private static void GetInsetsPixels(out float left, out float right)
+    {
+        if (_insetsFrame != Time.frameCount || _insetsScreenWidth != Screen.width)
+        {
+            _insetsFrame = Time.frameCount;
+            _insetsScreenWidth = Screen.width;
+            _insetLeftPixels = 0f;
+            _insetRightPixels = 0f;
+
+            if (Active)
+            {
+                float maximum = Screen.width * MaxInsetFraction;
+                ApplicationOptions options = ApplicationDataManager.ApplicationOptions;
+                float manualMm = options != null ? options.MobileScreenEdgeMargin : EdgeMarginAuto;
+
+                if (manualMm >= 0f)
+                {
+                    // Manual: the same exact margin on both sides.
+                    float manual = Mathf.Min(Mathf.Min(manualMm, MaxEdgeMarginMm) * PixelsPerMm, maximum);
+                    _insetLeftPixels = manual;
+                    _insetRightPixels = manual;
+                }
+                else
+                {
+                    // Auto: the reported cutout.
+                    Rect safe = Screen.safeArea;
+                    float cutoutLeft = Mathf.Max(safe.xMin, 0f);
+                    float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
+                    float minimum = Mathf.Max(cutoutLeft, cutoutRight) * OppositeEdgeFactor;
+                    _insetLeftPixels = Mathf.Min(Mathf.Max(cutoutLeft, minimum), maximum);
+                    _insetRightPixels = Mathf.Min(Mathf.Max(cutoutRight, minimum), maximum);
+                }
+            }
         }
+
+        left = _insetLeftPixels;
+        right = _insetRightPixels;
     }
 
-    /// <summary>Left edge inset in virtual (scaled) coordinates. 0 on PC.</summary>
-    public static float LeftInset { get { return EdgeInsetPixels / Scale; } }
+    /// <summary>Left safe-area inset in screen pixels. 0 on PC and on devices without a cutout.</summary>
+    public static float InsetLeftPixels
+    {
+        get { float left, right; GetInsetsPixels(out left, out right); return left; }
+    }
 
-    /// <summary>Right edge inset in virtual (scaled) coordinates. 0 on PC.</summary>
-    public static float RightInset { get { return EdgeInsetPixels / Scale; } }
+    /// <summary>Right safe-area inset in screen pixels. 0 on PC and on devices without a cutout.</summary>
+    public static float InsetRightPixels
+    {
+        get { float left, right; GetInsetsPixels(out left, out right); return right; }
+    }
+
+    /// <summary>Width of the menu area (screen minus both insets) in screen pixels.</summary>
+    private static float SafeWidthPixels
+    {
+        get { float left, right; GetInsetsPixels(out left, out right); return Screen.width - left - right; }
+    }
+
+    /// <summary>
+    /// Distance in menu units from the left side of the menu area (x = 0) to the real screen edge.
+    /// Only for extending backgrounds; content must NOT add it (Begin already applies the inset).
+    /// </summary>
+    public static float BleedLeft { get { return InsetLeftPixels / Scale; } }
+
+    /// <summary>Distance in menu units from the right side of the menu area (x = VirtualWidth) to the real screen edge.</summary>
+    public static float BleedRight { get { return InsetRightPixels / Scale; } }
+
+    /// <summary>Menu-space x (inside Begin/End) to screen pixels. Identity on PC.</summary>
+    public static float MenuToScreenX(float x)
+    {
+        return InsetLeftPixels + x * Scale;
+    }
+
+    /// <summary>
+    /// Screen pixels with a top-left origin (e.g. GUIUtility.GUIToScreenPoint) to top-level menu space.
+    /// Identity on PC.
+    /// </summary>
+    public static Vector2 ScreenToMenu(Vector2 screenPoint)
+    {
+        float s = Scale;
+        return new Vector2((screenPoint.x - InsetLeftPixels) / s, screenPoint.y / s);
+    }
+
+    /// <summary>
+    /// Extends a top-level menu rect to the real screen edge on every side where it touches the menu
+    /// area's side (x = 0 / x = VirtualWidth). Returns the rect unchanged on PC (no insets).
+    /// </summary>
+    public static Rect ExpandToScreenEdges(Rect rect)
+    {
+        float bleedLeft = BleedLeft;
+        float bleedRight = BleedRight;
+        float xMin = rect.xMin;
+        float xMax = rect.xMax;
+        if (bleedLeft > 0f && xMin <= EdgeTolerance)
+            xMin = Mathf.Min(xMin, -bleedLeft);
+        if (bleedRight > 0f && xMax >= VirtualWidth - EdgeTolerance)
+            xMax = Mathf.Max(xMax, VirtualWidth + bleedRight);
+        return Rect.MinMaxRect(xMin, rect.yMin, xMax, rect.yMax);
+    }
+
+    /// <summary>
+    /// Draws a page/panel background, extended to the real screen edge where the rect touches a side of
+    /// the menu area. Use it for the background itself (instead of GUI.Box / a BeginGroup style); call at
+    /// the top level of a Begin/End block. Same as drawing the style at <paramref name="rect"/> on PC.
+    /// </summary>
+    public static void DrawBackground(Rect rect, GUIStyle style)
+    {
+        if (style == null || Event.current.type != EventType.Repaint)
+            return;
+        style.Draw(ExpandToScreenEdges(rect), GUIContent.none, false, false, false, false);
+    }
+
+    /// <summary>
+    /// Continues a band that the page draws itself (e.g. a title strip inside a clipping group) onto the
+    /// safe-area strips beside it: draws <paramref name="style"/> only on the part of the extended rect
+    /// that lies outside <paramref name="rect"/>. <paramref name="rect"/> is in top-level menu space;
+    /// call at the top level of a Begin/End block. Draws nothing on PC.
+    /// </summary>
+    public static void DrawBleed(Rect rect, GUIStyle style)
+    {
+        if (style == null || Event.current.type != EventType.Repaint)
+            return;
+
+        Rect full = ExpandToScreenEdges(rect);
+        if (full.xMin < rect.xMin)
+            DrawClipped(Rect.MinMaxRect(full.xMin, rect.yMin, rect.xMin, rect.yMax), full, style);
+        if (full.xMax > rect.xMax)
+            DrawClipped(Rect.MinMaxRect(rect.xMax, rect.yMin, full.xMax, rect.yMax), full, style);
+    }
+
+    private static void DrawClipped(Rect clip, Rect full, GUIStyle style)
+    {
+        GUI.BeginClip(clip);
+        style.Draw(new Rect(full.x - clip.x, full.y - clip.y, full.width, full.height), GUIContent.none, false, false, false, false);
+        GUI.EndClip();
+    }
 
     /// <summary>
     /// Extra multiplier (on top of <see cref="Scale"/>) that makes an element of <paramref name="virtualSize"/>
@@ -236,7 +392,8 @@ public static class MobileMenuScale
 
     /// <summary>
     /// Begin a scaled menu OnGUI block. Returns the previous matrix to restore with <see cref="End"/>.
-    /// Scales about the top-left origin, composing with any existing matrix.
+    /// Scales about the top-left origin and shifts right by the left safe-area inset, composing with any
+    /// existing matrix. Do not nest Begin blocks.
     /// </summary>
     public static Matrix4x4 Begin()
     {
@@ -254,8 +411,10 @@ public static class MobileMenuScale
         _activeExtra = Active ? Mathf.Max(0.1f, extra) : 1f;
         Matrix4x4 prev = GUI.matrix;
         float s = Scale;
-        if (s != 1f)
-            GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(s, s, 1f)) * prev;
+        float inset = InsetLeftPixels;
+        // Menu point p lands at screen pixel (inset + s * p.x, s * p.y).
+        if (s != 1f || inset != 0f)
+            GUI.matrix = Matrix4x4.TRS(new Vector3(inset, 0f, 0f), Quaternion.identity, new Vector3(s, s, 1f)) * prev;
         return prev;
     }
 

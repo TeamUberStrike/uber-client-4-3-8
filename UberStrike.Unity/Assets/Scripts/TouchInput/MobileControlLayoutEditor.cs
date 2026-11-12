@@ -317,7 +317,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         float bh = 34f;
         float totalW = 4f * bw + 3f * 8f;
         float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
-        _toolbarButtonsRect = new Rect(x0 * ms, 2f * ms, totalW * ms, bh * ms);
+        _toolbarButtonsRect = new Rect(MobileMenuScale.MenuToScreenX(x0), 2f * ms, totalW * ms, bh * ms);
 
         // Dim the world behind the editor so the markers stay legible no matter what the paused
         // game shows behind them (a bright sky used to swallow the blue outline of the top-right

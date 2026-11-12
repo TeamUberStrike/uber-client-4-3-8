@@ -79,7 +79,9 @@ public class ChatPageGUI : PageGUI
 
     public override void DrawGUI(Rect rect)
     {
-        GUI.BeginGroup(rect, BlueStonez.window);
+        // Background reaches the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.window);
+        GUI.BeginGroup(rect);
         {
             if (CommConnectionManager.Client.ConnectionState == Cmune.Realtime.Photon.Client.PhotonClient.ConnectionStatus.RUNNING)
             {
@@ -185,7 +187,7 @@ public class ChatPageGUI : PageGUI
     private Vector2 PopupMenuPosition()
     {
         Vector2 screenPoint = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
-        return IsInGamePanel ? screenPoint : screenPoint / MobileMenuScale.Scale;
+        return IsInGamePanel ? screenPoint : MobileMenuScale.ScreenToMenu(screenPoint);
     }
 
     protected void DrawInGamePanel(Rect rect)
@@ -382,18 +384,15 @@ public class ChatPageGUI : PageGUI
 
                 bool hasSearchString = !string.IsNullOrEmpty(pane.SearchText);
 
-                // Keep the search box clear of the left curved edge / cutout, like the ribbon (0 on PC).
-                float searchInset = MobileMenuScale.LeftInset;
-
                 GUI.SetNextControlName("@ModSearch");
 
                 GUI.changed = false;
-                pane.SearchText = GUI.TextField(new Rect(6 + searchInset, rect.height - 30, rect.width - searchInset - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
+                pane.SearchText = GUI.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
 
                 if (!hasSearchString && GUI.GetNameOfFocusedControl() != "@ModSearch")
                 {
                     GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(12 + searchInset, rect.height - 30, rect.width - searchInset - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
+                    GUI.Label(new Rect(12, rect.height - 30, rect.width - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
                     GUI.color = Color.white;
                 }
 
@@ -542,18 +541,15 @@ public class ChatPageGUI : PageGUI
 
             bool hasSearchString = !string.IsNullOrEmpty(pane.SearchText);
 
-            // Keep the search box clear of the left curved edge / cutout, like the ribbon (0 on PC).
-            float searchInset = MobileMenuScale.LeftInset;
-
             GUI.SetNextControlName("@LobbySearch");
 
             GUI.changed = false;
-            pane.SearchText = GUI.TextField(new Rect(6 + searchInset, rect.height - 30, rect.width - searchInset - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
+            pane.SearchText = GUI.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, 20, BlueStonez.textField);
 
             if (!hasSearchString && GUI.GetNameOfFocusedControl() != "@LobbySearch")
             {
                 GUI.color = new Color(1, 1, 1, 0.3f);
-                GUI.Label(new Rect(12 + searchInset, rect.height - 30, rect.width - searchInset - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
+                GUI.Label(new Rect(12, rect.height - 30, rect.width - 20, SEARCH_HEIGHT - 12), LocalizedStrings.Search, BlueStonez.label_interparkmed_10pt_left); //"Search"
                 GUI.color = Color.white;
             }
 
@@ -853,18 +849,13 @@ public class ChatPageGUI : PageGUI
 
     private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog)
     {
-        // Chat page: keep the message box and Send button clear of the right curved edge / cutout,
-        // like the ribbon (0 on PC). The footer background still spans the full width.
-        DoDialogFooter(rect, pane, dialog, SelectedTab, MobileMenuScale.RightInset);
+        DoDialogFooter(rect, pane, dialog, SelectedTab);
     }
 
-    private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog, TabArea context, float rightInset = 0f)
+    private void DoDialogFooter(Rect rect, ChatGroupPanel pane, ChatDialog dialog, TabArea context)
     {
         GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
         {
-            // Width available to the input controls (the in-game panel passes no inset).
-            float width = rect.width - rightInset;
-
             GUI.SetNextControlName("@CurrentChatMessage");
 
             bool tmp = GUI.enabled;
@@ -878,13 +869,13 @@ public class ChatPageGUI : PageGUI
             bool canSend = GUI.enabled && _lastMessageSentTimer > 0.29f;
 
             // Chat Input Textfield
-            _currentChatMessage = GUI.TextField(new Rect(6, 6, width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
+            _currentChatMessage = GUI.TextField(new Rect(6, 6, rect.width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
             _currentChatMessage = _currentChatMessage.Trim(new char[] { '\n' });
 
             if (_spammingNotificationTime > Time.time)
             {
                 GUI.color = Color.red;
-                GUI.Label(new Rect(15, 6, width - 66, rect.height - 12), LocalizedStrings.DontSpamTheLobbyChat, BlueStonez.label_interparkmed_10pt_left);
+                GUI.Label(new Rect(15, 6, rect.width - 66, rect.height - 12), LocalizedStrings.DontSpamTheLobbyChat, BlueStonez.label_interparkmed_10pt_left);
                 GUI.color = Color.white;
             }
             // Input tip label
@@ -907,7 +898,7 @@ public class ChatPageGUI : PageGUI
                 if (string.IsNullOrEmpty(_currentChatMessage) && GUI.GetNameOfFocusedControl() != "@CurrentChatMessage")
                 {
                     GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(10, 6, width - 66, rect.height - 12), chatMsg, BlueStonez.label_interparkmed_10pt_left);
+                    GUI.Label(new Rect(10, 6, rect.width - 66, rect.height - 12), chatMsg, BlueStonez.label_interparkmed_10pt_left);
                     GUI.color = Color.white;
                 }
             }
@@ -918,7 +909,7 @@ public class ChatPageGUI : PageGUI
                 GUI.FocusControl("@CurrentChatMessage");
             }
 
-            if (GUITools.Button(new Rect(width - 51, 6, 45, rect.height - 12), new GUIContent(LocalizedStrings.Send), BlueStonez.buttondark_small))
+            if (GUITools.Button(new Rect(rect.width - 51, 6, 45, rect.height - 12), new GUIContent(LocalizedStrings.Send), BlueStonez.buttondark_small))
             {
                 if (canSend && !string.IsNullOrWhiteSpace(_currentChatMessage))
                 {

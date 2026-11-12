@@ -37,14 +37,15 @@ public class TryItemGUI : MonoBehaviour
 
     /// <summary>
     /// Button rect centred on the free area left of the shop panel - the same area the camera viewport
-    /// covers, so the button sits under the avatar (as on PC). Width is limited so the button stays
-    /// clear of the left safe-area inset and the panel. On PC this matches the original layout.
+    /// covers (which also includes the left safe-area strip, hence the BleedLeft term), so the button
+    /// sits under the avatar (as on PC). Width is limited so the button stays inside the menu area and
+    /// clear of the panel. On PC this matches the original layout.
     /// </summary>
     private static Rect GetButtonRect()
     {
         float available = MobileMenuScale.VirtualWidth - ShopPanelWidth;
-        float center = 2 + available * 0.5f;
-        float maxHalfWidth = Mathf.Min(center - MobileMenuScale.LeftInset, available - center) - 2f;
+        float center = 2 + (available - MobileMenuScale.BleedLeft) * 0.5f;
+        float maxHalfWidth = Mathf.Min(center, available - center) - 2f;
         float width = Mathf.Min(Mathf.Max(available * 0.5f, MinButtonWidth), maxHalfWidth * 2f);
 
         return new Rect(center - width * 0.5f, MobileMenuScale.VirtualHeight - BottomOffset, width, ButtonHeight);

@@ -338,7 +338,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         Buttons.Add((int)TouchKeyType.MultiSecondaryFire, multiSecondaryFire);
 
         TouchButton loadout = new TouchButton("Loadout", guiSkin.GetStyle("ButtonBlue"));
-        loadout.Boundary = _loadoutRect;
+        // Row 0 of the left-hand button column, laid out in menu units like the rest of it.
+        loadout.MenuRect = () => new Rect(PlayerStateMsgHud.TouchStackX, PlayerStateMsgHud.TouchStackTop,
+            PlayerStateMsgHud.TouchStackButtonWidth, PlayerStateMsgHud.TouchStackButtonHeight);
         loadout.OnPushed += new Action(OnLoadoutPushed);
         Buttons.Add((int)TouchKeyType.Loadout, loadout);
 
@@ -881,9 +883,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         _secondFirePos = new Vector2(Screen.width - 64, Screen.height - 234);
         _jumpPos = new Vector2(Screen.width - 88, Screen.height - 72);
         _crouchPos = new Vector2(Screen.width - 255, Screen.height - 116);
-
-        _loadoutRect = new Rect(20, Screen.height * 0.6f, 200, 50);
-        _modeRect = new Rect(20, Screen.height * 0.7f, 250, 50);
     }
 
     public float IdleTimeBeforeHelp = 10;
@@ -1829,8 +1828,6 @@ public class TouchInput : MonoSingleton<TouchInput>
     private Vector2 _scoreButtonPos;
     private Vector2 _backButtonPos;
     private Vector2 _chatPos;
-    private Rect _loadoutRect;
-    private Rect _modeRect;
 
     private bool _toggleSecondaryFire = false;
     private bool _playerMoving = false;

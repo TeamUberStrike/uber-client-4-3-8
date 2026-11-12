@@ -36,6 +36,10 @@ public class ApplicationOptions
 
     public bool UseMultiTouch = false;
 
+    // Menu safe-area margin on each side in millimetres; negative = Auto (use the reported camera
+    // cutout). See MobileMenuScale "Safe-area layout".
+    public float MobileScreenEdgeMargin = MobileMenuScale.EdgeMarginAuto;
+
     // Gameplay
     public bool GameplayAutoPickupEnabled = true;
     public bool GameplayAutoEquipEnabled = false;
@@ -142,6 +146,7 @@ public class ApplicationOptions
         TouchLookSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileTouchLookSensitivity, 1.0f), 0.5f, 3.0f);
         TouchMoveSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileTouchMoveSensitivity, 1.0f), 0.5f, 3.0f);
 #endif
+        MobileScreenEdgeMargin = Mathf.Clamp(Mathf.Round(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileScreenEdgeMargin, MobileMenuScale.EdgeMarginAuto)), MobileMenuScale.EdgeMarginAuto, MobileMenuScale.MaxEdgeMarginMm);
 
         // Gameplay
         GameplayAutoPickupEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, true);
@@ -194,6 +199,7 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchLookSensitivity, TouchLookSensitivity);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchMoveSensitivity, TouchMoveSensitivity);
 #endif
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileScreenEdgeMargin, MobileScreenEdgeMargin);
 
         // Gameplay
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, GameplayAutoPickupEnabled);
