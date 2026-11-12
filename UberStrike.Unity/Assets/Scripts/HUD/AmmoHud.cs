@@ -112,7 +112,9 @@ public class AmmoHud : Singleton<AmmoHud>
         _curScaleFactor = 0.65f;
         ResetAmmoTransform();
         ResetBlurTransform();
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if UNITY_WEBGL
+        _entireGroup.Position = new Vector2(Screen.width * 0.98f, Screen.height * 0.07f);
+#elif !UNITY_ANDROID && !UNITY_IPHONE
         _entireGroup.Position = new Vector2(Screen.width * 0.95f, Screen.height * 0.95f);
 #else
         _entireGroup.Position = new Vector2(Screen.width * 0.98f, Screen.height * 0.07f);
