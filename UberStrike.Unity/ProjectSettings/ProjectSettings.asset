@@ -86,8 +86,8 @@ PlayerSettings:
   Prepare IOS For Recording: 0
   Force IOS Speakers When Recording: 0
   audioSpatialExperience: 0
-  deferSystemGesturesMode: 0
-  hideHomeButton: 0
+  deferSystemGesturesMode: 4
+  hideHomeButton: 1
   submitAnalytics: 1
   usePlayerLog: 1
   dedicatedServerOptimizations: 0
