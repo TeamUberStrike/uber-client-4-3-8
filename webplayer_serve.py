@@ -75,6 +75,12 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
 
     protocol_version = "HTTP/1.1"
 
+    def handle_one_request(self):
+        try:
+            super().handle_one_request()
+        except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError) as e:
+            print(f"[{self.log_date_time_string()}] client {self.address_string()} disconnected: {e}", flush=True)
+
     def do_GET(self):
         start = time.time()
         self._start = start
