@@ -218,15 +218,274 @@ public static partial class GUITools
 
     #region ScrollView
 
-#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL || UNITY_EDITOR
-    private static int touchFingerId = -1;
-    private static Rect selectedRect;
-    private static Vector2 scrollVelocity = Vector2.zero;
-    private static float inertiaDuration = 1.0f; // how long should inertia last
-    private static float timeTouchPhaseEnded; // when did the last touch end
-    private static Queue<Vector2> lastTouchesPos = new Queue<Vector2>(); // stores a list of previous touch locations
-    private static Queue<float> lastTouchesTime = new Queue<float>(); // stores a list of previous touch times
-#endif
+    // Finger scrolling (mobile only; PC keeps the scrollbar and mouse wheel).
+    // Driven by IMGUI pointer events, so the menu scale, safe-area shift and enclosing groups need
+    // no conversion, and lists under a popup (GuiLockController) do not move. A press stays with the
+    // control under it until it moves TouchScrollSlopMm vertically; then the list takes over (the
+    // control is released without a click), follows the finger and glides on release.
+
+    private static readonly int _touchScrollHash = "GUIToolsTouchScroll".GetHashCode();
+
+    // Vertical finger travel (mm) before a press becomes a scroll.
+    private const float TouchScrollSlopMm = 2.5f;
+    // Share of the glide speed left after one second.
+    private const float TouchScrollGlideKeptPerSecond = 0.02f;
+    // Glide start speed, as a share of the finger's speed.
+    private const float TouchScrollGlideStart = 0.8f;
+    // Glide speed limits, GUI units per second.
+    private const float TouchScrollMinGlideSpeed = 20f;
+    private const float TouchScrollMaxGlideSpeed = 2500f;
+    // A tap on a list gliding faster than this only stops it.
+    private const float TouchScrollTapStopSpeed = 80f;
+    // No glide if the finger rested this long (s) before lifting.
+    private const float TouchScrollRestTime = 0.08f;
+
+    private static int _touchScrollId;              // control id of the list that owns the press or glide; 0 = none
+    private static int _touchScrollSeenFrame;       // last frame that list was drawn
+    private static bool _touchScrollPressed;        // the pointer is down on the list
+    private static bool _touchScrollDragging;       // the press has become a scroll
+    private static Vector2 _touchScrollStartMouse;  // pointer position the scroll is measured from
+    private static float _touchScrollStartY;        // scroll position at that point
+    private static float _touchScrollLastY;
+    private static float _touchScrollLastTime;
+    private static float _touchScrollLastMoveTime;
+    private static float _touchScrollVelocity;      // GUI units per second, positive = further down the list
+
+    // See IsHoverSuppressedByTouchScroll.
+    private static bool _touchScrollHoverStale;
+    private static Vector3 _touchScrollStalePointer;
+
+    /// <summary>Ends any finger scroll, e.g. when a row in the list takes the press (item drag).</summary>
+    public static void CancelTouchScroll()
+    {
+        if (_touchScrollDragging)
+            MarkTouchScrollHoverStale();
+
+        _touchScrollId = 0;
+        _touchScrollPressed = false;
+        _touchScrollDragging = false;
+        _touchScrollVelocity = 0f;
+    }
+
+    /// <summary>
+    /// True during a finger scroll or glide and until the next press: the touch pointer is stale and
+    /// rows slide under it, so hover effects should stay off. Always false on PC.
+    /// </summary>
+    public static bool IsHoverSuppressedByTouchScroll
+    {
+        get
+        {
+            ExpireTouchScroll();
+
+            if (_touchScrollDragging || (_touchScrollId != 0 && !_touchScrollPressed && _touchScrollVelocity != 0f))
+                return true;
+
+            // A new press or pointer move ends it.
+            if (_touchScrollHoverStale && (Input.GetMouseButton(0) || Input.mousePosition != _touchScrollStalePointer))
+                _touchScrollHoverStale = false;
+
+            return _touchScrollHoverStale;
+        }
+    }
+
+    private static void MarkTouchScrollHoverStale()
+    {
+        _touchScrollHoverStale = true;
+        _touchScrollStalePointer = Input.mousePosition;
+    }
+
+    // Drops the gesture when its list is no longer drawn.
+    private static void ExpireTouchScroll()
+    {
+        if (_touchScrollId != 0 && Time.frameCount > _touchScrollSeenFrame + 2)
+            CancelTouchScroll();
+    }
+
+    // Ends the press; glides on if the list was being dragged.
+    private static void ReleaseTouchScroll(float now)
+    {
+        _touchScrollPressed = false;
+
+        if (!_touchScrollDragging)
+        {
+            // Plain tap: the controls handled it.
+            CancelTouchScroll();
+            return;
+        }
+
+        MarkTouchScrollHoverStale();
+        _touchScrollDragging = false;
+
+        if (now - _touchScrollLastMoveTime > TouchScrollRestTime)
+            _touchScrollVelocity = 0f;
+
+        _touchScrollVelocity = Mathf.Clamp(_touchScrollVelocity * TouchScrollGlideStart, -TouchScrollMaxGlideSpeed, TouchScrollMaxGlideSpeed);
+        _touchScrollLastTime = now;
+
+        if (Mathf.Abs(_touchScrollVelocity) < TouchScrollMinGlideSpeed)
+            CancelTouchScroll();
+    }
+
+    private static Vector2 HandleTouchScroll(int id, Rect position, Vector2 scrollPosition, Rect contentRect)
+    {
+        ExpireTouchScroll();
+
+        bool owner = _touchScrollId == id;
+        if (owner)
+            _touchScrollSeenFrame = Time.frameCount;
+
+        // Vertical only.
+        float max = Mathf.Max(0f, contentRect.height - position.height);
+        float now = Time.realtimeSinceStartup;
+        Event e = Event.current;
+
+        switch (e.type)
+        {
+            case EventType.MouseDown:
+            {
+                // Leave the scrollbar strip alone.
+                GUIStyle bar = GUI.skin.verticalScrollbar;
+                Rect area = position;
+                area.width -= bar.fixedWidth + bar.margin.left;
+
+                if (e.button == 0 && GUI.enabled && max > 0f && area.Contains(e.mousePosition) && !DragAndDrop.Instance.IsDragging)
+                {
+                    bool stopGlide = owner && !_touchScrollPressed && Mathf.Abs(_touchScrollVelocity) > TouchScrollTapStopSpeed;
+
+                    _touchScrollId = id;
+                    _touchScrollSeenFrame = Time.frameCount;
+                    _touchScrollPressed = true;
+                    _touchScrollDragging = stopGlide;
+                    _touchScrollStartMouse = e.mousePosition;
+                    _touchScrollStartY = Mathf.Clamp(scrollPosition.y, 0f, max);
+                    _touchScrollLastY = _touchScrollStartY;
+                    _touchScrollLastTime = now;
+                    _touchScrollLastMoveTime = now;
+                    _touchScrollVelocity = 0f;
+
+                    // Tapping a gliding list stops it without pressing the row.
+                    if (stopGlide)
+                        e.Use();
+                }
+                else if (owner)
+                {
+                    // A press anywhere else ends the glide.
+                    CancelTouchScroll();
+                }
+                break;
+            }
+
+            case EventType.MouseDrag:
+            {
+                if (!owner || !_touchScrollPressed)
+                    break;
+
+                // Second finger (the pointer jumps) or an item drag: give up.
+                if (Input.touchCount > 1 || DragAndDrop.Instance.IsDragging)
+                {
+                    CancelTouchScroll();
+                    break;
+                }
+
+                Vector2 moved = e.mousePosition - _touchScrollStartMouse;
+
+                if (!_touchScrollDragging)
+                {
+                    float slop = TouchScrollSlopMm * MobileMenuScale.PixelsPerMm / MobileMenuScale.Scale;
+
+                    if (Mathf.Abs(moved.y) > slop && Mathf.Abs(moved.y) >= Mathf.Abs(moved.x))
+                    {
+                        // Take over: release the pressed control without a click; re-measure so the list doesn't jump.
+                        _touchScrollDragging = true;
+                        GUIUtility.hotControl = 0;
+                        _touchScrollStartMouse = e.mousePosition;
+                        _touchScrollStartY = Mathf.Clamp(scrollPosition.y, 0f, max);
+                        _touchScrollLastY = _touchScrollStartY;
+                        _touchScrollLastTime = now;
+                        _touchScrollLastMoveTime = now;
+                        moved = Vector2.zero;
+                    }
+                    else
+                    {
+                        // Sideways: leave it to the control (slider, item drag).
+                        if (Mathf.Abs(moved.x) > slop)
+                            CancelTouchScroll();
+                        break;
+                    }
+                }
+
+                float y = Mathf.Clamp(_touchScrollStartY - moved.y, 0f, max);
+                if (y != _touchScrollLastY)
+                    _touchScrollLastMoveTime = now;
+
+                // Near-simultaneous events are measured together with the next one.
+                float dt = now - _touchScrollLastTime;
+                if (dt > 0.0001f)
+                {
+                    _touchScrollVelocity = Mathf.Lerp(_touchScrollVelocity, (y - _touchScrollLastY) / dt, Mathf.Clamp01(dt * 15f));
+                    _touchScrollLastTime = now;
+                    _touchScrollLastY = y;
+                }
+
+                scrollPosition.y = y;
+                e.Use();
+                break;
+            }
+
+            case EventType.MouseUp:
+            {
+                if (!owner || !_touchScrollPressed)
+                    break;
+
+                // The release after a scroll is not a click.
+                if (_touchScrollDragging)
+                    e.Use();
+
+                ReleaseTouchScroll(now);
+                break;
+            }
+
+            case EventType.Repaint:
+            {
+                if (!owner)
+                    break;
+
+                if (_touchScrollPressed)
+                {
+                    // The release was lost (finger lifted elsewhere).
+                    if (!Input.GetMouseButton(0) && Input.touchCount == 0)
+                        ReleaseTouchScroll(now);
+                    break;
+                }
+
+                if (_touchScrollVelocity == 0f)
+                    break;
+
+                // Glide and slow down; stop at either end.
+                float dt = Mathf.Min(now - _touchScrollLastTime, 0.1f);
+                _touchScrollLastTime = now;
+
+                float y = Mathf.Clamp(scrollPosition.y, 0f, max) + _touchScrollVelocity * dt;
+                if (y <= 0f || y >= max)
+                {
+                    y = Mathf.Clamp(y, 0f, max);
+                    CancelTouchScroll();
+                }
+                else
+                {
+                    _touchScrollVelocity *= Mathf.Pow(TouchScrollGlideKeptPerSecond, dt);
+                    if (Mathf.Abs(_touchScrollVelocity) < TouchScrollMinGlideSpeed)
+                        CancelTouchScroll();
+                }
+
+                scrollPosition.y = y;
+                break;
+            }
+        }
+
+        return scrollPosition;
+    }
+
     public static Rect ToGlobal(Rect rect)
     {
         Vector2 p = GUIUtility.GUIToScreenPoint(new Vector2(rect.x, rect.y));
@@ -265,88 +524,12 @@ public static partial class GUITools
 
     public static Vector2 BeginScrollView(Rect position, Vector2 scrollPosition, Rect contentRect, bool showHorizontalScrollbar, bool showVerticalScrollbar, GUIStyle hStyle, GUIStyle vStyle, bool allowDrag=true)
     {
-#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL || UNITY_EDITOR
-        if (TouchSource.TouchCount > 0 && allowDrag && !DragAndDrop.Instance.IsDragging)
+        // Finger scrolling, mobile only.
+        if (allowDrag && MobileMenuScale.Active)
         {
-            foreach (Touch touch in TouchSource.Touches)
-            {
-                if (touch.phase == TouchPhase.Began && touchFingerId == -1)
-                {
-                    // Convert the scroll view rect (group-local, possibly scaled GUI space) to actual
-                    // screen pixels, then hit-test the raw touch position against it.
-                    Vector2 guiTopLeft = GUIUtility.GUIToScreenPoint(new Vector2(position.x, position.y));
-                    Rect screenRect = new Rect(guiTopLeft.x, Screen.height - guiTopLeft.y - position.height, position.width, position.height);
-
-                    if (screenRect.Contains(touch.position))
-                    {
-                        touchFingerId = touch.fingerId;
-                        scrollVelocity = Vector2.zero;
-                        selectedRect = contentRect; // workaround to identify selected item
-                        break;
-                    }
-                }
-
-                // only respond to movement on the right finger and content
-                if (touch.fingerId == touchFingerId && selectedRect == contentRect)
-                {
-                    if (touch.phase == TouchPhase.Moved)
-                    {
-                        // respond to movement
-                        scrollPosition += touch.deltaPosition;
-
-                        // only store a specific amount of touches
-                        if (lastTouchesPos.Count > 15)
-                        {
-                            lastTouchesPos.Dequeue();
-                            lastTouchesTime.Dequeue();
-                        }
-
-                        // push touch onto list
-                        lastTouchesPos.Enqueue(touch.deltaPosition);
-                        lastTouchesTime.Enqueue(touch.deltaTime);
-                    }
-                    else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-                    {
-                        touchFingerId = -1;
-                        timeTouchPhaseEnded = Time.time;
-
-                        // total the movements and time for averaging
-                        Vector2 totalVel = Vector2.zero;
-                        float totalTime = 0.0f;
-                        while (lastTouchesPos.Count > 0)
-                        {
-                            totalVel += lastTouchesPos.Dequeue();
-                            totalTime += lastTouchesTime.Dequeue();
-                        }
-
-                        // calculate the final average velocity and clamp to reasonable speeds
-                        if (totalVel != Vector2.zero && totalTime > 0)
-                        {
-                            scrollVelocity = totalVel / totalTime;
-                            scrollVelocity.x = Mathf.Clamp(scrollVelocity.x, -200, 200);
-                            scrollVelocity.y = Mathf.Clamp(scrollVelocity.y, -200, 200);
-                        }
-                    }
-                }
-            }
+            int id = GUIUtility.GetControlID(_touchScrollHash, FocusType.Passive);
+            scrollPosition = HandleTouchScroll(id, position, scrollPosition, contentRect);
         }
-        else
-        {
-            touchFingerId = -1;
-        }
-
-        if (touchFingerId == -1 && scrollVelocity != Vector2.zero && selectedRect == contentRect)
-        {
-                // slow down over time
-                float t = (Time.time - timeTouchPhaseEnded) / inertiaDuration;
-                Vector2 frameVelocity = Vector2.Lerp(scrollVelocity, Vector2.zero, t);
-                
-                scrollPosition += frameVelocity * Time.deltaTime;
-
-                // after N seconds, we've stopped
-                if (t >= inertiaDuration) scrollVelocity = Vector2.zero;
-        }
-#endif
 
         return GUI.BeginScrollView(position, scrollPosition, contentRect);
     }
