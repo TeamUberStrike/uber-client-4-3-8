@@ -10,7 +10,8 @@ BUILD_DIR = os.path.join(
     "UberStrike.Unity", "Latest", "WebPlayer",
 )
 
-CLIENT_LOG = "/tmp/opencode/client-logs.log"
+LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_log")
+CLIENT_LOG = os.path.join(LOG_DIR, "client-logs.log")
 
 MARKER = "<!-- webplayer-log-forwarder -->"
 
@@ -108,6 +109,7 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
             entries = json.loads(body)
         except Exception:
             entries = [{"raw": body.decode(errors="replace")}]
+        os.makedirs(LOG_DIR, exist_ok=True)
         with open(CLIENT_LOG, "a") as f:
             for e in entries:
                 line = json.dumps(e, ensure_ascii=False)
