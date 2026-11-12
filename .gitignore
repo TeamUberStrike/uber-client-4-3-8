@@ -39,3 +39,7 @@ _particle_work_backup_2026-02-18/
 
 # Outdated migration tracker
 MIGRATION_MAP.md
+
+__pycache__/
+_log/
+
