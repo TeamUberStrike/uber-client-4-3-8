@@ -181,13 +181,18 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             versionWidth = Mathf.Min(versionWidth, maxVersionWidth);
         }
 
+        // The build info row lives in the news strip above the page tabs (y = 5 on PC). Mobile builds have
+        // no news strip (NEWSFEED_HEIGHT = 0), so the row sits above the top of the screen there instead
+        // of covering the tabs and the GET CREDITS button.
+        float buildInfoY = NEWSFEED_HEIGHT - 23;
+
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth, 5, versionWidth, 20), versionContent, _buildInfoStyle);
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth, buildInfoY, versionWidth, 20), versionContent, _buildInfoStyle);
         _buildInfoStyle.fontSize = 11;
-        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, 5, fpsWidth, 20), fpsContent, _buildInfoStyle);
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, buildInfoY, fpsWidth, 20), fpsContent, _buildInfoStyle);
         GUI.color = Color.white;
 
-        if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth, 5, copyButtonWidth, 20), copyContent, _copyButtonStyle))
+        if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth, buildInfoY, copyButtonWidth, 20), copyContent, _copyButtonStyle))
         {
             GUIUtility.systemCopyBuffer = versionText;
         }
