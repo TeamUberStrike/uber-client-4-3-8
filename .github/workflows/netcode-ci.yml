@@ -1,0 +1,39 @@
+name: netcode CI
+
+# Compile + run the server-authoritative netcode invariant harness on a Windows runner.
+# (The Shadow dev VM can't compile here; windows-latest ships the full toolchain.)
+
+on:
+  push:
+    branches: [main, webgl-anticheat]
+    paths:
+      - 'netcode/**'
+      - '.github/workflows/netcode-ci.yml'
+  pull_request:
+    paths:
+      - 'netcode/**'
+      - '.github/workflows/netcode-ci.yml'
+
+jobs:
+  build-test:
+    name: build + invariant harness
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: netcode
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore UberStrike.Netcode.sln
+
+      - name: Build (Release)
+        run: dotnet build UberStrike.Netcode.sln -c Release --no-restore
+
+      # The harness returns exit 0 only when every check passes (Program.cs: `return failures == 0 ? 0 : 1`).
+      - name: Invariant test harness
+        run: dotnet run -c Release --no-build --project tests/UberStrike.Tests/UberStrike.Tests.csproj

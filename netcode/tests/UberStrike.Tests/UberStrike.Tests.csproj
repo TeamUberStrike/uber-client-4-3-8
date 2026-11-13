@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>UberStrike.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\UberStrike.Shared\UberStrike.Shared.csproj" />
+    <ProjectReference Include="..\..\src\UberStrike.Server\UberStrike.Server.csproj" />
+    <ProjectReference Include="..\..\src\UberStrike.Client\UberStrike.Client.csproj" />
+  </ItemGroup>
+</Project>
