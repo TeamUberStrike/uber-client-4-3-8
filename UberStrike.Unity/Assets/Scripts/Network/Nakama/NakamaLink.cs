@@ -46,9 +46,12 @@ namespace UberStrike.Realtime.NakamaAdapter
         public const int FirstSyncTimeoutMs = 2000;
         // game match kicks heartbeat members after 10 s silence (Go game.SilenceTicks)
         public const int HeartbeatMs = 3000;
+        public const int HostRefreshMs = 45000;
+        public const int HostTicketTimeoutMs = 10000;
 
         readonly NakamaConfig _cfg;
         readonly INakamaPlatform _platform;
+        readonly Func<string, Task<string>> _hostTicket;
         readonly NakamaClock _clock = new NakamaClock();
         readonly HashSet<ILinkPeer> _peers = new HashSet<ILinkPeer>();
         readonly Dictionary<ILinkPeer, Action<LinkResult>> _waiting = new Dictionary<ILinkPeer, Action<LinkResult>>();
@@ -70,13 +73,18 @@ namespace UberStrike.Realtime.NakamaAdapter
         long _emptySince = -1;
         long _authRetryAt;
         int _authFailures;
+        long _nextHostRefresh;
+        bool _hostRefreshInFlight;
 
-        public NakamaLink(NakamaConfig cfg, INakamaPlatform platform)
+        public NakamaLink(NakamaConfig cfg, INakamaPlatform platform, Func<string, Task<string>> hostTicket = null)
         {
             if (platform == null)
                 throw new ArgumentNullException("platform");
             _cfg = cfg ?? new NakamaConfig();
             _platform = platform;
+            if (_cfg.IsHost && hostTicket == null)
+                throw new ArgumentNullException("hostTicket");
+            _hostTicket = hostTicket;
         }
 
         public NakamaConfig Config { get { return _cfg; } }
@@ -198,6 +206,10 @@ namespace UberStrike.Realtime.NakamaAdapter
                 return;
 
             long now = Now;
+            if (_cfg.IsHost && !_hostRefreshInFlight && now >= _nextHostRefresh)
+                RefreshHost();
+            if (!IsReady)
+                return;
             if (!_pingInFlight && now >= _nextPing)
                 Ping();
 
@@ -217,7 +229,37 @@ namespace UberStrike.Realtime.NakamaAdapter
         public void Shutdown()
         {
             _waiting.Clear();
+            ++_epoch;
+            _connecting = false;
             CloseSocket("quit");
+            if (_cfg.IsHost)
+            {
+                _session = null;
+                DropPeers(false, "quit");
+            }
+        }
+
+        public static Task<string> RequestHostTicket(INakamaLink central, string hostId)
+        {
+            if (central == null)
+                throw new ArgumentNullException("central");
+            var source = new TaskCompletionSource<string>();
+            central.Rpc("host_ticket", new NakamaJsonWriter().Str("host_id", hostId).End(), (reply, err) =>
+            {
+                if (err != null)
+                {
+                    source.TrySetException(new LinkException(LinkFailure.NoToken, "central host_ticket failed"));
+                    return;
+                }
+                try
+                {
+                    string ticket = NakamaJson.Str(NakamaJson.ParseObject(reply), "ticket");
+                    CheckHostTicket(ticket);
+                    source.TrySetResult(ticket);
+                }
+                catch (Exception e) { source.TrySetException(e); }
+            });
+            return source.Task;
         }
 
         // config endpoint changed (web row): unused client/session dropped, open socket keeps its node until it closes
@@ -262,7 +304,7 @@ namespace UberStrike.Realtime.NakamaAdapter
                 }
 
                 DateTime soon = DateTime.UtcNow.AddMinutes(1);
-                if (_session != null && (cmid <= 0 || _authCmid == cmid) && _session.HasExpired(soon) && !_session.HasRefreshExpired(soon))
+                if (!_cfg.IsHost && _session != null && (cmid <= 0 || _authCmid == cmid) && _session.HasExpired(soon) && !_session.HasRefreshExpired(soon))
                 {
                     try
                     {
@@ -278,11 +320,14 @@ namespace UberStrike.Realtime.NakamaAdapter
                     }
                 }
 
-                if (_session == null || (cmid > 0 && _authCmid != cmid) || _session.HasExpired(soon))
+                if (_cfg.IsHost || _session == null || (cmid > 0 && _authCmid != cmid) || _session.HasExpired(soon))
                 {
                     if (cmid <= 0)
                         cmid = _authCmid;
-                    string token = ResolveToken(cmid, id);
+                    long requested = Now;
+                    string token = _cfg.IsHost ? await FreshHostTicket() : ResolveToken(cmid, id);
+                    if (epoch != _epoch)
+                        return;
                     _session = null;
                     var vars = new Dictionary<string, string> { { "token", token } };
                     ISession session = await _client.AuthenticateCustomAsync(token, null, true, vars, new RetryConfiguration(250, 1));
@@ -291,6 +336,7 @@ namespace UberStrike.Realtime.NakamaAdapter
                     _session = session;
                     _authCmid = SessionCmid(session, cmid);
                     _authFailures = 0;
+                    _nextHostRefresh = requested + HostRefreshMs;
                 }
 
                 socket = _platform.NewSocket(_client);
@@ -313,6 +359,12 @@ namespace UberStrike.Realtime.NakamaAdapter
             }
             catch (Exception e)
             {
+                if (epoch != _epoch)
+                {
+                    if (socket != null)
+                        CloseAndRelease(socket, "close stale socket");
+                    return;
+                }
                 result = Classify(e);
                 if (result.Failure == LinkFailure.AuthRejected && !(e is LinkException))
                 {
@@ -362,6 +414,67 @@ namespace UberStrike.Realtime.NakamaAdapter
                 _platform.Warn("[nakama] first uber_time failed: " + Message(e));
             }
             _nextPing = Now + _cfg.TimePingMs;
+        }
+
+        static void CheckHostTicket(string ticket)
+        {
+            if (string.IsNullOrEmpty(ticket) || ticket.Length > 2048 || !ticket.StartsWith("uh1.", StringComparison.Ordinal))
+                throw new LinkException(LinkFailure.NoToken, "central returned no host ticket");
+        }
+
+        async Task<string> FreshHostTicket()
+        {
+            Task<string> pending = _hostTicket(_cfg.HostId);
+            if (pending == null)
+                throw new LinkException(LinkFailure.NoToken, "central returned no host ticket");
+            if (await Task.WhenAny(pending, Task.Delay(HostTicketTimeoutMs)) != pending)
+            {
+                Observe(pending, "host_ticket");
+                throw new TimeoutException("host_ticket timed out");
+            }
+            string ticket = await pending;
+            CheckHostTicket(ticket);
+            return ticket;
+        }
+
+        async void RefreshHost()
+        {
+            ISocket socket = _socket;
+            int epoch = _epoch;
+            long requested = Now;
+            _hostRefreshInFlight = true;
+            try
+            {
+                string ticket = await FreshHostTicket();
+                if (epoch != _epoch || socket != _socket)
+                    return;
+                Task<IApiRpc> pending = socket.RpcAsync("host_refresh", new NakamaJsonWriter().Str("ticket", ticket).End());
+                if (await Task.WhenAny(pending, Task.Delay(HostTicketTimeoutMs)) != pending)
+                {
+                    Observe(pending, "host_refresh");
+                    throw new TimeoutException("host_refresh timed out");
+                }
+                IApiRpc reply = await pending;
+                if (epoch != _epoch || socket != _socket)
+                    return;
+                long expiry = NakamaJson.Long(NakamaJson.ParseObject(reply.Payload), "exp", 0);
+                if (expiry <= (DateTime.UtcNow.Ticks - 621355968000000000L) / TimeSpan.TicksPerSecond)
+                    throw new FormatException("host_refresh returned expired ticket");
+                _nextHostRefresh = requested + HostRefreshMs;
+            }
+            catch (Exception)
+            {
+                if (epoch == _epoch && socket == _socket)
+                {
+                    _session = null;
+                    CloseSocket("host ticket refresh failed");
+                }
+            }
+            finally
+            {
+                if (epoch == _epoch)
+                    _hostRefreshInFlight = false;
+            }
         }
 
         string ResolveToken(int cmid, NakamaIdentity id)
@@ -449,6 +562,9 @@ namespace UberStrike.Realtime.NakamaAdapter
             _routes.Clear();
             _selfSession = null;
             _pingInFlight = false;
+            _hostRefreshInFlight = false;
+            if (_cfg.IsHost)
+                _session = null;
 
             var peers = new List<ILinkPeer>();
             foreach (ILinkPeer p in _peers)
@@ -488,7 +604,7 @@ namespace UberStrike.Realtime.NakamaAdapter
 
         void OnNotification(ISocket s, IApiNotification n)
         {
-            if (s != _socket || n == null)
+            if (s != _socket || n == null || _cfg.IsHost)
                 return;
 
             string msg = null;

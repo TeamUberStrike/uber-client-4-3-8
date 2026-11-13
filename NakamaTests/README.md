@@ -18,6 +18,12 @@ Byte vectors come from the Go module (`photon-migration@nakama`: `rmi_test.go`, 
 net8.0 also runs `LinkTests` (the shipped `NakamaLink` over proxied `IClient`/`ISocket`) when nakama-unity's
 `Nakama.dll` is found (`Library\PackageCache` after a Unity import, or `-p:NakamaDll=<path>`).
 
+`HostE2ETests` runs on net8 with the real Nakama.dll and `uber-host-game/dist/uber-host.exe`.
+Set `HOSTGAME_ROOT` if the host repo is not `C:/nk/src/uber-host-game`; `HOSTGAME_GO` can select Go 1.27.1.
+The test builds `tools/ticketgen` with go.work offline, creates a temporary seed/config, and stops only its own host PID.
+It takes about 65 s: real peer join, game op/MatchState, 45 s refresh, expiry, bad auth, wrong-user refresh, clean leave.
+Run alone: `dotnet NakamaTests/bin/Release/net8.0/NakamaTests.dll HostE2E`.
+
 ## Live node (e2e/)
 
 `ClientE2E` = `NakamaPeer` + `NakamaLink` + nakama-dotnet stdlib socket against Nakama 3.41.0 + the uber Go module
