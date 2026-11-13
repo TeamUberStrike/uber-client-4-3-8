@@ -10,7 +10,7 @@ public class TeamCityBuilder
     public static void BuildWebPlayer()
     {
         SceneExporter.BuildWebPlayer(false, false);
-        WriteConfigurationXml(ChannelType.WebPortal, SceneExporter.WebPlayerFolder + "/" + ApplicationDataManager.HeaderFilename + ".xml");
+        WriteConfigurationXml(ChannelType.WebPortal, SceneExporter.WebPlayerFolder + "/" + SceneExporter.WebPlayerConfigFilename);
     }
 
     public static void BuildWindowsStandalone()

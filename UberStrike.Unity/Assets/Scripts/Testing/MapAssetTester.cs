@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class MapAssetTester : MonoBehaviour
 {
-#if UNITY_EDITOR
     public int mapId;
     public string mapName;
 
+#if UNITY_EDITOR
     void Start()
     {
         LevelManager.Instance.SimulateWebplayer("file:///" + Application.dataPath + "/../../UberStrike.UnityAssets/Bundles/");

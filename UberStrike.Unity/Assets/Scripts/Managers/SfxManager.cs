@@ -163,6 +163,18 @@ public class SfxManager : MonoSingleton<SfxManager>
         }
     }
 
+    public static void Play2dAudioClipWithVolume(SoundEffectType soundEffect, float volumeScale)
+    {
+        try
+        {
+            Instance.uiAudioSource.PlayOneShot(Instance._sounds[soundEffect], volumeScale);
+        }
+        catch
+        {
+            Debug.LogError("Play2dAudioClipWithVolume: " + soundEffect + " failed.");
+        }
+    }
+
     public static void Play2dAudioClip(AudioClip audioClip)
     {
         try
@@ -232,6 +244,19 @@ public class SfxManager : MonoSingleton<SfxManager>
             Destroy(audioGo, clipLength);
         }
     }
+
+#if UNITY_ANDROID || UNITY_IPHONE
+    public void PlayMusicMobile(AudioClip clip, float volume)
+    {
+        if (clip != null)
+        {
+            musicAudioSource.volume = MusicAudioVolume * volume;
+            musicAudioSource.clip = clip;
+            musicAudioSource.loop = true;
+            musicAudioSource.Play();
+        }
+    }
+#endif
 
     public static void PlayFootStepAudioClip(FootStepSoundType footStep, Vector3 position)
     {

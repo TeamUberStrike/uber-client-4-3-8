@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public static class ParticleEmissionSystem
 {
+    // Bullet tracers are drawn this much wider than the 3.5.5 original; their length is unchanged.
+    public const float TracerWidthScale = 1.15f;
+
     static int _emitLogCount = 0;
     const int MAX_EMIT_LOGS = 30; // enough to see surface + fire + trail emissions
 
@@ -86,7 +89,7 @@ public static class ParticleEmissionSystem
         }
     }
 
-    public static void TrailParticles(Vector3 emitPoint, Vector3 direction, TrailParticleConfiguration particleConfiguration, Vector3 muzzlePosition, float distance)
+    public static void TrailParticles(Vector3 emitPoint, Vector3 direction, TrailParticleConfiguration particleConfiguration, Vector3 muzzlePosition, float distance, bool stopAtHitPoint)
     {
         if (particleConfiguration.ParticleEmitter != null && distance > 3f)
         {
@@ -98,15 +101,20 @@ public static class ParticleEmissionSystem
             float speed = 200f;
             Vector3 velocity = direction * speed;
             float time = distance / speed * 0.9f;
+            // Water does not hide what is behind it, so a tracer there must stop at the surface.
+            if (stopAtHitPoint) time = (distance - 3f) / speed;
 
             // Legacy 3.5.5 Stretched particle "size" was radius (half-width),
             // modern ParticleSystem size is diameter (full width) — halve to match original thickness
             EmitSafe(particleConfiguration.ParticleEmitter,
                 muzzlePosition + direction * 3f, velocity,
-                Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize) * 0.5f,
+                Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize) * 0.5f * TracerWidthScale,
                 time, particleConfiguration.ParticleColor);
         }
     }
+
+    // Impact smoke is drawn at half its 4.3.8 size (start size here, sizeGrow and max size in the migrator's Fire row).
+    public const float ImpactSmokeScale = 0.5f;
 
     public static void FireParticles(Vector3 hitPoint, Vector3 hitNormal, FireParticleConfiguration particleConfiguration)
     {
@@ -128,7 +136,7 @@ public static class ParticleEmissionSystem
                 newEmitPoint.z = newEmitPoint.z + Random.Range(0f, 0.4f) * (-1);
                 EmitSafe(particleConfiguration.ParticleEmitter,
                     newEmitPoint, velocity,
-                    Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize),
+                    Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize) * ImpactSmokeScale,
                     Random.Range(particleConfiguration.ParticleMinLiveTime, particleConfiguration.ParticleMaxLiveTime),
                     particleConfiguration.ParticleColor);
             }

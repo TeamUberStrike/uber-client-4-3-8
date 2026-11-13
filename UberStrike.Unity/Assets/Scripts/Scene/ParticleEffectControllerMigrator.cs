@@ -121,7 +121,8 @@ public static class ParticleEffectControllerMigrator
         new[] { "PlayerStar",    "0",   "1",  "1","1","1", "0","2","0",     "-1",   "180","180","255","180","10", "0.25" },
         new[] { "Splat",         "0",   "1",  "4","4","1", "0","2","0",     "-15",  "180","180","255","180","10", "0.25" },
         // Fire has warm RGB gradient: white→(255,221,221)→(255,203,203)→(255,174,174)
-        new[] { "Fire",         "0.3",  "1",  "4","4","1", "0","2","0",     "1",    "128","125","255","128","10", "0.25",
+        // Fire = impact smoke, at half size (ParticleEmissionSystem.ImpactSmokeScale): 4.3.8 had sizeGrow 0.3, maxPS 0.25
+        new[] { "Fire",         "0.15", "1",  "4","4","1", "0","2","0",     "1",    "128","125","255","128","10", "0.125",
                 "255","255","255", "255","255","255", "255","221","221", "255","203","203", "255","174","174" },
         new[] { "Trail",         "0",   "1",  "1","1","1", "3","1","0",     "0",    "255","255","255","255","255","0.25" },
         new[] { "WaterCircle",  "1.5", "0.3", "1","1","1", "4","2","0",     "0",    "10","180","255","180","10", "0.25" },
@@ -387,6 +388,7 @@ public static class ParticleEffectControllerMigrator
             float a3 = InvariantFloat.Parse(entry[13]) / 255f;
             float a4 = InvariantFloat.Parse(entry[14]) / 255f;
             float maxPS = InvariantFloat.Parse(entry[15]);
+            if (goName == "Trail") { lenScale /= ParticleEmissionSystem.TracerWidthScale; maxPS *= ParticleEmissionSystem.TracerWidthScale; }
 
             // --- Disable ALL non-essential modules to eliminate migration artifacts ---
             // Migration from EllipsoidParticleEmitter may have enabled various modules
@@ -1306,6 +1308,7 @@ public static class ParticleEffectControllerMigrator
         float a3 = InvariantFloat.Parse(animEntry[13]) / 255f;
         float a4 = InvariantFloat.Parse(animEntry[14]) / 255f;
         float maxPS = InvariantFloat.Parse(animEntry[15]);
+        if (animEntry[0] == "Trail") { lenScale /= ParticleEmissionSystem.TracerWidthScale; maxPS *= ParticleEmissionSystem.TracerWidthScale; }
 
         // Main module
         var main = ps.main;

@@ -250,12 +250,15 @@ public class MouseInputChannel : IInputChannel, IByteArray
     public void Listen()
     {
         _wasDown = _isDown;
-        _isDown = Input.GetMouseButton(_button);
+        // On mobile, Unity simulates mouse-button-0/1 from the FIRST finger, so any held touch
+        // (move joystick, look-drag) would otherwise drive PrimaryFire/SecondaryFire. The same
+        // applies to the Editor touch preview, where mouse clicks drive simulated touches.
+        _isDown = !TouchInput.IsSupported && Input.GetMouseButton(_button);
     }
 
     public float RawValue()
     {
-        return Input.GetMouseButton(_button) ? 1 : 0;
+        return (!TouchInput.IsSupported && Input.GetMouseButton(_button)) ? 1 : 0;
     }
 
     public void Reset()

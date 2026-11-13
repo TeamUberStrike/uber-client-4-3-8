@@ -13,19 +13,11 @@ public class GameState : MonoSingleton<GameState>
 
     public static bool IsRagdollShootable = false;
 
-    public static float Tangent
-    {
-        get { return 0.3f; }
-    }
+    public Vector2 TouchLookSensitivity = new Vector2(1.0f, 0.5f);
 
     public static bool UsePlayerPing
     {
         get { return true; }
-    }
-
-    public static int PredictionTimeMax
-    {
-        get { return 500; }
     }
 
     public static event Action DrawGizmos;
@@ -62,6 +54,7 @@ public class GameState : MonoSingleton<GameState>
     void OnGUI()
     {
         GameStateController.Instance.StateMachine.OnGUI();
+
     }
 
     private void OnDrawGizmos()

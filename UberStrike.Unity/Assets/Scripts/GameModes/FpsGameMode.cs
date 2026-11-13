@@ -144,12 +144,13 @@ public abstract class FpsGameMode : ClientGameMode
         }
 
         SendMethodToServer(GameRPC.Join, GameState.LocalCharacter);
-
-        if (LevelCamera.Exists)
+#if !UNITY_ANDROID && !UNITY_IPHONE
+        if (LevelCamera.HasCamera)
             LevelCamera.Instance.EnableLowPassFilter(false);
+#endif
+        OnModeInitialized();
 
         CmuneEventHandler.Route(new OnModeInitializedEvent());
-        OnModeInitialized();
     }
 
     protected virtual void OnModeInitialized() { }
@@ -496,7 +497,9 @@ public abstract class FpsGameMode : ClientGameMode
     protected virtual void OnMatchStart(int matchCount, int matchEndServerTicks)
     {
         GameConnectionManager.Client.PeerListener.UpdateServerTime();
+#if !UNITY_IPHONE
         CheatDetection.SyncSystemTime();
+#endif
 
         IsMatchRunning = true;
         _roundStartTime = matchEndServerTicks - (GameData.RoundTime * 1000);

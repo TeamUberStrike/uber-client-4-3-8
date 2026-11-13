@@ -12,10 +12,12 @@ public class InGameHelpHud : Singleton<InGameHelpHud>
         {
             if (value)
             {
+#if !UNITY_ANDROID && !UNITY_IPHONE
                 _entireGroup.Show();
                 if (EnableChangeTeamHelp) _changeTeamHelpGroup.Show();
                 else _changeTeamHelpGroup.Hide();
                 ResetTransform();
+#endif
             }
             else
             {
@@ -219,8 +221,10 @@ public class InGameHelpHud : Singleton<InGameHelpHud>
         }
         _loadoutHelpGroup.Position = new Vector2(0.0f, offsetY);
 
-        Vector2 groupPos = new Vector2(Screen.width * 0.05f, Screen.height * 0.20f);
-        groupPos.x += Screen.width * (1 - CameraRectController.Instance.Width) / 2;
+        // Right side of the screen, mirrored from the old left placement (5% margin, same height).
+        float width = Mathf.Max(_scoreBoardHelpGroup.Rect.xMax, _fullScreenHelpGroup.Rect.xMax, _loadoutHelpGroup.Rect.xMax);
+        Vector2 groupPos = new Vector2(Screen.width * 0.95f - width, Screen.height * 0.20f);
+        groupPos.x -= Screen.width * (1 - CameraRectController.Instance.Width) / 2;
         _entireGroup.Position = groupPos;
         _entireGroup.UpdateMeshGUIPosition();
     }

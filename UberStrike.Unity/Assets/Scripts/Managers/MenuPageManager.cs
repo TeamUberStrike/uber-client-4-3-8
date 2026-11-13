@@ -35,7 +35,7 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
 
     private void OnGUI()
     {
-        int width = MenuConfiguration.Exists ? MenuConfiguration.Instance.GetPagePanelWidth(_currentPageType) : 0;
+        float width = MenuConfiguration.Exists ? GetPanelPixelWidth(_currentPageType) : 0;
 
         // Make sure camera pixel rect is always correct if window gets resized
         if (GameState.HasCurrentSpace && IsScreenResolutionChanged() )
@@ -94,7 +94,7 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
     {
         float t = 0;
         float oldCameraWidth = GameState.CurrentSpace.Camera.pixelWidth;
-        int panelWidth = MenuConfiguration.Instance.GetPagePanelWidth(type);
+        float panelWidth = GetPanelPixelWidth(type);
 
         while (t < time && type == _currentPageType)
         {
@@ -103,7 +103,18 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
             yield return new WaitForEndOfFrame();
         }
 
-        GameState.CurrentSpace.Camera.pixelRect = new Rect(0, 0, Screen.width - MenuConfiguration.Instance.GetPagePanelWidth(_currentPageType), Screen.height);
+        GameState.CurrentSpace.Camera.pixelRect = new Rect(0, 0, Screen.width - GetPanelPixelWidth(_currentPageType), Screen.height);
+    }
+
+    /// <summary>
+    /// Width in screen pixels of a page's side panel, which the camera viewport leaves free so the avatar
+    /// stays centred in the visible part of the scene. Panel widths are authored in menu units; on
+    /// mobile the panels are drawn under MobileMenuScale, so the width is scaled to match. PC: unchanged.
+    /// </summary>
+    private static float GetPanelPixelWidth(PageType type)
+    {
+        float width = MenuConfiguration.Instance.GetPagePanelWidth(type);
+        return MobileMenuScale.Active ? width * MobileMenuScale.Scale : width;
     }
 
     #endregion

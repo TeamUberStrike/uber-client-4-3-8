@@ -33,7 +33,7 @@ public class GameStateInterpolator
                 //if (GameState.Instance.test)
                 //p.UpdatePosition();
                 //else
-                p.Interpolate(GameConnectionManager.Client.PeerListener.ServerTimeTicks - GameState.PredictionTimeMax);
+                p.Interpolate(GameConnectionManager.Client.PeerListener.ServerTimeTicks - 500);
             }
         }
     }

@@ -100,6 +100,7 @@ static class GameModeUtil
 
     public static void OnPlayerKilled(OnPlayerKilledEvent ev)
     {
+        PlayerStateMsgHud.Instance.SetKiller(ev.ShooterInfo);
         InGameEventFeedbackType type = InGameEventFeedbackType.None;
         if (ev.WeaponCategory == UberstrikeItemClass.WeaponMelee)
         {
@@ -136,6 +137,7 @@ static class GameModeUtil
     {
         if (ev.PlayerInfo.ActorId == GameState.CurrentPlayerID)
         {
+            PlayerStateMsgHud.Instance.SetKiller(null);
             EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage,
                 LocalizedStrings.CongratulationsYouKilledYourself);
         }
@@ -177,14 +179,7 @@ static class GameModeUtil
                                     DisconnectionTimeout : DisconnectionTimeoutAdmin));
             if (checkTimeout == false || timeout > 0)
             {
-                if (!GameState.LocalPlayer.IsGamePaused)
-                {
-                    HudUtil.Instance.ShowClickToRespawnText(gameMode);
-                }
-                else
-                {
-                    HudUtil.Instance.ShowRespawnButton();
-                }
+                HudUtil.Instance.ShowRespawnButton();
 
                 if (checkTimeout == true && timeout < 10)
                 {

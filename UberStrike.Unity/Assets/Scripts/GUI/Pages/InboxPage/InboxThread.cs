@@ -204,7 +204,11 @@ public class InboxThread
         GUI.BeginGroup(msgRect);
         {
             GUI.backgroundColor = new Color(1, 1, 1, 0.5f);
-            GUI.TextArea(new Rect(0, 0, msgRect.width, height), msg.Content, BlueStonez.speechbubble_left);
+            if (ApplicationDataManager.IsMobile)
+                GUI.Label(new Rect(0, 0, msgRect.width, height), msg.Content, BlueStonez.speechbubble_left);
+            else
+                GUI.TextArea(new Rect(0, 0, msgRect.width, height), msg.Content, BlueStonez.speechbubble_left);
+                    
             GUI.backgroundColor = Color.white;
         }
         GUI.EndGroup();
@@ -227,7 +231,10 @@ public class InboxThread
         GUI.BeginGroup(msgRect);
         {
             GUI.backgroundColor = new Color(0.376f, 0.631f, 0.886f, 0.5f);
-            GUI.TextArea(new Rect(msgRect.width - msgRect.width, 0, msgRect.width, height), msg.Content, BlueStonez.speechbubble_right);
+            if (ApplicationDataManager.IsMobile)
+                GUI.Label(new Rect(msgRect.width - msgRect.width, 0, msgRect.width, height), msg.Content, BlueStonez.speechbubble_right);
+            else
+                GUI.TextArea(new Rect(msgRect.width - msgRect.width, 0, msgRect.width, height), msg.Content, BlueStonez.speechbubble_right);
             GUI.backgroundColor = Color.white;
         }
         GUI.EndGroup();

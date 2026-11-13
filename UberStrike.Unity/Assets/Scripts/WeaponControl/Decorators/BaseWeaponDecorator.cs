@@ -385,6 +385,7 @@ public abstract class BaseWeaponDecorator : MonoBehaviour
                     point.x = (GameState.CurrentSpace.WaterPlaneHeight - hit.point.y) / direction.y * direction.x + hit.point.x;
                     point.z = (GameState.CurrentSpace.WaterPlaneHeight - hit.point.y) / direction.y * direction.z + hit.point.z;
                 }
+                distance = Vector3.Distance(muzzlePosition, point);
             }
 
             ParticleEffectController.ShowHitEffect(_effectType, t, direction, point, normal, muzzlePosition, distance, ref _trailRenderer, _parent);
