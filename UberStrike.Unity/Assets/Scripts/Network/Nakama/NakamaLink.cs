@@ -69,6 +69,9 @@ namespace UberStrike.Realtime.NakamaAdapter
         long _nextBeat;
         long _emptySince = -1;
         long _authRetryAt;
+        bool _held;
+        int _dialCmid;
+        int _heldCmid;
         int _authFailures;
 
         public NakamaLink(NakamaConfig cfg, INakamaPlatform platform)
@@ -121,7 +124,33 @@ namespace UberStrike.Realtime.NakamaAdapter
                 _session = null;
                 CloseSocket("identity changed");
             }
+            if (_held)
+            {
+                if (cmid > 0)
+                    _heldCmid = cmid;
+                return;
+            }
             if (!_connecting)
+                Connect(cmid);
+        }
+
+        // webgl: nakama.json loads async, attaches wait so first dial uses final endpoint
+        public bool IsHeld { get { return _held; } }
+
+        public void HoldConnects()
+        {
+            _held = true;
+        }
+
+        public void ReleaseConnects()
+        {
+            if (!_held)
+                return;
+            _held = false;
+            int cmid = _heldCmid;
+            _heldCmid = 0;
+            Retarget();
+            if (_waiting.Count > 0 && !_connecting)
                 Connect(cmid);
         }
 
@@ -236,11 +265,19 @@ namespace UberStrike.Realtime.NakamaAdapter
                 _loggedEndpoint = ep;
                 _platform.Log("[nakama] endpoint " + ep + " (" + _cfg.Origin + ")");
             }
-            if (_client == null || ep == _clientEndpoint || _socket != null || _connecting)
+            if (_client == null || ep == _clientEndpoint || _socket != null)
                 return;
             _client = null;
             _clientEndpoint = null;
             _session = null;
+            if (!_connecting)
+                return;
+            // dial to old endpoint in flight: drop it, dial new one now (else wait its 10-20 s timeout)
+            _platform.Log("[nakama] endpoint changed while connecting, redial " + ep);
+            ++_epoch;
+            _connecting = false;
+            if (_waiting.Count > 0)
+                Connect(_dialCmid);
         }
 
         // connect
@@ -248,9 +285,11 @@ namespace UberStrike.Realtime.NakamaAdapter
         async void Connect(int cmidHint)
         {
             _connecting = true;
+            _dialCmid = cmidHint;
             int epoch = ++_epoch;
             ISocket socket = null;
             LinkResult result;
+            long t0 = Now, tAuth = t0, tSocket = t0;
 
             try
             {
@@ -300,6 +339,7 @@ namespace UberStrike.Realtime.NakamaAdapter
                     _authFailures = 0;
                 }
 
+                tAuth = Now;
                 socket = _platform.NewSocket(_client);
                 _live.Add(socket);
                 Wire(socket);
@@ -310,13 +350,15 @@ namespace UberStrike.Realtime.NakamaAdapter
                     return;
                 }
 
+                tSocket = Now;
                 _socket = socket;
                 _clock.Reset();
                 await FirstSync(socket);
                 if (_socket != socket || !socket.IsConnected)
                     throw new LinkException(LinkFailure.Closed, "socket closed during first sync");
                 result = LinkResult.Success;
-                _platform.Log("[nakama] connected " + _cfg.Endpoint + " as cmid " + _authCmid + ", rtt " + _clock.RoundTripTime + " ms");
+                _platform.Log("[nakama] connected " + _cfg.Endpoint + " as cmid " + _authCmid + ", rtt " + _clock.RoundTripTime + " ms ("
+                    + "login " + (tAuth - t0) + " ms, socket " + (tSocket - tAuth) + " ms, first sync " + (Now - tSocket) + " ms)");
             }
             catch (Exception e)
             {
@@ -331,7 +373,7 @@ namespace UberStrike.Realtime.NakamaAdapter
                     _socket = null;
                 if (socket != null)
                     CloseAndRelease(socket, "close failed socket");
-                _platform.Warn("[nakama] connect to " + _cfg.Endpoint + " failed (" + result.Failure + "): " + result.Message);
+                _platform.Warn("[nakama] connect to " + _cfg.Endpoint + " failed after " + (Now - t0) + " ms (" + result.Failure + "): " + result.Message);
             }
 
             if (epoch != _epoch)
