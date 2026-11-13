@@ -387,6 +387,7 @@ public static class ParticleEffectControllerMigrator
             float a3 = InvariantFloat.Parse(entry[13]) / 255f;
             float a4 = InvariantFloat.Parse(entry[14]) / 255f;
             float maxPS = InvariantFloat.Parse(entry[15]);
+            if (goName == "Trail") { lenScale /= ParticleEmissionSystem.TracerWidthScale; maxPS *= ParticleEmissionSystem.TracerWidthScale; }
 
             // --- Disable ALL non-essential modules to eliminate migration artifacts ---
             // Migration from EllipsoidParticleEmitter may have enabled various modules
@@ -1306,6 +1307,7 @@ public static class ParticleEffectControllerMigrator
         float a3 = InvariantFloat.Parse(animEntry[13]) / 255f;
         float a4 = InvariantFloat.Parse(animEntry[14]) / 255f;
         float maxPS = InvariantFloat.Parse(animEntry[15]);
+        if (animEntry[0] == "Trail") { lenScale /= ParticleEmissionSystem.TracerWidthScale; maxPS *= ParticleEmissionSystem.TracerWidthScale; }
 
         // Main module
         var main = ps.main;
