@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class LevelManager : Singleton<LevelManager>
 {
     private LightmapData[] _originalLightmaps;
+    // Map audio loads from its bundle on first play, so the bundle stays open while the map scene is loaded.
+    private Dictionary<string, AssetBundle> _mapBundles = new Dictionary<string, AssetBundle>();
     private Dictionary<int, UberstrikeMap> mapsById = new Dictionary<int, UberstrikeMap>();
     private MapLoader _loader;
     private UberstrikeMap _initialMap;
@@ -155,10 +157,21 @@ public class LevelManager : Singleton<LevelManager>
             if (s.name == "LevelSpaceship") continue; // lobby
             if (s.name == currentSceneName) continue;
             if (s == SceneManager.GetActiveScene()) continue;
+            UnloadMapBundle(s.name);
             SceneManager.UnloadSceneAsync(s);
         }
         Resources.UnloadUnusedAssets();
         //Debug.Log("LightMaps: " + LightmapSettings.lightmaps.Length);
+    }
+
+    private void UnloadMapBundle(string sceneName)
+    {
+        AssetBundle bundle;
+        if (_mapBundles.TryGetValue(sceneName, out bundle))
+        {
+            if (bundle != null) bundle.Unload(false);
+            _mapBundles.Remove(sceneName);
+        }
     }
 
     private Transform GetLevelsParent()
@@ -245,6 +258,8 @@ public class LevelManager : Singleton<LevelManager>
             }
             else
             {
+                LevelManager.Instance.UnloadMapBundle(MapToLoad.SceneName);
+
                 WWW loader;
                 string fileToLoad = string.Empty;
 
@@ -307,7 +322,7 @@ public class LevelManager : Singleton<LevelManager>
                             // Log the time it took to load a map
                             //GoogleAnalytics.Instance.LogEvent("app-map-load", MapToLoad.SceneName, Time.time - gaStartTime, true);
 
-                            assetBundle.Unload(false);
+                            LevelManager.Instance._mapBundles[MapToLoad.SceneName] = assetBundle;
                         }
                         else
                         {
