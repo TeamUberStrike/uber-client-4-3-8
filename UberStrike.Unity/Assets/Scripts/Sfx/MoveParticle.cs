@@ -9,6 +9,20 @@ public static class ParticleEmissionSystem
     // TEMP DEBUG: Press F11 to toggle 10x particle size for visual inspection
     public static bool DebugLargeParticles = false;
 
+    // hit puffs scale. 0.5 = guess from explosion tuning, not measured on hits. tune in game.
+    public const float ImpactSizeScale = 0.5f;
+    static readonly HashSet<string> _impactNames = new HashSet<string>
+    {
+        "Wood", "Stone", "Metal", "Grass", "Sand", "Splat", "Fire",
+        "WaterCircle", "WaterExtra", "WaterDrops",
+        "PaintOrange", "PaintGreen", "PaintBlue", "PaintRed"
+    };
+
+    public static float ImpactScale(string goName)
+    {
+        return goName != null && _impactNames.Contains(goName) ? ImpactSizeScale : 1f;
+    }
+
     // Per-system emission counters for diagnostics
     static Dictionary<string, int> _emitCounts = new Dictionary<string, int>();
     static float _lastCountDump = 0f;
@@ -44,6 +58,8 @@ public static class ParticleEmissionSystem
             finalSize *= 0.5f;
         else if (pName == "ExplosionSpark" || pName == "ExplosionTrail")
             finalSize *= 0.45f;
+        else
+            finalSize *= ImpactScale(pName);
         ep.startSize = finalSize;
         ep.startLifetime = lifetime;
         ep.startColor = color;
@@ -222,9 +238,10 @@ public static class ParticleEmissionSystem
                 var emitParams = new ParticleSystem.EmitParams();
                 emitParams.position = hitPoint;
                 emitParams.velocity = velocity;
-                emitParams.startSize = DebugLargeParticles ?
+                emitParams.startSize = (DebugLargeParticles ?
                     Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize) * 10f :
-                    Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize);
+                    Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize))
+                    * ImpactScale(ps.gameObject.name);
                 emitParams.startLifetime = Random.Range(particleConfiguration.ParticleMinLiveTime, particleConfiguration.ParticleMaxLiveTime);
                 emitParams.startColor = particleConfiguration.ParticleColor;
                 emitParams.rotation = Random.Range(0f, 360f);
