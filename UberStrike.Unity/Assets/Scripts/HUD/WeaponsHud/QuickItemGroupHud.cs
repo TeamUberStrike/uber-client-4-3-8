@@ -13,7 +13,7 @@ public class QuickItemGroupHud
         get { return _quickItemsGroup.IsVisible; }
         set
         {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
             if (TouchInput.IsSupported)
             {
                 // The touch build draws the items via DrawSimple(); keep the meshes hidden.
@@ -66,7 +66,7 @@ public class QuickItemGroupHud
 
     public void Draw()
     {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (TouchInput.IsSupported)
         {
             DrawSimple();
@@ -76,7 +76,7 @@ public class QuickItemGroupHud
         _quickItemsGroup.Draw();
     }
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
     // Draws the three items as plain icons at their saved placements - identical to the controls editor.
     public void DrawSimple()
     {
@@ -183,7 +183,7 @@ public class QuickItemGroupHud
 
     public void Expand()
     {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (TouchInput.IsSupported) return;
 #endif
         if (ApplicationDataManager.IsMobile) return;
@@ -200,7 +200,7 @@ public class QuickItemGroupHud
 
     public void Collapse()
     {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (TouchInput.IsSupported) return;
 #endif
         if (ApplicationDataManager.IsMobile) return;
@@ -298,7 +298,7 @@ public class QuickItemGroupHud
 
     private void ResetQuickItemsTransform()
     {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (TouchInput.IsSupported)
         {
             // The touch build draws the items via DrawSimple(); the meshes stay hidden.

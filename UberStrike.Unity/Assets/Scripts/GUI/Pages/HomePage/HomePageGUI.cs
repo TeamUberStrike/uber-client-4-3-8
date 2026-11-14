@@ -113,17 +113,27 @@ public class HomePageGUI : MonoBehaviour
                 // Draw Quit button
                 if (buttonCount == 4)
                 {
-#if !UNITY_ANDROID && !UNITY_IPHONE
-                    if (MainMenuButton(new Vector2(0, topOffset + (buttonSpacing * 3)), new GUIContent(LocalizedStrings.QuitCaps, LocalizedStrings.MainMenuQuitTooltip), UberstrikeIcons.MainMenuQuit64x64, new Vector2(6, -4)))
-                    {
-                        PopupSystem.ShowMessage(LocalizedStrings.QuitCaps, LocalizedStrings.AreYouSureQuitMsg, PopupSystem.AlertType.OKCancel, Application.Quit);
-                    }
+#if UNITY_ANDROID || UNITY_IPHONE
+                    const bool showLogout = true;
+#elif UNITY_WEBGL
+                    bool showLogout = ApplicationDataManager.IsMobile;
 #else
-                    if (MainMenuButton(new Vector2(0, topOffset + (buttonSpacing * 3)), new GUIContent(LocalizedStrings.LogoutCaps), UberstrikeIcons.MainMenuQuit64x64, new Vector2(6, -4)))
-                    {
-                        PopupSystem.ShowMessage(LocalizedStrings.LogoutCaps, LocalizedStrings.AreYouSureLogoutMsg, PopupSystem.AlertType.OKCancel, ApplicationDataManager.Instance.Logout);
-                    }
+                    const bool showLogout = false;
 #endif
+                    if (showLogout)
+                    {
+                        if (MainMenuButton(new Vector2(0, topOffset + (buttonSpacing * 3)), new GUIContent(LocalizedStrings.LogoutCaps), UberstrikeIcons.MainMenuQuit64x64, new Vector2(6, -4)))
+                        {
+                            PopupSystem.ShowMessage(LocalizedStrings.LogoutCaps, LocalizedStrings.AreYouSureLogoutMsg, PopupSystem.AlertType.OKCancel, ApplicationDataManager.Instance.Logout);
+                        }
+                    }
+                    else
+                    {
+                        if (MainMenuButton(new Vector2(0, topOffset + (buttonSpacing * 3)), new GUIContent(LocalizedStrings.QuitCaps, LocalizedStrings.MainMenuQuitTooltip), UberstrikeIcons.MainMenuQuit64x64, new Vector2(6, -4)))
+                        {
+                            PopupSystem.ShowMessage(LocalizedStrings.QuitCaps, LocalizedStrings.AreYouSureQuitMsg, PopupSystem.AlertType.OKCancel, Application.Quit);
+                        }
+                    }
                 }
 
                 GUI.color = Color.white;

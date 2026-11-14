@@ -7,12 +7,17 @@ using UnityEngine;
 
 public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 {
-    public const int HEIGHT = NEWSFEED_HEIGHT + PAGETABS_HEIGHT + STATUSBAR_HEIGHT;
+    public static int HEIGHT { get { return NEWSFEED_HEIGHT + PAGETABS_HEIGHT + STATUSBAR_HEIGHT; } }
 
-#if !UNITY_ANDROID && !UNITY_IPHONE
-    private const int NEWSFEED_HEIGHT = 28;
-#else
+#if UNITY_ANDROID || UNITY_IPHONE
     private const int NEWSFEED_HEIGHT = 0;
+#elif UNITY_WEBGL
+    private static int NEWSFEED_HEIGHT
+    {
+        get { return (ApplicationDataManager.IsMobile) ? 0 : 28; }
+    }
+#else
+    private const int NEWSFEED_HEIGHT = 28;
 #endif
     private const int PAGETABS_HEIGHT = 37;
     private const int STATUSBAR_HEIGHT = 25;
@@ -55,11 +60,14 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
         });
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        _dropDown.Add(new GUIContent(" Windowed", _panelQuad_Fullscreen_Off), new GUIContent(" Full Screen", _panelQuad_Fullscreen_On), () =>
-            Screen.fullScreen, () =>
-            {
-                ScreenResolutionManager.IsFullScreen = !Screen.fullScreen;
-            });
+        if (!ApplicationDataManager.IsMobile)
+        {
+            _dropDown.Add(new GUIContent(" Windowed", _panelQuad_Fullscreen_Off), new GUIContent(" Full Screen", _panelQuad_Fullscreen_On), () =>
+                Screen.fullScreen, () =>
+                {
+                    ScreenResolutionManager.IsFullScreen = !Screen.fullScreen;
+                });
+        }
 #endif
         _dropDown.Add(new GUIContent(" Report", _panelQuad_ReportPlayer), () =>
         {

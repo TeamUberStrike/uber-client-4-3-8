@@ -50,11 +50,15 @@ public abstract class LotteryPopupDialog : IPopupDialog
 
         GUI.BeginGroup(rect);
         {
-#if !UNITY_ANDROID && !UNITY_IPHONE
-            if (_showExitButton && GUI.Button(new Rect(rect.width - 20, 0, 20, 20), "X", BlueStonez.friends_hidden_button))
+#if UNITY_ANDROID || UNITY_IPHONE
+            const bool mobileExitButton = true;
+#elif UNITY_WEBGL
+            bool mobileExitButton = ApplicationDataManager.IsMobile;
 #else
-            if (_showExitButton && GUI.Button(new Rect(rect.width - 45, 0, 45, 45), "X", BlueStonez.friends_hidden_button))
+            const bool mobileExitButton = false;
 #endif
+            float exitButtonSize = mobileExitButton ? 45 : 20;
+            if (_showExitButton && GUI.Button(new Rect(rect.width - exitButtonSize, 0, exitButtonSize, exitButtonSize), "X", BlueStonez.friends_hidden_button))
             {
                 PopupSystem.HideMessage(this);
                 LotteryAudioPlayer.Instance.Stop();

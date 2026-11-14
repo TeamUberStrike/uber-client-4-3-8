@@ -10,6 +10,7 @@ class ValuablePlayerDetailGUI
     private static VideoPlayer videoPlayer;
     private static RenderTexture renderTexture;
     
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     static ValuablePlayerDetailGUI()
     {
         // Initialize static VideoPlayer for badge videos
@@ -24,6 +25,7 @@ class ValuablePlayerDetailGUI
         videoPlayer.playOnAwake = false;
         videoPlayer.isLooping = true;
     }
+#endif
 
     public ValuablePlayerDetailGUI()
     {
@@ -68,7 +70,7 @@ class ValuablePlayerDetailGUI
 
     private void DrawPlayerBadge(Rect rect)
     {
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
         if (_curBadge != null && renderTexture != null)
         {
             GUI.DrawTexture(rect, renderTexture);
@@ -120,7 +122,7 @@ class ValuablePlayerDetailGUI
 
     private void SetCurrentAchievementBadge(AchievementType type, int value)
     {
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
         if (_curBadge != null && videoPlayer != null)
         {
             videoPlayer.Stop();
@@ -164,7 +166,7 @@ class ValuablePlayerDetailGUI
 
     private StatsSummary _curPlayerStats;
     private List<AchievementType> _types;
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     private VideoClip _curBadge;
 #endif
     private string _curBadgeTitle;

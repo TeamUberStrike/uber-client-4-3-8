@@ -144,7 +144,15 @@ public class LoginPanelGUI : PanelGuiBase
             GUI.contentColor = Color.white;
         }
 #if !UNITY_EDITOR
-        if (ApplicationDataManager.IsMobile)
+        // The on screen TouchScreenKeyboard path is for real touch devices only.
+        // Our dev/version gate makes the client report the IPad channel (so
+        // IsMobile is true) even on WebGL, so we explicitly exclude WebGL here.
+        // On WebGL, Unity's GUI.TextField manages its own hidden HTML input
+        // element (and brings up the soft keyboard on mobile browsers), so WebGL
+        // always takes the TextField branch below, which is what keeps the fields
+        // clickable and typeable.
+        if (ApplicationDataManager.IsMobile && TouchScreenKeyboard.isSupported
+            && Application.platform != RuntimePlatform.WebGLPlayer)
         {
             if (GUI.Button(new Rect(8, 64, 220, 24), new GUIContent(_emailAddress), BlueStonez.textField))
             {
@@ -225,7 +233,8 @@ public class LoginPanelGUI : PanelGuiBase
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
         // I play UberStrike on Facebook
-        if (GUITools.Button(new Rect(178, 160, 152, 30), new GUIContent("", "If you already play UberStrike on Facebook,\nget your email and password set up."), BlueStonez.button_fbconnect))
+        if (!ApplicationDataManager.IsMobile &&
+            GUITools.Button(new Rect(178, 160, 152, 30), new GUIContent("", "If you already play UberStrike on Facebook,\nget your email and password set up."), BlueStonez.button_fbconnect))
         {
             ApplicationDataManager.Instance.OpenLinkFacebookUrl();
         }
@@ -239,7 +248,8 @@ public class LoginPanelGUI : PanelGuiBase
     private void DrawMiniButtons()
     {
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        if (Application.platform != RuntimePlatform.WebGLPlayer)
+        if (!ApplicationDataManager.IsMobile &&
+            Application.platform != RuntimePlatform.WebGLPlayer)
         {
             // Mute
             if (GUITools.Button(new Rect(_rect.width - 57, 9, 16, 16), ApplicationDataManager.ApplicationOptions.AudioEnabled ? new GUIContent(panelQuadSoundOn, LocalizedStrings.Mute) : new GUIContent(panelQuadSoundOff, LocalizedStrings.Unmute), BlueStonez.panelquad_button))

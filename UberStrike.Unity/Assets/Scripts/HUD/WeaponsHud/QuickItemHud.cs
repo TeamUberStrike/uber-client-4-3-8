@@ -215,7 +215,7 @@ public class QuickItemHud
     {
         if (!ApplicationDataManager.IsMobile)
         {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
             if (MobileControlLayout.EditMode) return;
 #endif
             _descriptionText.Text = "Key: " + binding;

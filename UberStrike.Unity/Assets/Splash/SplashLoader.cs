@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SplashLoader : MonoBehaviour
 {
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     [SerializeField]
     private TextAsset licenseFile;
 

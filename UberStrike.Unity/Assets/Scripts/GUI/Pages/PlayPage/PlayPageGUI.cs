@@ -461,7 +461,13 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             else
             {
 #if UNITY_ANDROID || UNITY_IPHONE
-                if (GameServerController.Instance.SelectedServer.UsageType != PhotonUsageType.Mobile)
+                const bool mobileServer = true;
+#elif UNITY_WEBGL
+                bool mobileServer = ApplicationDataManager.IsMobile;
+#else
+                const bool mobileServer = false;
+#endif
+                if (mobileServer && GameServerController.Instance.SelectedServer.UsageType != PhotonUsageType.Mobile)
                 {
                     PopupSystem.ShowMessage(LocalizedStrings.Warning, LocalizedStrings.NonMobileServer, PopupSystem.AlertType.OKCancel, ShowGameSelection, LocalizedStrings.OkCaps, null, LocalizedStrings.CancelCaps);
                 }
@@ -469,9 +475,6 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
                 {
                     ShowGameSelection();
                 }
-#else
-                ShowGameSelection();
-#endif
             }
         }
         else
@@ -908,34 +911,37 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             ShowServerSelection();
         }
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        bool tmp = _showFilters;
-        _showFilters = GUI.Toggle(new Rect(147, rect.height - 42, 120, 32), _showFilters, LocalizedStrings.FiltersCaps, BlueStonez.button);
+        if (!ApplicationDataManager.IsMobile)
+        {
+            bool tmp = _showFilters;
+            _showFilters = GUI.Toggle(new Rect(147, rect.height - 42, 120, 32), _showFilters, LocalizedStrings.FiltersCaps, BlueStonez.button);
 
-        if (tmp != _showFilters)
-        {
-            ResetLobbyDisconnectTimeout();
-        }
+            if (tmp != _showFilters)
+            {
+                ResetLobbyDisconnectTimeout();
+            }
 
-        //only show button if filters have changed
-        if (_showFilters && AreFiltersActive && GUITools.Button(new Rect(273, rect.height - 42, 145, 32), new GUIContent(LocalizedStrings.ResetFiltersCaps), BlueStonez.button))
-        {
-            ResetLobbyDisconnectTimeout();
-            ResetFilters();
-        }
-        if (_showFilters == false && _filterSavedData.UseFilter == true)
-        {
-            _filterSavedData.UseFilter = false;
-        }
+            //only show button if filters have changed
+            if (_showFilters && AreFiltersActive && GUITools.Button(new Rect(273, rect.height - 42, 145, 32), new GUIContent(LocalizedStrings.ResetFiltersCaps), BlueStonez.button))
+            {
+                ResetLobbyDisconnectTimeout();
+                ResetFilters();
+            }
+            if (_showFilters == false && _filterSavedData.UseFilter == true)
+            {
+                _filterSavedData.UseFilter = false;
+            }
 
-        if (!_refreshGameListOnFilterChange && AreFiltersActive)
-        {
-            RefreshGameList();
-            _refreshGameListOnFilterChange = true;
-        }
-        if (_refreshGameListOnFilterChange && !AreFiltersActive)
-        {
-            RefreshGameList();
-            _refreshGameListOnFilterChange = false;
+            if (!_refreshGameListOnFilterChange && AreFiltersActive)
+            {
+                RefreshGameList();
+                _refreshGameListOnFilterChange = true;
+            }
+            if (_refreshGameListOnFilterChange && !AreFiltersActive)
+            {
+                RefreshGameList();
+                _refreshGameListOnFilterChange = false;
+            }
         }
 #endif
 

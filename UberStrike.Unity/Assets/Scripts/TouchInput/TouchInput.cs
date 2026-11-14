@@ -5,7 +5,6 @@ using Cmune.Util;
 using UberStrike.Core.Types;
 using UberStrike.Realtime.Common;
 using UnityEngine;
-using DeviceApplication = UnityEngine.Device.Application;
 
 public class TouchInput : MonoSingleton<TouchInput>
 {
@@ -54,7 +53,7 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         get
         {
-            if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform) return true;
+            if (ApplicationDataManager.IsMobile) return true;
 #if UNITY_EDITOR
             return MobileMenuScale.ForcePreviewInEditor;
 #else
@@ -235,7 +234,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             return;
         }
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (GetComponent<MobileControlLayoutEditor>() == null)
             gameObject.AddComponent<MobileControlLayoutEditor>();
 #endif
@@ -376,13 +375,13 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         _stateMachine.SetState((int)TouchState.None);
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         // Apply any saved custom on-screen layout (positions/scales) over the default placement.
         ApplyLayout();
 #endif
     }
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
     #region Customizable Layout
 
     public class LayoutHandle
@@ -1329,7 +1328,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             UpdateWalkingEnabled();
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
             Rect qiRect = WeaponsHud.Instance.QuickItems.GetSimpleCombinedRect();
 #else
             Rect qiRect = WeaponsHud.Instance.QuickItems.GetCombinedRect();

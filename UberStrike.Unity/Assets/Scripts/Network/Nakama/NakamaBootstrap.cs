@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using Cmune.Realtime.Photon.Client;
 using UnityEngine;
@@ -17,6 +18,9 @@ namespace UberStrike.Realtime.NakamaAdapter
             NakamaSession.ResetStatics();
             NakamaConfig.Current = null;
             PeerFactory.Create = CreatePeer;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            _webglConfigLoading = false;
+#endif
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -24,6 +28,10 @@ namespace UberStrike.Realtime.NakamaAdapter
         {
             if (NakamaConfig.Current == null)
                 NakamaConfig.Current = LoadConfig();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            BeginLoadWebGLConfig();
+#endif
 
             PeerFactory.Create = CreatePeer;
             NakamaSession.IdentitySource = CurrentPlayer;
@@ -43,6 +51,7 @@ namespace UberStrike.Realtime.NakamaAdapter
             try
             {
                 args = Environment.GetCommandLineArgs();
+#if !UNITY_WEBGL || UNITY_EDITOR
                 string path = Path.Combine(Application.streamingAssetsPath, "nakama.json");
 #if UNITY_ANDROID && !UNITY_EDITOR
                 using (UnityWebRequest request = UnityWebRequest.Get(path))
@@ -59,6 +68,7 @@ namespace UberStrike.Realtime.NakamaAdapter
 #else
                 if (File.Exists(path))
                     json = File.ReadAllText(path);
+#endif
 #endif
             }
             catch (Exception e)
@@ -98,5 +108,48 @@ namespace UberStrike.Realtime.NakamaAdapter
             else
                 PhotonClient.IsPhotonEnabled = false;
         }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        static bool _webglConfigLoading;
+
+        static void BeginLoadWebGLConfig()
+        {
+            if (_webglConfigLoading)
+                return;
+            _webglConfigLoading = true;
+            MonoRoutine.Start(LoadWebGLConfig());
+        }
+
+        static IEnumerator LoadWebGLConfig()
+        {
+            string path = Application.streamingAssetsPath + "/nakama.json";
+            using (UnityWebRequest request = UnityWebRequest.Get(path))
+            {
+                request.timeout = 10;
+                yield return request.SendWebRequest();
+
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning("[nakama] config read: " + request.error);
+                }
+                else
+                {
+                    try
+                    {
+                        NakamaConfig loaded = NakamaConfig.Load(request.downloadHandler.text, Environment.GetCommandLineArgs());
+                        if (NakamaConfig.Current != null)
+                            NakamaConfig.Current.CopyFrom(loaded);
+                        else
+                            NakamaConfig.Current = loaded;
+                        Debug.Log("[nakama] " + NakamaConfig.Current);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning("[nakama] bad nakama.json: " + e.Message);
+                    }
+                }
+            }
+        }
+#endif
     }
 }

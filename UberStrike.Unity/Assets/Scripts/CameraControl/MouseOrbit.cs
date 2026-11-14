@@ -28,7 +28,9 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
     private Vector3 mousePos;
     private bool listenToMouseUp = false;
     private bool isMouseDragging = false;
-#else
+#endif
+
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
     private Queue lastTouchDeltas = new Queue();
     private Queue lastDragDiffs = new Queue();
 #endif
@@ -65,8 +67,21 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 
     void LateUpdate()
     {
+#if UNITY_ANDROID || UNITY_IPHONE
+        UpdateTouchOrbit();
+#elif UNITY_WEBGL
+        if (ApplicationDataManager.IsMobile)
+            UpdateTouchOrbit();
+        else
+            UpdateMouseOrbit();
+#else
+        UpdateMouseOrbit();
+#endif
+    }
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
+    private void UpdateMouseOrbit()
+    {
         if (!PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen)
         {
             // Scroll wheel zoom
@@ -142,8 +157,12 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
         {
             isMouseDragging = false;
         }
-#else
-        
+    }
+#endif
+
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
+    private void UpdateTouchOrbit()
+    {
         if (!PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen && !Disable && Input.touchCount > 0)
         {
             Touch touch = Input.touches[0];
@@ -243,8 +262,8 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
         Quaternion rotation = Quaternion.Euler(yOrbit, xOrbit, 0);
         transform.rotation = rotation;
         transform.position = target.position + rotation * new Vector3(0, 0, -zoomDistance);
-#endif
     }
+#endif
 
     public static float ClampAngle(float angle, float min, float max)
     {

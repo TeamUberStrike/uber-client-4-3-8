@@ -64,3 +64,19 @@ One-command device deployment:
 3. Installs the `.app` and launches `eu.yoxa.uberstrike` on the connected device via `devicectl`.
 
 Overridable via env vars: `UNITY`, `DEVICE` (auto-detects the first connected iPhone/iPad when unset), `BUNDLE_ID`, `DEVELOPMENT_TEAM` (default `S4CNK69FK9`), `CONFIGURATION`, `SCHEME`, `BUILD_METHOD`. The Unity Editor must be closed (batchmode needs the project lock), and Xcode must have the signing account/team set up once.
+
+## WebPlayer (WebGL) publish
+
+1. Build in Unity: **File → Build UberStrike → Production → Web Player (Main Only)** → output in `UberStrike.Unity/Latest/WebPlayer/` (`index.html`, `Build/`, `TemplateData/`, `StreamingAssets/`, `UberStrike.xml`).
+2. `./deploy_webplayer.py` SFTPs the folder to All-Inkl (credentials in gitignored `.env`):
+   - `REMOTE_WEBPLAYER_PATH=/www/htdocs/w01a5092/UberStrikeWebgl438` (All-Inkl web root of the domain)
+   - skips `Map-*.unity3d` (maps come from the CDN via `deploy_maps.py` → `REMOTE_MAPS_PATH`)
+   - also deploys `content-server.htaccess` as `.htaccess` (CORS headers)
+3. Maps: `./deploy_maps.py` stages `Map-XX-*.unity3d` → `LevelName.unity3d` and uploads them to the maps path.
+
+### Domain + HTTPS (uberstrike.app)
+
+- Cloudflare DNS: `uberstrike.app` → CNAME `w01a5092.kasserver.com`, **Proxied** (orange cloud).
+- Cloudflare SSL/TLS mode: **Flexible**. All-Inkl has `SSL-Schutz` deaktiviert and redirects HTTPS → HTTP on the origin, so Full mode 301-loops; Flexible terminates TLS at Cloudflare and talks plain HTTP to All-Inkl.
+- All-Inkl domain config: root directory `/www/htdocs/w01a5092/UberStrikeWebgl438/`.
+- `UberStrike.xml` `ContentBaseUrl` must be HTTPS or same-origin, otherwise the browser blocks map/image/audio downloads as mixed content from the HTTPS page.

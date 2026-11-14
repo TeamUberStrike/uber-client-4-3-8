@@ -9,9 +9,9 @@ using UnityEngine;
 
 public class SceneExporter
 {
-    public const string BaseContentUrlProduction = "http://client.uberforever.eu/";
-    public const string BaseContentUrlExternalQA = "http://client-qa.uberforever.eu/";
-    public const string BaseContentUrlInternalDev = "http://client-dev.uberforever.eu/";
+    public const string BaseContentUrlProduction = "https://client.uberforever.eu/";
+    public const string BaseContentUrlExternalQA = "https://client-qa.uberforever.eu/";
+    public const string BaseContentUrlInternalDev = "https://client-dev.uberforever.eu/";
 
     public const string BaseWebServiceUrlProduction = "https://ws.uberforever.eu/";
     public const string BaseWebServiceUrlExternalQA = "https://ws-qa.uberforever.eu/";
@@ -33,6 +33,7 @@ public class SceneExporter
     public const string SpaceshipScene = "LevelSpaceship";
     //TODO: read out version from ClientSdk 
     public const string ApiVersion = "4.3.7";
+    public const string WebPlayerConfigFilename = "UberStrike.xml";
 
     // Make sure these entries match the current maps in instrumentation
     internal static IDictionary<int, string> MapsToExport = new Dictionary<int, string>()
@@ -402,7 +403,7 @@ public class SceneExporter
     public static void BuildWebPlayerDevLocal()
     {
         BuildWebPlayer(false);
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WebPortal, true);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad, true);
         Debug.Log("Finished Web Player Build.");
     }
 
@@ -410,7 +411,7 @@ public class SceneExporter
     public static void BuildWebPlayerDev()
     {
         BuildWebPlayer();
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WebPortal);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad);
         Debug.Log("Finished Web Player Build.");
     }
 
@@ -418,7 +419,7 @@ public class SceneExporter
     public static void BuildWebPlayerExternalQA()
     {
         BuildWebPlayer();
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.WebPortal);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.WebPortal);
         Debug.Log("Finished Web Player Build.");
     }
 
@@ -543,51 +544,56 @@ public class SceneExporter
     {
         PrepareBuildFolder(WebPlayerFolder);
 
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
+        BuildWebGLPlayer();
         if (buildMaps) BuildMapScenes(WebPlayerFolder, BuildTarget.WebGL, enableLevelHashing);
-
-        // Move the Header up a folder, next to the MainScene
-        if (Directory.Exists(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.DeleteFileOrDirectory(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-        }
-
-        if (Directory.Exists(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename));
-        }
     }
 
     public static void BuildWebPlayerMain(BuildType buildType, WebserviceLocation wsLocation)
     {
         PrepareBuildFolder(WebPlayerFolder);
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
 
-        // Move the Header up a folder, next to the MainScene
-        if (Directory.Exists(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.DeleteFileOrDirectory(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-        }
+        BuildWebGLPlayer();
 
-        if (Directory.Exists(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename));
-        }
-
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), buildType, wsLocation, ChannelType.WebPortal);
+        ChannelType channelType = buildType == BuildType.Dev ? ChannelType.IPad : ChannelType.WebPortal;
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, WebPlayerConfigFilename), buildType, wsLocation, channelType);
 
         Debug.Log("Finished Web Player Build.");
     }
 
+    // Single-player WebGL build: Latest baked as the entry scene, no header bundle
+    // download (it never completes on iOS Safari). Maps still load from the CDN.
+    private static void BuildWebGLPlayer()
+    {
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.dataCaching = true;
+        PlayerSettings.WebGL.decompressionFallback = true;
+
+        var buildResult = BuildPlayer(
+            new string[]
+            {
+                SceneFolder + MainScene + ".unity",
+                SceneFolder + SpaceshipScene + ".unity",
+            },
+            WebPlayerFolder,
+            BuildTarget.WebGL,
+            BuildOptions.None);
+
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+        }
+    }
+
     private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
     {
+        bool stripEngineCode = PlayerSettings.stripEngineCode;
+        if (buildTarget == BuildTarget.WebGL)
+        {
+            PlayerSettings.stripEngineCode = false;
+        }
+
         var buildResult = BuildPipeline.BuildPlayer(scenes, path, buildTarget, buildOptions);
+        PlayerSettings.stripEngineCode = stripEngineCode;
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             if (Application.isBatchMode)
@@ -777,6 +783,54 @@ public class SceneExporter
         if (!Directory.Exists(Application.dataPath + "/../Latest")) Directory.CreateDirectory(Application.dataPath + "/../Latest");
         if (Directory.Exists(exportFolder)) FileUtil.DeleteFileOrDirectory(exportFolder);
         Directory.CreateDirectory(exportFolder);
+    }
+
+    private static void FinalizeWebGLBuild(string buildFolder)
+    {
+        string headerFolder = Path.Combine(buildFolder, ApplicationDataManager.HeaderFilename);
+        if (!Directory.Exists(headerFolder)) return;
+
+        string indexHtml = Path.Combine(headerFolder, "index.html");
+        if (File.Exists(indexHtml))
+        {
+            // Unity 2022+ WebGL builds a self-contained player folder (index.html,
+            // Build/, TemplateData/, StreamingAssets/). Flatten it next to the main
+            // scene bundle so the page, config XML and UberStrikeMain.unity3d share
+            // the same base URL.
+            foreach (string file in Directory.GetFiles(headerFolder))
+            {
+                FileUtil.MoveFileOrDirectory(file, Path.Combine(buildFolder, Path.GetFileName(file)));
+            }
+
+            foreach (string directory in Directory.GetDirectories(headerFolder))
+            {
+                FileUtil.MoveFileOrDirectory(directory, Path.Combine(buildFolder, Path.GetFileName(directory)));
+            }
+
+            // Keep the legacy entry point name working for existing deployments.
+            string entryPoint = Path.Combine(buildFolder, ApplicationDataManager.HeaderFilename + ".html");
+            if (!File.Exists(entryPoint))
+            {
+                File.Copy(Path.Combine(buildFolder, "index.html"), entryPoint);
+            }
+        }
+        else
+        {
+            // Legacy Unity Web Player layout: html and .unity3d inside the header folder.
+            string html = Path.Combine(headerFolder, ApplicationDataManager.HeaderFilename + ".html");
+            if (File.Exists(html))
+            {
+                FileUtil.MoveFileOrDirectory(html, Path.Combine(buildFolder, ApplicationDataManager.HeaderFilename + ".html"));
+            }
+
+            string bundle = Path.Combine(headerFolder, ApplicationDataManager.HeaderFilename + ".unity3d");
+            if (File.Exists(bundle))
+            {
+                FileUtil.MoveFileOrDirectory(bundle, Path.Combine(buildFolder, ApplicationDataManager.HeaderFilename + ".unity3d"));
+            }
+        }
+
+        FileUtil.DeleteFileOrDirectory(headerFolder);
     }
 
     private static void PrepareiOSBuildFolder(string exportFolder)

@@ -1,7 +1,6 @@
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
 using System.Collections.Generic;
 using UnityEngine;
-using DeviceApplication = UnityEngine.Device.Application;
 
 /// <summary>
 /// In-game editor for the customizable on-screen control layout. While open it dims the screen,
@@ -40,7 +39,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     {
         get
         {
-            if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform) return true;
+            if (ApplicationDataManager.IsMobile) return true;
 #if UNITY_EDITOR
             return MobileMenuScale.ForcePreviewInEditor;
 #else

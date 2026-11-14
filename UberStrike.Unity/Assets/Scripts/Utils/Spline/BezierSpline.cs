@@ -103,7 +103,7 @@ public class BezierSplines
     public Vector3 LatestPosition()
     {
         if (Packets.Count > 0)
-#if UNITY_IPHONE
+#if UNITY_IPHONE || UNITY_WEBGL
             return Packets.LastItem.Pos;
 #else
             return Packets.Last().Pos;

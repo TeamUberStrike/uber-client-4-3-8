@@ -105,7 +105,7 @@ public class MatchStatusHud : Singleton<MatchStatusHud>
 
     public void Draw()
     {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (MobileControlLayout.EditMode)
         {
             _entireGroup.Hide();

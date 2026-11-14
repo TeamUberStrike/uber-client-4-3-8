@@ -233,7 +233,7 @@ public class SfxManager : MonoSingleton<SfxManager>
         }
     }
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
     public void PlayMusicMobile(AudioClip clip, float volume)
     {
         if (clip != null)
