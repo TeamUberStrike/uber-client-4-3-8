@@ -68,11 +68,15 @@ jobs:
         id: gitversion
         uses: gittools/actions/gitversion/execute@v4
 
+      - name: Compute project hash
+        id: project
+        run: echo "hash=$(git rev-parse HEAD:UberStrike.Unity)" >> "$GITHUB_OUTPUT"
+
       - name: Cache
         uses: actions/cache@v4
         with:
           path: UberStrike.Unity/Library
-          key: Library-${{ matrix.target }}-${{ hashFiles('UberStrike.Unity/Assets/**', 'UberStrike.Unity/Packages/**', 'UberStrike.Unity/ProjectSettings/**') }}
+          key: Library-${{ matrix.target }}-${{ steps.project.outputs.hash }}
           restore-keys: |
             Library-${{ matrix.target }}-
 
