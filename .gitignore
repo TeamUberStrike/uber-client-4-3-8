@@ -43,3 +43,7 @@ MIGRATION_MAP.md
 __pycache__/
 _log/
 
+
+# Build-time generated mobile config (SceneExporter)
+UberStrike.Unity/Assets/Resources/UberStrike.xml
+UberStrike.Unity/Assets/Resources/UberStrike.xml.meta
