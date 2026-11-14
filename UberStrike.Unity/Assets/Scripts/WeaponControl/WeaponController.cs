@@ -691,6 +691,10 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
 
     private void PrimaryFireCallback(InputChangeEvent ev, LoadoutSlotType slotType)
     {
+        Debug.Log("[FireDiag] PrimaryFire isDown=" + ev.IsDown + " weapon=" + (_weapon != null) + " hasWeapon=" + (_weapon != null && _weapon.HasWeapon) +
+            " canShoot=" + CanPlayerShoot + " isEnabled=" + IsEnabled + " inputEnabled=" + InputManager.Instance.IsInputEnabled +
+            " alive=" + (GameState.HasCurrentPlayer && GameState.LocalCharacter != null && GameState.LocalCharacter.IsAlive) +
+            " switchDone=" + IsSwitchDone);
         if (_weapon == null || !_weapon.HasWeapon) return;
 
         if (ev.IsDown)

@@ -83,6 +83,128 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     public static bool UseMultiTouch;
 
+    // Screen rects of the default (reset) placements seeded so far. Every new default is
+    // checked against these by distance and pushed away when they would overlap, so no two
+    // default marker rects in the controls editor can ever intersect. Cleared by
+    // MobileControlLayout.ResetAll so a reset re-seeds cleanly.
+    private static readonly List<KeyValuePair<string, Rect>> _defaultSeedRects =
+        new List<KeyValuePair<string, Rect>>();
+
+    public static void ClearDefaultSeedRects()
+    {
+        _defaultSeedRects.Clear();
+    }
+
+    // Gap kept between neighbouring default markers (in pixels).
+    private const float DefaultMarkerGap = 24f;
+
+    // Pairs that are never visible at the same time (per input mode) may share a spot: the
+    // single/multi scope buttons, and the D-pad versus the standalone fire / jump / crouch /
+    // single-input scope buttons (the D-pad only exists in multi-touch mode, those buttons
+    // only in single-input mode).
+    private static bool AreModeSiblings(string a, string b)
+    {
+        if ((a == "secondaryFire" && b == "multiSecondaryFire") ||
+            (a == "multiSecondaryFire" && b == "secondaryFire"))
+            return true;
+
+        bool aSingleOnly = a == "fire" || a == "jump" || a == "crouch" || a == "secondaryFire";
+        bool bSingleOnly = b == "fire" || b == "jump" || b == "crouch" || b == "secondaryFire";
+        return (a == "dpad" && bSingleOnly) || (b == "dpad" && aSingleOnly);
+    }
+
+    // Slides the given rect away from every previously seeded default rect it intersects.
+    // Pushes are tried in an order that keeps the marker on screen (up, left, down, right)
+    // and the pass repeats until the rect no longer touches any of its neighbours.
+    private static Vector2 SeparateFromSeeded(string id, Vector2 c, float halfW, float halfH)
+    {
+        Rect r = new Rect(c.x - halfW, c.y - halfH, halfW * 2f, halfH * 2f);
+
+        int maxPasses = _defaultSeedRects.Count * 2 + 4;
+        for (int pass = 0; pass < maxPasses; pass++)
+        {
+            bool moved = false;
+
+            for (int i = 0; i < _defaultSeedRects.Count; i++)
+            {
+                if (AreModeSiblings(id, _defaultSeedRects[i].Key)) continue;
+                Rect o = _defaultSeedRects[i].Value;
+                if (!r.Overlaps(o)) continue;
+                PushApart(ref r, o);
+                moved = true;
+            }
+
+            if (!moved) break;
+        }
+
+        return r.center;
+    }
+
+    private static void PushApart(ref Rect r, Rect o)
+    {
+        // Up first (tall screens have room), then left / down / right — first candidate whose
+        // resulting rect stays fully inside the display wins.
+        float ny = o.yMin - r.height - DefaultMarkerGap;
+        if (ny >= 0f) { r.y = ny; return; }
+
+        float nx = o.xMin - r.width - DefaultMarkerGap;
+        if (nx >= 0f) { r.x = nx; return; }
+
+        ny = o.yMax + DefaultMarkerGap;
+        if (ny + r.height <= Screen.height) { r.y = ny; return; }
+
+        nx = o.xMax + DefaultMarkerGap;
+        if (nx + r.width <= Screen.width) { r.x = nx; return; }
+
+        // No fully on-screen escape — fall back to the axis of least penetration (the final
+        // screen clamp may leave a residual overlap, but it is the best possible).
+        float left = r.xMax - o.xMin;
+        float right = o.xMax - r.xMin;
+        float top = r.yMax - o.yMin;
+        float bottom = o.yMax - r.yMin;
+        float min = Mathf.Min(left, Mathf.Min(right, Mathf.Min(top, bottom)));
+        if (min == top) r.y = o.yMin - r.height - DefaultMarkerGap;
+        else if (min == bottom) r.y = o.yMax + DefaultMarkerGap;
+        else if (min == left) r.x = o.xMin - r.width - DefaultMarkerGap;
+        else r.x = o.xMax + DefaultMarkerGap;
+    }
+
+    // Records the rect of a freshly seeded default so later defaults keep their distance.
+    // DefaultGuiCenterFor / DefaultSlotCenter run as GetOrDefault arguments on every
+    // ApplyLayout even after their control is seeded, so skip ids that are already recorded.
+    private static void RegisterSeededRect(string id, Vector2 c, float halfW, float halfH)
+    {
+        for (int i = 0; i < _defaultSeedRects.Count; i++)
+        {
+            if (_defaultSeedRects[i].Key == id) return;
+        }
+        _defaultSeedRects.Add(new KeyValuePair<string, Rect>(id,
+            new Rect(c.x - halfW, c.y - halfH, halfW * 2f, halfH * 2f)));
+    }
+
+    private static Rect FindSeededRect(string id)
+    {
+        for (int i = 0; i < _defaultSeedRects.Count; i++)
+        {
+            if (_defaultSeedRects[i].Key == id)
+                return _defaultSeedRects[i].Value;
+        }
+        return new Rect(0f, 0f, 0f, 0f);
+    }
+
+    // Quick-item slots seed their defaults from QuickItemGroupHud.DefaultSlotCenter; give them
+    // the same separate-and-register treatment as the other default markers.
+    public static Vector2 SeparateAndRegisterSlot(string id, Vector2 c, float half)
+    {
+        c = SeparateFromSeeded(id, c, half, half);
+        float maxX = Mathf.Max(half, Screen.width - half);
+        float maxY = Mathf.Max(half, Screen.height - half);
+        c.x = Mathf.Clamp(c.x, Mathf.Min(half, maxX), maxX);
+        c.y = Mathf.Clamp(c.y, Mathf.Min(half, maxY), maxY);
+        RegisterSeededRect(id, c, half, half);
+        return c;
+    }
+
     public void CheckKeyboardDone()
     {
         // if keyboard is open, detect if it was done
@@ -121,6 +243,8 @@ public class TouchInput : MonoSingleton<TouchInput>
         UseMultiTouch = ApplicationDataManager.ApplicationOptions.UseMultiTouch;
 
         _screenLeftRect = new Rect(0, 0, Screen.width * leftSideRatio, Screen.height);
+
+        CmuneEventHandler.AddListener<ScreenResolutionEvent>(OnScreenResolutionChanged);
 
         _currWeapon = 0;
         IsFiring = false;
@@ -171,8 +295,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         Dpad.Rotation = 15.0f;
         Dpad.JumpButton.OnTouchBegan += OnJump;
         Dpad.JumpButton.OnTouchEnded += OnJumpTouchEnded;
-        Dpad.CrouchButton.OnTouchBegan += OnCrouchBegan;
-        Dpad.CrouchButton.OnTouchEnded += OnCrouchEnded;
+        // Crouch behaves identically in both modes: tap to toggle, like the single-input
+        // crouch circle (the D-pad crouch zone must NOT be a hold-to-crouch).
+        Dpad.CrouchButton.OnTouchBegan += OnCrouchPushed;
 
         TouchButtonCircle jump = new TouchButtonCircle(MobileIcons.JumpIcon);
         jump.CenterPosition = _jumpPos;
@@ -221,19 +346,18 @@ public class TouchInput : MonoSingleton<TouchInput>
         Shooter.Boundary = new Rect(0, 0, Screen.width, Screen.height);
         // Tap-anywhere-to-fire is intentionally not hooked: firing is always the on-screen Fire
         // button in both joystick and D-pad modes.
-        Shooter.IgnoreRect(WeaponChanger.Boundary);
-        Shooter.IgnoreRect(Joystick.Boundary); // includes dpad boundary
-        Shooter.IgnoreRect(new Rect(0, menu.Boundary.y, score.Boundary.width, score.Boundary.yMax - menu.Boundary.y));
+        // Button/D-pad/joystick/quick-item zones are fed to the Shooter by RefreshShooterIgnores()
+        // (on state changes and layout edits) so they always match the current state, mode and layout.
 
         AimHelpText = new MeshGUIText("Drag finger to aim", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(AimHelpText);
-        AimHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 40);
+        AimHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 100);
         AimHelpText.Scale = new Vector2(0.6f, 0.6f);
         AimHelpText.Alpha = 0.0f;
 
         ShootHelpText = new MeshGUIText("Tap the fire button to shoot", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(ShootHelpText);
-        ShootHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 + 10);
+        ShootHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 50);
         ShootHelpText.Scale = new Vector2(0.6f, 0.6f);
         ShootHelpText.Alpha = 0.0f;
 
@@ -284,19 +408,173 @@ public class TouchInput : MonoSingleton<TouchInput>
         new KeyValuePair<string, TouchKeyType>("score", TouchKeyType.Score),
     };
 
+    private float DefaultButtonScale()
+    {
+        // Comfortably big default controls: ~1.25x the old size, clamped to the same
+        // MinScale..MaxScale limits the layout editor enforces.
+        return Mathf.Clamp(Screen.height / 720f * 1.25f, MobileControlLayout.MinScale, MobileControlLayout.MaxScale);
+    }
+
+    // The D-pad's default scale: the regular button scale, capped so the D-pad's rotated
+    // footprint (plus a small margin) still fits across the screen width. On a tall phone the
+    // height-based scale reaches 3.75x — a D-pad marker wider than the display that overlapped
+    // every other marker in the editor.
+    public static float DefaultDpadScale(float baseScale)
+    {
+        float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
+        float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+        float rad = 15f * Mathf.Deg2Rad;
+        float aabbW = dw * Mathf.Cos(rad) + dh * Mathf.Sin(rad) + 16f;
+        return Mathf.Clamp(baseScale, MobileControlLayout.MinScale,
+            Mathf.Min(MobileControlLayout.MaxScale, Screen.width / aabbW));
+    }
+
+    private Vector2 DefaultGuiCenterFor(string id)
+    {
+        // Spread the default positions with the same scale as the button sizes, so bigger
+        // buttons do not overlap each other. Every center is then clamped so the control's
+        // full footprint stays inside the screen on any resolution/scale.
+        float s = DefaultButtonScale();
+        Vector2 c;
+        float halfW, halfH;
+        switch (id)
+        {
+            case "fire":
+                c = new Vector2(Screen.width - 160 * s, Screen.height - 156 * s);
+                halfW = TexSize(MobileIcons.FireIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "secondaryFire":
+                // Slightly further right than the classic spot so its rect stays clear of the
+                // fire button's rect.
+                c = new Vector2(Screen.width - 48 * s, Screen.height - 206 * s);
+                halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "multiSecondaryFire":
+                c = new Vector2(Screen.width - 60 * s, 440 * s);
+                halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "jump":
+                // Hugs the bottom-right corner.
+                c = new Vector2(Screen.width - 50 * s, Screen.height - 50 * s);
+                halfW = TexSize(MobileIcons.JumpIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "crouch":
+                // Slightly further left than the classic spot so its rect stays clear of the
+                // fire button's rect.
+                c = new Vector2(Screen.width - 272 * s, Screen.height - 88 * s);
+                halfW = TexSize(MobileIcons.CrouchIcon, 128) * s * 0.5f; halfH = halfW;
+                break;
+            case "menu":
+                c = new Vector2(30 * s, 140 * s);
+                halfW = TexSize(MobileIcons.MenuIcon, 64) * s * 0.5f; halfH = halfW;
+                break;
+            case "chat":
+                c = new Vector2(30 * s, 200 * s);
+                halfW = TexSize(MobileIcons.ChatIcon, 64) * s * 0.5f; halfH = halfW;
+                break;
+            case "score":
+                c = new Vector2(30 * s, 260 * s);
+                halfW = TexSize(MobileIcons.ScoreboardIcon, 64) * s * 0.5f; halfH = halfW;
+                break;
+            case "weaponChanger":
+            {
+                c = new Vector2(Screen.width - 95 * s, 105 * s);
+                Vector2 wd = WeaponIconDimensions();
+                halfW = wd.x * s * 0.5f;
+                halfH = wd.y * s * 0.5f;
+                break;
+            }
+            case "dpad":
+            {
+                float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
+                float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+                // The D-pad's default scale is additionally capped by the screen width: the
+                // height-based scale reaches 3.75x on a tall phone, making the D-pad marker
+                // wider than the display. Seeding happens before the other controls, so they
+                // separate around this (capped) footprint.
+                float ds = DefaultDpadScale(s);
+                c = new Vector2(25f + dw * ds / 2f, Screen.height - 256f + dh * ds / 2f);
+                // The default D-pad sits at 15°. Its axis-aligned footprint is wider than the
+                // unrotated rect, so clamp with the rotated extents to guarantee it stays
+                // fully inside the display at any scale/resolution.
+                float rad = 15f * Mathf.Deg2Rad;
+                float cosR = Mathf.Cos(rad);
+                float sinR = Mathf.Sin(rad);
+                halfW = (dw * cosR + dh * sinR) * ds * 0.5f;
+                halfH = (dh * cosR + dw * sinR) * ds * 0.5f;
+                break;
+            }
+            default:
+                return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+        }
+        // Keep every freshly seeded default marker away from the ones seeded before it, then
+        // clamp inside the screen and remember its rect for the next default.
+        c = SeparateFromSeeded(id, c, halfW, halfH);
+
+        // The left column keeps its classic top-to-bottom order even when separation moves the
+        // buttons around on short screens: pause (menu) highest, chat in the middle,
+        // screen (score) lowest.
+        if (id == "chat" || id == "score")
+        {
+            Rect sibling = FindSeededRect(id == "chat" ? "menu" : "chat");
+            if (sibling.width > 0f && c.y < sibling.yMax + 16f * s + halfH)
+                c.y = sibling.yMax + 16f * s + halfH;
+        }
+
+        c = ClampCenterToScreen(c, halfW, halfH);
+        RegisterSeededRect(id, c, halfW, halfH);
+        return c;
+    }
+
+    private static float TexSize(Texture tex, float fallback)
+    {
+        return (tex != null) ? tex.width : fallback;
+    }
+
+    private static Vector2 WeaponIconDimensions()
+    {
+        if (MobileIcons.WeaponIcons != null && MobileIcons.WeaponIcons.Length > 0 && MobileIcons.WeaponIcons[0] != null)
+            return new Vector2(MobileIcons.WeaponIcons[0].width, MobileIcons.WeaponIcons[0].height);
+        return new Vector2(64f, 64f);
+    }
+
+    // The layout editor draws the weapon changer with the machinegun icon as a generic symbol.
+    private static Texture MachineGunIcon()
+    {
+        if (MobileIcons.WeaponIcons != null && MobileIcons.WeaponIcons.Length > (int)UberstrikeItemClass.WeaponMachinegun)
+            return MobileIcons.WeaponIcons[(int)UberstrikeItemClass.WeaponMachinegun];
+        return null;
+    }
+
+    // Keeps a control's center such that its whole footprint (half extents given) stays on
+    // screen. If the control is bigger than the screen, its center is forced to the middle.
+    private static Vector2 ClampCenterToScreen(Vector2 center, float halfW, float halfH)
+    {
+        float maxX = Mathf.Max(halfW, Screen.width - halfW);
+        float maxY = Mathf.Max(halfH, Screen.height - halfH);
+        center.x = Mathf.Clamp(center.x, Mathf.Min(halfW, maxX), maxX);
+        center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
+        return center;
+    }
+
     private static string DisplayNameFor(string id)
     {
         switch (id)
         {
             case "fire": return "Fire";
-            case "secondaryFire": return "2nd Fire";
-            case "multiSecondaryFire": return "2nd Fire (multi)";
+            case "secondaryFire": return "Scope";
+            case "multiSecondaryFire": return "Scope (multi)";
             case "jump": return "Jump";
             case "crouch": return "Crouch";
             case "menu": return "Menu";
             case "chat": return "Chat";
             case "score": return "Scores";
             case "weaponChanger": return "Weapons";
+            case "dpad": return "D-Pad";
+            case "quickItems": return "Quick Items";
+            case "quickSlot1": return "Quick Item 1";
+            case "quickSlot2": return "Quick Item 2";
+            case "quickSlot3": return "Quick Item 3";
             default: return id;
         }
     }
@@ -321,6 +599,36 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         if (Buttons == null) return;
 
+        // High-DPI phones report big pixel resolutions, so fixed-size buttons look tiny. Scale the
+        // default button size with the screen height (same idea as the mobile menu scale).
+        float baseScale = DefaultButtonScale();
+
+        // Seed the D-pad FIRST: it is the biggest default marker, so the other controls
+        // separate around it instead of the D-pad being pushed into the screen edge.
+        if (Dpad != null)
+        {
+            // The D-pad is editable like the buttons: stored placement (id "dpad") drives its
+            // top-left position, its uniform Scale (layout editor drag + pinch) and its
+            // Rotation (layout editor twist), seeded with the classic 15° tilt.
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), DefaultDpadScale(baseScale), 15f);
+            Vector2 c = MobileControlLayout.ToPixels(dp);
+            float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
+            float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
+
+            // Clamp with the ROTATED footprint (AABB at the D-pad's current degree) so the
+            // whole cluster stays inside the display at any scale.
+            float rad = dp.Rotation * Mathf.Deg2Rad;
+            float cosR = Mathf.Abs(Mathf.Cos(rad));
+            float sinR = Mathf.Abs(Mathf.Sin(rad));
+            float dHalfW = (dw * cosR + dh * sinR) * dp.Scale * 0.5f;
+            float dHalfH = (dh * cosR + dw * sinR) * dp.Scale * 0.5f;
+            c = ClampCenterToScreen(c, dHalfW, dHalfH);
+
+            Dpad.Scale = dp.Scale;
+            Dpad.TopLeftPosition = new Vector2(c.x - dw * dp.Scale / 2f, c.y - dh * dp.Scale / 2f);
+            Dpad.Rotation = dp.Rotation;
+        }
+
         foreach (var entry in _layoutKeyMap)
         {
             TouchButton b;
@@ -328,30 +636,39 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchButtonCircle circle = b as TouchButtonCircle;
             if (circle == null) continue;
 
-            MobileControlLayout.Placement p = MobileControlLayout.GetOrDefault(entry.Key, circle.CenterPosition, circle.LayoutScale);
-            circle.SetLayout(MobileControlLayout.ToPixels(p), p.Scale);
+            MobileControlLayout.Placement p = MobileControlLayout.GetOrDefault(entry.Key, DefaultGuiCenterFor(entry.Key), baseScale);
+            Vector2 center = MobileControlLayout.ToPixels(p);
+
+            // Scale can now reach 3.75x, so a saved center near an edge could push the button
+            // off-screen. Clamp the applied center by the button's real (scaled) footprint so
+            // every button stays fully on screen at any scale/resolution.
+            Texture icon = (circle.Content != null) ? circle.Content.image : null;
+            float halfW = ((icon != null) ? icon.width : 64f) * p.Scale * 0.5f;
+            float halfH = ((icon != null) ? icon.height : 64f) * p.Scale * 0.5f;
+            center = ClampCenterToScreen(center, halfW, halfH);
+            circle.SetLayout(center, p.Scale);
         }
 
         if (WeaponChanger != null)
         {
-            MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", WeaponChanger.Position, 1f);
-            WeaponChanger.Position = MobileControlLayout.ToPixels(wp);
+            MobileControlLayout.Placement wp = MobileControlLayout.GetOrDefault("weaponChanger", DefaultGuiCenterFor("weaponChanger"), baseScale);
+            Vector2 wc = MobileControlLayout.ToPixels(wp);
+            // Use the icon's REAL half extents per axis (width/height differ: 155x77), matching
+            // the drag clamp — clamping with the width for both axes pulled the changer back down.
+            Vector2 wd = WeaponIconDimensions();
+            wc = ClampCenterToScreen(wc, wd.x * wp.Scale * 0.5f, wd.y * wp.Scale * 0.5f);
+            WeaponChanger.LayoutScale = wp.Scale;
+            WeaponChanger.Position = wc;
         }
 
-        // Keep the look/aim area clear of the action buttons: a touch that starts on fire/jump/
-        // crouch/secondary must not also become the aim or second-finger-fire finger.
-        if (Shooter != null && Buttons != null)
+        if (HudAssets.Exists && WeaponsHud.Instance.QuickItems.Group != null)
         {
-            var btnRects = new List<Rect>();
-            TouchKeyType[] actionKeys = { TouchKeyType.PrimaryFire, TouchKeyType.SecondaryFire, TouchKeyType.MultiSecondaryFire, TouchKeyType.Jump, TouchKeyType.Crouch };
-            foreach (TouchKeyType k in actionKeys)
-            {
-                TouchButton b;
-                if (Buttons.TryGetValue((int)k, out b) && b != null)
-                    btnRects.Add(b.Boundary);
-            }
-            Shooter.SetButtonIgnores(btnRects.ToArray());
+            WeaponsHud.Instance.QuickItems.RefreshPosition();
         }
+
+        // Control positions/scales may have changed (layout editor, mode toggle, resolution),
+        // so rebuild the Shooter's ignore zones once here.
+        RefreshShooterIgnores();
     }
 
     // Snapshot of every editable control for the layout editor (id, current rect, icon, scale).
@@ -360,8 +677,21 @@ public class TouchInput : MonoSingleton<TouchInput>
         var list = new List<LayoutHandle>();
         if (Buttons == null) return list;
 
+        bool multi = UseMultiTouch;
+
         foreach (var entry in _layoutKeyMap)
         {
+            // In D-pad mode fire / jump / crouch live on the D-pad or tap-anywhere, so their
+            // standalone buttons do not exist in the live layout; hide their editor handles too.
+            if (multi && (entry.Value == TouchKeyType.PrimaryFire ||
+                          entry.Value == TouchKeyType.Jump ||
+                          entry.Value == TouchKeyType.Crouch))
+                continue;
+
+            // The scope button is per-mode: single input edits its own, multi input its own.
+            if (multi && entry.Value == TouchKeyType.SecondaryFire) continue;
+            if (!multi && entry.Value == TouchKeyType.MultiSecondaryFire) continue;
+
             TouchButton b;
             if (!Buttons.TryGetValue((int)entry.Value, out b)) continue;
             TouchButtonCircle circle = b as TouchButtonCircle;
@@ -384,9 +714,50 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Id = "weaponChanger",
                 DisplayName = DisplayNameFor("weaponChanger"),
                 Boundary = WeaponChanger.Boundary,
-                Icon = null,
-                Scale = 1f,
+                Icon = MachineGunIcon(),
+                Scale = WeaponChanger.LayoutScale,
             });
+        }
+
+        if (Dpad != null && UseMultiTouch)
+        {
+            // The D-pad only exists in multi-touch (D-pad) mode — single-input uses the joystick
+            // instead, so don't offer a D-Pad handle there.
+            MobileControlLayout.Placement dp = MobileControlLayout.GetOrDefault("dpad", DefaultGuiCenterFor("dpad"), DefaultDpadScale(DefaultButtonScale()));
+            list.Add(new LayoutHandle
+            {
+                Id = "dpad",
+                DisplayName = DisplayNameFor("dpad"),
+                Boundary = Dpad.DpadBoundary,
+                Icon = MobileIcons.KeyboardDpad,
+                Scale = dp.Scale,
+            });
+        }
+
+        if (HudAssets.Exists && WeaponsHud.Instance.QuickItems.Group != null)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                QuickItemHud q = WeaponsHud.Instance.QuickItems.GetLoadoutQuickItemHud(i);
+                if (q == null) continue;
+
+                MobileControlLayout.Placement qp = MobileControlLayout.GetOrDefault("quickSlot" + (i + 1), QuickItemGroupHud.DefaultSlotCenter(i), 1f);
+                Vector2 center = MobileControlLayout.ToPixels(qp);
+
+                Texture icon = q.GetIcon();
+                float baseSize = (icon != null) ? Mathf.Max(icon.width, icon.height) : 64f;
+                float side = baseSize * 0.8f * qp.Scale;
+                center = ClampCenterToScreen(center, side * 0.5f, side * 0.5f);
+
+                list.Add(new LayoutHandle
+                {
+                    Id = "quickSlot" + (i + 1),
+                    DisplayName = DisplayNameFor("quickSlot" + (i + 1)),
+                    Boundary = new Rect(center.x - side / 2, center.y - side / 2, side, side),
+                    Icon = icon,
+                    Scale = qp.Scale,
+                });
+            }
         }
 
         return list;
@@ -456,19 +827,43 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (WeaponController.Instance.GetCurrentWeapon().Item.Configuration.SecondaryAction != WeaponSecondaryAction.None
             && _stateMachine.CurrentStateId == (int)TouchState.Playing)
         {
-            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = !UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = UseMultiTouch;
         }
         else
         {
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
         }
+
+        // The scope buttons may have flipped on/off; rebuild the Shooter's ignore zones.
+        RefreshShooterIgnores();
+    }
+
+    // Compact corner zone for the single-input movement wheel, scaled like the other default
+    // controls. Kept self-contained (no layout-editor constants) so it also compiles on
+    // non-touch platforms, where it is simply unused.
+    private static Rect ComputeJoystickRect()
+    {
+        // Original wheel zone: the whole lower-left quarter of the screen.
+        return new Rect(0, Screen.height / 2, Screen.width * 0.4f, Screen.height / 2);
+    }
+
+    private void OnScreenResolutionChanged(ScreenResolutionEvent ev)
+    {
+        // The joystick zone is anchored to the corner in pixels; recompute it when the screen
+        // (or the simulated device in the Editor) changes so its marker doesn't end up
+        // off-screen after switching devices.
+        _joystickRect = ComputeJoystickRect();
+        if (Joystick != null)
+            Joystick.Boundary = _joystickRect;
     }
 
     private void SetupRects()
     {
-        _joystickRect = new Rect(0, Screen.height / 2, _screenLeftRect.width, Screen.height / 2);
+        // Anchor the single-input movement wheel to the lower-left corner: a compact corner
+        // zone instead of the whole lower-left quarter.
+        _joystickRect = ComputeJoystickRect();
 
         _backButtonPos = new Vector2(30, 200);
         _chatPos = new Vector2(30, 260);
@@ -484,8 +879,8 @@ public class TouchInput : MonoSingleton<TouchInput>
         // single finger
         _firePos = new Vector2(Screen.width - 160, Screen.height - 170);
         _secondFirePos = new Vector2(Screen.width - 64, Screen.height - 234);
-        _jumpPos = new Vector2(Screen.width - 255, Screen.height - 116);
-        _crouchPos = new Vector2(Screen.width - 88, Screen.height - 72);
+        _jumpPos = new Vector2(Screen.width - 88, Screen.height - 72);
+        _crouchPos = new Vector2(Screen.width - 255, Screen.height - 116);
 
         _loadoutRect = new Rect(20, Screen.height * 0.6f, 200, 50);
         _modeRect = new Rect(20, Screen.height * 0.7f, 250, 50);
@@ -506,19 +901,11 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             bool showLoadout = !GamePageManager.IsCurrentPage(PageType.PreGame) &&
                 _stateMachine.CurrentStateId == (int)TouchState.Death;
-            Buttons[(int)TouchKeyType.Loadout].Enabled = showLoadout;
-        }
-
-        _loadoutDebugTimer -= Time.deltaTime;
-        if (_loadoutDebugTimer <= 0 && GameState.HasCurrentGame)
-        {
-            _loadoutDebugTimer = 1f;
-            Debug.Log("[TouchDebug] touchState=" + _stateMachine.CurrentStateId +
-                " gameState=" + GameStateController.Instance.StateMachine.CurrentStateId +
-                " isPaused=" + GameState.LocalPlayer.IsGamePaused +
-                " isDead=" + GameState.LocalPlayer.IsDead +
-                " loadoutEnabled=" + Buttons[(int)TouchKeyType.Loadout].Enabled +
-                " preGamePage=" + GamePageManager.IsCurrentPage(PageType.PreGame));
+            if (Buttons[(int)TouchKeyType.Loadout].Enabled != showLoadout)
+            {
+                Buttons[(int)TouchKeyType.Loadout].Enabled = showLoadout;
+                RefreshShooterIgnores();
+            }
         }
 
         if (!GameState.HasCurrentGame)
@@ -578,18 +965,69 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
     }
 
+    // Rebuilds the Shooter's ignore zones from every on-screen control that is currently
+    // enabled. Triggered on discrete events only — entering a state, layout changes
+    // (ApplyLayout), walking/input toggles, weapon changes and the loadout-button flip — so
+    // the zones always match the current state, input mode and custom layout without any
+    // per-frame cost. Fingers that start on the D-pad, joystick, fire/jump/... buttons,
+    // quick items, weapon changer or scope swipe belong to those controls and must never count
+    // as the look (first) or shoot (second) finger.
+    private void RefreshShooterIgnores()
+    {
+        if (Shooter == null) return;
+
+        _shooterIgnoreBuffer.Clear();
+
+        if (Buttons != null)
+        {
+            // Iterate ALL buttons rather than a fixed key list: the pause/menu button, chat,
+            // score, fire, jump, crouch, secondary, loadout — every button claims its current
+            // (layout-editor-variable) area while enabled, so a finger that starts on any of
+            // them never counts as the aim or fire finger.
+            foreach (TouchButton b in Buttons.Values)
+            {
+                if (b != null && b.Enabled)
+                    _shooterIgnoreBuffer.Add(b.Boundary);
+            }
+        }
+
+        if (WeaponChanger != null && WeaponChanger.Enabled)
+            _shooterIgnoreBuffer.Add(WeaponChanger.Boundary);
+        if (ConsumableChanger != null && ConsumableChanger.Enabled)
+            _shooterIgnoreBuffer.Add(ConsumableChanger.Boundary);
+        if (Dpad != null && Dpad.Enabled)
+            _shooterIgnoreBuffer.Add(Dpad.DpadBoundary);
+        if (Joystick != null && Joystick.Enabled)
+            _shooterIgnoreBuffer.Add(Joystick.Boundary);
+        if (ScopeSwipe != null && ScopeSwipe.Enabled)
+            _shooterIgnoreBuffer.Add(ScopeSwipe.Boundary);
+
+        Shooter.SetIgnoreRects(_shooterIgnoreBuffer);
+    }
+
     private void LateUpdate()
     {
         // Safety net for a lost TouchPhase.Ended or a fire button that got disabled while held:
         // if the fire button no longer owns a live finger, the PrimaryFire input must not stay 1.
         if (!IsFiring) return;
 
-        TouchButton fire;
-        if (Buttons == null ||
-            !Buttons.TryGetValue((int)TouchKeyType.PrimaryFire, out fire) ||
-            fire == null || !fire.Enabled || !fire.IsActive)
+        if (UseMultiTouch)
         {
-            ReleasePrimaryFire("fire button no longer active");
+            // D-pad mode: fire is owned by the Shooter's secondary finger (tap-to-fire), NOT the
+            // disabled fire button. Checking the button here released PrimaryFire one frame after
+            // every tap -> the weapon never shot.
+            if (Shooter == null || !Shooter.IsFireFingerLive)
+                ReleasePrimaryFire("shooter fire finger no longer live");
+        }
+        else
+        {
+            TouchButton fire;
+            if (Buttons == null ||
+                !Buttons.TryGetValue((int)TouchKeyType.PrimaryFire, out fire) ||
+                fire == null || !fire.Enabled || !fire.IsActive)
+            {
+                ReleasePrimaryFire("fire button no longer active");
+            }
         }
     }
 
@@ -711,10 +1149,13 @@ public class TouchInput : MonoSingleton<TouchInput>
             Shooter.OnFireStart += OnFireStart;
             Shooter.OnFireEnd += OnFireEnd;
         }
+
+        Debug.Log("[ShooterDiag] UpdateFireMode tapAnywhere=" + tapAnywhereFire);
     }
 
     void OnFireStart()
     {
+        Debug.Log("[ShooterDiag] OnFireStart -> PrimaryFire pressed");
         CmuneEventHandler.Route(new InputChangeEvent(GameInputKey.PrimaryFire, 1));
         IsFiring = true;
         if (!HasDisplayedFireHelp)
@@ -736,16 +1177,6 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         if ((GameState.LocalCharacter.PlayerState & (PlayerStates.DIVING | PlayerStates.SWIMMING)) == 0)
             WishCrouch = !WishCrouch;
-    }
-
-    void OnCrouchBegan(Vector2 obj)
-    {
-        WishCrouch = true;
-    }
-
-    void OnCrouchEnded(Vector2 obj)
-    {
-        WishCrouch = false;
     }
 
     void OnJump(Vector2 pos)
@@ -841,6 +1272,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -897,14 +1330,21 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             UpdateWalkingEnabled();
 
-            Vector2 qiPos = WeaponsHud.Instance.QuickItems.Group.GetPosition();
-            TouchInput.Instance.ConsumableChanger.Boundary = new Rect(qiPos.x, qiPos.y, 63, 60);
-            TouchInput.Instance.Shooter.IgnoreRect(TouchInput.Instance.ConsumableChanger.Boundary);
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+            Rect qiRect = WeaponsHud.Instance.QuickItems.GetSimpleCombinedRect();
+#else
+            Rect qiRect = WeaponsHud.Instance.QuickItems.GetCombinedRect();
+#endif
+            if (qiRect.width <= 0 || qiRect.height <= 0)
+                qiRect = new Rect(Screen.width * 0.9f, Screen.height * 0.3f, 63, 60);
+            TouchInput.Instance.ConsumableChanger.Boundary = new Rect(qiRect.x, qiRect.y, qiRect.width, qiRect.height);
 
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
 
             TouchInput.Instance.ScopeSwipe.Enabled = false;
             TouchInput.Instance.Shooter.Enabled = true;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -939,9 +1379,10 @@ public class TouchInput : MonoSingleton<TouchInput>
                 WeaponSlot slot = WeaponController.Instance.GetCurrentWeapon();
                 if (slot != null)
                 {
-                    // One shared Secondary-fire button in both modes; the multi-touch-only variant is retired.
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
-                    TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
+                    // The scope button is per-mode: single input uses its own, multi input its own.
+                    bool hasScope = slot.Item.Configuration.SecondaryAction != WeaponSecondaryAction.None;
+                    TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = hasScope && !dpadMode;
+                    TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = hasScope && dpadMode;
                 }
             }
             else
@@ -955,6 +1396,8 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
                 TouchInput.Instance.UpdateFireMode(false);
             }
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnUpdate()
@@ -1010,6 +1453,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1058,8 +1503,8 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.Dpad.CrouchButton.Enabled = true;
             }
             TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !dpadMode;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = !dpadMode;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = dpadMode;
 
             // A sniper still needs to jump and crouch while scoped.
             TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = !dpadMode;
@@ -1074,6 +1519,8 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.ScopeSwipe.Enabled = true;
             else
                 TouchInput.Instance.ScopeSwipe.Enabled = false;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1123,6 +1570,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1163,6 +1612,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1213,6 +1664,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
                 TouchInput.Instance.Dpad.Enabled = false;
             }
+
+            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1394,6 +1847,9 @@ public class TouchInput : MonoSingleton<TouchInput>
     private StateMachine _stateMachine;
 
     private int _previousState;
+
+    // Reused buffer for RefreshShooterIgnores() to avoid re-allocating on every refresh.
+    private readonly List<Rect> _shooterIgnoreBuffer = new List<Rect>();
 
     #endregion
 }
