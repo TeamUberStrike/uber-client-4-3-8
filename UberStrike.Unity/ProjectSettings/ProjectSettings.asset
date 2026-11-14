@@ -163,10 +163,10 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.yoxa.uberstrike
+    Android: eu.yoxa.uberstrike
     Standalone: unity.cmune.uberstrike
     VisionOS: 
-    iPhone: com.yoxa.uberstrike
+    iPhone: eu.yoxa.uberstrike
     tvOS: 
   buildNumber:
     Standalone: 0
