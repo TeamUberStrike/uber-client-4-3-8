@@ -41,7 +41,6 @@ jobs:
             target: iOS
             runner: macos-15-intel
             buildMethod: SceneExporter.BuildiOS
-            artifactPath: UberStrike.Unity/BuildIos/DerivedData/Build/Products/Debug-iphoneos/uberstrike.app
     runs-on: ${{ matrix.runner }}
     environment: Unity
 
@@ -82,7 +81,7 @@ jobs:
           versioning: Custom
           version: ${{ steps.gitversion.outputs.informationalVersion }}
 
-      - name: Compile iOS .app with xcodebuild
+      - name: Build iOS .ipa
         if: matrix.target == 'iOS'
         run: |
           xcodebuild \
@@ -96,8 +95,30 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             build
 
+          APP_PATH="UberStrike.Unity/BuildIos/DerivedData/Build/Products/Debug-iphoneos/uberstrike.app"
+          VERSION="${{ steps.gitversion.outputs.informationalVersion }}"
+          VERSION="${VERSION//[^A-Za-z0-9._+-]/-}"
+          IPA_PATH="$PWD/UberStrike.Unity/BuildIos/UberStrike-iOS-${VERSION}.ipa"
+          STAGE="UberStrike.Unity/BuildIos/ipa-stage"
+
+          test -d "$APP_PATH"
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE/Payload"
+          cp -R "$APP_PATH" "$STAGE/Payload/"
+          (cd "$STAGE" && ditto -c -k --sequesterRsrc --keepParent Payload "$IPA_PATH")
+
+          unzip -l "$IPA_PATH" | head -20
+
       - name: Upload Build Artifact
+        if: matrix.target != 'iOS'
         uses: actions/upload-artifact@v4
         with:
           name: UberStrike-${{ matrix.name }}-${{ steps.gitversion.outputs.informationalVersion }}
           path: ${{ matrix.artifactPath }}
+
+      - name: Upload iOS IPA
+        if: matrix.target == 'iOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: UberStrike-iOS-IPA-${{ steps.gitversion.outputs.informationalVersion }}
+          path: UberStrike.Unity/BuildIos/*.ipa
