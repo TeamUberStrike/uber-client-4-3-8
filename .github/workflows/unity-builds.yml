@@ -120,5 +120,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform == 'iOS' && format('UberStrike-iOS-IPA-{0}', steps.gitversion.outputs.informationalVersion) || format('UberStrike-{0}-{1}', matrix.platform, steps.gitversion.outputs.informationalVersion) }}
+          name: ${{ matrix.platform == 'iOS' && format('UberStrike-iOS-{0}', steps.gitversion.outputs.informationalVersion) || format('UberStrike-{0}-{1}', matrix.platform, steps.gitversion.outputs.informationalVersion) }}
           path: ${{ matrix.platform == 'iOS' && 'UberStrike.Unity/BuildIos/*.ipa' || matrix.artifactPath }}
