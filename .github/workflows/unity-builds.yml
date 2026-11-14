@@ -89,7 +89,7 @@ jobs:
           versioning: Custom
           version: ${{ steps.gitversion.outputs.informationalVersion }}
 
-      - name: Build iOS IPA
+      - name: Build iOS .ipa in Xcode
         if: matrix.platform == 'iOS'
         run: |
           xcodebuild \
