@@ -5,7 +5,6 @@ using Cmune.Util;
 using UberStrike.Core.Types;
 using UberStrike.Realtime.Common;
 using UnityEngine;
-using DeviceApplication = UnityEngine.Device.Application;
 
 public class TouchInput : MonoSingleton<TouchInput>
 {
@@ -54,7 +53,7 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         get
         {
-            if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform) return true;
+            if (ApplicationDataManager.IsMobile) return true;
 #if UNITY_EDITOR
             return MobileMenuScale.ForcePreviewInEditor;
 #else

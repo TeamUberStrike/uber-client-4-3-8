@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR || UNITY_IOS || UNITY_ANDROID
+﻿#if UNITY_EDITOR || UNITY_IOS || UNITY_ANDROID || UNITY_WEBGL
 using UnityEngine;
 using System.Collections;
 

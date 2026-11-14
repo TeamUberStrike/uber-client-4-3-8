@@ -39,7 +39,10 @@ public class InventoryItemGUI : BaseItemGUI
                 else if (!GameState.HasCurrentGame)
                 {
 #if !UNITY_ANDROID && !UNITY_IPHONE
-                    _alpha = Mathf.Lerp(_alpha, selected ? 1 : 0, Time.deltaTime * (selected ? 2 : 10));
+                    if (ApplicationDataManager.IsMobile)
+                        _alpha = 1.0f;
+                    else
+                        _alpha = Mathf.Lerp(_alpha, selected ? 1 : 0, Time.deltaTime * (selected ? 2 : 10));
 #else
                     _alpha = 1.0f;
 #endif

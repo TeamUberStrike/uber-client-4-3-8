@@ -1,5 +1,4 @@
 using UnityEngine;
-using DeviceApplication = UnityEngine.Device.Application;
 
 /// <summary>
 /// Mobile-only uniform scale for the menu / lobby IMGUI (physical-size based, see "Scale model").
@@ -77,9 +76,6 @@ public static class MobileMenuScale
         get
         {
             if (ApplicationDataManager.IsMobile) return true;
-            // Device Simulator (and real mobile builds) report the simulated platform here even when the
-            // Editor configuration channel is a desktop one.
-            if (DeviceApplication.isMobilePlatform) return true;
 #if UNITY_EDITOR
             if (ForcePreviewInEditor) return true;
 #endif
@@ -97,7 +93,7 @@ public static class MobileMenuScale
     {
         get
         {
-            if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform)
+            if (ApplicationDataManager.IsMobile)
                 return DeviceScale;
 #if UNITY_EDITOR
             // Editor force-preview on a desktop channel: use a fixed scale so it's visible regardless

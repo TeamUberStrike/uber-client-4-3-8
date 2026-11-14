@@ -133,12 +133,14 @@ public class HpApHud : Singleton<HpApHud>
         _curScaleFactor = 0.65f;
         ResetHpApTransform();
         ResetBlurTransform();
-#if UNITY_WEBGL
+#if UNITY_ANDROID || UNITY_IPHONE
         _entireGroup.Position = new Vector2(Screen.width * 0.04f, Screen.height * 0.08f);
-#elif !UNITY_ANDROID && !UNITY_IPHONE
-        _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
+#elif UNITY_WEBGL
+        _entireGroup.Position = (ApplicationDataManager.IsMobile)
+            ? new Vector2(Screen.width * 0.04f, Screen.height * 0.08f)
+            : new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
 #else
-        _entireGroup.Position = new Vector2(Screen.width * 0.04f, Screen.height * 0.08f);
+        _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
 #endif
         _entireGroup.UpdateMeshGUIPosition();
     }

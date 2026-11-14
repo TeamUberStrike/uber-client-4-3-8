@@ -218,7 +218,7 @@ public static partial class GUITools
 
     #region ScrollView
 
-#if UNITY_ANDROID || UNITY_IPHONE || UNITY_EDITOR
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL || UNITY_EDITOR
     private static int touchFingerId = -1;
     private static Rect selectedRect;
     private static Vector2 scrollVelocity = Vector2.zero;
@@ -241,7 +241,7 @@ public static partial class GUITools
 
     public static Vector2 BeginScrollView(Rect position, Vector2 scrollPosition, Rect contentRect, bool showHorizontalScrollbar, bool showVerticalScrollbar, GUIStyle hStyle, GUIStyle vStyle, bool allowDrag=true)
     {
-#if UNITY_ANDROID || UNITY_IPHONE || UNITY_EDITOR
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL || UNITY_EDITOR
         if (TouchSource.TouchCount > 0 && allowDrag && !DragAndDrop.Instance.IsDragging)
         {
             foreach (Touch touch in TouchSource.Touches)

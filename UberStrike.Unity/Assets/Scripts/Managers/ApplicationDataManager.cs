@@ -37,18 +37,15 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         get
         {
-            // WebGL runs in PC browsers and iOS/Android browsers: decide from the device,
-            // not the channel (the web config uses the iPad channel only for the login flow).
-            if (Application.platform == RuntimePlatform.WebGLPlayer)
-            {
+            // One flag for everything: Unity's mobile-platform check, plus the user-agent
+            // based JS device check in WebGL builds (Application.isMobilePlatform alone
+            // doesn't inspect the JS device type there).
 #if UNITY_WEBGL && !UNITY_EDITOR
-                return UberGetDeviceType() != 0;
+            return UnityEngine.Device.Application.isMobilePlatform || UberGetDeviceType() != 0;
 #else
-                return Application.isMobilePlatform;
+            return UnityEngine.Device.Application.isMobilePlatform ||
+                Channel == ChannelType.Android || Channel == ChannelType.IPad || Channel == ChannelType.IPhone;
 #endif
-            }
-
-            return Channel == ChannelType.Android || Channel == ChannelType.IPad || Channel == ChannelType.IPhone;
         }
     }
 
@@ -77,7 +74,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static LocaleType CurrentLocale { get; private set; }
     public static string CurrentLocaleString { get { return LocalizationHelper.GetLocaleString(CurrentLocale); } }
 
-#if UNITY_IPHONE
+#if UNITY_IPHONE || UNITY_WEBGL
     // AOT Helper - Construct classes that are only referenced using reflection here.
     private void AOTHelperMethod()
     {
@@ -146,7 +143,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     [SerializeField]
     private Texture2D backgroundTexture;
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
 
     private float _backgroundAlpha = 1.0f;
 
@@ -175,6 +172,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
 #if UNITY_ANDROID || UNITY_IPHONE
         _showLoadingBackground = true;
+#elif UNITY_WEBGL
+        _showLoadingBackground = ApplicationDataManager.IsMobile;
 #endif
         if (PopupSystem.IsAnyPopupOpen)
             PopupSystem.ClearAll();
@@ -244,15 +243,18 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
                 // Set the initial Video options based on Cmune Prefs
-                if (applicationOptions.IsUsingCustom)
+                if (!ApplicationDataManager.IsMobile)
                 {
-                    QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
-                    QualitySettings.vSyncCount = applicationOptions.VideoVSyncCount;
-                    QualitySettings.antiAliasing = applicationOptions.VideoAntiAliasing;
-                }
-                else
-                {
-                    QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
+                    if (applicationOptions.IsUsingCustom)
+                    {
+                        QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
+                        QualitySettings.vSyncCount = applicationOptions.VideoVSyncCount;
+                        QualitySettings.antiAliasing = applicationOptions.VideoAntiAliasing;
+                    }
+                    else
+                    {
+                        QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
+                    }
                 }
 #endif
 
@@ -536,7 +538,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             // Nakama endpoint, Play page rows, comm row = web DB CommServer row
             NakamaServerList.Apply(ev);
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
             _showLoadingBackground = false;
 #endif
 

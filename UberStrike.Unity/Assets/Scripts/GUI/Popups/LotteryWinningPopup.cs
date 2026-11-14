@@ -5,7 +5,7 @@ using Cmune.DataCenter.Common.Entities;
 public abstract class LotteryWinningPopup : IPopupDialog
 {
     private const int Width = 100 + ItemPackGuiUtil.Columns * 48;
-    private const int Height = ApplicationDataManager.MinimalHeight - GlobalUIRibbon.HEIGHT - 10;
+    private static readonly int Height = ApplicationDataManager.MinimalHeight - GlobalUIRibbon.HEIGHT - 10;
 
     private float _deltaY;
     private DynamicTexture _bkImage;

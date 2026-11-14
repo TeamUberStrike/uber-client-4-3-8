@@ -233,7 +233,8 @@ public class LoginPanelGUI : PanelGuiBase
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
         // I play UberStrike on Facebook
-        if (GUITools.Button(new Rect(178, 160, 152, 30), new GUIContent("", "If you already play UberStrike on Facebook,\nget your email and password set up."), BlueStonez.button_fbconnect))
+        if (!ApplicationDataManager.IsMobile &&
+            GUITools.Button(new Rect(178, 160, 152, 30), new GUIContent("", "If you already play UberStrike on Facebook,\nget your email and password set up."), BlueStonez.button_fbconnect))
         {
             ApplicationDataManager.Instance.OpenLinkFacebookUrl();
         }
@@ -247,7 +248,8 @@ public class LoginPanelGUI : PanelGuiBase
     private void DrawMiniButtons()
     {
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        if (Application.platform != RuntimePlatform.WebGLPlayer)
+        if (!ApplicationDataManager.IsMobile &&
+            Application.platform != RuntimePlatform.WebGLPlayer)
         {
             // Mute
             if (GUITools.Button(new Rect(_rect.width - 57, 9, 16, 16), ApplicationDataManager.ApplicationOptions.AudioEnabled ? new GUIContent(panelQuadSoundOn, LocalizedStrings.Mute) : new GUIContent(panelQuadSoundOff, LocalizedStrings.Unmute), BlueStonez.panelquad_button))
