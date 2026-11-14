@@ -91,8 +91,8 @@ public class SceneExporter
 
         if (buildAllMaps)
         {
-            //scenesToBuild.Add(SceneFolder + MapsToExport[1] + ".unity");
-            //scenesToBuild.Add(SceneFolder + MapsToExport[2] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[1] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[2] + ".unity");
             scenesToBuild.Add(SceneFolder + MapsToExport[3] + ".unity");
             scenesToBuild.Add(SceneFolder + MapsToExport[4] + ".unity");
             scenesToBuild.Add(SceneFolder + MapsToExport[5] + ".unity");
