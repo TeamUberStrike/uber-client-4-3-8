@@ -31,7 +31,6 @@ public class SceneExporter
     public const string SplashSceneMobile = "SplashMobile";
     public const string MainScene = "Latest";
     public const string SpaceshipScene = "LevelSpaceship";
-    public const string ClientVersion = "4.3.8";
     //TODO: read out version from ClientSdk 
     public const string ApiVersion = "4.3.7";
 
@@ -65,6 +64,13 @@ public class SceneExporter
 
     public static void BuildAndroid(bool buildAllMaps = true, bool buildSplashLoader = false)
     {
+        ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
+        if (!string.IsNullOrEmpty(ApplicationDataManager.BuildVersion))
+            PlayerSettings.bundleVersion = ApplicationDataManager.BuildVersion;
+
+        WriteConfigurationXml(Application.dataPath + "/Resources/UberStrike.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.Android);
+        AssetDatabase.ImportAsset("Assets/Resources/UberStrike.xml");
+
         PrepareBuildFolder(AndroidFolder);
         BuildAndroidPlayer(AndroidFolder, buildAllMaps, buildSplashLoader, BuildOptions.None);
     }
@@ -125,6 +131,14 @@ public class SceneExporter
 
     public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, BuildOptions buildOptions = BuildOptions.None)
     {
+        ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
+        PlayerSettings.bundleVersion = ResolveShortVersion();
+        if (!string.IsNullOrEmpty(ApplicationDataManager.BuildVersion))
+            PlayerSettings.iOS.buildNumber = ApplicationDataManager.BuildVersion;
+
+        WriteConfigurationXml(Application.dataPath + "/Resources/UberStrike.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad);
+        AssetDatabase.ImportAsset("Assets/Resources/UberStrike.xml");
+
         string[] scenesToBuild;
 
         if (buildAllMaps)
@@ -792,6 +806,9 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Local/Windows Standalone")]
     private static void CreateConfigurationXmlLocalWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WindowsStandalone); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Local/iOS")]
+    private static void CreateConfigurationXmlLocaliOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.IPad); }
+
     #endregion
 
     #region Create Dev Configuration XML
@@ -817,6 +834,9 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Internal Dev/Android")]
     private static void CreateConfigurationXmlInternalDevAndroid() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.Android); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Internal Dev/iOS")]
+    private static void CreateConfigurationXmlInternalDeviOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad); }
+
     #endregion
 
     #region Create External QA Configuration XML
@@ -835,6 +855,9 @@ public class SceneExporter
 
     [MenuItem("File/Create Editor Configuration Xml/External QA/Windows Standalone")]
     private static void CreateConfigurationXmlExternalQAWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.WindowsStandalone); }
+
+    [MenuItem("File/Create Editor Configuration Xml/External QA/iOS")]
+    private static void CreateConfigurationXmlExternalQAiOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.IPad); }
 
     #endregion
 
@@ -855,6 +878,9 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Production/Windows Standalone")]
     private static void CreateConfigurationXmlProductionWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.WindowsStandalone); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Production/iOS")]
+    private static void CreateConfigurationXmlProductioniOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.IPad); }
+
     #endregion
 
     private static void WriteConfigurationXml(string path, BuildType buildType, WebserviceLocation webserviceLocation, ChannelType channelType, bool runLocally = false)
@@ -863,8 +889,8 @@ public class SceneExporter
         {
             BuildType = buildType,
             DebugLevel = DebugLevel.Debug,
-            Version = ClientVersion,
-            BuildVersion = ResolveBuildVersion(),
+            Version = ResolveShortVersion(),
+            BuildVersion = ApplicationDataManager.ResolveBuildVersion(),
             WebServiceBaseUrl = GetWebserviceBaseUrl(webserviceLocation),
             ContentBaseUrl = GetContentBaseUrl(webserviceLocation),
             ChannelType = channelType,
@@ -914,32 +940,12 @@ public class SceneExporter
         }
     }
 
-    // GitVersion informational version, resolved at build time so the generated
-    // UberStrike.xml carries the current build. Runtime never resolves versions.
-    private static string ResolveBuildVersion()
+    public static string ResolveShortVersion()
     {
-        string version = System.Environment.GetEnvironmentVariable("VERSION");
-        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
-        if (string.IsNullOrEmpty(version)) version = RunTool("git", "rev-parse HEAD");
+        string version = ApplicationDataManager.ResolveBuildVersion();
+        int cut = version.IndexOf('-');
+        if (cut >= 0) version = version.Substring(0, cut);
         return version;
-    }
-
-    private static string RunTool(string file, string arguments)
-    {
-        try
-        {
-            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
-            using (var p = System.Diagnostics.Process.Start(psi))
-            {
-                string output = p.StandardOutput.ReadToEnd().Trim();
-                p.WaitForExit(60000);
-                return p.ExitCode == 0 && output.Length > 0 && output.IndexOf('\n') < 0 ? output : "";
-            }
-        }
-        catch (System.Exception)
-        {
-            return "";
-        }
     }
 
     private static string CreateMd5Checksum(string filename)
