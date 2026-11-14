@@ -9,7 +9,7 @@
 # Environment overrides:
 #   UNITY            Path to the Unity editor binary
 #   DEVICE           Device name / UDID to deploy to (default: Xaver)
-#   BUNDLE_ID        Bundle identifier to launch (default: com.yoxa.uberstrike)
+#   BUNDLE_ID        Bundle identifier to launch (default: eu.yoxa.uberstrike)
 #   DEVELOPMENT_TEAM Apple team ID for automatic signing (default: S4CNK69FK9)
 #   CONFIGURATION    Xcode build configuration (default: Debug)
 #   SCHEME           Xcode scheme (default: Unity-iPhone)
@@ -27,7 +27,7 @@ XCODE_PROJECT="$PROJECT/BuildIos/Unity-iPhone.xcodeproj"
 DERIVED_DATA="$PROJECT/BuildIos/DerivedData"
 
 UNITY="${UNITY:-/Applications/Unity/Hub/Editor/2022.3.62f3/Unity.app/Contents/MacOS/Unity}"
-BUNDLE_ID="${BUNDLE_ID:-com.yoxa.uberstrike}"
+BUNDLE_ID="${BUNDLE_ID:-eu.yoxa.uberstrike}"
 DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM:-S4CNK69FK9}"
 CONFIGURATION="${CONFIGURATION:-Debug}"
 SCHEME="${SCHEME:-Unity-iPhone}"
