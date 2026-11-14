@@ -99,34 +99,6 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             LocalizedStrings.UpdateLocalization(_locale);
     }
 
-#if UNITY_ANDROID
-    private string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
-                                    <UberStrike>
-                                    <Application
-                                        BuildType=""Dev""
-                                        DebugLevel=""Debug""
-                                        Version=""4.3.8""
-                                        WebServiceBaseUrl=""https://ws-dev.uberforever.eu/""
-                                        ContentBaseUrl=""http://client-dev.uberforever.eu/""
-                                        ChannelType=""Android"" />
-                                    </UberStrike>";
-
-#endif
-
-#if UNITY_IPHONE
-    private string mobileConfigXml = @"<?xml version=""1.0"" encoding=""us-ascii""?>
-                                    <UberStrike>
-                                    <Application
-                                        BuildType=""Dev""
-                                        DebugLevel=""Debug""
-                                        Version=""4.3.8""
-                                        WebServiceBaseUrl=""https://ws-dev.uberforever.eu/""
-                                        ContentBaseUrl=""http://client-dev.uberforever.eu/""
-                                        ChannelType=""IPad"" />
-                                    </UberStrike>";
-
-#endif
-
     [SerializeField]
     private Texture2D backgroundTexture;
 
@@ -155,6 +127,34 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
 #endif
 
+#if UNITY_EDITOR
+    public static string ResolveBuildVersion()
+    {
+        string version = System.Environment.GetEnvironmentVariable("VERSION");
+        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("git", "rev-parse HEAD");
+        return version;
+    }
+
+    private static string RunTool(string file, string arguments)
+    {
+        try
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+            using (var p = System.Diagnostics.Process.Start(psi))
+            {
+                string output = p.StandardOutput.ReadToEnd().Trim();
+                p.WaitForExit(60000);
+                return p.ExitCode == 0 && output.Length > 0 && output.IndexOf('\n') < 0 ? output : "";
+            }
+        }
+        catch (System.Exception)
+        {
+            return "";
+        }
+    }
+#endif
+
     private IEnumerator Start()
     {
 #if UNITY_ANDROID || UNITY_IPHONE
@@ -181,9 +181,11 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
 #endif
 
-#if UNITY_ANDROID || UNITY_IPHONE
-        CmuneDebug.LogWarning("Loading Android/iOS XML Configuration from internal settings.");
-        clientConfigurationXml = mobileConfigXml;
+#if UNITY_EDITOR
+        yield return StartCoroutine(LoadConfigurationXml(GetConfigurationXmlFilePath()));
+#elif UNITY_ANDROID || UNITY_IPHONE
+        TextAsset mobileConfig = Resources.Load<TextAsset>("UberStrike");
+        clientConfigurationXml = mobileConfig != null ? mobileConfig.text : string.Empty;
 #else
         yield return StartCoroutine(LoadConfigurationXml(GetConfigurationXmlFilePath()));
 #endif
@@ -210,7 +212,11 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 BaseMapsURL = clientConfiguration.ContentBaseUrl + "Maps/" + clientConfiguration.Version + "/";
                 BuildType = clientConfiguration.BuildType;
                 VersionShort = clientConfiguration.Version;
-                BuildVersion = clientConfiguration.BuildVersion;
+#if UNITY_EDITOR
+                BuildVersion = ResolveBuildVersion();
+#endif
+                if (string.IsNullOrEmpty(BuildVersion))
+                    BuildVersion = clientConfiguration.BuildVersion;
                 Debug.Log("UberStrike build " + BuildVersion + ", client " + VersionShort);
                 CmuneDebug.DebugLevel = (int)clientConfiguration.DebugLevel;
                 SetChannel(clientConfiguration);
