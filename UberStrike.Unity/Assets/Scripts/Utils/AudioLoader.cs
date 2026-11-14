@@ -48,6 +48,8 @@ public class AudioLoader : Singleton<AudioLoader>
 
     public AudioClip Get(string name)
     {
+        //Debug.Log("Getting AudioClip: " + name);
+#if !UNITY_ANDROID && !UNITY_IPHONE
         if (!cachedAudioClips.ContainsKey(name))
         {
             LoadAudioClipFromWWW(name);
@@ -55,6 +57,10 @@ public class AudioLoader : Singleton<AudioLoader>
         }
 
         return cachedAudioClips[name];
+#else
+        Debug.LogWarning("Skipping streaming of Ogg file. Not supported on mobile.");
+        return null;
+#endif
     }
 
     #endregion

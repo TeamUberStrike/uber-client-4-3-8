@@ -163,4 +163,10 @@ public static class Mathfx
                 return t;
         }
     }
+
+    public static Vector2 RotateVector2AboutPoint(Vector2 input, Vector2 center, float degRotate)
+    {
+        var result = (Quaternion.AngleAxis(degRotate, new Vector3(0, 0, 1)) * (input - center));
+        return center + new Vector2(result.x, result.y);
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Cmune.DataCenter.Common.Entities;
 
 /// <summary>
 /// 
@@ -9,17 +10,18 @@ public class ProgressPopupDialog : GeneralPopupDialog
     private Progress _progress;
 
     public float ManualProgress { get; set; }
+    public bool ForceWaitingTexture { get; set; }
 
-    public ProgressPopupDialog(string title, string text, Progress progress = null)
+    public ProgressPopupDialog(string title, string text, Progress progress = null, bool forceWaitingTexture = false)
         : base(title, text)
     {
         _progress = progress;
+        ForceWaitingTexture = forceWaitingTexture;
     }
 
     protected override void DrawPopupWindow()
     {
         GUI.Label(new Rect(17, 95, _size.x - 34, 32), Text, BlueStonez.label_interparkbold_11pt);
-
         if (_progress != null)
         {
             DrawLevelBar(new Rect(17, 125, _size.x - 34, 16), _progress(), ColorScheme.ProgressBar);

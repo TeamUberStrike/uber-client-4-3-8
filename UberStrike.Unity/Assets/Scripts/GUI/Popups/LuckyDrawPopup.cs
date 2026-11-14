@@ -24,6 +24,8 @@ public class LuckyDrawPopup : LotteryPopupDialog
 
         Width = offset + offset + luckyDraw.Sets.Count * (ItemPackGuiUtil.Columns * 48 + spacing) - spacing;
         Height = ApplicationDataManager.MinimalHeight - GlobalUIRibbon.HEIGHT - 10;
+
+
         ShowNavigationArrows = true;
         HelpText = "Try your luck at winning one of the prizes above!\nBe careful not to play for items you already own permanently!";
 
@@ -73,7 +75,7 @@ public class LuckyDrawPopup : LotteryPopupDialog
 
                 set.Image.Draw(imgRect);
 
-                _itemGrids[i].Show = imgRect.Contains(Event.current.mousePosition) && !IsUIDisabled;
+                _itemGrids[i].Show = (imgRect.Contains(Event.current.mousePosition) || ApplicationDataManager.IsMobile) && !IsUIDisabled;
 
                 if (set.View.ExposeItemsToPlayers)
                 {

@@ -1,6 +1,6 @@
 ﻿
-using Cmune.Realtime.Common;
 using UberStrike.Core.Types;
+using Cmune.Realtime.Common;
 public enum ReticuleForSecondaryAction
 {
     None,

@@ -10,6 +10,7 @@ class ShopTryWeaponState : IState
     public void OnEnter()
     {
         CmuneEventHandler.AddListener<OnPlayerRespawnEvent>(OnPlayerRespawn);
+        CmuneEventHandler.AddListener<OnMobileBackPressed>(OnMobileBackPressed);
         CmuneEventHandler.AddListener<OnPlayerPauseEvent>(OnPlayerPause);
 
         _shopGameMode = new ShopWeaponMode(GameConnectionManager.Rmi);
@@ -42,6 +43,7 @@ class ShopTryWeaponState : IState
     public void OnExit()
     {
         CmuneEventHandler.RemoveListener<OnPlayerRespawnEvent>(OnPlayerRespawn);
+        CmuneEventHandler.RemoveListener<OnMobileBackPressed>(OnMobileBackPressed);
         CmuneEventHandler.RemoveListener<OnPlayerPauseEvent>(OnPlayerPause);
         GameModeUtil.OnExitGameMode();
         _shopGameMode = null;
@@ -50,13 +52,22 @@ class ShopTryWeaponState : IState
     public void OnUpdate()
     {
         QuickItemController.Instance.Update();
+
+    }
+
+    #region Private methods
+
+    private void Unload()
+    {
+        // the sequence of the code below cannot be changed, otherwise will generate exceptions
+        _shopGameMode.TargetController.Disable();
+        MenuPageManager.Instance.LoadPage(PageType.Shop, true);
+        GameStateController.Instance.UnloadGameMode();
     }
 
     public void OnGUI()
     {
     }
-
-    #region Private methods
 
     private void OnPlayerRespawn(OnPlayerRespawnEvent ev)
     {
@@ -65,10 +76,18 @@ class ShopTryWeaponState : IState
 
     private void ShowShopMessages()
     {
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, string.Empty);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.ShopTutorialMsg01);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.MessageQuickItemsTry);
-        EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.ShopTutorialMsg02, 20.0f);
+        if (!ApplicationDataManager.IsMobile)
+        {
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, string.Empty);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.ShopTutorialMsg01);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.MessageQuickItemsTry);
+            EventFeedbackHud.Instance.EnqueueFeedback(InGameEventFeedbackType.CustomMessage, LocalizedStrings.ShopTutorialMsg02, 20.0f);
+        }
+    }
+
+    private void OnMobileBackPressed(OnMobileBackPressed ev)
+    {
+        QuitTryWeapon();
     }
 
     private void OnPlayerPause(OnPlayerPauseEvent ev)

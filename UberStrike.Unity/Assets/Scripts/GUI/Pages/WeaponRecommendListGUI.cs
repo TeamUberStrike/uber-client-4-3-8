@@ -75,7 +75,14 @@ class WeaponRecommendListGUI
 
         foreach (var r in recomendations)
         {
-            _recommendedItemList.Add(new KeyValuePair<RecommendType, BaseItemGUI>(r.Key, new InGameItemGUI(r.Value, ShopUtils.GetRecommendationString(r.Key), _location, r.Key == RecommendType.StaffPick ? BuyingRecommendationType.Manual : BuyingRecommendationType.Behavior)));
+            try
+            {
+                _recommendedItemList.Add(new KeyValuePair<RecommendType, BaseItemGUI>(r.Key, new InGameItemGUI(r.Value, ShopUtils.GetRecommendationString(r.Key), _location, r.Key == RecommendType.StaffPick ? BuyingRecommendationType.Manual : BuyingRecommendationType.Behavior)));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Couldn't add item to recommendation list, it was null.\n\n" + e.Message);
+            }
         }
     }
 

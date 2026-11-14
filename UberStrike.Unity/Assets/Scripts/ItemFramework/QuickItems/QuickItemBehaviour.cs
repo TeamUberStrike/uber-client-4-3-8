@@ -229,7 +229,9 @@ public class QuickItemBehaviour
                 behaviour._machine.PopState();
                 behaviour.Activate();
             }
-            else if (!(InputManager.Instance.IsDown(behaviour.FocusKey) || InputManager.Instance.IsDown(GameInputKey.UseQuickItem)))
+            else if (!(InputManager.Instance.IsDown(behaviour.FocusKey) 
+                || InputManager.Instance.IsDown(GameInputKey.UseQuickItem) 
+                || QuickItemController.Instance.IsQuickItemMobilePushed))
             {
                 behaviour._machine.PopState();
             }

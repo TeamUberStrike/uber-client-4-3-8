@@ -142,6 +142,7 @@ public static class BlueStonez
         button_right = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_right"));
         button_left = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("button_left"));
         gray_background = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("gray_background"));
+        dropdown_large = LocalizationHelper.GetLocalizedStyle(Skin.GetStyle("dropdown_large"));
     }
 
     public static GUISkin Skin { get; private set; }
@@ -276,4 +277,5 @@ public static class BlueStonez
     public static GUIStyle button_right { get; private set; }
     public static GUIStyle button_left { get; private set; }
     public static GUIStyle gray_background { get; private set; }
+    public static GUIStyle dropdown_large { get; private set; }
 }
