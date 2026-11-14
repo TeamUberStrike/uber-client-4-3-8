@@ -58,7 +58,10 @@ public class InboxPageGUI : MonoBehaviour
         Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
         _threadWidth = (int)rect.width / 4;
 
-        GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
+        // Backgrounds (page and title strip) reach the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.window_standard_grey38);
+        MobileMenuScale.DrawBleed(new Rect(rect.x, rect.y, rect.width, 72), BlueStonez.tab_strip_large);
+        GUI.BeginGroup(rect);
         {
             GUI.enabled = PlayerDataManager.IsPlayerLoggedIn && IsNoPanelOpen();
 

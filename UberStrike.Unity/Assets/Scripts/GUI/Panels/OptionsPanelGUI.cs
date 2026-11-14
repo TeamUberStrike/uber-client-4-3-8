@@ -247,7 +247,9 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private void DoGeneralGroup()
     {
-        float height = 100;
+        // Mobile only: a Display group with the screen edge margin below Misc.
+        bool showDisplay = MobileMenuScale.Active;
+        float height = showDisplay ? 195 : 100;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
         _scrollControls = GUITools.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
@@ -258,6 +260,26 @@ public class OptionsPanelGUI : PanelGuiBase
                 ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled = GUI.Toggle(new Rect(12, 35, 200, 20), ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled, LocalizedStrings.AutoEquipWeapons, BlueStonez.toggle);
             }
             GUI.EndGroup();
+
+            if (showDisplay)
+            {
+                DrawGroupControl(new Rect(GroupMarginX, 125, width, 60), "Display", BlueStonez.label_group_interparkbold_18pt);
+                GUI.BeginGroup(new Rect(GroupMarginX, 125, width, 60));
+                {
+                    // How far the menus stay away from the left/right screen edges (camera cutout, rounded
+                    // corners, curved edges). Far left = Auto: use the cutout the device reports. Otherwise
+                    // an exact margin in millimetres, applied live so the effect is visible while dragging.
+                    float margin = ApplicationDataManager.ApplicationOptions.MobileScreenEdgeMargin;
+                    GUI.Label(new Rect(15, 17, 135, 30), "Screen Edge Margin", BlueStonez.label_interparkbold_11pt_left);
+                    float s = Mathf.Round(GUI.HorizontalSlider(new Rect(155, 25, 200, 30), margin, MobileMenuScale.EdgeMarginAuto, MobileMenuScale.MaxEdgeMarginMm, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb));
+                    GUI.Label(new Rect(370, 17, 100, 30), s < 0 ? "Auto" : s.ToString("N0") + " mm", BlueStonez.label_interparkbold_11pt_left);
+                    if (s != margin)
+                    {
+                        ApplicationDataManager.ApplicationOptions.MobileScreenEdgeMargin = s;
+                    }
+                }
+                GUI.EndGroup();
+            }
         }
         GUITools.EndScrollView();
     }

@@ -77,6 +77,12 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         }
 #endif
 
+        // The buttons are laid out in menu units, inside the same scaled and safe-area shifted space
+        // as the menus, so they match the ribbon's size on phones. On PC menu units are screen pixels.
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        float virtualHeight = MobileMenuScale.VirtualHeight;
+        float cameraWidth = CameraRectController.Instance.Width;
+
         if (GameState.HasCurrentGame && !PopupSystem.IsAnyPopupOpen)
         {
             if (TouchInput.IsSupported && TouchInput.Exists)
@@ -85,10 +91,11 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                 if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
                     !InGameChatHud.Instance.CanInput && !controlsEditing)
                 {
-                    float stackTop = Screen.height * 0.6f + 62;
+                    // Row 0 of the column is TouchInput's Loadout button.
+                    float stackTop = TouchStackTop + TouchStackRowPitch;
 
                     if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
-                        GUITools.Button(new Rect(20, stackTop, 200, 50),
+                        GUITools.Button(new Rect(TouchStackX, stackTop, TouchStackButtonWidth, TouchStackButtonHeight),
                             new GUIContent(ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Use Single Input" : LocalizedStrings.UseMultiTouchInput), StormFront.ButtonBlue))
                     {
                         TouchInput.Instance.ToggleMovementMode();
@@ -96,14 +103,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
                     TeamDeathMatchGameMode teamMode = GameState.CurrentGame as TeamDeathMatchGameMode;
                     if (GameState.LocalPlayer.IsDead && teamMode != null &&
-                        GUITools.Button(new Rect(20, stackTop + 62, 200, 50),
+                        GUITools.Button(new Rect(TouchStackX, stackTop + TouchStackRowPitch, TouchStackButtonWidth, TouchStackButtonHeight),
                             new GUIContent(LocalizedStrings.ChangeTeam), StormFront.ButtonBlue))
                     {
                         teamMode.ChangeTeam();
                     }
 
                     if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
-                        GUITools.Button(new Rect(20, stackTop + 124, 200, 50),
+                        GUITools.Button(new Rect(TouchStackX, stackTop + 2 * TouchStackRowPitch, TouchStackButtonWidth, TouchStackButtonHeight),
                             new GUIContent("Edit Controls"), StormFront.ButtonBlue))
                     {
                         MobileControlLayout.EditMode = true;
@@ -112,7 +119,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 #endif
             }
             else if (GameState.LocalPlayer.IsGamePaused &&
-                GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width - 240, Screen.height - 150, 220, 50),
+                GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth) - 240, virtualHeight - 150, 220, 50),
                     new GUIContent(LocalizedStrings.Chat), StormFront.ButtonBlue))
             {
                 SceneGuiController.OpenChat();
@@ -120,13 +127,9 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         }
         if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing)
         {
-#if !UNITY_ANDROID && !UNITY_IPHONE
-            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 100,
-                Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 200, 50),
-#else
-            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 150,
-                Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 300, 75),
-#endif
+            // Centred on the camera view (the part of the screen left of an open side panel).
+            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth * 0.5f) - 100,
+                virtualHeight * 0.5f + virtualHeight * 0.6f * (1 - cameraWidth), 200, 50),
                     new GUIContent(ButtonCaption), _buttonGuiStyle))
             {
                 if (OnButtonClicked != null)
@@ -135,6 +138,40 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                 }
             }
         }
+
+        MobileMenuScale.End(scaleMatrix);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // Left-hand button column on touch devices, in menu units: Loadout (a TouchInput button), input
+    // mode, Change Team, Edit Controls. One fixed row per button.
+    // ---------------------------------------------------------------------------------------------
+
+    public const float TouchStackX = 20f;
+    public const float TouchStackButtonWidth = 200f;
+    public const float TouchStackButtonHeight = 50f;
+    public const float TouchStackRowPitch = 62f;
+    private const int TouchStackRows = 4;
+    private const float TouchStackBottomMargin = 12f;
+
+    /// <summary>
+    /// Top of the column: 60% down the screen, moved up when the rows would otherwise run off the
+    /// bottom (a phone only has 540 units of height).
+    /// </summary>
+    public static float TouchStackTop
+    {
+        get
+        {
+            float virtualHeight = MobileMenuScale.VirtualHeight;
+            float columnHeight = (TouchStackRows - 1) * TouchStackRowPitch + TouchStackButtonHeight;
+            return Mathf.Min(virtualHeight * 0.6f, virtualHeight - columnHeight - TouchStackBottomMargin);
+        }
+    }
+
+    /// <summary>Screen pixel x to menu-space x (inside Begin/End). Identity on PC.</summary>
+    private static float ScreenToMenuX(float screenX)
+    {
+        return MobileMenuScale.ScreenToMenu(new Vector2(screenX, 0f)).x;
     }
 
     public void DisplayNone()

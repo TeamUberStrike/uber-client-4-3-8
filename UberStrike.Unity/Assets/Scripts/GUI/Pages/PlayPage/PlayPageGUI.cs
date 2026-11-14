@@ -84,7 +84,12 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
 
         // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
         Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
-        GUI.Box(rect, string.Empty, BlueStonez.box_grey31);
+        // Backgrounds reach the real screen edges; content stays inside the safe menu area. The title
+        // strip and list window are drawn inside the page group (DoServerPage / DoGamePage), so they are
+        // continued onto the safe-area strips here.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.box_grey31);
+        MobileMenuScale.DrawBleed(new Rect(rect.x, rect.y, rect.width, 56), BlueStonez.tab_strip);
+        MobileMenuScale.DrawBleed(new Rect(rect.x, rect.y + 55, rect.width, rect.height - 57), BlueStonez.window_standard_grey38);
 
         if (!_isConnectedToGameServer || GameServerController.Instance.SelectedServer == null)
         {

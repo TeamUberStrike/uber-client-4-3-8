@@ -12,6 +12,28 @@ public class TouchButton : TouchControl
     public const float LongPressTime = 0.4f;
     public float MinGUIAlpha = 0.0f;
 
+    /// <summary>
+    /// Optional layout in menu units (see MobileMenuScale). When set, the button is drawn inside the
+    /// scaled, safe-area shifted menu space, so a text button matches the menus on phones, and
+    /// <see cref="Boundary"/> (screen pixels, used for touch hit-testing) follows it. Evaluated on
+    /// every use, so it keeps up with resolution and screen edge margin changes.
+    /// </summary>
+    public Func<Rect> MenuRect;
+
+    public override Rect Boundary
+    {
+        get
+        {
+            if (MenuRect == null)
+                return base.Boundary;
+
+            Rect menu = MenuRect();
+            float scale = MobileMenuScale.Scale;
+            return new Rect(MobileMenuScale.MenuToScreenX(menu.x), menu.y * scale, menu.width * scale, menu.height * scale);
+        }
+        set { base.Boundary = value; }
+    }
+
     public TouchButton()
         : base()
     {
@@ -64,15 +86,21 @@ public class TouchButton : TouchControl
         {
             GUI.color = new Color(1, 1, 1, Mathf.Clamp(TouchController.Instance.GUIAlpha, MinGUIAlpha, 1.0f));
 
+            if (MenuRect != null)
+            {
+                Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+                DrawLabel(MenuRect());
+                MobileMenuScale.End(scaleMatrix);
+                GUI.color = Color.white;
+                return;
+            }
+
             if (_rotationAngle != 0)
             {
                 GUIUtility.RotateAroundPivot(_rotationAngle, _rotationPoint);
             }
-        
-            if (Style != null)
-                GUI.Label(Boundary, Content, Style);
-            else
-                GUI.Label(Boundary, Content);
+
+            DrawLabel(Boundary);
 
             if (_rotationAngle != 0)
             {
@@ -81,6 +109,14 @@ public class TouchButton : TouchControl
 
             GUI.color = Color.white;
         }
+    }
+
+    private void DrawLabel(Rect rect)
+    {
+        if (Style != null)
+            GUI.Label(rect, Content, Style);
+        else
+            GUI.Label(rect, Content);
     }
 
     void OnTouchButtonEnded(Vector2 pos)
