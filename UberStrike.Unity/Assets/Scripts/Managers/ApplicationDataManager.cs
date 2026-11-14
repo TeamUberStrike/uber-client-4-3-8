@@ -181,7 +181,9 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         }
 #endif
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_EDITOR
+        yield return StartCoroutine(LoadConfigurationXml(GetConfigurationXmlFilePath()));
+#elif UNITY_ANDROID || UNITY_IPHONE
         TextAsset mobileConfig = Resources.Load<TextAsset>("UberStrike");
         clientConfigurationXml = mobileConfig != null ? mobileConfig.text : string.Empty;
 #else
