@@ -68,15 +68,19 @@ jobs:
         id: gitversion
         uses: gittools/actions/gitversion/execute@v4
 
+      - name: Compute project hash
+        id: project
+        run: echo "hash=$(git rev-parse HEAD:UberStrike.Unity)" >> "$GITHUB_OUTPUT"
+
       - name: Cache
         uses: actions/cache@v4
         with:
           path: UberStrike.Unity/Library
-          key: Library-${{ matrix.target }}-${{ hashFiles('UberStrike.Unity/Assets/**', 'UberStrike.Unity/Packages/**', 'UberStrike.Unity/ProjectSettings/**') }}
+          key: Library-${{ matrix.target }}-${{ steps.project.outputs.hash }}
           restore-keys: |
             Library-${{ matrix.target }}-
 
-      - name: Build ${{ matrix.platform }}
+      - name: Build ${{ matrix.platform }} in Unity
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -89,8 +93,8 @@ jobs:
           versioning: Custom
           version: ${{ steps.gitversion.outputs.informationalVersion }}
 
-      - name: Build iOS .ipa
-        if: matrix.target == 'iOS'
+      - name: Build iOS .ipa in Xcode
+        if: matrix.platform == 'iOS'
         run: |
           xcodebuild \
             -project UberStrike.Unity/BuildIos/Unity-iPhone.xcodeproj \
@@ -117,16 +121,8 @@ jobs:
 
           unzip -l "$IPA_PATH" | head -20
 
-      - name: Upload Build Artifact
-        if: matrix.target != 'iOS'
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: UberStrike-${{ matrix.platform }}-${{ steps.gitversion.outputs.informationalVersion }}
-          path: ${{ matrix.artifactPath }}
-
-      - name: Upload iOS IPA
-        if: matrix.target == 'iOS'
-        uses: actions/upload-artifact@v4
-        with:
-          name: UberStrike-iOS-IPA-${{ steps.gitversion.outputs.informationalVersion }}
-          path: UberStrike.Unity/BuildIos/*.ipa
+          name: ${{ matrix.platform == 'iOS' && format('UberStrike-iOS-{0}', steps.gitversion.outputs.informationalVersion) || format('UberStrike-{0}-{1}', matrix.platform, steps.gitversion.outputs.informationalVersion) }}
+          path: ${{ matrix.platform == 'iOS' && 'UberStrike.Unity/BuildIos/*.ipa' || matrix.artifactPath }}
