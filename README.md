@@ -24,7 +24,7 @@ These settings/fixes are required for the iOS (iPhone/iPad) IL2CPP build to work
 
 ### Signing & build target (ProjectSettings.asset)
 - `appleEnableAutomaticSigning: 1` — exports the Xcode project with `CODE_SIGN_STYLE = Automatic`. With this off, Unity exported a manual-signing project with empty provisioning references and device builds failed to sign.
-- `appleDeveloperTeamID: S4CNK69FK9` — the Xaver Gruber team that owns provisioning profiles for `com.yoxa.uberstrike`. If you use another Apple account/team, change this in Unity: Player Settings → iOS → Signing → Team ID.
+- `appleDeveloperTeamID: S4CNK69FK9` — the Xaver Gruber team that owns provisioning profiles for `eu.yoxa.uberstrike`. If you use another Apple account/team, change this in Unity: Player Settings → iOS → Signing → Team ID.
 - `targetDevice: 2` — iPhone + iPad (`1` is iPad-only; the export then generates `TARGETED_DEVICE_FAMILY = 2`).
 
 ### IL2CPP managed-stripping preservation (Assets/link.xml)
@@ -61,6 +61,6 @@ One-command device deployment:
 
 1. Exports the iOS player from Unity in batchmode via the existing `SceneExporter.BuildiOS` (also available as **File → Build UberStrike → Internal Dev → iOS**; builds the Editor Build Settings scene list) into `UberStrike.Unity/BuildIos`.
 2. Compiles with `xcodebuild` (scheme `Unity-iPhone`, automatic signing, `-allowProvisioningUpdates`).
-3. Installs the `.app` and launches `com.yoxa.uberstrike` on the connected device via `devicectl`.
+3. Installs the `.app` and launches `eu.yoxa.uberstrike` on the connected device via `devicectl`.
 
 Overridable via env vars: `UNITY`, `DEVICE` (auto-detects the first connected iPhone/iPad when unset), `BUNDLE_ID`, `DEVELOPMENT_TEAM` (default `S4CNK69FK9`), `CONFIGURATION`, `SCHEME`, `BUILD_METHOD`. The Unity Editor must be closed (batchmode needs the project lock), and Xcode must have the signing account/team set up once.
