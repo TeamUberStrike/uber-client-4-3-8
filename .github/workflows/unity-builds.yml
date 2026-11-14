@@ -5,11 +5,44 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build ("all" runs the full matrix)
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - iOS
+          - Android
+          - Windows
 
 jobs:
   build:
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    name: ${{ matrix.name }}
+    if: |
+      (github.event_name != 'pull_request' || github.event.pull_request.draft == false) &&
+      (github.event_name != 'workflow_dispatch' || github.event.inputs.platform == 'all' || github.event.inputs.platform == matrix.name)
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            target: StandaloneWindows
+            runner: ubuntu-latest
+            buildMethod: SceneExporter.BuildWindowsStandaloneDev
+            artifactPath: UberStrike.Unity/Latest/WindowsStandalone
+          - name: Android
+            target: Android
+            runner: ubuntu-latest
+            buildMethod: SceneExporter.BuildAndroidDev
+            artifactPath: UberStrike.Unity/Latest/Android/*.apk
+          - name: iOS
+            target: iOS
+            runner: macos-15-intel
+            buildMethod: SceneExporter.BuildiOS
+            artifactPath: UberStrike.Unity/BuildIos/DerivedData/Build/Products/Debug-iphoneos/uberstrike.app
+    runs-on: ${{ matrix.runner }}
     environment: Unity
 
     steps:
@@ -32,11 +65,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: UberStrike.Unity/Library
-          key: Library-${{ hashFiles('UberStrike.Unity/Assets/**', 'UberStrike.Unity/Packages/**', 'UberStrike.Unity/ProjectSettings/**') }}
+          key: Library-${{ matrix.target }}-${{ hashFiles('UberStrike.Unity/Assets/**', 'UberStrike.Unity/Packages/**', 'UberStrike.Unity/ProjectSettings/**') }}
           restore-keys: |
-            Library-
+            Library-${{ matrix.target }}-
 
-      - name: Build Windows Standalone (Internal Dev)
+      - name: Build ${{ matrix.name }}
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -44,13 +77,27 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: UberStrike.Unity
-          targetPlatform: StandaloneWindows
-          buildMethod: SceneExporter.BuildWindowsStandaloneDev
+          targetPlatform: ${{ matrix.target }}
+          buildMethod: ${{ matrix.buildMethod }}
           versioning: Custom
           version: ${{ steps.gitversion.outputs.informationalVersion }}
+
+      - name: Compile iOS .app with xcodebuild
+        if: matrix.target == 'iOS'
+        run: |
+          xcodebuild \
+            -project UberStrike.Unity/BuildIos/Unity-iPhone.xcodeproj \
+            -scheme Unity-iPhone \
+            -configuration Debug \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath UberStrike.Unity/BuildIos/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: UberStrike-${{ steps.gitversion.outputs.informationalVersion }}
-          path: UberStrike.Unity/Latest/WindowsStandalone
+          name: UberStrike-${{ matrix.name }}-${{ steps.gitversion.outputs.informationalVersion }}
+          path: ${{ matrix.artifactPath }}
