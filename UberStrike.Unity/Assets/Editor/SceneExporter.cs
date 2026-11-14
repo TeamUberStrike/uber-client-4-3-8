@@ -806,6 +806,9 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Local/Windows Standalone")]
     private static void CreateConfigurationXmlLocalWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WindowsStandalone); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Local/iOS")]
+    private static void CreateConfigurationXmlLocaliOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.IPad); }
+
     #endregion
 
     #region Create Dev Configuration XML
@@ -831,6 +834,9 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Internal Dev/Android")]
     private static void CreateConfigurationXmlInternalDevAndroid() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.Android); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Internal Dev/iOS")]
+    private static void CreateConfigurationXmlInternalDeviOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad); }
+
     #endregion
 
     #region Create External QA Configuration XML
@@ -850,6 +856,9 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/External QA/Windows Standalone")]
     private static void CreateConfigurationXmlExternalQAWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.WindowsStandalone); }
 
+    [MenuItem("File/Create Editor Configuration Xml/External QA/iOS")]
+    private static void CreateConfigurationXmlExternalQAiOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.IPad); }
+
     #endregion
 
     #region Create Prod Configuration XML
@@ -868,6 +877,9 @@ public class SceneExporter
 
     [MenuItem("File/Create Editor Configuration Xml/Production/Windows Standalone")]
     private static void CreateConfigurationXmlProductionWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.WindowsStandalone); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Production/iOS")]
+    private static void CreateConfigurationXmlProductioniOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.IPad); }
 
     #endregion
 
