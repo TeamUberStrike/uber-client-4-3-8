@@ -5,11 +5,51 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build ("all" runs the full matrix)
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - iOS
+          - Android
+          - Windows
 
 jobs:
-  build:
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+  prepare:
+    name: Prepare matrix
     runs-on: ubuntu-latest
+    outputs:
+      include: ${{ steps.set.outputs.include }}
+    steps:
+      - name: Select platforms
+        id: set
+        env:
+          PLATFORM: ${{ github.event.inputs.platform || 'all' }}
+        run: |
+          include='[
+            {"platform":"Windows","target":"StandaloneWindows","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildWindowsStandaloneDev","artifactPath":"UberStrike.Unity/Latest/WindowsStandalone"},
+            {"platform":"Android","target":"Android","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildAndroidDev","artifactPath":"UberStrike.Unity/Latest/Android/*.apk"},
+            {"platform":"iOS","target":"iOS","runner":"macos-15-intel","buildMethod":"SceneExporter.BuildiOS"}
+          ]'
+          if [ "$PLATFORM" != "all" ]; then
+            include=$(printf '%s' "$include" | jq -c --arg p "$PLATFORM" '[.[] | select(.platform == $p)]')
+          else
+            include=$(printf '%s' "$include" | jq -c '.')
+          fi
+          echo "include=$include" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: ${{ matrix.platform }}
+    needs: prepare
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.prepare.outputs.include) }}
+    runs-on: ${{ matrix.runner }}
     environment: Unity
 
     steps:
@@ -32,11 +72,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: UberStrike.Unity/Library
-          key: Library-${{ hashFiles('UberStrike.Unity/Assets/**', 'UberStrike.Unity/Packages/**', 'UberStrike.Unity/ProjectSettings/**') }}
+          key: Library-${{ matrix.target }}-${{ hashFiles('UberStrike.Unity/Assets/**', 'UberStrike.Unity/Packages/**', 'UberStrike.Unity/ProjectSettings/**') }}
           restore-keys: |
-            Library-
+            Library-${{ matrix.target }}-
 
-      - name: Build Windows Standalone (Internal Dev)
+      - name: Build ${{ matrix.platform }}
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -44,13 +84,49 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: UberStrike.Unity
-          targetPlatform: StandaloneWindows
-          buildMethod: SceneExporter.BuildWindowsStandaloneDev
+          targetPlatform: ${{ matrix.target }}
+          buildMethod: ${{ matrix.buildMethod }}
           versioning: Custom
           version: ${{ steps.gitversion.outputs.informationalVersion }}
 
+      - name: Build iOS .ipa
+        if: matrix.target == 'iOS'
+        run: |
+          xcodebuild \
+            -project UberStrike.Unity/BuildIos/Unity-iPhone.xcodeproj \
+            -scheme Unity-iPhone \
+            -configuration Debug \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath UberStrike.Unity/BuildIos/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+          APP_PATH="UberStrike.Unity/BuildIos/DerivedData/Build/Products/Debug-iphoneos/uberstrike.app"
+          VERSION="${{ steps.gitversion.outputs.informationalVersion }}"
+          VERSION="${VERSION//[^A-Za-z0-9._+-]/-}"
+          IPA_PATH="$PWD/UberStrike.Unity/BuildIos/UberStrike-iOS-${VERSION}.ipa"
+          STAGE="UberStrike.Unity/BuildIos/ipa-stage"
+
+          test -d "$APP_PATH"
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE/Payload"
+          cp -R "$APP_PATH" "$STAGE/Payload/"
+          (cd "$STAGE" && ditto -c -k --sequesterRsrc --keepParent Payload "$IPA_PATH")
+
+          unzip -l "$IPA_PATH" | head -20
+
       - name: Upload Build Artifact
+        if: matrix.target != 'iOS'
         uses: actions/upload-artifact@v4
         with:
-          name: UberStrike-${{ steps.gitversion.outputs.informationalVersion }}
-          path: UberStrike.Unity/Latest/WindowsStandalone
+          name: UberStrike-${{ matrix.platform }}-${{ steps.gitversion.outputs.informationalVersion }}
+          path: ${{ matrix.artifactPath }}
+
+      - name: Upload iOS IPA
+        if: matrix.target == 'iOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: UberStrike-iOS-IPA-${{ steps.gitversion.outputs.informationalVersion }}
+          path: UberStrike.Unity/BuildIos/*.ipa
