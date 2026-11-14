@@ -14,6 +14,22 @@ public class HomePageGUI : MonoBehaviour
 
     private ItemToolTip _itemTooltip = new ItemToolTip();
 
+    // Mobile variant of the main menu button art: the original art's left end is cut square to sit
+    // against the screen edge; when the menu is inset from the edge (mobile safe area) the buttons use
+    // art extended on the left by an angled tip (top-left corner cut, mirroring the right end).
+    // The original 310px body is unchanged; the tip adds MobileButtonExtension px on the left.
+    // (Artwork/GUI/Resources/mainmenubutton_*_mobile.png, 338x59)
+    private const string MobileButtonNormalResource = "mainmenubutton_normal_mobile";
+    private const string MobileButtonHoverResource = "mainmenubutton_over_mobile";
+    private const float MainMenuButtonWidth = 310f;
+    private const float MobileButtonExtension = 28f;
+    // Icon + text move right by half the tip: balanced between the tip and the right end
+    // (a full-tip shift left too much empty button before the icon, no shift crowded the tip).
+    private const float MobileButtonContentShift = MobileButtonExtension * 0.5f;
+
+    private GUIStyle _mobileMainMenuButton;
+    private GUIStyle _mobileMainMenuButtonSource;
+
     #endregion Fields
 
     private void OnEnable()
@@ -62,7 +78,7 @@ public class HomePageGUI : MonoBehaviour
             // below the (equally scaled) ribbon under the mobile menu scale.
             int top = Mathf.RoundToInt((((MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT) * 0.5f) + GlobalUIRibbon.HEIGHT) - (height * 0.5f));
 
-            GUI.BeginGroup(new Rect(mainMenuX, top, 310, height));
+            GUI.BeginGroup(new Rect(mainMenuX, top, MainMenuButtonWidth + MainMenuButtonExtension, height));
             {
                 GUI.color = new Color(1, 1, 1, 1);
 
@@ -126,9 +142,11 @@ public class HomePageGUI : MonoBehaviour
     {
         float textureHeight = PromoTextureAspect * PromotionWidth;
         float height = 28 + textureHeight + 58;
-        // Right/centre-anchored against the virtual (scaled) screen so it stays placed under the scale.
+        // Right/centre-anchored against the virtual (scaled) menu area so it stays placed under the scale.
         Rect rect = new Rect(MobileMenuScale.VirtualWidth - PromotionWidth, GlobalUIRibbon.Instance.GetHeight() + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() - height) * 0.5f, PromotionWidth, height);
 
+        // Stays inside the safe menu area; the scene shows in the strip beside it (like beside the main
+        // menu buttons on the left), so no background is extended to the screen edge here.
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
             GUI.Label(new Rect(0, 0, rect.width, 28), ItemPromotionManager.Instance.WeeklySpecial.Title, BlueStonez.tab_strip_small);
@@ -152,8 +170,57 @@ public class HomePageGUI : MonoBehaviour
 
     private bool MainMenuButton(Vector2 position, GUIContent content, Texture2D icon, Vector2 iconPosition)
     {
-        bool b = GUITools.Button(new Rect(position.x, position.y, 310, 59), content, BlueStonez.button_mainmenu, SoundEffectType.UIRibbonClick);
-        GUI.DrawTexture(new Rect(position.x + iconPosition.x, position.y + iconPosition.y, 64, 64), icon);
+        // PC (no inset): original edge-attached art. Mobile (inset from the edge): art with the angled
+        // tip added on the left; text (via style padding) and icon shift right by MobileButtonContentShift.
+        float extension = MainMenuButtonExtension;
+        float contentShift = extension > 0f ? MobileButtonContentShift : 0f;
+        GUIStyle style = extension > 0f ? MobileMainMenuButton : BlueStonez.button_mainmenu;
+
+        bool b = GUITools.Button(new Rect(position.x, position.y, MainMenuButtonWidth + extension, 59), content, style, SoundEffectType.UIRibbonClick);
+        GUI.DrawTexture(new Rect(position.x + contentShift + iconPosition.x, position.y + iconPosition.y, 64, 64), icon);
         return b;
+    }
+
+    /// <summary>Width of the mobile angled tip, or 0 when the original art is used.</summary>
+    private float MainMenuButtonExtension
+    {
+        get
+        {
+            return (MobileMenuScale.BleedLeft > 0f && !ReferenceEquals(MobileMainMenuButton, BlueStonez.button_mainmenu))
+                ? MobileButtonExtension : 0f;
+        }
+    }
+
+    /// <summary>
+    /// button_mainmenu with the mobile (left-tip extended) backgrounds and padding. Falls back to button_mainmenu if the
+    /// textures are missing. Rebuilt if BlueStonez re-creates its styles (e.g. localisation change).
+    /// </summary>
+    private GUIStyle MobileMainMenuButton
+    {
+        get
+        {
+            GUIStyle source = BlueStonez.button_mainmenu;
+            if (_mobileMainMenuButton == null || !ReferenceEquals(_mobileMainMenuButtonSource, source))
+            {
+                _mobileMainMenuButtonSource = source;
+
+                Texture2D normal = Resources.Load(MobileButtonNormalResource, typeof(Texture2D)) as Texture2D;
+                Texture2D hover = Resources.Load(MobileButtonHoverResource, typeof(Texture2D)) as Texture2D;
+
+                if (normal != null && hover != null)
+                {
+                    _mobileMainMenuButton = new GUIStyle(source);
+                    _mobileMainMenuButton.normal.background = normal;
+                    _mobileMainMenuButton.hover.background = hover;
+                    _mobileMainMenuButton.padding.left = source.padding.left + (int)MobileButtonContentShift;
+                }
+                else
+                {
+                    Debug.LogWarning("HomePageGUI: mobile main menu button textures missing, using default art.");
+                    _mobileMainMenuButton = source;
+                }
+            }
+            return _mobileMainMenuButton;
+        }
     }
 }

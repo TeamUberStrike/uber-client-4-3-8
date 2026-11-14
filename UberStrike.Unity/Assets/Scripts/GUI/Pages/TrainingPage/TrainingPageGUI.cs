@@ -12,6 +12,12 @@ public class TrainingPageGUI : MonoBehaviour
     public float PageHeight = 410;
     public int MapsPerRow = 2;
 
+    // Mobile: the page is drawn larger than the rest of the menu, but never so large that the panel
+    // stops fitting the screen (Begin ignores the extra multiplier on PC).
+    private const float MobileExtraScale = 1.3f;
+    private const float TopOffset = 56f;   // panel area starts below this (page units)
+    private const float FitMargin = 8f;    // minimum gap kept around the panel (page units)
+
     private void Start()
     {
         if (ApplicationDataManager.Channel == ChannelType.Android 
@@ -25,15 +31,16 @@ public class TrainingPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(1.3f);
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(GetExtraScale());
 
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
         // Anchor against the virtual (scaled) screen size so the panel stays centered/sized under the mobile menu scale.
-        GUI.Box(new Rect(0, 56, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - 56), string.Empty, BlueStonez.box_grey31);
+        // Background reaches the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(new Rect(0, TopOffset, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - TopOffset), BlueStonez.box_grey31);
 
         //Stats GUI Panel
-        GUI.BeginGroup(new Rect((MobileMenuScale.VirtualWidth - PageWidth) * 0.5f, ((MobileMenuScale.VirtualHeight + 56) - PageHeight) * 0.5f, PageWidth, PageHeight), string.Empty, BlueStonez.window);
+        GUI.BeginGroup(new Rect((MobileMenuScale.VirtualWidth - PageWidth) * 0.5f, ((MobileMenuScale.VirtualHeight + TopOffset) - PageHeight) * 0.5f, PageWidth, PageHeight), string.Empty, BlueStonez.window);
         {
             GUI.Label(new Rect(10, 20, PageWidth - 30, 48), LocalizedStrings.TrainingCaps, BlueStonez.label_interparkbold_48pt);
             GUI.Label(new Rect(30, 50, PageWidth - 60, 120), LocalizedStrings.TrainingModeDesc, BlueStonez.label_interparkbold_13pt);
@@ -124,5 +131,16 @@ public class TrainingPageGUI : MonoBehaviour
         GUI.enabled = true;
 
         MobileMenuScale.End(scaleMatrix);
+    }
+
+    /// <summary>
+    /// MobileExtraScale, reduced so the panel (plus TopOffset and margins) still fits the screen.
+    /// Must be called before Begin(), while VirtualWidth/Height are still in base menu units.
+    /// </summary>
+    private float GetExtraScale()
+    {
+        float fitHeight = MobileMenuScale.VirtualHeight / (TopOffset + PageHeight + FitMargin * 2f);
+        float fitWidth = MobileMenuScale.VirtualWidth / (PageWidth + FitMargin * 2f);
+        return Mathf.Max(1f, Mathf.Min(MobileExtraScale, Mathf.Min(fitHeight, fitWidth)));
     }
 }

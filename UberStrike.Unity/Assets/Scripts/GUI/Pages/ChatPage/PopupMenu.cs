@@ -64,7 +64,9 @@ public class PopupMenu
             menu._position.width = Width;
             menu._position.x = screenPos.x - 1;
 
-            if (screenPos.y + menu._position.height > Screen.height)
+            // Flip upwards if it would run off the bottom. VirtualHeight equals Screen.height on PC and
+            // is the screen height in the scaled menu space on mobile.
+            if (screenPos.y + menu._position.height > MobileMenuScale.VirtualHeight)
                 menu._position.y = screenPos.y - menu._position.height + 1;
             else
                 menu._position.y = screenPos.y - 1;

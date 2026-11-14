@@ -13,6 +13,7 @@ public class ShopPageGUI : PageGUI
     private const int SlotHeight = 70;
     private const int LoadoutWidth = 190;
     private const int ShopWidth = 590;
+    private static readonly Color PanelBackingColor = new Color(0.12f, 0.12f, 0.12f, 1f);
 
     MasBundleShopGUI _masBundleGui = new MasBundleShopGUI();
     MasCreditsShopGui _masCreditsGui = new MasCreditsShopGui();
@@ -192,7 +193,8 @@ public class ShopPageGUI : PageGUI
         StartCoroutine(StartNotifyLoadoutArea());
 
         // override mouseorbit to prevent scrolling interfering with orbit
-        MouseOrbit.Instance.MaxX = Screen.width - ShopWidth;
+        // (the panel's left edge in screen pixels: menu scale + safe-area inset on mobile, unchanged on PC)
+        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - ShopWidth);
 
         if (IsOnGUIEnabled)
         {
@@ -299,6 +301,25 @@ public class ShopPageGUI : PageGUI
         GUITools.PushGUIState();
 
         GUI.enabled = !PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen;
+
+        // Mobile: the panel window styles are semi-transparent. Under the menu scale the panels cover a
+        // much larger part of the 3D scene (incl. its bright blue lights), which then shows through.
+        // An opaque backing keeps the panels solid. PC keeps the original look.
+        if (MobileMenuScale.Active)
+        {
+            Color previousColor = GUI.color;
+            GUI.color = PanelBackingColor;
+            // Runs on to the real right screen edge (safe-area strip beside the panel).
+            GUI.DrawTexture(MobileMenuScale.ExpandToScreenEdges(_rectLabs), Texture2D.whiteTexture);
+            GUI.color = previousColor;
+        }
+
+        // Continue the shop panel's own backgrounds (group + box window and the title strip, see
+        // DrawShop / DrawShopTabs) on the safe-area strip, so the panel looks attached to the screen edge.
+        Rect shopPanelRect = new Rect(_rectLabs.x + LoadoutWidth, _rectLabs.y, _rectLabs.width - 200, _rectLabs.height);
+        MobileMenuScale.DrawBleed(shopPanelRect, BlueStonez.window);
+        MobileMenuScale.DrawBleed(shopPanelRect, BlueStonez.window);
+        MobileMenuScale.DrawBleed(new Rect(shopPanelRect.x, shopPanelRect.y, shopPanelRect.width, 72), BlueStonez.tab_strip_large);
 
         GUI.BeginGroup(_rectLabs);
         {
