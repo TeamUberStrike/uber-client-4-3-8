@@ -6,6 +6,7 @@ using Cmune.Util;
 public abstract class TouchBaseControl
 {
     public virtual bool Enabled { get; set; }
+    public bool Visible = true;
     public virtual Rect Boundary { get; set; }
     public virtual void FirstUpdate() { }
     public virtual void UpdateTouches(Touch touch) { }
