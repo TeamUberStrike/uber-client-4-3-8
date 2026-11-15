@@ -257,12 +257,14 @@ public class TouchInput : MonoSingleton<TouchInput>
         menu.CenterPosition = _backButtonPos;
         menu.OnPushed += OnMenu;
         menu.ShowEffect = false;
+        menu.MinGUIAlpha = 1.0f;
         Buttons.Add((int)TouchKeyType.Menu, menu);
 
         TouchButtonCircle chat = new TouchButtonCircle(MobileIcons.ChatIcon);
         chat.CenterPosition = _chatPos;
         chat.OnPushed += OnChatBegan;
         chat.ShowEffect = false;
+        chat.MinGUIAlpha = 1.0f;
         Buttons.Add((int)TouchKeyType.Chat, chat);
 
         TouchButtonCircle score = new TouchButtonCircle(MobileIcons.ScoreboardIcon);
@@ -929,14 +931,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         AimHelpText.Draw();
         ShootHelpText.Draw();
 
-        if (_playerMoving || Dpad.Moving)
-        {
-            TouchController.Instance.GUIAlpha = Mathf.Lerp(TouchController.Instance.GUIAlpha, 0, Time.deltaTime * 4.0f);
-        }
-        else
-        {
-            TouchController.Instance.GUIAlpha = Mathf.Lerp(TouchController.Instance.GUIAlpha, 1, Time.deltaTime * 2.0f);
-        }
 
         // check for change in weapons
         WeaponSlot slot = WeaponController.Instance.GetCurrentWeapon();
