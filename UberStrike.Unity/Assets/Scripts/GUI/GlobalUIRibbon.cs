@@ -111,9 +111,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.GlobalRibbon;
-        // Scale the ribbon for mobile. Content anchors against VirtualWidth (the safe menu area); the
-        // backgrounds are extended to the real screen edges.
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Scale the ribbon for mobile. Content anchors against VirtualWidth (both safe-area sides for
+        // this bar); the backgrounds are extended to the real screen edges.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
         MobileMenuScale.DrawBackground(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), BlueStonez.tab_strip_large);
 
         if (ApplicationDataManager.Channel != ChannelType.MacAppStore 
@@ -157,7 +157,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         if (_copyButtonStyle == null)
         {
             _copyButtonStyle = new GUIStyle(BlueStonez.buttondark_small);
-            _copyButtonStyle.fontSize = 11;
+            if (_copyButtonStyle.font != null && _copyButtonStyle.font.dynamic)
+                _copyButtonStyle.fontSize = 11;
             _copyButtonStyle.wordWrap = false;
             _copyButtonStyle.clipping = TextClipping.Clip;
         }
@@ -167,11 +168,13 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUIContent versionContent = new GUIContent(versionText);
 
         float copyButtonWidth = _copyButtonStyle.CalcSize(copyContent).x + 8;
-        _buildInfoStyle.fontSize = 11;
+        if (_buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
+            _buildInfoStyle.fontSize = 11;
         float fpsWidth = _buildInfoStyle.CalcSize(fpsContent).x;
         float maxVersionWidth = Mathf.Max(0, MobileMenuScale.VirtualWidth - copyButtonWidth - 10 - fpsWidth - 6);
         float versionWidth = _buildInfoStyle.CalcSize(versionContent).x;
-        if (versionWidth > maxVersionWidth && versionWidth > 0)
+        if (versionWidth > maxVersionWidth && versionWidth > 0 &&
+            _buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
         {
             _buildInfoStyle.fontSize = Mathf.Max(6, Mathf.FloorToInt(_buildInfoStyle.fontSize * maxVersionWidth / versionWidth));
             versionWidth = Mathf.Min(_buildInfoStyle.CalcSize(versionContent).x, maxVersionWidth);
@@ -188,7 +191,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         GUI.color = Color.white.SetAlpha(0.3f);
         GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth, buildInfoY, versionWidth, 20), versionContent, _buildInfoStyle);
-        _buildInfoStyle.fontSize = 11;
+        if (_buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
+            _buildInfoStyle.fontSize = 11;
         GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, buildInfoY, fpsWidth, 20), fpsContent, _buildInfoStyle);
         GUI.color = Color.white;
 
@@ -199,7 +203,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         DoSettingsDropDown();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }
@@ -389,12 +393,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaCredits > 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetCredits);
         }
         else if (deltaCredits < 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
         }
     }
 
@@ -402,12 +406,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaPoints > 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetPoints);
         }
         else if (deltaPoints < 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
         }
     }
 

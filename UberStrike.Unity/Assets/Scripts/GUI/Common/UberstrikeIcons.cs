@@ -334,19 +334,31 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
         {
             return null;
         }
+        int index = -1;
         switch (recomType)
         {
             case RecommendType.MostEfficient:
-                return Instance._recommendationBadges[0];
+                index = 0;
+                break;
             case RecommendType.RecommendedWeapon:
-                return Instance._recommendationBadges[1];
+                index = 1;
+                break;
             case RecommendType.StaffPick:
-                return Instance._recommendationBadges[2];
+                index = 2;
+                break;
             case RecommendType.RecommendedArmor:
-                return Instance._recommendationBadges[3];
+                index = 3;
+                break;
             default:
                 return null;
         }
+
+        VideoClip[] badges = Instance._recommendationBadges;
+        if (badges == null || index >= badges.Length)
+        {
+            return null;
+        }
+        return badges[index];
     }
 #endif
 
