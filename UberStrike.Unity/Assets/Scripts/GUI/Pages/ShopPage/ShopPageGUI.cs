@@ -953,9 +953,19 @@ public class ShopPageGUI : PageGUI
 
         int y = _shopAreaSelection.Current == ShopArea.Inventory ? 93 : (100 + topOffset);
 
-        Rect scrollRect = new Rect(0, y, position.width, position.height - (y + 1));
+        // On mobile the scroll area ends at the safe-area line (it is moved up by the safe
+        // inset); the content ends with the last row so it never renders below that line.
+        // Landscape phones report the safe area on the sides (or not at all), so use the
+        // largest of the bottom and side insets.
+        float bottomSafePixels = Mathf.Max(Screen.height - Screen.safeArea.yMax,
+            MobileMenuScale.InsetLeftPixels, MobileMenuScale.InsetRightPixels);
+        float bottomSafe = MobileMenuScale.Active ? bottomSafePixels / MobileMenuScale.Scale : 0f;
+        float bottomPadding = MobileMenuScale.Active ? 0f : 106f;
 
-        Rect contentRect = new Rect(0, 0, position.width - 20, ((list.Count - _skippedDefaultGearCount) * height) + 106);
+        Rect scrollRect = new Rect(0, y, position.width, position.height - (y + 1) - bottomSafe);
+
+        Rect contentRect = new Rect(0, 0, position.width - 20, ((list.Count - _skippedDefaultGearCount) * height) + bottomPadding);
+
         bool showTooltip = scrollRect.Contains(Event.current.mousePosition);
         _labScroll = GUITools.BeginScrollView(scrollRect, _labScroll, contentRect);
         {
