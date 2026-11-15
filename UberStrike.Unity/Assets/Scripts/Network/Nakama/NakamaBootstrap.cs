@@ -117,11 +117,14 @@ namespace UberStrike.Realtime.NakamaAdapter
             if (_webglConfigLoading)
                 return;
             _webglConfigLoading = true;
+            // attaches wait for nakama.json
+            NakamaSession.Instance.HoldConnects();
             MonoRoutine.Start(LoadWebGLConfig());
         }
 
         static IEnumerator LoadWebGLConfig()
         {
+            float started = Time.realtimeSinceStartup;
             string path = Application.streamingAssetsPath + "/nakama.json";
             using (UnityWebRequest request = UnityWebRequest.Get(path))
             {
@@ -149,6 +152,8 @@ namespace UberStrike.Realtime.NakamaAdapter
                     }
                 }
             }
+            Debug.Log("[nakama] nakama.json handled in " + (int)((Time.realtimeSinceStartup - started) * 1000) + " ms, connects released");
+            NakamaSession.Instance.ReleaseConnects();
         }
 #endif
     }

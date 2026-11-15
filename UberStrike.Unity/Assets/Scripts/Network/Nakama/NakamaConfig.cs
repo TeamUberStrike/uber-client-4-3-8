@@ -49,6 +49,9 @@ namespace UberStrike.Realtime.NakamaAdapter
 
         // node row ip:port (CmuneRoomID address); null = not seen yet
         string _node;
+        // last web row, kept across late CopyFrom
+        string _rowIp, _rowWebHost, _rowOrigin;
+        int _rowPort;
 
         public static NakamaConfig Current;
 
@@ -87,6 +90,7 @@ namespace UberStrike.Realtime.NakamaAdapter
                 return false;
 
             _node = ip + ":" + port.ToString(CultureInfo.InvariantCulture);
+            _rowIp = ip; _rowPort = port; _rowWebHost = webHost; _rowOrigin = origin;
             if (Pinned)
                 return true;
 
@@ -272,6 +276,9 @@ namespace UberStrike.Realtime.NakamaAdapter
             Source = other.Source;
             Origin = other.Origin;
             _node = other._node;
+            // late nakama.json (webgl) keeps web row
+            if (_rowIp != null)
+                ApplyNode(_rowIp, _rowPort, _rowWebHost, _rowOrigin);
         }
 
         public override string ToString()
