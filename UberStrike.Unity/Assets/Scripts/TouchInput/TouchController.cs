@@ -44,7 +44,7 @@ public class TouchController : Singleton<TouchController>
 
         foreach (TouchBaseControl control in _controls)
         {
-            if (!control.Enabled) continue;
+            if (!control.Enabled || !control.Visible) continue;
             control.Draw();
         }
     }

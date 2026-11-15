@@ -1652,9 +1652,21 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag & ~HudDrawFlags.Weapons;
 
-            // No movement controls while the scoreboard covers the screen.
-            TouchInput.Instance.Dpad.Enabled = false;
-            TouchInput.Instance.Joystick.Enabled = false;
+            if (UseMultiTouch)
+            {
+                TouchInput.Instance.Dpad.Enabled = !GameState.LocalPlayer.IsDead && !GameState.LocalPlayer.IsGamePaused;
+                TouchInput.Instance.Dpad.Visible = false;
+                if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = false;
+                if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = false;
+
+                TouchInput.Instance.Joystick.Enabled = false;
+            }
+            else
+            {
+                TouchInput.Instance.Joystick.Enabled = !GameState.LocalPlayer.IsDead && !GameState.LocalPlayer.IsGamePaused;
+
+                TouchInput.Instance.Dpad.Enabled = false;
+            }
 
             TouchInput.Instance.RefreshShooterIgnores();
         }
@@ -1662,6 +1674,10 @@ public class TouchInput : MonoSingleton<TouchInput>
         public void OnExit()
         {
             HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+
+            TouchInput.Instance.Dpad.Visible = true;
+            if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
+            if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = true;
         }
 
         public void OnUpdate()
