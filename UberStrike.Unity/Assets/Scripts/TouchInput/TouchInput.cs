@@ -1488,8 +1488,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !UseMultiTouch;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
@@ -1607,8 +1606,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !UseMultiTouch;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
@@ -1732,7 +1730,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Dpad.Visible = true;
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
             if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = true;
-
             TouchInput.Instance.Joystick.Visible = true;
         }
 
