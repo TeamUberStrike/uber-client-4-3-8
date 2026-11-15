@@ -1664,11 +1664,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             else
             {
                 TouchInput.Instance.Joystick.Enabled = !GameState.LocalPlayer.IsDead && !GameState.LocalPlayer.IsGamePaused;
-                TouchInput.Instance.Joystick.Visible = false;
-
-                TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = false;
-                TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Visible = false;
-                TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Visible = false;
 
                 TouchInput.Instance.Dpad.Enabled = false;
             }
@@ -1683,11 +1678,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Dpad.Visible = true;
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
             if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = true;
-
-            TouchInput.Instance.Joystick.Visible = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Visible = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Visible = true;
         }
 
         public void OnUpdate()
