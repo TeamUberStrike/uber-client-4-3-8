@@ -67,6 +67,7 @@ public class SceneExporter
         ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
         if (!string.IsNullOrEmpty(ApplicationDataManager.BuildVersion))
             PlayerSettings.bundleVersion = ApplicationDataManager.BuildVersion;
+        PlayerSettings.Android.bundleVersionCode = int.Parse(ResolveShortVersion().Replace(".", ""));
 
         WriteConfigurationXml(Application.dataPath + "/Resources/UberStrike.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.Android);
         AssetDatabase.ImportAsset("Assets/Resources/UberStrike.xml");
@@ -133,8 +134,7 @@ public class SceneExporter
     {
         ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
         PlayerSettings.bundleVersion = ResolveShortVersion();
-        if (!string.IsNullOrEmpty(ApplicationDataManager.BuildVersion))
-            PlayerSettings.iOS.buildNumber = ApplicationDataManager.BuildVersion;
+        PlayerSettings.iOS.buildNumber = ResolveShortVersion();
 
         WriteConfigurationXml(Application.dataPath + "/Resources/UberStrike.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad);
         AssetDatabase.ImportAsset("Assets/Resources/UberStrike.xml");
