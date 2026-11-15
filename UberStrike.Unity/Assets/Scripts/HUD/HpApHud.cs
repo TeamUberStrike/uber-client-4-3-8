@@ -136,7 +136,8 @@ public class HpApHud : Singleton<HpApHud>
 #if !UNITY_ANDROID && !UNITY_IPHONE
         _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
 #else
-        _entireGroup.Position = new Vector2(Screen.width * 0.04f, Screen.height * 0.08f);
+        float safeInset = Mathf.Max(MobileMenuScale.InsetLeftPixels, MobileMenuScale.InsetRightPixels);
+        _entireGroup.Position = new Vector2(safeInset + Screen.width * 0.02f, Screen.height * 0.07f);
 #endif
         _entireGroup.UpdateMeshGUIPosition();
     }

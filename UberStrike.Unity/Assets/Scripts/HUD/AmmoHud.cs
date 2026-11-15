@@ -128,8 +128,7 @@ public class AmmoHud : Singleton<AmmoHud>
         _ammoIcon.Scale = new Vector2(scaleFactor, scaleFactor);
         _ammoIcon.Position = new Vector2(-_ammoIcon.Size.x, -_ammoIcon.Size.y * 0.8f);
         _ammoDigits.Text = _curAmmo.ToString();
-        _ammoDigits.Scale = new Vector2(HudStyleUtility.SMALLER_DIGITS_SCALE * _curScaleFactor,
-            HudStyleUtility.SMALLER_DIGITS_SCALE * _curScaleFactor);
+        _ammoDigits.Scale = new Vector2(1.0f * _curScaleFactor, 1.0f * _curScaleFactor);
         _ammoDigits.Position = new Vector2(-_ammoIcon.Size.x - HudStyleUtility.GAP_BETWEEN_TEXT,
             adjustFactor * _ammoDigits.Size.y);
     }
