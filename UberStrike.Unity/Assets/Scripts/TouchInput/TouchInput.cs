@@ -1488,7 +1488,8 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
@@ -1606,7 +1607,8 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.Training;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
@@ -1688,15 +1690,18 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = true;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = !UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = !UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Visible = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = !UseMultiTouch;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Visible = false;
             TouchInput.Instance.WeaponChanger.Enabled = false;
             TouchInput.Instance.ConsumableChanger.Enabled = false;
-            TouchInput.Instance.Shooter.Enabled = false;
+            TouchInput.Instance.Shooter.Enabled = UseMultiTouch;
             TouchInput.Instance.ScopeSwipe.Enabled = false;
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
@@ -1734,9 +1739,14 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Dpad.Visible = true;
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
             if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Visible = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Visible = true;
 
             TouchInput.Instance.Joystick.Visible = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Visible = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Visible = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Visible = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Visible = true;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Visible = true;
         }
