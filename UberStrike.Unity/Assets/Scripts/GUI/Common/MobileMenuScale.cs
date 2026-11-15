@@ -276,8 +276,20 @@ public static class MobileMenuScale
         get { float left, right; GetInsetsPixels(out left, out right); return right; }
     }
 
-    /// <summary>Width of the menu area (screen minus both insets) in screen pixels.</summary>
-    private static float SafeWidthPixels
+    /// <summary>Left edge of the safe area (inside the cutout inset) in screen pixels.</summary>
+    public static float SafeLeftPixels
+    {
+        get { return InsetLeftPixels; }
+    }
+
+    /// <summary>Right edge of the safe area (inside the cutout inset) in screen pixels.</summary>
+    public static float SafeRightPixels
+    {
+        get { return Screen.width - InsetRightPixels; }
+    }
+
+    /// <summary>Width of the menu/safe area (screen minus both insets) in screen pixels.</summary>
+    public static float SafeWidthPixels
     {
         get { float left, right; GetInsetsPixels(out left, out right); return Screen.width - left - right; }
     }
