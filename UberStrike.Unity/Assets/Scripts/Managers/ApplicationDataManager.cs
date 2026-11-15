@@ -132,7 +132,10 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         string version = System.Environment.GetEnvironmentVariable("VERSION");
         if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
-        if (string.IsNullOrEmpty(version)) version = RunTool("git", "rev-parse HEAD");
+
+        if (string.IsNullOrEmpty(version))
+            throw new System.Exception("Failed to resolve the build version: set VERSION or install gitversion.");
+
         return version;
     }
 
