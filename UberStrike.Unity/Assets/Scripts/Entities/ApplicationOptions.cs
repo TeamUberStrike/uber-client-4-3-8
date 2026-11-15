@@ -37,8 +37,10 @@ public class ApplicationOptions
     public bool UseMultiTouch = false;
 
     // Menu safe-area margin on each side in millimetres; negative = Auto (use the reported camera
-    // cutout). See MobileMenuScale "Safe-area layout".
+    // cutout). Symmetric mirrors the larger side inset to both sides. See MobileMenuScale
+    // "Safe-area layout".
     public float MobileScreenEdgeMargin = MobileMenuScale.EdgeMarginAuto;
+    public bool MobileScreenEdgeSymmetric = false;
 
     // Gameplay
     public bool GameplayAutoPickupEnabled = true;
@@ -148,6 +150,7 @@ public class ApplicationOptions
         TouchMoveSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileTouchMoveSensitivity, 1.0f), 0.5f, 3.0f);
 #endif
         MobileScreenEdgeMargin = Mathf.Clamp(Mathf.Round(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileScreenEdgeMargin, MobileMenuScale.EdgeMarginAuto)), MobileMenuScale.EdgeMarginAuto, MobileMenuScale.MaxEdgeMarginMm);
+        MobileScreenEdgeSymmetric = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileScreenEdgeSymmetric, false);
 
         // Gameplay
         GameplayAutoPickupEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, true);
@@ -201,6 +204,7 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchMoveSensitivity, TouchMoveSensitivity);
 #endif
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileScreenEdgeMargin, MobileScreenEdgeMargin);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileScreenEdgeSymmetric, MobileScreenEdgeSymmetric);
 
         // Gameplay
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, GameplayAutoPickupEnabled);

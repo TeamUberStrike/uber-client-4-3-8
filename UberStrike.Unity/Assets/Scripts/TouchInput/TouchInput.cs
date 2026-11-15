@@ -53,6 +53,10 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         get
         {
+            if (Application.platform == RuntimePlatform.WindowsPlayer ||
+                Application.platform == RuntimePlatform.WindowsEditor)
+                return false;
+
             if (ApplicationDataManager.IsMobile) return true;
 #if UNITY_EDITOR
             return MobileMenuScale.ForcePreviewInEditor;
@@ -142,18 +146,20 @@ public class TouchInput : MonoSingleton<TouchInput>
     private static void PushApart(ref Rect r, Rect o)
     {
         // Up first (tall screens have room), then left / down / right — first candidate whose
-        // resulting rect stays fully inside the display wins.
+        // resulting rect stays fully inside the safe area wins.
+        float safeLeft = MobileMenuScale.SafeLeftPixels;
+        float safeRight = MobileMenuScale.SafeRightPixels;
         float ny = o.yMin - r.height - DefaultMarkerGap;
         if (ny >= 0f) { r.y = ny; return; }
 
         float nx = o.xMin - r.width - DefaultMarkerGap;
-        if (nx >= 0f) { r.x = nx; return; }
+        if (nx >= safeLeft) { r.x = nx; return; }
 
         ny = o.yMax + DefaultMarkerGap;
         if (ny + r.height <= Screen.height) { r.y = ny; return; }
 
         nx = o.xMax + DefaultMarkerGap;
-        if (nx + r.width <= Screen.width) { r.x = nx; return; }
+        if (nx + r.width <= safeRight) { r.x = nx; return; }
 
         // No fully on-screen escape — fall back to the axis of least penetration (the final
         // screen clamp may leave a residual overlap, but it is the best possible).
@@ -196,10 +202,7 @@ public class TouchInput : MonoSingleton<TouchInput>
     public static Vector2 SeparateAndRegisterSlot(string id, Vector2 c, float half)
     {
         c = SeparateFromSeeded(id, c, half, half);
-        float maxX = Mathf.Max(half, Screen.width - half);
-        float maxY = Mathf.Max(half, Screen.height - half);
-        c.x = Mathf.Clamp(c.x, Mathf.Min(half, maxX), maxX);
-        c.y = Mathf.Clamp(c.y, Mathf.Min(half, maxY), maxY);
+        c = ClampCenterToSafeArea(c, half, half);
         RegisterSeededRect(id, c, half, half);
         return c;
     }
@@ -427,59 +430,62 @@ public class TouchInput : MonoSingleton<TouchInput>
         float rad = 15f * Mathf.Deg2Rad;
         float aabbW = dw * Mathf.Cos(rad) + dh * Mathf.Sin(rad) + 16f;
         return Mathf.Clamp(baseScale, MobileControlLayout.MinScale,
-            Mathf.Min(MobileControlLayout.MaxScale, Screen.width / aabbW));
+            Mathf.Min(MobileControlLayout.MaxScale, MobileMenuScale.SafeWidthPixels / aabbW));
     }
 
     private Vector2 DefaultGuiCenterFor(string id)
     {
         // Spread the default positions with the same scale as the button sizes, so bigger
-        // buttons do not overlap each other. Every center is then clamped so the control's
-        // full footprint stays inside the screen on any resolution/scale.
+        // buttons do not overlap each other. Every center is anchored to the safe-area edges
+        // (clear of camera cutouts) and then clamped so the control's full footprint stays
+        // inside that area on any resolution/scale.
         float s = DefaultButtonScale();
+        float left = MobileMenuScale.SafeLeftPixels;
+        float right = MobileMenuScale.SafeRightPixels;
         Vector2 c;
         float halfW, halfH;
         switch (id)
         {
             case "fire":
-                c = new Vector2(Screen.width - 160 * s, Screen.height - 156 * s);
+                c = new Vector2(right - 160 * s, Screen.height - 156 * s);
                 halfW = TexSize(MobileIcons.FireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "secondaryFire":
                 // Slightly further right than the classic spot so its rect stays clear of the
                 // fire button's rect.
-                c = new Vector2(Screen.width - 48 * s, Screen.height - 206 * s);
+                c = new Vector2(right - 48 * s, Screen.height - 206 * s);
                 halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "multiSecondaryFire":
-                c = new Vector2(Screen.width - 60 * s, 440 * s);
+                c = new Vector2(right - 60 * s, 440 * s);
                 halfW = TexSize(MobileIcons.SecondFireIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "jump":
                 // Hugs the bottom-right corner.
-                c = new Vector2(Screen.width - 50 * s, Screen.height - 50 * s);
+                c = new Vector2(right - 50 * s, Screen.height - 50 * s);
                 halfW = TexSize(MobileIcons.JumpIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "crouch":
                 // Slightly further left than the classic spot so its rect stays clear of the
                 // fire button's rect.
-                c = new Vector2(Screen.width - 272 * s, Screen.height - 88 * s);
+                c = new Vector2(right - 272 * s, Screen.height - 88 * s);
                 halfW = TexSize(MobileIcons.CrouchIcon, 128) * s * 0.5f; halfH = halfW;
                 break;
             case "menu":
-                c = new Vector2(30 * s, 140 * s);
+                c = new Vector2(left + 30 * s, 140 * s);
                 halfW = TexSize(MobileIcons.MenuIcon, 64) * s * 0.5f; halfH = halfW;
                 break;
             case "chat":
-                c = new Vector2(30 * s, 200 * s);
+                c = new Vector2(left + 30 * s, 200 * s);
                 halfW = TexSize(MobileIcons.ChatIcon, 64) * s * 0.5f; halfH = halfW;
                 break;
             case "score":
-                c = new Vector2(30 * s, 260 * s);
+                c = new Vector2(left + 30 * s, 260 * s);
                 halfW = TexSize(MobileIcons.ScoreboardIcon, 64) * s * 0.5f; halfH = halfW;
                 break;
             case "weaponChanger":
             {
-                c = new Vector2(Screen.width - 95 * s, 105 * s);
+                c = new Vector2(right - 95 * s, 105 * s);
                 Vector2 wd = WeaponIconDimensions();
                 halfW = wd.x * s * 0.5f;
                 halfH = wd.y * s * 0.5f;
@@ -489,12 +495,12 @@ public class TouchInput : MonoSingleton<TouchInput>
             {
                 float dw = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.width : 399f;
                 float dh = (MobileIcons.KeyboardDpad != null) ? MobileIcons.KeyboardDpad.height : 209f;
-                // The D-pad's default scale is additionally capped by the screen width: the
+                // The D-pad's default scale is additionally capped by the safe-area width: the
                 // height-based scale reaches 3.75x on a tall phone, making the D-pad marker
                 // wider than the display. Seeding happens before the other controls, so they
                 // separate around this (capped) footprint.
                 float ds = DefaultDpadScale(s);
-                c = new Vector2(25f + dw * ds / 2f, Screen.height - 256f + dh * ds / 2f);
+                c = new Vector2(left + 25f + dw * ds / 2f, Screen.height - 256f + dh * ds / 2f);
                 // The default D-pad sits at 15°. Its axis-aligned footprint is wider than the
                 // unrotated rect, so clamp with the rotated extents to guarantee it stays
                 // fully inside the display at any scale/resolution.
@@ -506,10 +512,10 @@ public class TouchInput : MonoSingleton<TouchInput>
                 break;
             }
             default:
-                return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+                return new Vector2((left + right) * 0.5f, Screen.height * 0.5f);
         }
         // Keep every freshly seeded default marker away from the ones seeded before it, then
-        // clamp inside the screen and remember its rect for the next default.
+        // clamp inside the safe area and remember its rect for the next default.
         c = SeparateFromSeeded(id, c, halfW, halfH);
 
         // The left column keeps its classic top-to-bottom order even when separation moves the
@@ -522,7 +528,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 c.y = sibling.yMax + 16f * s + halfH;
         }
 
-        c = ClampCenterToScreen(c, halfW, halfH);
+        c = ClampCenterToSafeArea(c, halfW, halfH);
         RegisterSeededRect(id, c, halfW, halfH);
         return c;
     }
@@ -547,13 +553,15 @@ public class TouchInput : MonoSingleton<TouchInput>
         return null;
     }
 
-    // Keeps a control's center such that its whole footprint (half extents given) stays on
-    // screen. If the control is bigger than the screen, its center is forced to the middle.
-    private static Vector2 ClampCenterToScreen(Vector2 center, float halfW, float halfH)
+    // Keeps a control's center such that its whole footprint (half extents given) stays inside the
+    // safe area on X and on screen on Y. If the control is bigger than the available width, its
+    // center is forced to the left edge of that range.
+    public static Vector2 ClampCenterToSafeArea(Vector2 center, float halfW, float halfH)
     {
-        float maxX = Mathf.Max(halfW, Screen.width - halfW);
+        float minX = MobileMenuScale.SafeLeftPixels + halfW;
+        float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - halfW);
         float maxY = Mathf.Max(halfH, Screen.height - halfH);
-        center.x = Mathf.Clamp(center.x, Mathf.Min(halfW, maxX), maxX);
+        center.x = Mathf.Clamp(center.x, Mathf.Min(minX, maxX), maxX);
         center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
         return center;
     }
@@ -623,7 +631,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             float sinR = Mathf.Abs(Mathf.Sin(rad));
             float dHalfW = (dw * cosR + dh * sinR) * dp.Scale * 0.5f;
             float dHalfH = (dh * cosR + dw * sinR) * dp.Scale * 0.5f;
-            c = ClampCenterToScreen(c, dHalfW, dHalfH);
+            c = ClampCenterToSafeArea(c, dHalfW, dHalfH);
 
             Dpad.Scale = dp.Scale;
             Dpad.TopLeftPosition = new Vector2(c.x - dw * dp.Scale / 2f, c.y - dh * dp.Scale / 2f);
@@ -646,7 +654,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             Texture icon = (circle.Content != null) ? circle.Content.image : null;
             float halfW = ((icon != null) ? icon.width : 64f) * p.Scale * 0.5f;
             float halfH = ((icon != null) ? icon.height : 64f) * p.Scale * 0.5f;
-            center = ClampCenterToScreen(center, halfW, halfH);
+            center = ClampCenterToSafeArea(center, halfW, halfH);
             circle.SetLayout(center, p.Scale);
         }
 
@@ -657,7 +665,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             // Use the icon's REAL half extents per axis (width/height differ: 155x77), matching
             // the drag clamp — clamping with the width for both axes pulled the changer back down.
             Vector2 wd = WeaponIconDimensions();
-            wc = ClampCenterToScreen(wc, wd.x * wp.Scale * 0.5f, wd.y * wp.Scale * 0.5f);
+            wc = ClampCenterToSafeArea(wc, wd.x * wp.Scale * 0.5f, wd.y * wp.Scale * 0.5f);
             WeaponChanger.LayoutScale = wp.Scale;
             WeaponChanger.Position = wc;
         }
@@ -748,7 +756,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Texture icon = q.GetIcon();
                 float baseSize = (icon != null) ? Mathf.Max(icon.width, icon.height) : 64f;
                 float side = baseSize * 0.8f * qp.Scale;
-                center = ClampCenterToScreen(center, side * 0.5f, side * 0.5f);
+                center = ClampCenterToSafeArea(center, side * 0.5f, side * 0.5f);
 
                 list.Add(new LayoutHandle
                 {
@@ -846,18 +854,63 @@ public class TouchInput : MonoSingleton<TouchInput>
     // non-touch platforms, where it is simply unused.
     private static Rect ComputeJoystickRect()
     {
-        // Original wheel zone: the whole lower-left quarter of the screen.
-        return new Rect(0, Screen.height / 2, Screen.width * 0.4f, Screen.height / 2);
+        // Lower-left corner of the safe area, so the wheel is never started under a cutout.
+        return new Rect(MobileMenuScale.SafeLeftPixels, Screen.height / 2,
+            MobileMenuScale.SafeWidthPixels * 0.4f, Screen.height / 2);
+    }
+
+    private static Rect ComputeScopeSwipeRect()
+    {
+        // Right edge of the safe area, so the swipe bar follows the notch when the phone is flipped.
+        return new Rect(MobileMenuScale.SafeRightPixels - MobileIcons.SniperSwipeIcon.width - 24,
+            Screen.height - 274 - MobileIcons.SniperSwipeIcon.height,
+            MobileIcons.SniperSwipeIcon.width,
+            MobileIcons.SniperSwipeIcon.height);
     }
 
     private void OnScreenResolutionChanged(ScreenResolutionEvent ev)
     {
-        // The joystick zone is anchored to the corner in pixels; recompute it when the screen
-        // (or the simulated device in the Editor) changes so its marker doesn't end up
-        // off-screen after switching devices.
+        RefreshLayoutAnchors();
+    }
+
+    // Called when the screen size, orientation or safe area changes. The joystick/scope zones are
+    // anchored in pixels, so they must be recomputed; the customizable layout is re-applied because
+    // its X positions are normalized to the safe area (the notch can switch sides when the phone is
+    // flipped). The 3D view/shooter boundary deliberately stays full-screen.
+    private void RefreshLayoutAnchors()
+    {
         _joystickRect = ComputeJoystickRect();
         if (Joystick != null)
             Joystick.Boundary = _joystickRect;
+
+        _scopeSwipeRect = ComputeScopeSwipeRect();
+        if (ScopeSwipe != null)
+            ScopeSwipe.Boundary = _scopeSwipeRect;
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        ApplyLayout();
+#endif
+    }
+
+    private void RefreshLayoutIfEnvironmentChanged()
+    {
+        Rect safeArea = Screen.safeArea;
+        float insetLeft = MobileMenuScale.InsetLeftPixels;
+        float insetRight = MobileMenuScale.InsetRightPixels;
+
+        // The one-sided inset swaps when the notch changes sides, so no separate orientation check
+        // is needed; this also catches a changed manual edge margin.
+        if (_layoutEnvironmentInitialized
+            && safeArea == _lastLayoutSafeArea
+            && insetLeft == _lastLayoutInsetLeft
+            && insetRight == _lastLayoutInsetRight)
+            return;
+
+        _layoutEnvironmentInitialized = true;
+        _lastLayoutSafeArea = safeArea;
+        _lastLayoutInsetLeft = insetLeft;
+        _lastLayoutInsetRight = insetRight;
+        RefreshLayoutAnchors();
     }
 
     private void SetupRects()
@@ -872,10 +925,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         _nextWeaponPos = new Vector2(Screen.width - 95, 105);
         _secondFireMultiPos = new Vector2(Screen.width - 60, 440);
-        _scopeSwipeRect = new Rect(Screen.width - MobileIcons.SniperSwipeIcon.width - 24,
-            Screen.height - 274 - MobileIcons.SniperSwipeIcon.height,
-            MobileIcons.SniperSwipeIcon.width,
-            MobileIcons.SniperSwipeIcon.height);
+        _scopeSwipeRect = ComputeScopeSwipeRect();
 
         // single finger
         _firePos = new Vector2(Screen.width - 160, Screen.height - 170);
@@ -888,6 +938,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private void Update()
     {
+        RefreshLayoutIfEnvironmentChanged();
 
         if (InputManager.Instance.IsDown(GameInputKey.UseQuickItem))
         {
@@ -1812,6 +1863,13 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     // screen segments
     private Rect _screenLeftRect;
+
+    // Last layout environment, used to re-apply the safe-area-relative control layout after a
+    // resolution, orientation or safe-area change (a landscape flip can keep the same screen size).
+    private Rect _lastLayoutSafeArea;
+    private float _lastLayoutInsetLeft;
+    private float _lastLayoutInsetRight;
+    private bool _layoutEnvironmentInitialized;
 
     // single touch only
     private Vector2 _firePos;

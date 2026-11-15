@@ -124,7 +124,9 @@ public class QuickItemGroupHud
     // at any scale — with the 3.75x maximum the saved placement alone could push slots off-screen.
     private static Vector2 ClampSlotCenter(Vector2 center, float half)
     {
-        center.x = Mathf.Clamp(center.x, half, Mathf.Max(half, Screen.width - half));
+        center.x = Mathf.Clamp(center.x,
+            MobileMenuScale.SafeLeftPixels + half,
+            Mathf.Max(MobileMenuScale.SafeLeftPixels + half, MobileMenuScale.SafeRightPixels - half));
         center.y = Mathf.Clamp(center.y, half, Mathf.Max(half, Screen.height - half));
         return center;
     }
@@ -330,9 +332,9 @@ public class QuickItemGroupHud
 
     public static Vector2 DefaultSlotCenter(int index)
     {
-        // Vertical stack anchored to the right edge, ALWAYS below the weapon changer.
+        // Vertical stack anchored to the safe-area right edge, ALWAYS below the weapon changer.
         float s = Mathf.Clamp(Screen.height / 720f, 1f, 2.2f);
-        float x = Screen.width - 60f * s;
+        float x = MobileMenuScale.SafeRightPixels - 60f * s;
 
         // Stack under the changer's actual bottom edge (or its computed default when the
         // changer does not exist yet), with a little extra breathing room between the items.
@@ -344,9 +346,11 @@ public class QuickItemGroupHud
 
         float y = changerBottom + 64f + index * 48f * s;
 
-        // Keep the whole slot icon (~64px+ at scale 1) inside the display on any resolution.
+        // Keep the whole slot icon (~64px+ at scale 1) inside the safe area on any resolution.
         float half = 64f;
-        x = Mathf.Clamp(x, half, Mathf.Max(half, Screen.width - half));
+        float minX = MobileMenuScale.SafeLeftPixels + half;
+        float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - half);
+        x = Mathf.Clamp(x, minX, maxX);
         y = Mathf.Clamp(y, half, Mathf.Max(half, Screen.height - half));
 
         // Finally, check the marker distance against every default seeded so far and move the

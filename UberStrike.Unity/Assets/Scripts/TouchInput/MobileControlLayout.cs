@@ -6,8 +6,12 @@ using UnityEngine;
 
 /// <summary>
 /// Stores and persists the player's customized on-screen control layout (per-control position +
-/// scale), like Pixel Gun 3D / CoD Mobile. Positions are kept normalized to the screen (0..1) so a
-/// layout saved on one device renders consistently on another resolution/aspect.
+/// scale), like Pixel Gun 3D / CoD Mobile. Positions are kept normalized (0..1) so a layout saved on
+/// one device renders consistently on another resolution/aspect.
+///
+/// X is normalized to the safe-area width (the screen minus the cutout-side inset), so controls keep
+/// clear of a notch or curved edge; the 3D view still uses the whole screen. Y is normalized to the
+/// full screen height.
 ///
 /// Persistence is a single PlayerPrefs string ("id:nx,ny,scale;...") so we don't depend on the
 /// project's CmunePrefs key enum. Invariant-culture float formatting keeps it locale-safe.
@@ -16,7 +20,7 @@ public static class MobileControlLayout
 {
     public class Placement
     {
-        public float Nx;        // normalized GUI-space center X (0..1 of screen width)
+        public float Nx;        // normalized GUI-space center X (0..1 of the safe-area width)
         public float Ny;        // normalized GUI-space center Y (0..1 of screen height)
         public float Scale = 1f;
         public float Rotation;  // degrees, D-pad only
@@ -54,7 +58,7 @@ public static class MobileControlLayout
         {
             p = new Placement
             {
-                Nx = Mathf.Clamp01(defaultGuiCenter.x / Mathf.Max(1f, Screen.width)),
+                Nx = ToNormalizedX(defaultGuiCenter.x),
                 Ny = Mathf.Clamp01(defaultGuiCenter.y / Mathf.Max(1f, Screen.height)),
                 Scale = Mathf.Clamp(defaultScale, MinScale, MaxScale),
                 Rotation = defaultRotation,
@@ -66,7 +70,8 @@ public static class MobileControlLayout
 
     public static Vector2 ToPixels(Placement p)
     {
-        return new Vector2(p.Nx * Screen.width, p.Ny * Screen.height);
+        return new Vector2(MobileMenuScale.SafeLeftPixels + p.Nx * MobileMenuScale.SafeWidthPixels,
+            p.Ny * Screen.height);
     }
 
     public static void SetPixels(string id, Vector2 guiCenter, float scale)
@@ -74,9 +79,14 @@ public static class MobileControlLayout
         EnsureLoaded();
         Placement p;
         if (!_map.TryGetValue(id, out p)) { p = new Placement(); _map[id] = p; }
-        p.Nx = Mathf.Clamp01(guiCenter.x / Mathf.Max(1f, Screen.width));
+        p.Nx = ToNormalizedX(guiCenter.x);
         p.Ny = Mathf.Clamp01(guiCenter.y / Mathf.Max(1f, Screen.height));
         p.Scale = Mathf.Clamp(scale, MinScale, MaxScale);
+    }
+
+    private static float ToNormalizedX(float guiX)
+    {
+        return Mathf.Clamp01((guiX - MobileMenuScale.SafeLeftPixels) / Mathf.Max(1f, MobileMenuScale.SafeWidthPixels));
     }
 
     public static void SetScale(string id, float scale)

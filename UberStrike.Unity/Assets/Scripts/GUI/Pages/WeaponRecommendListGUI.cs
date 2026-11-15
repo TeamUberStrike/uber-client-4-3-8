@@ -22,10 +22,6 @@ class WeaponRecommendListGUI
                 _enabled = value;
                 if (value)
                 {
-                    if (_selectedItem == null && _recommendedItemList.Count > 0)
-                    {
-                        SetSelection(_recommendedItemList[0].Value.Item);
-                    }
                     if (_selectionStyle == null)
                     {
                         _selectionStyle = new GUIStyle(StormFront.GrayPanelBox);
@@ -35,6 +31,10 @@ class WeaponRecommendListGUI
                     {
                         _normalStyle = new GUIStyle(StormFront.GrayPanelBlankBox);
                         _normalStyle.overflow.left = 5;
+                    }
+                    if (_selectedItem == null && _recommendedItemList.Count > 0)
+                    {
+                        SetSelection(_recommendedItemList[0].Value.Item);
                     }
                     CmuneEventHandler.AddListener<SelectShopItemEvent>(OnSelectItem);
                 }
@@ -120,6 +120,17 @@ class WeaponRecommendListGUI
 
         GUI.BeginGroup(rect);
         {
+            if (_selectionStyle == null)
+            {
+                _selectionStyle = new GUIStyle(StormFront.GrayPanelBox);
+                _selectionStyle.overflow.left = 6;
+            }
+            if (_normalStyle == null)
+            {
+                _normalStyle = new GUIStyle(StormFront.GrayPanelBlankBox);
+                _normalStyle.overflow.left = 5;
+            }
+
             float itemHeight = rect.height / _recommendedItemList.Count;
             Rect itemRect = new Rect(5.0f, 0, rect.width - 10, itemHeight);
 
