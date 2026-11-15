@@ -54,6 +54,10 @@ public class TouchInput : MonoSingleton<TouchInput>
     {
         get
         {
+            if (Application.platform == RuntimePlatform.WindowsPlayer ||
+                Application.platform == RuntimePlatform.WindowsEditor)
+                return false;
+
             if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform) return true;
 #if UNITY_EDITOR
             return MobileMenuScale.ForcePreviewInEditor;

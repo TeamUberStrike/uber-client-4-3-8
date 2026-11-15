@@ -157,7 +157,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         if (_copyButtonStyle == null)
         {
             _copyButtonStyle = new GUIStyle(BlueStonez.buttondark_small);
-            _copyButtonStyle.fontSize = 11;
+            if (_copyButtonStyle.font != null && _copyButtonStyle.font.dynamic)
+                _copyButtonStyle.fontSize = 11;
             _copyButtonStyle.wordWrap = false;
             _copyButtonStyle.clipping = TextClipping.Clip;
         }
@@ -167,11 +168,13 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUIContent versionContent = new GUIContent(versionText);
 
         float copyButtonWidth = _copyButtonStyle.CalcSize(copyContent).x + 8;
-        _buildInfoStyle.fontSize = 11;
+        if (_buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
+            _buildInfoStyle.fontSize = 11;
         float fpsWidth = _buildInfoStyle.CalcSize(fpsContent).x;
         float maxVersionWidth = Mathf.Max(0, MobileMenuScale.VirtualWidth - copyButtonWidth - 10 - fpsWidth - 6);
         float versionWidth = _buildInfoStyle.CalcSize(versionContent).x;
-        if (versionWidth > maxVersionWidth && versionWidth > 0)
+        if (versionWidth > maxVersionWidth && versionWidth > 0 &&
+            _buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
         {
             _buildInfoStyle.fontSize = Mathf.Max(6, Mathf.FloorToInt(_buildInfoStyle.fontSize * maxVersionWidth / versionWidth));
             versionWidth = Mathf.Min(_buildInfoStyle.CalcSize(versionContent).x, maxVersionWidth);
@@ -188,7 +191,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         GUI.color = Color.white.SetAlpha(0.3f);
         GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth, buildInfoY, versionWidth, 20), versionContent, _buildInfoStyle);
-        _buildInfoStyle.fontSize = 11;
+        if (_buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
+            _buildInfoStyle.fontSize = 11;
         GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, buildInfoY, fpsWidth, 20), fpsContent, _buildInfoStyle);
         GUI.color = Color.white;
 
