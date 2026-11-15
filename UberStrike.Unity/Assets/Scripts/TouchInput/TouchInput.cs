@@ -351,13 +351,13 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         AimHelpText = new MeshGUIText("Drag finger to aim", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(AimHelpText);
-        AimHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 100);
+        AimHelpText.Position = new Vector2(Screen.width / 2, Screen.height * 0.29f);
         AimHelpText.Scale = new Vector2(0.6f, 0.6f);
         AimHelpText.Alpha = 0.0f;
 
         ShootHelpText = new MeshGUIText("Tap the fire button to shoot", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(ShootHelpText);
-        ShootHelpText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 50);
+        ShootHelpText.Position = new Vector2(Screen.width / 2, Screen.height * 0.36f);
         ShootHelpText.Scale = new Vector2(0.6f, 0.6f);
         ShootHelpText.Alpha = 0.0f;
 
