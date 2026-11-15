@@ -61,6 +61,7 @@ public static class CmunePrefs
 #endif
         // Outside the #if so the Editor mobile preview (PC build target) can store it too.
         Options_MobileScreenEdgeMargin = 153,
+        Options_MobileScreenEdgeSymmetric = 154,
 
         Keymap_None = 300,
         Keymap_HorizontalLook = 301,

@@ -183,12 +183,14 @@ public static class MobileMenuScale
     //   - Code that needs screen pixels (camera viewports, touch areas) converts with MenuToScreenX /
     //     ScreenToMenu instead of multiplying by Scale itself.
     //
-    // Insets come from Screen.safeArea at full size, and only the side with the notch/cutout is
-    // inset; the other side keeps the full screen width. Android usually reports the cutout side
-    // only. iOS reports equal insets on both sides in landscape (notch plus rounded corners), so the
-    // notch side is taken from the current orientation: LandscapeLeft has the home button on the
-    // right, which puts the notch on the left. Devices that report no cutout get no inset and keep
-    // the stock layout. The bottom inset (iPhone home indicator) is intentionally not applied.
+    // Insets come from Screen.safeArea at full size. In Auto, only the side with the notch/cutout is
+    // inset; the other side keeps the full screen width. The Symmetric safe area option mirrors the
+    // larger inset to both sides. The global ribbon and fixed HUDs always use the symmetric inset.
+    // Android usually reports the cutout side only. iOS reports equal insets on both sides in
+    // landscape (notch plus rounded corners), so the notch side is taken from the current
+    // orientation: LandscapeLeft has the home button on the right, which puts the notch on the left.
+    // Devices that report no cutout get no inset and keep the stock layout. The bottom inset
+    // (iPhone home indicator) is intentionally not applied.
     //
     // The player can set a minimum inset in Options > General > Screen Edge Margin
     // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or a minimum margin in millimetres on both
@@ -269,7 +271,8 @@ public static class MobileMenuScale
         float cutoutLeft = Mathf.Max(safe.xMin, 0f);
         float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
 
-        if (bothSides)
+        bool symmetric = bothSides || (options != null && options.MobileScreenEdgeSymmetric);
+        if (symmetric)
         {
             left = Mathf.Min(Mathf.Max(cutoutLeft, cutoutRight), maximum);
             right = left;

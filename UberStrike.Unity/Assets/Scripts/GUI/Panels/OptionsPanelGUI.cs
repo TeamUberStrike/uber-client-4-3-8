@@ -249,7 +249,7 @@ public class OptionsPanelGUI : PanelGuiBase
     {
         // Mobile only: a Display group with the screen edge margin below Misc.
         bool showDisplay = MobileMenuScale.Active;
-        float height = showDisplay ? 195 : 100;
+        float height = showDisplay ? 225 : 100;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
         _scrollControls = GUITools.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
@@ -263,8 +263,8 @@ public class OptionsPanelGUI : PanelGuiBase
 
             if (showDisplay)
             {
-                DrawGroupControl(new Rect(GroupMarginX, 125, width, 60), "Display", BlueStonez.label_group_interparkbold_18pt);
-                GUI.BeginGroup(new Rect(GroupMarginX, 125, width, 60));
+                DrawGroupControl(new Rect(GroupMarginX, 125, width, 90), "Display", BlueStonez.label_group_interparkbold_18pt);
+                GUI.BeginGroup(new Rect(GroupMarginX, 125, width, 90));
                 {
                     // Minimum distance from the left/right screen edges (camera cutout, rounded corners,
                     // curved edges). Far left = Auto: use the cutout the device reports. Otherwise a
@@ -277,6 +277,9 @@ public class OptionsPanelGUI : PanelGuiBase
                     {
                         ApplicationDataManager.ApplicationOptions.MobileScreenEdgeMargin = s;
                     }
+
+                    ApplicationDataManager.ApplicationOptions.MobileScreenEdgeSymmetric = GUI.Toggle(new Rect(15, 55, 220, 30),
+                        ApplicationDataManager.ApplicationOptions.MobileScreenEdgeSymmetric, "Symmetric safe area", BlueStonez.toggle);
                 }
                 GUI.EndGroup();
             }
