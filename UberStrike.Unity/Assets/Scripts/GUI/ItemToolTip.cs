@@ -120,10 +120,16 @@ public class ItemToolTip
 
         _alpha = Mathf.Lerp(_alpha, Time.time + 1.1f, Time.deltaTime * 12);
 
+        // The item's place at the top level of the page, where the popup is drawn. Compared there, so
+        // a row that has moved on the screen (the list was scrolled) is placed again.
+        bounds = GUITools.ToTopLevel(bounds);
+
         if (_item != item || _cacheRect != bounds || !IsEnabled)
         {
             _cacheRect = bounds;
-            bounds = GUITools.ToGlobal(bounds);
+
+            // Right and bottom limit for the popup: the screen, less the right safe-area inset.
+            Vector2 screenMax = PixelsToGuiUnits(new Vector2(Screen.width - MobileMenuScale.InsetRightPixels, Screen.height));
 
             IsEnabled = true;
 
@@ -150,9 +156,9 @@ public class ItemToolTip
                             target.y += (GlobalUIRibbon.HEIGHT - target.y);
                         }
 
-                        if (target.yMax >= Screen.height)
+                        if (target.yMax >= screenMax.y)
                         {
-                            target.y -= (target.yMax - Screen.height);
+                            target.y -= (target.yMax - screenMax.y);
                         }
 
                         //try not to move the window, if the tip doesn't exit the bounds
@@ -176,9 +182,9 @@ public class ItemToolTip
                             target.x = 10;
                         }
 
-                        if (target.xMax >= (Screen.width - 10))
+                        if (target.xMax >= (screenMax.x - 10))
                         {
-                            target.x -= (target.xMax - Screen.width + 10);
+                            target.x -= (target.xMax - screenMax.x + 10);
                         }
 
                         //try not to move the window, if the tip doesn't exit the bounds
@@ -283,6 +289,17 @@ public class ItemToolTip
                     break;
             }
         }
+    }
+
+    // A screen pixel position in the top-level GUI units the popup is drawn in (on mobile GUI.matrix
+    // carries the menu scale and the safe-area shift). Without a matrix (PC) nothing changes.
+    private static Vector2 PixelsToGuiUnits(Vector2 pixels)
+    {
+        Matrix4x4 matrix = GUI.matrix;
+        if (matrix.isIdentity)
+            return pixels;
+
+        return matrix.inverse.MultiplyPoint3x4(new Vector3(pixels.x, pixels.y, 0f));
     }
 
     public void ComparisonOverlay(Rect position, float value, float otherValue)

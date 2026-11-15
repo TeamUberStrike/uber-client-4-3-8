@@ -233,6 +233,30 @@ public static partial class GUITools
         return new Rect(p.x, p.y, rect.width, rect.height);
     }
 
+    /// <summary>
+    /// A rect inside groups / scroll views, moved to the top level of the current OnGUI, in the same
+    /// GUI units: where to draw something at the top level so that it lines up with the rect.
+    ///
+    /// ToGlobal is not that once GUI.matrix scales the menu (mobile): GUIToScreenPoint transforms
+    /// only the local point and then adds the offset of the enclosing groups unscaled, so its
+    /// result is neither screen pixels nor GUI units. That offset is recovered here by taking the
+    /// transformed local point away again. Without a matrix (PC) the result equals ToGlobal.
+    /// </summary>
+    public static Rect ToTopLevel(Rect rect)
+    {
+        Vector2 local = new Vector2(rect.x, rect.y);
+        Vector2 p = GUIUtility.GUIToScreenPoint(local);
+
+        Matrix4x4 matrix = GUI.matrix;
+        if (!matrix.isIdentity)
+        {
+            Vector2 transformed = matrix.MultiplyPoint3x4(new Vector3(local.x, local.y, 0f));
+            p = local + (p - transformed);
+        }
+
+        return new Rect(p.x, p.y, rect.width, rect.height);
+    }
+
     public static bool Label(Rect rect, Texture2D image, GUIStyle style)
     {
         GUI.Label(rect, image, style);
