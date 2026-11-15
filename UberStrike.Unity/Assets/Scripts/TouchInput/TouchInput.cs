@@ -207,6 +207,20 @@ public class TouchInput : MonoSingleton<TouchInput>
         return c;
     }
 
+    // Keeps a control's center such that its whole footprint (half extents given) stays inside the
+    // safe area on X and on screen on Y. If the control is bigger than the available width, its
+    // center is forced to the left edge of that range.
+    public static Vector2 ClampCenterToSafeArea(Vector2 center, float halfW, float halfH)
+    {
+        float minX = MobileMenuScale.SafeLeftPixels + halfW;
+        float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - halfW);
+        float maxY = Mathf.Max(halfH, Screen.height - halfH);
+        center.x = Mathf.Clamp(center.x, Mathf.Min(minX, maxX), maxX);
+        center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
+        return center;
+    }
+
+
     public void CheckKeyboardDone()
     {
         // if keyboard is open, detect if it was done
@@ -551,19 +565,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (MobileIcons.WeaponIcons != null && MobileIcons.WeaponIcons.Length > (int)UberstrikeItemClass.WeaponMachinegun)
             return MobileIcons.WeaponIcons[(int)UberstrikeItemClass.WeaponMachinegun];
         return null;
-    }
-
-    // Keeps a control's center such that its whole footprint (half extents given) stays inside the
-    // safe area on X and on screen on Y. If the control is bigger than the available width, its
-    // center is forced to the left edge of that range.
-    public static Vector2 ClampCenterToSafeArea(Vector2 center, float halfW, float halfH)
-    {
-        float minX = MobileMenuScale.SafeLeftPixels + halfW;
-        float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - halfW);
-        float maxY = Mathf.Max(halfH, Screen.height - halfH);
-        center.x = Mathf.Clamp(center.x, Mathf.Min(minX, maxX), maxX);
-        center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
-        return center;
     }
 
     private static string DisplayNameFor(string id)
