@@ -856,14 +856,58 @@ public class TouchInput : MonoSingleton<TouchInput>
             MobileMenuScale.SafeWidthPixels * 0.4f, Screen.height / 2);
     }
 
+    private static Rect ComputeScopeSwipeRect()
+    {
+        // Right edge of the safe area, so the swipe bar follows the notch when the phone is flipped.
+        return new Rect(MobileMenuScale.SafeRightPixels - MobileIcons.SniperSwipeIcon.width - 24,
+            Screen.height - 274 - MobileIcons.SniperSwipeIcon.height,
+            MobileIcons.SniperSwipeIcon.width,
+            MobileIcons.SniperSwipeIcon.height);
+    }
+
     private void OnScreenResolutionChanged(ScreenResolutionEvent ev)
     {
-        // The joystick zone is anchored to the corner in pixels; recompute it when the screen
-        // (or the simulated device in the Editor) changes so its marker doesn't end up
-        // off-screen after switching devices.
+        RefreshLayoutAnchors();
+    }
+
+    // Called when the screen size, orientation or safe area changes. The joystick/scope zones are
+    // anchored in pixels, so they must be recomputed; the customizable layout is re-applied because
+    // its X positions are normalized to the safe area (the notch can switch sides when the phone is
+    // flipped). The 3D view/shooter boundary deliberately stays full-screen.
+    private void RefreshLayoutAnchors()
+    {
         _joystickRect = ComputeJoystickRect();
         if (Joystick != null)
             Joystick.Boundary = _joystickRect;
+
+        _scopeSwipeRect = ComputeScopeSwipeRect();
+        if (ScopeSwipe != null)
+            ScopeSwipe.Boundary = _scopeSwipeRect;
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        ApplyLayout();
+#endif
+    }
+
+    private void RefreshLayoutIfEnvironmentChanged()
+    {
+        Rect safeArea = Screen.safeArea;
+        float insetLeft = MobileMenuScale.InsetLeftPixels;
+        float insetRight = MobileMenuScale.InsetRightPixels;
+
+        // The one-sided inset swaps when the notch changes sides, so no separate orientation check
+        // is needed; this also catches a changed manual edge margin.
+        if (_layoutEnvironmentInitialized
+            && safeArea == _lastLayoutSafeArea
+            && insetLeft == _lastLayoutInsetLeft
+            && insetRight == _lastLayoutInsetRight)
+            return;
+
+        _layoutEnvironmentInitialized = true;
+        _lastLayoutSafeArea = safeArea;
+        _lastLayoutInsetLeft = insetLeft;
+        _lastLayoutInsetRight = insetRight;
+        RefreshLayoutAnchors();
     }
 
     private void SetupRects()
@@ -878,10 +922,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         _nextWeaponPos = new Vector2(Screen.width - 95, 105);
         _secondFireMultiPos = new Vector2(Screen.width - 60, 440);
-        _scopeSwipeRect = new Rect(MobileMenuScale.SafeRightPixels - MobileIcons.SniperSwipeIcon.width - 24,
-            Screen.height - 274 - MobileIcons.SniperSwipeIcon.height,
-            MobileIcons.SniperSwipeIcon.width,
-            MobileIcons.SniperSwipeIcon.height);
+        _scopeSwipeRect = ComputeScopeSwipeRect();
 
         // single finger
         _firePos = new Vector2(Screen.width - 160, Screen.height - 170);
@@ -894,6 +935,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private void Update()
     {
+        RefreshLayoutIfEnvironmentChanged();
 
         if (InputManager.Instance.IsDown(GameInputKey.UseQuickItem))
         {
@@ -1818,6 +1860,13 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     // screen segments
     private Rect _screenLeftRect;
+
+    // Last layout environment, used to re-apply the safe-area-relative control layout after a
+    // resolution, orientation or safe-area change (a landscape flip can keep the same screen size).
+    private Rect _lastLayoutSafeArea;
+    private float _lastLayoutInsetLeft;
+    private float _lastLayoutInsetRight;
+    private bool _layoutEnvironmentInitialized;
 
     // single touch only
     private Vector2 _firePos;

@@ -16,8 +16,8 @@ using DeviceApplication = UnityEngine.Device.Application;
 /// <c>Screen.width</c>/<c>Screen.height</c>, so right/centre-anchored elements stay put under the scale.
 ///
 /// The menu is also laid out inside the display's safe area (see "Safe-area layout"): Begin shifts it clear
-/// of the left cutout / curved edge and <see cref="VirtualWidth"/> excludes both side insets, so every menu
-/// that uses Begin/VirtualWidth is covered without per-element offsets.
+/// of the cutout-side inset and <see cref="VirtualWidth"/> excludes that inset, so every menu that uses
+/// Begin/VirtualWidth is covered without per-element offsets.
 ///
 /// Desktop is never affected — gated on <see cref="ApplicationDataManager.IsMobile"/> and
 /// <c>UnityEngine.Device.Application.isMobilePlatform</c>. In the Editor it can also be force-previewed
@@ -153,7 +153,7 @@ public static class MobileMenuScale
     public static float Scale { get { return BaseScale * _activeExtra; } }
 
     /// <summary>
-    /// Width of the menu area (the screen minus the left/right safe-area insets) in the scaled coordinate
+    /// Width of the menu area (the screen minus the cutout-side safe-area inset) in the scaled coordinate
     /// space — anchor menu rects against this. Equals Screen.width on PC.
     /// </summary>
     public static float VirtualWidth { get { return SafeWidthPixels / Scale; } }
@@ -165,20 +165,20 @@ public static class MobileMenuScale
     // Safe-area layout (camera cutouts / notch / curved edges)
     //
     // The menu is laid out in the screen area between the left and right insets:
-    //   - Begin() shifts the menu right by the left inset, and VirtualWidth excludes both insets, so
-    //     menu x = 0 .. VirtualWidth is always clear of cutouts. No per-element offsets are needed.
+    //   - Begin() shifts the menu right by the left inset, and VirtualWidth excludes the side inset(s),
+    //     so menu x = 0 .. VirtualWidth is always clear of cutouts. No per-element offsets are needed.
     //   - Backgrounds that touch a side of the menu area are extended to the real screen edge
     //     (DrawBackground / DrawBleed), so pages and panels still look edge to edge and no strip of
     //     the 3D scene shows beside them.
     //   - Code that needs screen pixels (camera viewports, touch areas) converts with MenuToScreenX /
     //     ScreenToMenu instead of multiplying by Scale itself.
     //
-    // Insets come from Screen.safeArea at full size, so a notch is always cleared (iOS reports notch +
-    // rounded corners on both sides; Android reports the cutout side only). Both sides get the same
-    // inset (OppositeEdgeFactor = 1): the menu stays centred on the screen, does not shift when the
-    // phone is flipped, and the side without a cutout is clear of its rounded corners. Devices that
-    // report no cutout get no inset and keep the stock layout. The bottom inset (iPhone home
-    // indicator) is intentionally not applied.
+    // Insets come from Screen.safeArea at full size, and only the side with the notch/cutout is
+    // inset; the other side keeps the full screen width. Android usually reports the cutout side
+    // only. iOS reports equal insets on both sides in landscape (notch plus rounded corners), so the
+    // notch side is taken from the current orientation: LandscapeLeft has the home button on the
+    // right, which puts the notch on the left. Devices that report no cutout get no inset and keep
+    // the stock layout. The bottom inset (iPhone home indicator) is intentionally not applied.
     //
     // The player can override the measured inset in Options > General > Screen Edge Margin
     // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or an exact margin in millimetres on both
@@ -188,12 +188,6 @@ public static class MobileMenuScale
     // ON, otherwise Unity letterboxes the cutout and safeArea always equals the full screen.
     // ---------------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Share of the cutout side's inset applied to the opposite side. 1 = uniform insets (menu centred,
-    /// no shift when the phone is flipped); lower values give that side more width back.
-    /// </summary>
-    public const float OppositeEdgeFactor = 1f;
-
     /// <summary>Upper bound for one side's inset as a fraction of the screen width (bogus platform values).</summary>
     private const float MaxInsetFraction = 0.15f;
 
@@ -202,6 +196,27 @@ public static class MobileMenuScale
 
     /// <summary>Largest manual screen edge margin, in millimetres.</summary>
     public const float MaxEdgeMarginMm = 10f;
+
+    // Last known notch side. Kept so a flat/unknown orientation does not flip the inset while the
+    // phone is laid down or the orientation is briefly unavailable.
+    private static bool _notchOnLeft;
+
+    /// <summary>
+    /// True when the current landscape orientation puts the notch on the left. iOS reports the same
+    /// safe-area inset on both sides in landscape, so orientation is the only way to tell them apart.
+    /// </summary>
+    private static bool NotchIsOnLeft()
+    {
+        // LandscapeLeft: home button on the right, so the notch is on the left.
+        if (Screen.orientation == ScreenOrientation.LandscapeLeft) { _notchOnLeft = true; return true; }
+        if (Screen.orientation == ScreenOrientation.LandscapeRight) { _notchOnLeft = false; return false; }
+
+        // Screen.orientation can be AutoRotation/Unknown; the physical orientation is still available.
+        if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) { _notchOnLeft = true; return true; }
+        if (Input.deviceOrientation == DeviceOrientation.LandscapeRight) { _notchOnLeft = false; return false; }
+
+        return _notchOnLeft;
+    }
 
     // Rects this close (menu units) to a side of the menu area count as touching it.
     private const float EdgeTolerance = 2f;
@@ -249,13 +264,16 @@ public static class MobileMenuScale
                 }
                 else
                 {
-                    // Auto: the reported cutout.
+                    // Auto: inset only the reported/current notch side. When both sides report the
+                    // same inset (iOS landscape), use the orientation to pick the notch side.
                     Rect safe = Screen.safeArea;
                     float cutoutLeft = Mathf.Max(safe.xMin, 0f);
                     float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
-                    float minimum = Mathf.Max(cutoutLeft, cutoutRight) * OppositeEdgeFactor;
-                    _insetLeftPixels = Mathf.Min(Mathf.Max(cutoutLeft, minimum), maximum);
-                    _insetRightPixels = Mathf.Min(Mathf.Max(cutoutRight, minimum), maximum);
+                    bool equalInsets = Mathf.Abs(cutoutLeft - cutoutRight) <= 1f;
+                    if (cutoutLeft > cutoutRight + 1f || (equalInsets && NotchIsOnLeft()))
+                        _insetLeftPixels = Mathf.Min(cutoutLeft, maximum);
+                    else
+                        _insetRightPixels = Mathf.Min(cutoutRight, maximum);
                 }
             }
         }
@@ -288,7 +306,7 @@ public static class MobileMenuScale
         get { return Screen.width - InsetRightPixels; }
     }
 
-    /// <summary>Width of the menu/safe area (screen minus both insets) in screen pixels.</summary>
+    /// <summary>Width of the menu/safe area (screen minus any side insets) in screen pixels.</summary>
     public static float SafeWidthPixels
     {
         get { float left, right; GetInsetsPixels(out left, out right); return Screen.width - left - right; }

@@ -9,9 +9,9 @@ using UnityEngine;
 /// scale), like Pixel Gun 3D / CoD Mobile. Positions are kept normalized (0..1) so a layout saved on
 /// one device renders consistently on another resolution/aspect.
 ///
-/// X is normalized to the safe-area width between the left/right camera cutout insets, so controls
-/// keep clear of a notch or curved edge; the 3D view still uses the whole screen. Y is normalized to
-/// the full screen height.
+/// X is normalized to the safe-area width (the screen minus the cutout-side inset), so controls keep
+/// clear of a notch or curved edge; the 3D view still uses the whole screen. Y is normalized to the
+/// full screen height.
 ///
 /// Persistence is a single PlayerPrefs string ("id:nx,ny,scale;...") so we don't depend on the
 /// project's CmunePrefs key enum. Invariant-culture float formatting keeps it locale-safe.
