@@ -111,9 +111,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.GlobalRibbon;
-        // Scale the ribbon for mobile. Content anchors against VirtualWidth (the safe menu area); the
-        // backgrounds are extended to the real screen edges.
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Scale the ribbon for mobile. Content anchors against VirtualWidth (both safe-area sides for
+        // this bar); the backgrounds are extended to the real screen edges.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
         MobileMenuScale.DrawBackground(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), BlueStonez.tab_strip_large);
 
         if (ApplicationDataManager.Channel != ChannelType.MacAppStore 
@@ -199,7 +199,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         DoSettingsDropDown();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }
@@ -389,12 +389,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaCredits > 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetCredits);
         }
         else if (deltaCredits < 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
         }
     }
 
@@ -402,12 +402,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaPoints > 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetPoints);
         }
         else if (deltaPoints < 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
         }
     }
 

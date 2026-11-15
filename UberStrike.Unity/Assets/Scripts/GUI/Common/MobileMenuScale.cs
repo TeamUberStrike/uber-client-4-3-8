@@ -158,6 +158,16 @@ public static class MobileMenuScale
     /// </summary>
     public static float VirtualWidth { get { return SafeWidthPixels / Scale; } }
 
+    public static float BothSidesVirtualWidth
+    {
+        get
+        {
+            float left, right;
+            CalculateInsetsPixels(true, out left, out right);
+            return (Screen.width - left - right) / Scale;
+        }
+    }
+
     /// <summary>Screen height in the scaled coordinate space — anchor menu rects against this.</summary>
     public static float VirtualHeight { get { return Screen.height / Scale; } }
 
@@ -180,9 +190,10 @@ public static class MobileMenuScale
     // right, which puts the notch on the left. Devices that report no cutout get no inset and keep
     // the stock layout. The bottom inset (iPhone home indicator) is intentionally not applied.
     //
-    // The player can override the measured inset in Options > General > Screen Edge Margin
-    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or an exact margin in millimetres on both
-    // sides. That covers devices with rounded corners or curved edges but no reported cutout.
+    // The player can set a minimum inset in Options > General > Screen Edge Margin
+    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or a minimum margin in millimetres on both
+    // sides. The larger of the safe-area inset and the manual margin is used, so the setting can add
+    // clearance for rounded corners/curved edges but never puts content back under a cutout.
     //
     // NOTE (Android): Player Settings > Resolution and Presentation > "Render outside safe area" must be
     // ON, otherwise Unity letterboxes the cutout and safeArea always equals the full screen.
@@ -237,45 +248,61 @@ public static class MobileMenuScale
     // The insets are read many times per OnGUI (every VirtualWidth), so they are computed once per frame.
     private static int _insetsFrame = -1;
     private static int _insetsScreenWidth;
+    private static bool _insetsCachedBothSides;
     private static float _insetLeftPixels;
     private static float _insetRightPixels;
+    private static bool _activeBothSides;
+
+    private static void CalculateInsetsPixels(bool bothSides, out float left, out float right)
+    {
+        left = 0f;
+        right = 0f;
+
+        if (!Active)
+            return;
+
+        float maximum = Screen.width * MaxInsetFraction;
+        ApplicationOptions options = ApplicationDataManager.ApplicationOptions;
+        float manualMm = options != null ? options.MobileScreenEdgeMargin : EdgeMarginAuto;
+
+        Rect safe = Screen.safeArea;
+        float cutoutLeft = Mathf.Max(safe.xMin, 0f);
+        float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
+
+        if (bothSides)
+        {
+            left = Mathf.Min(Mathf.Max(cutoutLeft, cutoutRight), maximum);
+            right = left;
+        }
+        else
+        {
+            // Auto: inset only the reported/current notch side. When both sides report the
+            // same inset (iOS landscape), use the orientation to pick the notch side.
+            bool equalInsets = Mathf.Abs(cutoutLeft - cutoutRight) <= 1f;
+            if (cutoutLeft > cutoutRight + 1f || (equalInsets && NotchIsOnLeft()))
+                left = Mathf.Min(cutoutLeft, maximum);
+            else
+                right = Mathf.Min(cutoutRight, maximum);
+        }
+
+        if (manualMm >= 0f)
+        {
+            // Manual: a symmetric minimum; a larger safe-area inset still wins.
+            float manual = Mathf.Min(Mathf.Min(manualMm, MaxEdgeMarginMm) * PixelsPerMm, maximum);
+            left = Mathf.Max(left, manual);
+            right = Mathf.Max(right, manual);
+        }
+    }
 
     private static void GetInsetsPixels(out float left, out float right)
     {
-        if (_insetsFrame != Time.frameCount || _insetsScreenWidth != Screen.width)
+        if (_insetsFrame != Time.frameCount || _insetsScreenWidth != Screen.width ||
+            _insetsCachedBothSides != _activeBothSides)
         {
             _insetsFrame = Time.frameCount;
             _insetsScreenWidth = Screen.width;
-            _insetLeftPixels = 0f;
-            _insetRightPixels = 0f;
-
-            if (Active)
-            {
-                float maximum = Screen.width * MaxInsetFraction;
-                ApplicationOptions options = ApplicationDataManager.ApplicationOptions;
-                float manualMm = options != null ? options.MobileScreenEdgeMargin : EdgeMarginAuto;
-
-                if (manualMm >= 0f)
-                {
-                    // Manual: the same exact margin on both sides.
-                    float manual = Mathf.Min(Mathf.Min(manualMm, MaxEdgeMarginMm) * PixelsPerMm, maximum);
-                    _insetLeftPixels = manual;
-                    _insetRightPixels = manual;
-                }
-                else
-                {
-                    // Auto: inset only the reported/current notch side. When both sides report the
-                    // same inset (iOS landscape), use the orientation to pick the notch side.
-                    Rect safe = Screen.safeArea;
-                    float cutoutLeft = Mathf.Max(safe.xMin, 0f);
-                    float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
-                    bool equalInsets = Mathf.Abs(cutoutLeft - cutoutRight) <= 1f;
-                    if (cutoutLeft > cutoutRight + 1f || (equalInsets && NotchIsOnLeft()))
-                        _insetLeftPixels = Mathf.Min(cutoutLeft, maximum);
-                    else
-                        _insetRightPixels = Mathf.Min(cutoutRight, maximum);
-                }
-            }
+            _insetsCachedBothSides = _activeBothSides;
+            CalculateInsetsPixels(_activeBothSides, out _insetLeftPixels, out _insetRightPixels);
         }
 
         left = _insetLeftPixels;
@@ -430,6 +457,17 @@ public static class MobileMenuScale
         return Begin(1f);
     }
 
+    public static Matrix4x4 BeginBothSides()
+    {
+        return BeginBothSides(1f);
+    }
+
+    public static Matrix4x4 BeginBothSides(float extra)
+    {
+        _activeBothSides = true;
+        return Begin(extra);
+    }
+
     /// <summary>
     /// Begin a scaled menu OnGUI block at base*extra scale. <paramref name="extra"/> &gt; 1 makes this one
     /// screen render bigger than the default menu (login panel). VirtualWidth/Height honour the extra for
@@ -452,5 +490,11 @@ public static class MobileMenuScale
     {
         GUI.matrix = prev;
         _activeExtra = 1f;
+    }
+
+    public static void EndBothSides(Matrix4x4 prev)
+    {
+        End(prev);
+        _activeBothSides = false;
     }
 }

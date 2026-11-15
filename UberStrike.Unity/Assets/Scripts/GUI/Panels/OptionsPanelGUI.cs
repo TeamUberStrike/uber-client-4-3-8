@@ -266,13 +266,13 @@ public class OptionsPanelGUI : PanelGuiBase
                 DrawGroupControl(new Rect(GroupMarginX, 125, width, 60), "Display", BlueStonez.label_group_interparkbold_18pt);
                 GUI.BeginGroup(new Rect(GroupMarginX, 125, width, 60));
                 {
-                    // How far the menus stay away from the left/right screen edges (camera cutout, rounded
-                    // corners, curved edges). Far left = Auto: use the cutout the device reports. Otherwise
-                    // an exact margin in millimetres, applied live so the effect is visible while dragging.
+                    // Minimum distance from the left/right screen edges (camera cutout, rounded corners,
+                    // curved edges). Far left = Auto: use the cutout the device reports. Otherwise a
+                    // minimum margin in millimetres; the larger safe-area inset still wins.
                     float margin = ApplicationDataManager.ApplicationOptions.MobileScreenEdgeMargin;
-                    GUI.Label(new Rect(15, 17, 135, 30), "Screen Edge Margin", BlueStonez.label_interparkbold_11pt_left);
+                    GUI.Label(new Rect(15, 17, 135, 30), "Min Screen Edge Margin", BlueStonez.label_interparkbold_11pt_left);
                     float s = Mathf.Round(GUI.HorizontalSlider(new Rect(155, 25, 200, 30), margin, MobileMenuScale.EdgeMarginAuto, MobileMenuScale.MaxEdgeMarginMm, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb));
-                    GUI.Label(new Rect(370, 17, 100, 30), s < 0 ? "Auto" : s.ToString("N0") + " mm", BlueStonez.label_interparkbold_11pt_left);
+                    GUI.Label(new Rect(370, 17, 100, 30), s < 0 ? "Auto" : s.ToString("N0") + " mm min", BlueStonez.label_interparkbold_11pt_left);
                     if (s != margin)
                     {
                         ApplicationDataManager.ApplicationOptions.MobileScreenEdgeMargin = s;
