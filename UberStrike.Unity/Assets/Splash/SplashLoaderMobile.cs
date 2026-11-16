@@ -85,7 +85,7 @@ class SplashLoaderMobile : MonoBehaviour
         if (movieDone)
         {
             GUI.depth = 10;
-            GUI.DrawTexture(new Rect(0, 0, backgroundTexture.width, backgroundTexture.height), backgroundTexture);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), backgroundTexture, ScaleMode.ScaleAndCrop, true);
         }
     }
 }

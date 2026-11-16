@@ -126,14 +126,14 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         if (_showLoadingBackground)
         {
             GUI.depth = 10;
-            GUI.DrawTexture(new Rect(0, 0, backgroundTexture.width, backgroundTexture.height), backgroundTexture);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), backgroundTexture, ScaleMode.ScaleAndCrop, true);
         }
         else if (_backgroundAlpha > 0.01f)
         {
             _backgroundAlpha = Mathf.Lerp(_backgroundAlpha, 0, Time.deltaTime * 2);
             GUI.color = new Color(1, 1, 1, _backgroundAlpha);
             GUI.depth = 10;
-            GUI.DrawTexture(new Rect(0, 0, backgroundTexture.width, backgroundTexture.height), backgroundTexture);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), backgroundTexture, ScaleMode.ScaleAndCrop, true);
             GUI.color = Color.white;
         }
     }

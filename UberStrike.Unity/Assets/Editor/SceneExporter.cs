@@ -582,6 +582,64 @@ public class SceneExporter
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
         }
+        else
+        {
+            PatchWebGLIndexHtml(WebPlayerFolder);
+        }
+    }
+
+    // Unity's default WebGL template centres a fixed-size canvas and inserts the viewport
+    // meta dynamically. On phones that shows the page background beside/around the game
+    // (white in Firefox, dark grey in Safari) and leaves the game unable to see the CSS
+    // safe-area insets. Patch the generated page so mobile browsers render the same
+    // full-bleed game as the native iOS/Android builds, with the notch/rounded corners
+    // reported through UberDeviceBridge to MobileMenuScale.
+    private static void PatchWebGLIndexHtml(string buildFolder)
+    {
+        string indexPath = System.IO.Path.Combine(buildFolder, "index.html");
+        if (!System.IO.File.Exists(indexPath))
+        {
+            Debug.LogWarning("WebGL index.html not found at " + indexPath);
+            return;
+        }
+
+        string html = System.IO.File.ReadAllText(indexPath);
+
+        const string marker = "<!-- uber-webgl-mobile -->";
+        if (!html.Contains(marker))
+        {
+            const string headStyles =
+                marker + "\n" +
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover\">\n" +
+                "<meta name=\"theme-color\" content=\"#1F1F20\">\n" +
+                "<style>\n" +
+                "html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#1F1F20; overscroll-behavior:none; }\n" +
+                "#unity-container { background:#1F1F20; }\n" +
+                "#unity-container.unity-mobile { position:fixed; top:0; left:0; width:100vw; height:100vh; height:100dvh; }\n" +
+                ".unity-mobile #unity-canvas { display:block; width:100%; height:100%; background:#1F1F20; touch-action:none; }\n" +
+                "</style>\n";
+
+            int headEnd = html.IndexOf("</head>", System.StringComparison.OrdinalIgnoreCase);
+            if (headEnd >= 0)
+                html = html.Insert(headEnd, headStyles);
+        }
+
+        // The default template only adds the viewport at runtime; keep that copy compatible
+        // with the static one (and with viewport-fit=cover) as well. The template may use
+        // either quote style depending on the Unity version.
+        html = html.Replace(
+            "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes",
+            "width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover");
+
+        // iPadOS reports a desktop macOS user agent; treat it as mobile so it gets the
+        // same full-bleed canvas and safe-area handling as the iPhone/iPad builds.
+        html = html.Replace(
+            "if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {",
+            "if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||\n" +
+            "          (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent))) {");
+
+        System.IO.File.WriteAllText(indexPath, html);
+        Debug.Log("Patched WebGL index.html for full-bleed mobile rendering.");
     }
 
     private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)

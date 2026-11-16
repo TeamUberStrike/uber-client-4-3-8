@@ -897,7 +897,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private void RefreshLayoutIfEnvironmentChanged()
     {
-        Rect safeArea = Screen.safeArea;
+        Rect safeArea = MobileMenuScale.SafeAreaPixels;
         float insetLeft = MobileMenuScale.InsetLeftPixels;
         float insetRight = MobileMenuScale.InsetRightPixels;
 

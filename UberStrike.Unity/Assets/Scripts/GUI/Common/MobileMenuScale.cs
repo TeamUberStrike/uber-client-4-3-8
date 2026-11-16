@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
 
 /// <summary>
 /// Mobile-only uniform scale for the menu / lobby IMGUI (physical-size based, see "Scale model").
@@ -24,6 +27,15 @@ using UnityEngine;
 /// </summary>
 public static class MobileMenuScale
 {
+#if UNITY_WEBGL && !UNITY_EDITOR
+    // 0 = left, 1 = right, 2 = top, 3 = bottom; returns canvas pixels.
+    [DllImport("__Internal")]
+    private static extern int UberGetSafeAreaInset(int side);
+
+    [DllImport("__Internal")]
+    private static extern int UberGetLandscapeNotchOnLeft();
+#endif
+
     // ---------------------------------------------------------------------------------------------
     // Scale model (mobile)
     //
@@ -179,7 +191,8 @@ public static class MobileMenuScale
     //   - Code that needs screen pixels (camera viewports, touch areas) converts with MenuToScreenX /
     //     ScreenToMenu instead of multiplying by Scale itself.
     //
-    // Insets come from Screen.safeArea at full size. In Auto, only the side with the notch/cutout is
+    // Insets come from the device safe area at full size (Screen.safeArea on iOS/Android, the CSS
+    // env(safe-area-inset-*) values forwarded by UberDeviceBridge on WebGL). In Auto, only the side with the notch/cutout is
     // inset; the other side keeps the full screen width. The Symmetric safe area option mirrors the
     // larger inset to both sides. The global ribbon and fixed HUDs always use the symmetric inset.
     // Android usually reports the cutout side only. iOS reports equal insets on both sides in
@@ -224,6 +237,13 @@ public static class MobileMenuScale
         if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) { _notchOnLeft = true; return true; }
         if (Input.deviceOrientation == DeviceOrientation.LandscapeRight) { _notchOnLeft = false; return false; }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // Unity does not populate Screen.orientation/Input.deviceOrientation on WebGL;
+        // ask the browser which landscape side the notch is on instead.
+        int webNotchOnLeft = UberGetLandscapeNotchOnLeft();
+        if (webNotchOnLeft >= 0) { _notchOnLeft = webNotchOnLeft == 1; return _notchOnLeft; }
+#endif
+
         return _notchOnLeft;
     }
 
@@ -241,6 +261,61 @@ public static class MobileMenuScale
             float ppmm = RenderPixelsPerMm;
             return ppmm > 0f ? ppmm : Screen.height / 65f;
         }
+    }
+
+    // Cached once per frame: OnGUI asks for the safe area many times and the WebGL version
+    // crosses the JS boundary for every side.
+    private static int _safeAreaFrame = -1;
+    private static int _safeAreaScreenWidth;
+    private static int _safeAreaScreenHeight;
+    private static Rect _safeAreaPixels;
+
+    /// <summary>
+    /// Safe area in screen pixels with a bottom-left origin, matching <see cref="Screen.safeArea"/>.
+    /// On WebGL the browser does not populate Screen.safeArea, so the CSS safe-area insets exposed
+    /// by the full-bleed viewport (viewport-fit=cover) are used instead. This lets the WebGL build
+    /// inset the UI for the notch/rounded corners exactly like the native iOS/Android builds.
+    /// </summary>
+    public static Rect SafeAreaPixels
+    {
+        get
+        {
+            if (_safeAreaFrame == Time.frameCount &&
+                _safeAreaScreenWidth == Screen.width &&
+                _safeAreaScreenHeight == Screen.height)
+            {
+                return _safeAreaPixels;
+            }
+
+            _safeAreaFrame = Time.frameCount;
+            _safeAreaScreenWidth = Screen.width;
+            _safeAreaScreenHeight = Screen.height;
+            _safeAreaPixels = CalculateSafeAreaPixels();
+            return _safeAreaPixels;
+        }
+    }
+
+    private static Rect CalculateSafeAreaPixels()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (ApplicationDataManager.IsMobile)
+        {
+            float left = UberGetSafeAreaInset(0);
+            float right = UberGetSafeAreaInset(1);
+            float top = UberGetSafeAreaInset(2);
+            float bottom = UberGetSafeAreaInset(3);
+
+            if (left > 0f || right > 0f || top > 0f || bottom > 0f)
+            {
+                return new Rect(
+                    left,
+                    bottom,
+                    Mathf.Max(0f, Screen.width - left - right),
+                    Mathf.Max(0f, Screen.height - top - bottom));
+            }
+        }
+#endif
+        return Screen.safeArea;
     }
 
     // The insets are read many times per OnGUI (every VirtualWidth), so they are computed once per frame.
@@ -263,7 +338,7 @@ public static class MobileMenuScale
         ApplicationOptions options = ApplicationDataManager.ApplicationOptions;
         float manualMm = options != null ? options.MobileScreenEdgeMargin : EdgeMarginAuto;
 
-        Rect safe = Screen.safeArea;
+        Rect safe = SafeAreaPixels;
         float cutoutLeft = Mathf.Max(safe.xMin, 0f);
         float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
 
