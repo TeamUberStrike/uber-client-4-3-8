@@ -898,7 +898,7 @@ PlayerSettings:
   webGLDebugSymbols: 0
   webGLEmscriptenArgs: -sTOTAL_STACK=16777216
   webGLModulesDirectory: 
-  webGLTemplate: APPLICATION:Default
+  webGLTemplate: PROJECT:UberStrike
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 0
   webGLCompressionFormat: 1
