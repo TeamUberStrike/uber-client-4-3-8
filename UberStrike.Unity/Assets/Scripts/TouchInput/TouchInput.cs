@@ -916,7 +916,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (ScopeSwipe != null)
             ScopeSwipe.Boundary = _scopeSwipeRect;
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         ApplyLayout();
 #endif
     }

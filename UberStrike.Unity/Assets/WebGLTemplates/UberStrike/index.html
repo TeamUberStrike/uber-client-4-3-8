@@ -96,6 +96,14 @@
         // iOS Safari can drift the touch mapping after orientation changes and when the
         // toolbar appears. Re-fire resize events so Unity re-reads the canvas rect.
         function forceUnityResize() {
+          // A 180-degree landscape flip keeps the same window size, so Unity ignores plain
+          // resize events and the canvas/UI would stay on the old side. Pulse the container
+          // size by 1px so Unity really re-reads the orientation, then restore the fit.
+          var container = document.querySelector('#unity-container');
+          if (container) {
+            container.style.height = (parseFloat(container.style.height || '0') - 1) + 'px';
+            setTimeout(function() { fitCanvasToVisualViewport(); }, 80);
+          }
           for (var i = 1; i <= 6; i++) {
             setTimeout(function() { window.dispatchEvent(new Event('resize')); }, i * 200);
           }
