@@ -1,4 +1,5 @@
 using Cmune.Util;
+using DeviceApplication = UnityEngine.Device.Application;
 using UberStrike.Realtime.Common;
 using UnityEngine;
 
@@ -62,13 +63,27 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void Draw()
     {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        bool controlsEditing = MobileControlLayout.EditMode;
+#else
+        bool controlsEditing = false;
+#endif
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+        if (MobileControlLayout.EditMode)
+        {
+            _temporaryMsgText.Hide();
+            _permanentMsgText.Hide();
+        }
+#endif
+
         if (GameState.HasCurrentGame && !PopupSystem.IsAnyPopupOpen)
         {
             if (TouchInput.IsSupported && TouchInput.Exists)
             {
 #if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
                 if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
-                    !InGameChatHud.Instance.CanInput)
+                    !InGameChatHud.Instance.CanInput && !controlsEditing)
                 {
                     float stackTop = Screen.height * 0.6f + 62;
 
@@ -86,6 +101,13 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                     {
                         teamMode.ChangeTeam();
                     }
+
+                    if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
+                        GUITools.Button(new Rect(20, stackTop + 124, 200, 50),
+                            new GUIContent("Edit Controls"), StormFront.ButtonBlue))
+                    {
+                        MobileControlLayout.EditMode = true;
+                    }
                 }
 #endif
             }
@@ -96,7 +118,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                 SceneGuiController.OpenChat();
             }
         }
-        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled)
+        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing)
         {
 #if !UNITY_ANDROID && !UNITY_IPHONE
             if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 100,

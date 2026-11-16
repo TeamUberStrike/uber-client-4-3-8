@@ -8,6 +8,13 @@ public class TouchShooter : TouchBaseControl
 {
     public Vector2 Aim { get; private set; }
 
+    /// <summary>
+    /// True while the tap-to-fire (secondary) finger is still live. Used by TouchInput's fire
+    /// safety net so D-pad-mode fire (owned by the Shooter) isn't released because the on-screen
+    /// fire button is disabled.
+    /// </summary>
+    public bool IsFireFingerLive { get { return _secondaryFinger.FingerId != -1; } }
+
     public float SecondaryFireTapDelay = 0.4f;
     public float SecondaryFireTapMaxDistanceSqr = 10000.0f;
 
@@ -47,8 +54,16 @@ public class TouchShooter : TouchBaseControl
 
     public override void UpdateTouches(Touch touch)
     {
-        if (touch.phase == TouchPhase.Began && Boundary.ContainsTouch(touch.position) && ValidArea(touch.position))
+        if (touch.phase == TouchPhase.Began && Boundary.ContainsTouch(touch.position))
         {
+            // Fingers that start on the D-pad, joystick, fire/jump buttons or any other on-screen
+            // control belong to that control and must NOT count toward the look/shoot fingers.
+            // Only fingers that begin in free space compete for the two slots, so the first free
+            // finger is always the aim finger and the second is the fire finger, no matter how
+            // many other fingers are resting on buttons.
+            if (!ValidArea(touch.position))
+                return;
+
             if (_primaryFinger.FingerId == -1)
             {
                 _primaryFinger = new TouchFinger()
@@ -58,6 +73,8 @@ public class TouchShooter : TouchBaseControl
                     LastPos = touch.position,
                     FingerId = touch.fingerId,
                 };
+                Debug.Log("[ShooterDiag] primary bind finger=" + touch.fingerId + " pos=" + touch.position);
+
                 // if finger was tapped within time and close enough
                 if (_lastFireTouch + SecondaryFireTapDelay > Time.time && (_lastFirePosition - touch.position).sqrMagnitude < SecondaryFireTapMaxDistanceSqr)
                 {
@@ -78,6 +95,7 @@ public class TouchShooter : TouchBaseControl
                     LastPos = touch.position,
                     FingerId = touch.fingerId,
                 };
+                Debug.Log("[ShooterDiag] secondary bind -> FIRE finger=" + touch.fingerId + " pos=" + touch.position);
                 if (OnFireStart != null) OnFireStart();
             }
         }
@@ -131,23 +149,18 @@ public class TouchShooter : TouchBaseControl
         return false;
     }
 
-    public void IgnoreRect(Rect r)
+    // Replaces the full set of zones that do not participate in the look/shoot finger counting
+    // (D-pad, joystick, fire/jump/... buttons, quick items, weapon changer, scope swipe).
+    // TouchInput rebuilds this every frame from the controls that are currently enabled, so it
+    // always matches the current state, mode and custom layout.
+    public void SetIgnoreRects(IEnumerable<Rect> rects)
     {
-        if (!_ignoreTouches.Contains(r))
-            _ignoreTouches.Add(r);
-    }
-
-    // Replaceable action-button zones (fire/jump/crouch/secondary). A touch that starts on a
-    // button must not also bind as the look/aim or second-finger-fire finger.
-    public void SetButtonIgnores(Rect[] rects)
-    {
-        foreach (Rect r in _buttonIgnores) _ignoreTouches.Remove(r);
-        _buttonIgnores.Clear();
+        _ignoreTouches.Clear();
         if (rects == null) return;
         foreach (Rect r in rects)
         {
-            _buttonIgnores.Add(r);
-            if (!_ignoreTouches.Contains(r)) _ignoreTouches.Add(r);
+            if (!_ignoreTouches.Contains(r))
+                _ignoreTouches.Add(r);
         }
     }
 
@@ -171,7 +184,6 @@ public class TouchShooter : TouchBaseControl
     private Vector2 _lastFirePosition = Vector2.zero;
 
     private ArrayList _ignoreTouches;
-    private readonly ArrayList _buttonIgnores = new ArrayList();
 
     #endregion
 }

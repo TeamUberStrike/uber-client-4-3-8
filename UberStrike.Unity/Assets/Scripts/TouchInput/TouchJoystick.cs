@@ -113,4 +113,3 @@ public class TouchJoystick : TouchBaseControl
 
     #endregion
 }
-

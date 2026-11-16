@@ -43,7 +43,11 @@ public class EditorTouchSimulator : MonoBehaviour
 
     private void Update()
     {
-        bool shouldRun = TouchInput.IsSupported && !MobileControlLayout.EditMode;
+        // Runs during the layout editor too: the editor's touch paths (drag/pinch/rotate) read
+        // TouchSource.Touches, so without the simulator two-finger gestures can't be tested in
+        // the Editor preview. Gameplay input stays suspended while editing (TouchController
+        // skips processing in EditMode), so this can't leak into look/move.
+        bool shouldRun = TouchInput.IsSupported;
 
         if (!shouldRun || Input.touchCount > 0)
         {
