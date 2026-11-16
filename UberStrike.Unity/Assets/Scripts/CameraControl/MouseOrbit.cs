@@ -35,6 +35,11 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
     private Queue lastDragDiffs = new Queue();
 #endif
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+    private int lastTouchFingerId = -1;
+    private Vector2 lastTouchPos;
+#endif
+
     public float MaxX = 0;
 
     public static bool Disable { get; set; }
@@ -226,23 +231,52 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 
                     lastTouchDeltas.Clear();
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+                    if (ApplicationDataManager.IsMobile)
+                        lastTouchFingerId = -1;
+#endif
+
                     float velocity = Mathf.Clamp(avgDrag.magnitude, 0, 100);
 
                     mouseAxisSpin = avgDrag.normalized * velocity;
                 }
                 else if (touch.position.x < MaxX && touch.position.y < Screen.height - GlobalUIRibbon.HEIGHT)
                 {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                    // Unity's Touch.deltaPosition on WebGL reports the ABSOLUTE position on the
+                    // first Moved/Stationary frame (difference from (0,0)) and is inverted
+                    // (previous minus current), so a tap would spin the avatar. Track the delta
+                    // manually like TouchShooter does, so WebGL behaves like native iOS.
+                    Vector2 delta;
+                    if (ApplicationDataManager.IsMobile)
+                    {
+                        if (touch.fingerId != lastTouchFingerId)
+                        {
+                            lastTouchFingerId = touch.fingerId;
+                            lastTouchPos = touch.position;
+                            delta = Vector2.zero;
+                        }
+                        else
+                        {
+                            delta = touch.position - lastTouchPos;
+                            lastTouchPos = touch.position;
+                        }
+                    }
+                    else
+                    {
+                        delta = touch.deltaPosition;
+                    }
+#else
+                    Vector2 delta = touch.deltaPosition;
+#endif
+
                     // record the last touch deltas
                     if (lastTouchDeltas.Count > 4) lastTouchDeltas.Dequeue();
-                    lastTouchDeltas.Enqueue(touch.deltaPosition);
+                    lastTouchDeltas.Enqueue(delta);
 
                     // Rotate camera based on mouse drag
-#if UNITY_WEBGL && !UNITY_EDITOR
-                    xOrbit += (ApplicationDataManager.IsMobile ? -1f : 1f) * touch.deltaPosition.x;
-#else
-                    xOrbit += touch.deltaPosition.x;
-#endif
-                    yOrbit -= touch.deltaPosition.y;
+                    xOrbit += delta.x;
+                    yOrbit -= delta.y;
                 }
             }
         }
