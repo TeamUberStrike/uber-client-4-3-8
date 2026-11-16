@@ -233,7 +233,11 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
                     lastTouchDeltas.Enqueue(touch.deltaPosition);
 
                     // Rotate camera based on mouse drag
+#if UNITY_WEBGL && !UNITY_EDITOR
+                    xOrbit += (ApplicationDataManager.IsMobile ? -1f : 1f) * touch.deltaPosition.x;
+#else
                     xOrbit += touch.deltaPosition.x;
+#endif
                     yOrbit -= touch.deltaPosition.y;
                 }
             }
