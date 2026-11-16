@@ -6,14 +6,19 @@
     <title>Unity WebGL Player | {{{ PRODUCT_NAME }}}</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="UberStrike">
+    <link rel="apple-touch-icon" href="TemplateData/uberstrike-logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#1F1F20">
+    <meta name="theme-color" content="#1E1E1E">
     <style>
-      html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#1F1F20; overscroll-behavior:none; }
-      #unity-container { background:#1F1F20; }
+      html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#1E1E1E; overscroll-behavior:none; }
+      #unity-container { background:#1E1E1E; }
       #unity-container.unity-mobile { position:fixed; top:0; left:0; width:100vw; height:100vh; height:100dvh; }
-      .unity-mobile #unity-canvas { display:block; width:100%; height:100%; background:#1F1F20; touch-action:none; }
-      #rotate-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1F1F20; color:#fff; z-index:1000; align-items:center; justify-content:center; text-align:center; flex-direction:column; font-family:sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation; }
+      .unity-mobile #unity-canvas { display:block; width:100%; height:100%; background:#1E1E1E; touch-action:none; }
+      #rotate-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1E1E1E; color:#fff; z-index:1000; align-items:center; justify-content:center; text-align:center; flex-direction:column; font-family:sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation; }
       #rotate-overlay .rotate-logo { width:min(70vw, 320px); height:auto; margin-bottom:32px; }
       #rotate-overlay .rotate-phone { width:44px; height:80px; border:3px solid #fff; border-radius:8px; margin-bottom:24px; transform:rotate(0deg); animation:rotatePhone 2s ease-in-out infinite; }
       #rotate-overlay p { margin:0 24px; font-size:16px; line-height:1.5; }
@@ -85,6 +90,52 @@
       rotateOverlay.addEventListener('click', tryLockLandscape);
       updateOrientationOverlay();
 
+
+
+      (function() {
+        // iOS Safari can drift the touch mapping after orientation changes and when the
+        // toolbar appears. Re-fire resize events so Unity re-reads the canvas rect.
+        function forceUnityResize() {
+          for (var i = 1; i <= 6; i++) {
+            setTimeout(function() { window.dispatchEvent(new Event('resize')); }, i * 200);
+          }
+        }
+        window.addEventListener('orientationchange', forceUnityResize);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', forceUnityResize);
+          window.visualViewport.addEventListener('scroll', function() {
+            for (var i = 1; i <= 3; i++) {
+              setTimeout(function() { window.dispatchEvent(new Event('resize')); }, i * 150);
+            }
+          });
+        }
+        // Keep the canvas fitted to the visible viewport (Safari toolbar collapse etc).
+        // The game itself places its UI below the iOS dead zone (GlobalUIRibbon
+        // MobileTopOffset), so the canvas stays truly full-bleed.
+        function fitCanvasToVisualViewport() {
+          if (!isMobileDevice()) return;
+          var vv = window.visualViewport;
+          var container = document.querySelector('#unity-container');
+          if (!container) return;
+          var top = 0, height = window.innerHeight, width = window.innerWidth;
+          if (vv) {
+            top = Math.max(vv.offsetTop, window.innerHeight - vv.height);
+            height = vv.height;
+            width = vv.width;
+          }
+          container.style.position = 'fixed';
+          container.style.top = top + 'px';
+          container.style.left = '0px';
+          container.style.width = width + 'px';
+          container.style.height = height + 'px';
+        }
+        window.addEventListener('resize', fitCanvasToVisualViewport);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', fitCanvasToVisualViewport);
+          window.visualViewport.addEventListener('scroll', fitCanvasToVisualViewport);
+        }
+        fitCanvasToVisualViewport();
+      })();
       // Shows a temporary message banner/ribbon for a few seconds, or
       // a permanent error message on top of the canvas if type=='error'.
       // If type=='warning', a yellow highlight color is used.

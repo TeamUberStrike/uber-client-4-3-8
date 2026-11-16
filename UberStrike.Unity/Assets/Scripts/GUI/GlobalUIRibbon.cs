@@ -5,9 +5,36 @@ using Cmune.Util;
 using UberStrike.DataCenter.Common.Entities;
 using UnityEngine;
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
+
 public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 {
+    // Note: HEIGHT deliberately excludes MobileTopOffset - GetHeight() adds the live _yOffset,
+    // so pages anchor right below the (offset) ribbon. Adding it here double-counted and left a
+    // gap between the ribbon and the page panels.
     public static int HEIGHT { get { return NEWSFEED_HEIGHT + PAGETABS_HEIGHT + STATUSBAR_HEIGHT; } }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    // iOS reserves the top ~22 CSS px of the screen for the system status bar / Safari
+    // tap-to-reveal zone; touches there never reach the page. On iOS WebGL the ribbon
+    // starts below that dead zone (Krunker-style: full-bleed scene, UI below the system UI).
+    // Android has no such dead zone, so it keeps the original edge-to-edge layout.
+    // 28 CSS px * 3 (dpr) = 84 physical px; menu units = px / MobileMenuScale.Scale.
+    [DllImport("__Internal")]
+    private static extern int UberGetDeviceType();
+
+    private static float MobileTopOffset
+    {
+        get { return UberGetDeviceType() == 1 ? (84f / MobileMenuScale.Scale) : 0f; }
+    }
+#else
+    private static float MobileTopOffset
+    {
+        get { return 0f; }
+    }
+#endif
 
 #if UNITY_ANDROID || UNITY_IPHONE
     private const int NEWSFEED_HEIGHT = 0;
@@ -29,7 +56,6 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private void Awake()
     {
         _yOffset = -HEIGHT;
-
         _liveFeed = new LiveFeed();
 
         _pageList = new Dictionary<PageType, GUIContent>()
@@ -105,10 +131,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             }
         }
 
-        if (_yOffset < 0)
-            _yOffset = Mathf.Lerp(_yOffset, 0.1f, Time.deltaTime * 8.0f);
+        if (_yOffset < MobileTopOffset)
+            _yOffset = Mathf.Lerp(_yOffset, MobileTopOffset + 0.1f, Time.deltaTime * 8.0f);
         else
-            _yOffset = 0;
+            _yOffset = MobileTopOffset;
 
         _liveFeed.Update();
         PlayerXpUtil.GetXpRangeForLevel(PlayerDataManager.PlayerLevel, out _minXPforThisLevel, out _maxXPforThisLevel);
@@ -122,6 +148,16 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         // Scale the ribbon for mobile. Content anchors against VirtualWidth (both safe-area sides for
         // this bar); the backgrounds are extended to the real screen edges.
         Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // Paint the iOS dead zone (above the offset ribbon) with the same window background as
+        // the status bar so it blends with the rest of the UI instead of showing the scene.
+        if (MobileTopOffset > 0f)
+        {
+            MobileMenuScale.DrawBackground(MobileMenuScale.ExpandToScreenEdges(new Rect(0, 0, MobileMenuScale.VirtualWidth, MobileTopOffset)), BlueStonez.window);
+        }
+#endif
+
         MobileMenuScale.DrawBackground(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), BlueStonez.tab_strip_large);
 
         if (ApplicationDataManager.Channel != ChannelType.MacAppStore 
