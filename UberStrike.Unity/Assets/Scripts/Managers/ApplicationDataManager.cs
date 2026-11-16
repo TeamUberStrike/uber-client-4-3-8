@@ -21,7 +21,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     [SerializeField]
     private LocaleType _locale = LocaleType.en_US;
 
-    public const string HeaderFilename = "UberStrikeHeader";
+    public const string HeaderFilename = "UberStrike.xml";
     public const string MainFilename = "UberStrikeMain";
     public const string StandaloneFilename = "UberStrike";
 
