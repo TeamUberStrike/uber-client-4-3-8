@@ -13,6 +13,11 @@
       #unity-container { background:#1F1F20; }
       #unity-container.unity-mobile { position:fixed; top:0; left:0; width:100vw; height:100vh; height:100dvh; }
       .unity-mobile #unity-canvas { display:block; width:100%; height:100%; background:#1F1F20; touch-action:none; }
+      #rotate-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1F1F20; color:#fff; z-index:1000; align-items:center; justify-content:center; text-align:center; flex-direction:column; font-family:sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation; }
+      #rotate-overlay .rotate-logo { width:min(70vw, 320px); height:auto; margin-bottom:32px; }
+      #rotate-overlay .rotate-phone { width:44px; height:80px; border:3px solid #fff; border-radius:8px; margin-bottom:24px; transform:rotate(0deg); animation:rotatePhone 2s ease-in-out infinite; }
+      #rotate-overlay p { margin:0 24px; font-size:16px; line-height:1.5; }
+      @keyframes rotatePhone { 0%,20% { transform:rotate(0deg); } 50%,70% { transform:rotate(90deg); } 100% { transform:rotate(90deg); } }
     </style>
   </head>
   <body>
@@ -30,6 +35,11 @@
         <div id="unity-fullscreen-button"></div>
         <div id="unity-build-title">{{{ PRODUCT_NAME }}}</div>
       </div>
+      <div id="rotate-overlay">
+        <img class="rotate-logo" src="TemplateData/uberstrike-logo.png" alt="UberStrike">
+        <div class="rotate-phone"></div>
+        <p>Please rotate your device to landscape</p>
+      </div>
     </div>
     <script>
 
@@ -39,6 +49,41 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
+      var rotateOverlay = document.querySelector("#rotate-overlay");
+
+      function isMobileDevice() {
+        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+               (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
+      }
+
+      function isPortrait() {
+        return window.innerHeight > window.innerWidth;
+      }
+
+      function updateOrientationOverlay() {
+        if (isMobileDevice() && isPortrait()) {
+          rotateOverlay.style.display = 'flex';
+        } else {
+          rotateOverlay.style.display = 'none';
+        }
+      }
+
+      // The Screen Orientation API lock is the only way to actually force landscape,
+      // and it only exists on some browsers (iOS Safari does not support it at all).
+      // Where unsupported, the overlay above keeps the game covered in portrait.
+      function tryLockLandscape() {
+        if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+          window.screen.orientation.lock('landscape').catch(function() {});
+        }
+      }
+
+      window.addEventListener('resize', updateOrientationOverlay);
+      window.addEventListener('orientationchange', updateOrientationOverlay);
+      document.addEventListener('fullscreenchange', function() {
+        if (document.fullscreenElement) tryLockLandscape();
+      });
+      rotateOverlay.addEventListener('click', tryLockLandscape);
+      updateOrientationOverlay();
 
       // Shows a temporary message banner/ribbon for a few seconds, or
       // a permanent error message on top of the canvas if type=='error'.
