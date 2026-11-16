@@ -115,7 +115,9 @@ public class AmmoHud : Singleton<AmmoHud>
 #if !UNITY_ANDROID && !UNITY_IPHONE
         _entireGroup.Position = new Vector2(Screen.width * 0.95f, Screen.height * 0.95f);
 #else
-        _entireGroup.Position = new Vector2(Screen.width * 0.98f, Screen.height * 0.07f);
+        float safeInset = Mathf.Max(MobileMenuScale.InsetLeftPixels, MobileMenuScale.InsetRightPixels);
+        _entireGroup.Position = new Vector2(Screen.width - safeInset - Screen.width * 0.02f,
+            Screen.height * 0.07f);
 #endif
     }
 
@@ -126,8 +128,7 @@ public class AmmoHud : Singleton<AmmoHud>
         _ammoIcon.Scale = new Vector2(scaleFactor, scaleFactor);
         _ammoIcon.Position = new Vector2(-_ammoIcon.Size.x, -_ammoIcon.Size.y * 0.8f);
         _ammoDigits.Text = _curAmmo.ToString();
-        _ammoDigits.Scale = new Vector2(HudStyleUtility.SMALLER_DIGITS_SCALE * _curScaleFactor,
-            HudStyleUtility.SMALLER_DIGITS_SCALE * _curScaleFactor);
+        _ammoDigits.Scale = new Vector2(1.0f * _curScaleFactor, 1.0f * _curScaleFactor);
         _ammoDigits.Position = new Vector2(-_ammoIcon.Size.x - HudStyleUtility.GAP_BETWEEN_TEXT,
             adjustFactor * _ammoDigits.Size.y);
     }

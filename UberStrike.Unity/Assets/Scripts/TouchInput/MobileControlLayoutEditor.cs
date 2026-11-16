@@ -317,7 +317,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         float bh = 34f;
         float totalW = 4f * bw + 3f * 8f;
         float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
-        _toolbarButtonsRect = new Rect(x0 * ms, 2f * ms, totalW * ms, bh * ms);
+        _toolbarButtonsRect = new Rect(MobileMenuScale.MenuToScreenX(x0), 2f * ms, totalW * ms, bh * ms);
 
         // Dim the world behind the editor so the markers stay legible no matter what the paused
         // game shows behind them (a bright sky used to swallow the blue outline of the top-right
@@ -509,10 +509,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
         return 1f;
     }
 
-    // Keeps the dragged control's full footprint on screen: the center can't come closer to an
-    // edge than half the control's size, so a control can never be dragged off-screen and lost.
-    // Movement is otherwise free — controls may go anywhere on screen, including up to the top.
-    // For the rotated D-pad the clamp uses its axis-aligned footprint at the current degree.
+    // Keeps the dragged control's full footprint inside the safe area on X and on screen on Y: the
+    // center can't come closer to a side than half the control's size, so a control can never be
+    // dragged under a camera cutout or off-screen and lost. Movement is otherwise free — controls
+    // may go anywhere vertically, including up to the top. For the rotated D-pad the clamp uses its
+    // axis-aligned footprint at the current degree.
     private Vector2 ClampDragCenter(Vector2 center)
     {
         float halfW = 24f;
@@ -542,9 +543,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
             }
         }
 
-        float maxX = Mathf.Max(halfW, Screen.width - halfW);
+        float minX = MobileMenuScale.SafeLeftPixels + halfW;
+        float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - halfW);
         float maxY = Mathf.Max(halfH, Screen.height - halfH);
-        center.x = Mathf.Clamp(center.x, Mathf.Min(halfW, maxX), maxX);
+        center.x = Mathf.Clamp(center.x, Mathf.Min(minX, maxX), maxX);
         center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
         return center;
     }

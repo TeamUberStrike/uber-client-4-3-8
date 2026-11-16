@@ -247,7 +247,9 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private void DoGeneralGroup()
     {
-        float height = 100;
+        // Mobile only: a Display group with the screen edge margin below Misc.
+        bool showDisplay = MobileMenuScale.Active;
+        float height = showDisplay ? 225 : 100;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
         _scrollControls = GUITools.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
@@ -258,6 +260,29 @@ public class OptionsPanelGUI : PanelGuiBase
                 ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled = GUI.Toggle(new Rect(12, 35, 200, 20), ApplicationDataManager.ApplicationOptions.GameplayAutoEquipEnabled, LocalizedStrings.AutoEquipWeapons, BlueStonez.toggle);
             }
             GUI.EndGroup();
+
+            if (showDisplay)
+            {
+                DrawGroupControl(new Rect(GroupMarginX, 125, width, 90), "Display", BlueStonez.label_group_interparkbold_18pt);
+                GUI.BeginGroup(new Rect(GroupMarginX, 125, width, 90));
+                {
+                    // Minimum distance from the left/right screen edges (camera cutout, rounded corners,
+                    // curved edges). Far left = Auto: use the cutout the device reports. Otherwise a
+                    // minimum margin in millimetres; the larger safe-area inset still wins.
+                    float margin = ApplicationDataManager.ApplicationOptions.MobileScreenEdgeMargin;
+                    GUI.Label(new Rect(15, 17, 135, 30), "Min Screen Edge Margin", BlueStonez.label_interparkbold_11pt_left);
+                    float s = Mathf.Round(GUI.HorizontalSlider(new Rect(155, 25, 200, 30), margin, MobileMenuScale.EdgeMarginAuto, MobileMenuScale.MaxEdgeMarginMm, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb));
+                    GUI.Label(new Rect(370, 17, 100, 30), s < 0 ? "Auto" : s.ToString("N0") + " mm min", BlueStonez.label_interparkbold_11pt_left);
+                    if (s != margin)
+                    {
+                        ApplicationDataManager.ApplicationOptions.MobileScreenEdgeMargin = s;
+                    }
+
+                    ApplicationDataManager.ApplicationOptions.MobileScreenEdgeSymmetric = GUI.Toggle(new Rect(15, 55, 220, 30),
+                        ApplicationDataManager.ApplicationOptions.MobileScreenEdgeSymmetric, "Symmetric safe area", BlueStonez.toggle);
+                }
+                GUI.EndGroup();
+            }
         }
         GUITools.EndScrollView();
     }

@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class PregameFloatingGUI : MonoBehaviour
 {
+    // Size of the join area on mobile relative to the menu scale: at the full menu scale the 130-unit
+    // join buttons are larger than they need to be.
+    private const float MobileJoinAreaScale = 0.8f;
+
     private BaseJoinGameGUI _joinGameGUI;
     private MeshGUIText _gameModeText = null;
 
@@ -25,14 +29,24 @@ public class PregameFloatingGUI : MonoBehaviour
 
         if (GameState.HasCurrentSpace)
         {
+            // The join buttons are laid out in menu units, at MobileJoinAreaScale of the menu's size.
+            // The area is the whole camera view (the part of the screen left of the panel), not the
+            // safe area, so the buttons stay centred over the avatar. On PC menu units are screen
+            // pixels and the extra scale does not apply.
+            Matrix4x4 scaleMatrix = MobileMenuScale.Begin(MobileJoinAreaScale);
+
             Rect pixelRect = GameState.CurrentSpace.Camera.pixelRect;
-            Rect rect = new Rect(30, 80, pixelRect.width - 30 * 2, Screen.height - 80);
+            float viewLeft = MobileMenuScale.ScreenToMenu(new Vector2(pixelRect.xMin, 0f)).x;
+            float viewRight = MobileMenuScale.ScreenToMenu(new Vector2(pixelRect.xMax, 0f)).x;
+            Rect rect = new Rect(viewLeft + 30, 80, viewRight - viewLeft - 30 * 2, MobileMenuScale.VirtualHeight - 80);
 
             GUI.BeginGroup(rect, string.Empty);
             {
                 DrawJoinArea(rect);
             }
             GUI.EndGroup();
+
+            MobileMenuScale.End(scaleMatrix);
         }
     }
 

@@ -111,10 +111,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.GlobalRibbon;
-        // Scale the full-width ribbon for mobile. All widths anchor against VirtualWidth so it still
-        // spans the screen (= Scale * VirtualWidth) but renders taller with bigger text/tabs.
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
-        GUI.Label(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), GUIContent.none, BlueStonez.tab_strip_large);
+        // Scale the ribbon for mobile. Content anchors against VirtualWidth (both safe-area sides for
+        // this bar); the backgrounds are extended to the real screen edges.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
+        MobileMenuScale.DrawBackground(new Rect(0, _yOffset, MobileMenuScale.VirtualWidth, PAGETABS_HEIGHT + STATUSBAR_HEIGHT + 4), BlueStonez.tab_strip_large);
 
         if (ApplicationDataManager.Channel != ChannelType.MacAppStore 
             && ApplicationDataManager.Channel != ChannelType.OSXStandalone 
@@ -131,8 +131,6 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         {
             DoStatusBar(new Rect(0, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, MobileMenuScale.VirtualWidth, STATUSBAR_HEIGHT));
         }
-
-        _dropDown.SetRect(new Rect(MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT, _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT, STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
 
         if (_ribbonEvents.Count > 0)
         {
@@ -159,7 +157,8 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         if (_copyButtonStyle == null)
         {
             _copyButtonStyle = new GUIStyle(BlueStonez.buttondark_small);
-            _copyButtonStyle.fontSize = 11;
+            if (_copyButtonStyle.font != null && _copyButtonStyle.font.dynamic)
+                _copyButtonStyle.fontSize = 11;
             _copyButtonStyle.wordWrap = false;
             _copyButtonStyle.clipping = TextClipping.Clip;
         }
@@ -169,11 +168,13 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
         GUIContent versionContent = new GUIContent(versionText);
 
         float copyButtonWidth = _copyButtonStyle.CalcSize(copyContent).x + 8;
-        _buildInfoStyle.fontSize = 11;
+        if (_buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
+            _buildInfoStyle.fontSize = 11;
         float fpsWidth = _buildInfoStyle.CalcSize(fpsContent).x;
         float maxVersionWidth = Mathf.Max(0, MobileMenuScale.VirtualWidth - copyButtonWidth - 10 - fpsWidth - 6);
         float versionWidth = _buildInfoStyle.CalcSize(versionContent).x;
-        if (versionWidth > maxVersionWidth && versionWidth > 0)
+        if (versionWidth > maxVersionWidth && versionWidth > 0 &&
+            _buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
         {
             _buildInfoStyle.fontSize = Mathf.Max(6, Mathf.FloorToInt(_buildInfoStyle.fontSize * maxVersionWidth / versionWidth));
             versionWidth = Mathf.Min(_buildInfoStyle.CalcSize(versionContent).x, maxVersionWidth);
@@ -183,21 +184,47 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             versionWidth = Mathf.Min(versionWidth, maxVersionWidth);
         }
 
+        // The build info row lives in the news strip above the page tabs (y = 5 on PC). Mobile builds have
+        // no news strip (NEWSFEED_HEIGHT = 0), so the row sits above the top of the screen there instead
+        // of covering the tabs and the GET CREDITS button.
+        float buildInfoY = NEWSFEED_HEIGHT - 23;
+
         GUI.color = Color.white.SetAlpha(0.3f);
-        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth, 5, versionWidth, 20), versionContent, _buildInfoStyle);
-        _buildInfoStyle.fontSize = 11;
-        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, 5, fpsWidth, 20), fpsContent, _buildInfoStyle);
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth, buildInfoY, versionWidth, 20), versionContent, _buildInfoStyle);
+        if (_buildInfoStyle.font != null && _buildInfoStyle.font.dynamic)
+            _buildInfoStyle.fontSize = 11;
+        GUI.Label(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth - 5 - versionWidth - fpsWidth - 6, buildInfoY, fpsWidth, 20), fpsContent, _buildInfoStyle);
         GUI.color = Color.white;
 
-        if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth, 5, copyButtonWidth, 20), copyContent, _copyButtonStyle))
+        if (GUITools.Button(new Rect(MobileMenuScale.VirtualWidth - copyButtonWidth, buildInfoY, copyButtonWidth, 20), copyContent, _copyButtonStyle))
         {
             GUIUtility.systemCopyBuffer = versionText;
         }
 
-        _dropDown.Draw();
+        DoSettingsDropDown();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
+
         GuiManager.DrawTooltip();
+    }
+
+    // Settings wheel + popup, drawn inside the menu scale block in the same virtual space as the
+    // status bar, so the wheel, its icon and the popup all follow MobileMenuScale.Scale.
+    private void DoSettingsDropDown()
+    {
+        _dropDown.SetLocalRect(new Rect(
+            MobileMenuScale.VirtualWidth - STATUSBAR_HEIGHT,
+            _yOffset + NEWSFEED_HEIGHT + PAGETABS_HEIGHT,
+            STATUSBAR_HEIGHT, STATUSBAR_HEIGHT));
+
+        // Mobile: popup rows at least DROPDOWN_MIN_ROW_MM tall physically (1 on PC), and a wider
+        // invisible hit area for the wheel - to the left over the non-interactive credits label, and
+        // to the right across the safe-area strip up to the screen edge.
+        _dropDown.PopupScale = MobileMenuScale.TouchBoost(_dropDown.ButtonHeight, DROPDOWN_MIN_ROW_MM, DROPDOWN_MAX_BOOST);
+        _dropDown.HitPaddingLeft = MobileMenuScale.Active ? WHEEL_HIT_PADDING_LEFT : 0f;
+        _dropDown.HitPaddingRight = MobileMenuScale.BleedRight;
+
+        _dropDown.Draw();
     }
 
     private void DoPages()
@@ -233,6 +260,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
                 //GoogleAnalytics.Instance.LogEvent("ui-globaluiribbon-click", "Get Credits", true);
                 ApplicationDataManager.Instance.OpenBuyCredits();
             }
+
         }
         GUI.EndGroup();
 
@@ -258,7 +286,9 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     private void DoStatusBar(Rect rect)
     {
-        GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window);
+        // Background reaches the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.window);
+        GUI.BeginGroup(rect);
         {
             //NAME
             GUI.DrawTexture(new Rect(7, 5, 16, 16), UberstrikeIcons.GetIconForChannel(ApplicationDataManager.Channel));
@@ -330,6 +360,11 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
     public void Hide()
     {
+        // The dropdown is not drawn while hidden, so it could never close itself and would leave
+        // MouseOrbit.Disable stuck on.
+        if (_dropDown != null)
+            _dropDown.Close();
+
         enabled = false;
         _yOffset = -HEIGHT;
     }
@@ -358,12 +393,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaCredits > 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new GainEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetCredits);
         }
         else if (deltaCredits < 0)
         {
-            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
+            _ribbonEvents[EventType.CreditEvent] = new LoseEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 130), Color.white, deltaCredits, PlayerDataManager.CreditsSecure);
         }
     }
 
@@ -371,12 +406,12 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     {
         if (deltaPoints > 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new GainEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
             SfxManager.Play2dAudioClip(SoundEffectType.GameGetPoints);
         }
         else if (deltaPoints < 0)
         {
-            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.VirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
+            _ribbonEvents[EventType.PointEvent] = new LoseEvent((int)(MobileMenuScale.BothSidesVirtualWidth - 220), Color.white, deltaPoints, PlayerDataManager.PointsSecure);
         }
     }
 
@@ -419,6 +454,11 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     private int _minXPforThisLevel;
 
     private const int ButtonY = 0;
+
+    // Mobile settings dropdown sizing (see DoSettingsDropDown).
+    private const float DROPDOWN_MIN_ROW_MM = 2.5f;
+    private const float DROPDOWN_MAX_BOOST = 1.25f;
+    private const float WHEEL_HIT_PADDING_LEFT = 20f;
     private float _yOffset;
 
     private float _alphaIcons = 0.0f;
@@ -581,7 +621,10 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 
         public void Draw()
         {
-            GUIUtility.ScaleAroundPivot(new Vector2(_scale, _scale), new Vector2(_rect.x + _rect.width / 2, _rect.y + _rect.height / 2));
+            // Restore (not reset to identity) afterwards: this runs inside the mobile menu scale block,
+            // and resetting would drop the menu scale for everything drawn after it in the frame.
+            Matrix4x4 previousMatrix = GUI.matrix;
+            MobileMenuScale.ScaleAroundLocalPivot(new Vector2(_scale, _scale), new Vector2(_rect.x + _rect.width / 2, _rect.y + _rect.height / 2));
 
             GUI.contentColor = new Color(0, 0, 0, _alpha);
             GUI.Label(new Rect(_rect.x + 1, _rect.y + 1, _rect.width, _rect.height), _content, _style);
@@ -589,7 +632,7 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
             GUI.Label(_rect, _content, _style);
             GUI.contentColor = Color.white;
 
-            GUI.matrix = Matrix4x4.identity;
+            GUI.matrix = previousMatrix;
         }
 
         public abstract void Animate();

@@ -58,7 +58,10 @@ public class InboxPageGUI : MonoBehaviour
         Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
         _threadWidth = (int)rect.width / 4;
 
-        GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
+        // Backgrounds (page and title strip) reach the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.window_standard_grey38);
+        MobileMenuScale.DrawBleed(new Rect(rect.x, rect.y, rect.width, 72), BlueStonez.tab_strip_large);
+        GUI.BeginGroup(rect);
         {
             GUI.enabled = PlayerDataManager.IsPlayerLoggedIn && IsNoPanelOpen();
 
@@ -421,7 +424,10 @@ public class InboxPageGUI : MonoBehaviour
             }
             else
             {
-                GUI.Label(r, "You have no friends ... yet!\n\nOpen the chat window and connect to other Uberstrikers.\nUse the 'Add as Friend' function to send out a friend request :)", BlueStonez.label_interparkbold_13pt);
+                // The list area starts at x=240 to leave room for the side texture; without one, centre
+                // the empty-state message on the whole panel instead of the right-hand part.
+                Rect emptyRect = _sideTexture ? r : new Rect(0, 0, friRect.width, friRect.height);
+                GUI.Label(emptyRect, "You have no friends ... yet!\n\nOpen the chat window and connect to other Uberstrikers.\nUse the 'Add as Friend' function to send out a friend request :)", BlueStonez.label_interparkbold_13pt);
             }
         }
         GUI.EndGroup();

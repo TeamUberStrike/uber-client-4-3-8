@@ -30,7 +30,9 @@ public class ClanPageGUI : MonoBehaviour
 
         // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
         Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
-        GUI.BeginGroup(rect, BlueStonez.box_grey31);
+        // Background reaches the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.box_grey31);
+        GUI.BeginGroup(rect);
         {
             GUI.enabled = PlayerDataManager.IsPlayerLoggedIn && IsNoPopupOpen() && !ClanDataManager.Instance.IsProcessingWebservice;
 
