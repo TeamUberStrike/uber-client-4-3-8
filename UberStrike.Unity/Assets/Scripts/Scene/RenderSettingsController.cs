@@ -59,7 +59,8 @@ public class RenderSettingsController : MonoBehaviour
         RenderSettings.fogEndDistance = fogEnd;
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        if (LevelCamera.Exists) LevelCamera.Instance.EnableLowPassFilter(false);
+        if (LevelCamera.Exists && !ApplicationDataManager.IsMobile)
+            LevelCamera.Instance.EnableLowPassFilter(false);
 #endif
 
         // Apply the saved pref on scene enter so a match boots into the right state.
@@ -111,7 +112,8 @@ public class RenderSettingsController : MonoBehaviour
             RenderSettings.fogStartDistance = Mathfx.Lerp(RenderSettings.fogStartDistance, fogUnderWaterStart, Time.deltaTime * fogDiveSpeed);
             RenderSettings.fogEndDistance = Mathfx.Lerp(RenderSettings.fogEndDistance, fogUnderWaterEnd, Time.deltaTime * fogDiveSpeed);
 #if !UNITY_ANDROID && !UNITY_IPHONE
-            if (!LevelCamera.Instance.LowpassFilterEnabled)
+            if (!ApplicationDataManager.IsMobile &&
+                !LevelCamera.Instance.LowpassFilterEnabled)
                 LevelCamera.Instance.EnableLowPassFilter(true);
 #endif
         }
@@ -121,7 +123,8 @@ public class RenderSettingsController : MonoBehaviour
             RenderSettings.fogStartDistance = Mathfx.Lerp(RenderSettings.fogStartDistance, fogStart, Time.deltaTime * fogSurfaceSpeed);
             RenderSettings.fogEndDistance = Mathfx.Lerp(RenderSettings.fogEndDistance, fogEnd, Time.deltaTime * fogSurfaceSpeed);
 #if !UNITY_ANDROID && !UNITY_IPHONE
-            if (LevelCamera.Instance.LowpassFilterEnabled)
+            if (!ApplicationDataManager.IsMobile &&
+                LevelCamera.Instance.LowpassFilterEnabled)
                 LevelCamera.Instance.EnableLowPassFilter(false);
 #endif
         }

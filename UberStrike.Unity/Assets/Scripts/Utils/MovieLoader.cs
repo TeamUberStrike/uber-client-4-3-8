@@ -1,5 +1,5 @@
 
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
 using UnityEngine;
 using UnityEngine.Video;
 using System.Collections.Generic;

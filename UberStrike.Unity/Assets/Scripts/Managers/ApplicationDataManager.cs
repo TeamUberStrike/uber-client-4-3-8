@@ -21,7 +21,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     [SerializeField]
     private LocaleType _locale = LocaleType.en_US;
 
-    public const string HeaderFilename = "UberStrikeHeader";
+    public const string HeaderFilename = "UberStrike.xml";
     public const string MainFilename = "UberStrikeMain";
     public const string StandaloneFilename = "UberStrike";
 
@@ -37,9 +37,22 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         get
         {
-            return Channel == ChannelType.Android || Channel == ChannelType.IPad || Channel == ChannelType.IPhone;
+            // One flag for everything: Unity's mobile-platform check, plus the user-agent
+            // based JS device check in WebGL builds (Application.isMobilePlatform alone
+            // doesn't inspect the JS device type there).
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return UnityEngine.Device.Application.isMobilePlatform || UberGetDeviceType() != 0;
+#else
+            return UnityEngine.Device.Application.isMobilePlatform ||
+                Channel == ChannelType.Android || Channel == ChannelType.IPad || Channel == ChannelType.IPhone;
+#endif
         }
     }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern int UberGetDeviceType();
+#endif
 
     private static CmuneSystemInfo localSystemInfo;
 
@@ -61,7 +74,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static LocaleType CurrentLocale { get; private set; }
     public static string CurrentLocaleString { get { return LocalizationHelper.GetLocaleString(CurrentLocale); } }
 
-#if UNITY_IPHONE
+#if UNITY_IPHONE || UNITY_WEBGL
     // AOT Helper - Construct classes that are only referenced using reflection here.
     private void AOTHelperMethod()
     {
@@ -102,7 +115,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     [SerializeField]
     private Texture2D backgroundTexture;
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
 
     private float _backgroundAlpha = 1.0f;
 
@@ -113,14 +126,14 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         if (_showLoadingBackground)
         {
             GUI.depth = 10;
-            GUI.DrawTexture(new Rect(0, 0, backgroundTexture.width, backgroundTexture.height), backgroundTexture);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), backgroundTexture, ScaleMode.ScaleAndCrop, true);
         }
         else if (_backgroundAlpha > 0.01f)
         {
             _backgroundAlpha = Mathf.Lerp(_backgroundAlpha, 0, Time.deltaTime * 2);
             GUI.color = new Color(1, 1, 1, _backgroundAlpha);
             GUI.depth = 10;
-            GUI.DrawTexture(new Rect(0, 0, backgroundTexture.width, backgroundTexture.height), backgroundTexture);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), backgroundTexture, ScaleMode.ScaleAndCrop, true);
             GUI.color = Color.white;
         }
     }
@@ -162,6 +175,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
 #if UNITY_ANDROID || UNITY_IPHONE
         _showLoadingBackground = true;
+#elif UNITY_WEBGL
+        _showLoadingBackground = ApplicationDataManager.IsMobile;
 #endif
         if (PopupSystem.IsAnyPopupOpen)
             PopupSystem.ClearAll();
@@ -237,15 +252,18 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
                 // Set the initial Video options based on Cmune Prefs
-                if (applicationOptions.IsUsingCustom)
+                if (!ApplicationDataManager.IsMobile)
                 {
-                    QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
-                    QualitySettings.vSyncCount = applicationOptions.VideoVSyncCount;
-                    QualitySettings.antiAliasing = applicationOptions.VideoAntiAliasing;
-                }
-                else
-                {
-                    QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
+                    if (applicationOptions.IsUsingCustom)
+                    {
+                        QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
+                        QualitySettings.vSyncCount = applicationOptions.VideoVSyncCount;
+                        QualitySettings.antiAliasing = applicationOptions.VideoAntiAliasing;
+                    }
+                    else
+                    {
+                        QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
+                    }
                 }
 #endif
 
@@ -344,7 +362,19 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
         switch (Application.platform)
         {
             case RuntimePlatform.WebGLPlayer:
-                return Application.absoluteURL.Replace(".unity3d", ".xml");
+            {
+                // Legacy logic replaced ".unity3d" in the page URL with ".xml"
+                // (Unity Web Player era). Modern WebGL builds have no .unity3d,
+                // so derive the directory of the hosting page and read
+                // UberStrike.xml sitting next to index.html. This keeps the
+                // config external/editable per host without a rebuild.
+                string pageUrl = Application.absoluteURL;
+                int mark = pageUrl.IndexOfAny(new char[] { '?', '#' });
+                if (mark >= 0) pageUrl = pageUrl.Substring(0, mark);
+                int slash = pageUrl.LastIndexOf('/');
+                string baseUrl = (slash >= 0) ? pageUrl.Substring(0, slash + 1) : pageUrl;
+                return baseUrl + "UberStrike.xml";
+            }
             case RuntimePlatform.WindowsPlayer:
                 return ("file://" + Application.dataPath + "/" + ApplicationDataManager.StandaloneFilename + ".xml");
             case RuntimePlatform.OSXPlayer:
@@ -357,7 +387,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     private IEnumerator LoadConfigurationXml(string configurationXmlFilePath)
     {
-        if ((string.IsNullOrEmpty(configurationXmlFilePath) || !configurationXmlFilePath.ToLower().Contains(".xml")) || (!configurationXmlFilePath.ToLower().Contains("file://") && !configurationXmlFilePath.ToLower().Contains("http://")))
+        if ((string.IsNullOrEmpty(configurationXmlFilePath) || !configurationXmlFilePath.ToLower().Contains(".xml")) || (!configurationXmlFilePath.ToLower().Contains("file://") && !configurationXmlFilePath.ToLower().Contains("http")))
         {
             Debug.LogError("Invalid url supplied for the Configuration XML file.\n'" + configurationXmlFilePath + "'");
             yield break;
@@ -517,7 +547,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
             // Nakama endpoint, Play page rows, comm row = web DB CommServer row
             NakamaServerList.Apply(ev);
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
             _showLoadingBackground = false;
 #endif
 

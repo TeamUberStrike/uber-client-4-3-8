@@ -9,7 +9,7 @@ using Cmune.Util;
 
 public class CheatDetection : MonoBehaviour
 {
-#if !UNITY_IPHONE
+#if !UNITY_IPHONE && !UNITY_WEBGL
     private static int _gameTime;
     private static DateTime _dateTime;
 

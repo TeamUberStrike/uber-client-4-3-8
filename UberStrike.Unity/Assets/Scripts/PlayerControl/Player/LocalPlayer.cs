@@ -69,6 +69,9 @@ public class LocalPlayer : MonoBehaviour
 #if !UNITY_ANDROID && !UNITY_IPHONE
     private void OnGUI()
     {
+#if UNITY_WEBGL
+        if (ApplicationDataManager.IsMobile) return;
+#endif
         GUI.depth = (int)GuiDepth.Hud;
 
         if (GameState.HasCurrentPlayer && GameState.HasCurrentGame)
@@ -144,13 +147,18 @@ public class LocalPlayer : MonoBehaviour
         if (InputManager.Instance.IsInputEnabled)
         {
             //is it generally possible for the player to look around
-#if !UNITY_ANDROID && !UNITY_IPHONE
-            if (Screen.lockCursor)
+#if UNITY_ANDROID || UNITY_IPHONE
+            UserInput.UpdateMouse();
+#elif UNITY_WEBGL
+            if (ApplicationDataManager.IsMobile || Screen.lockCursor)
             {
                 UserInput.UpdateMouse();
             }
 #else
-            UserInput.UpdateMouse();
+            if (Screen.lockCursor)
+            {
+                UserInput.UpdateMouse();
+            }
 #endif
 
             if (GameState.LocalCharacter.IsAlive)
@@ -163,14 +171,20 @@ public class LocalPlayer : MonoBehaviour
                 _cameraTarget.localPosition = Vector3.Lerp(_cameraTarget.localPosition, GameState.LocalCharacter.CurrentOffset, 10 * Time.deltaTime);
 
                 DoCameraBob();
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE
+                UpdateRotation();
+#elif UNITY_WEBGL
+                // Enter only if mouse look matches internal state, or always on touch devices
+                if (ApplicationDataManager.IsMobile || IsMouseLockStateConsistent)
+                {
+                    UpdateRotation();
+                }
+#else
                 // Enter only if mouse look matches internal state
                 if (IsMouseLockStateConsistent)
                 {
                     UpdateRotation();
                 }
-#else
-                    UpdateRotation();
 #endif
 
                 // CHEAT CODES
@@ -385,7 +399,8 @@ public class LocalPlayer : MonoBehaviour
                 LevelCamera.Instance.CanDip = true;
                 LevelCamera.Instance.IsZoomedIn = false;
 #if !UNITY_ANDROID && !UNITY_IPHONE
-                LevelCamera.Instance.EnableLowPassFilter(false);
+                if (!ApplicationDataManager.IsMobile)
+                    LevelCamera.Instance.EnableLowPassFilter(false);
 #endif
             }
 

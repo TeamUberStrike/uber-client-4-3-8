@@ -957,7 +957,7 @@ public class ShopPageGUI : PageGUI
         // inset); the content ends with the last row so it never renders below that line.
         // Landscape phones report the safe area on the sides (or not at all), so use the
         // largest of the bottom and side insets.
-        float bottomSafePixels = Mathf.Max(Screen.height - Screen.safeArea.yMax,
+        float bottomSafePixels = Mathf.Max(Screen.height - MobileMenuScale.SafeAreaPixels.yMax,
             MobileMenuScale.InsetLeftPixels, MobileMenuScale.InsetRightPixels);
         float bottomSafe = MobileMenuScale.Active ? bottomSafePixels / MobileMenuScale.Scale : 0f;
         float bottomPadding = MobileMenuScale.Active ? 0f : 106f;

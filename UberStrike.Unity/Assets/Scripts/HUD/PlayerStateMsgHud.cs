@@ -63,13 +63,13 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void Draw()
     {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         bool controlsEditing = MobileControlLayout.EditMode;
 #else
         bool controlsEditing = false;
 #endif
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (MobileControlLayout.EditMode)
         {
             _temporaryMsgText.Hide();
@@ -87,7 +87,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         {
             if (TouchInput.IsSupported && TouchInput.Exists)
             {
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
                 if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
                     !InGameChatHud.Instance.CanInput && !controlsEditing)
                 {

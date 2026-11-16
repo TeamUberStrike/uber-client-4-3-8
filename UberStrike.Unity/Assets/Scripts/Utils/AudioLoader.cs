@@ -49,7 +49,7 @@ public class AudioLoader : Singleton<AudioLoader>
     public AudioClip Get(string name)
     {
         //Debug.Log("Getting AudioClip: " + name);
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
         if (!cachedAudioClips.ContainsKey(name))
         {
             LoadAudioClipFromWWW(name);

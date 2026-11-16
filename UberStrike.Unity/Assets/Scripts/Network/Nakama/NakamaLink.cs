@@ -147,6 +147,11 @@ namespace UberStrike.Realtime.NakamaAdapter
             ISocket s = _socket;
             if (s == null || !s.IsConnected)
             {
+                // Auto-connect on demand: otherwise a not-connected link fails RPCs silently
+                // ("Server is not reachable" on the Play page) and never dials, so a wrong
+                // endpoint/TLS setup produces no logs and no errors.
+                if (!_connecting)
+                    Connect(0);
                 done(null, "not connected");
                 return;
             }
@@ -158,6 +163,8 @@ namespace UberStrike.Realtime.NakamaAdapter
             ISocket s = _socket;
             if (s == null || !s.IsConnected)
             {
+                if (!_connecting)
+                    Connect(0);
                 done("not connected");
                 return;
             }

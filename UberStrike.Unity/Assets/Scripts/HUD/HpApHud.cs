@@ -133,11 +133,21 @@ public class HpApHud : Singleton<HpApHud>
         _curScaleFactor = 0.65f;
         ResetHpApTransform();
         ResetBlurTransform();
-#if !UNITY_ANDROID && !UNITY_IPHONE
-        _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
-#else
+#if UNITY_ANDROID || UNITY_IPHONE
         float safeInset = Mathf.Max(MobileMenuScale.InsetLeftPixels, MobileMenuScale.InsetRightPixels);
         _entireGroup.Position = new Vector2(safeInset + Screen.width * 0.02f, Screen.height * 0.07f);
+#elif UNITY_WEBGL
+        if (ApplicationDataManager.IsMobile)
+        {
+            float safeInset = Mathf.Max(MobileMenuScale.InsetLeftPixels, MobileMenuScale.InsetRightPixels);
+            _entireGroup.Position = new Vector2(safeInset + Screen.width * 0.02f, Screen.height * 0.07f);
+        }
+        else
+        {
+            _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
+        }
+#else
+        _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.95f);
 #endif
         _entireGroup.UpdateMeshGUIPosition();
     }

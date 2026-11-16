@@ -5,7 +5,10 @@ using Cmune.Util;
 using UberStrike.Core.Types;
 using UberStrike.Realtime.Common;
 using UnityEngine;
-using DeviceApplication = UnityEngine.Device.Application;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
 
 public class TouchInput : MonoSingleton<TouchInput>
 {
@@ -58,7 +61,7 @@ public class TouchInput : MonoSingleton<TouchInput>
                 Application.platform == RuntimePlatform.WindowsEditor)
                 return false;
 
-            if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform) return true;
+            if (ApplicationDataManager.IsMobile) return true;
 #if UNITY_EDITOR
             return MobileMenuScale.ForcePreviewInEditor;
 #else
@@ -210,16 +213,38 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     // Keeps a control's center such that its whole footprint (half extents given) stays inside the
     // safe area on X and on screen on Y. If the control is bigger than the available width, its
-    // center is forced to the left edge of that range.
+    // center is forced to the left edge of that range. On iOS WebGL the top of the screen is the
+    // system status-bar dead zone, so controls are also kept below it.
     public static Vector2 ClampCenterToSafeArea(Vector2 center, float halfW, float halfH)
     {
         float minX = MobileMenuScale.SafeLeftPixels + halfW;
         float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - halfW);
-        float maxY = Mathf.Max(halfH, Screen.height - halfH);
+        float maxY = Mathf.Max(halfH, Screen.height - TopDeadZonePixels - halfH);
         center.x = Mathf.Clamp(center.x, Mathf.Min(minX, maxX), maxX);
         center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
         return center;
     }
+
+    /// <summary>
+    /// Height of the untouchable strip at the top of the screen on iOS WebGL (system status bar /
+    /// Safari tap-to-reveal zone; matches GlobalUIRibbon.MobileTopOffset). 0 everywhere else.
+    /// </summary>
+    public static float TopDeadZonePixels
+    {
+        get
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return UberGetDeviceType() == 1 ? 84f : 0f;
+#else
+            return 0f;
+#endif
+        }
+    }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern int UberGetDeviceType();
+#endif
 
 
     public void CheckKeyboardDone()
@@ -252,7 +277,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             return;
         }
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         if (GetComponent<MobileControlLayoutEditor>() == null)
             gameObject.AddComponent<MobileControlLayoutEditor>();
 #endif
@@ -395,13 +420,13 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         _stateMachine.SetState((int)TouchState.None);
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         // Apply any saved custom on-screen layout (positions/scales) over the default placement.
         ApplyLayout();
 #endif
     }
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
     #region Customizable Layout
 
     public class LayoutHandle
@@ -891,14 +916,14 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (ScopeSwipe != null)
             ScopeSwipe.Boundary = _scopeSwipeRect;
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
         ApplyLayout();
 #endif
     }
 
     private void RefreshLayoutIfEnvironmentChanged()
     {
-        Rect safeArea = Screen.safeArea;
+        Rect safeArea = MobileMenuScale.SafeAreaPixels;
         float insetLeft = MobileMenuScale.InsetLeftPixels;
         float insetRight = MobileMenuScale.InsetRightPixels;
 
@@ -1375,7 +1400,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             UpdateWalkingEnabled();
 
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
             Rect qiRect = WeaponsHud.Instance.QuickItems.GetSimpleCombinedRect();
 #else
             Rect qiRect = WeaponsHud.Instance.QuickItems.GetCombinedRect();

@@ -54,7 +54,7 @@ public static class CmunePrefs
         Options_GeneralLimitFrameRate = 131,
         Options_GeneralFrameRateVersion = 132,
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
         Options_MobileUseMultiTouch = 150,
         Options_MobileTouchLookSensitivity = 151,
         Options_MobileTouchMoveSensitivity = 152,

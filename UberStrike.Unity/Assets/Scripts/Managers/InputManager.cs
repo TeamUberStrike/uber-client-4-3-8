@@ -13,6 +13,9 @@ public class InputManager : AutoMonoBehaviour<InputManager>
 #if !UNITY_ANDROID && !UNITY_IPHONE
     private void Update()
     {
+#if UNITY_WEBGL
+        if (ApplicationDataManager.IsMobile) return;
+#endif
         KeyInput.Update();
 
         if (IsInputEnabled)
@@ -40,6 +43,9 @@ public class InputManager : AutoMonoBehaviour<InputManager>
 
     private void OnGUI()
     {
+#if UNITY_WEBGL
+        if (ApplicationDataManager.IsMobile) return;
+#endif
         KeyInput.OnGUI();
 
         MouseInput.Instance.OnGUI();

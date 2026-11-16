@@ -20,7 +20,7 @@ public class DebugApplication : IDebugPage
 
         if (PlayerDataManager.AccessLevel > 0)
         {
-#if !UNITY_IPHONE
+#if !UNITY_IPHONE && !UNITY_WEBGL
             GUILayout.Label("Time: " + CheatDetection.GameTime + " " + CheatDetection.RealTime + " (Dif: " + (CheatDetection.GameTime - CheatDetection.RealTime) + ")");
 #endif
             GUILayout.Label("Member Name: " + PlayerDataManager.Name);

@@ -271,7 +271,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
 
         return tex;
     }
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     [SerializeField]
     private VideoClip[] _achievementBadges;
     public static VideoClip GetAchievementBadge(AchievementType achievementType)
@@ -325,7 +325,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
         }
     }
 
-#if !UNITY_ANDROID && !UNITY_IPHONE
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     [SerializeField]
     private VideoClip[] _recommendationBadges;
     public static VideoClip GetRecommendBadge(RecommendType recomType)

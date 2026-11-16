@@ -1,6 +1,9 @@
 .vscode/
 .vs/
 
+# Local secrets / deploy credentials
+.env
+
 # Claude Code local settings
 .claude/
 
@@ -36,6 +39,10 @@ _particle_work_backup_2026-02-18/
 
 # Outdated migration tracker
 MIGRATION_MAP.md
+
+__pycache__/
+_log/
+
 
 # Build-time generated mobile config (SceneExporter)
 UberStrike.Unity/Assets/Resources/UberStrike.xml

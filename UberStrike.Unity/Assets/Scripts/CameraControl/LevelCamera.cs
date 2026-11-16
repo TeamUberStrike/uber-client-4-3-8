@@ -19,8 +19,11 @@ public partial class LevelCamera : MonoSingleton<LevelCamera>, IObserver
         _ccd.Offset = 1;
         _ccd.LayerMask = 1;
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        _lowpassFilter = gameObject.AddComponent<AudioLowPassFilter>();
-        if (_lowpassFilter) _lowpassFilter.cutoffFrequency = 755;
+        if (!ApplicationDataManager.IsMobile)
+        {
+            _lowpassFilter = gameObject.AddComponent<AudioLowPassFilter>();
+            if (_lowpassFilter) _lowpassFilter.cutoffFrequency = 755;
+        }
 #endif
     }
 

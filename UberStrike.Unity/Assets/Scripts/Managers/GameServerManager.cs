@@ -48,14 +48,19 @@ public class GameServerManager : Singleton<GameServerManager>
         servers.Sort((s, t) => s.Latency - t.Latency);
 
         GameServerView server = null;
+#if UNITY_ANDROID || UNITY_IPHONE
+        const bool mobileServer = true;
+#elif UNITY_WEBGL
+        bool mobileServer = ApplicationDataManager.IsMobile;
+#else
+        const bool mobileServer = false;
+#endif
         for (int i = 0; i < servers.Count; i++)
         {
             GameServerView s = servers[i];
 
             if (s.Latency == 0) continue;
-#if UNITY_ANDROID || UNITY_IPHONE
-            if (s.UsageType != PhotonUsageType.Mobile) continue;
-#endif
+            if (mobileServer && s.UsageType != PhotonUsageType.Mobile) continue;
 
             if (server == null)
             {

@@ -1,7 +1,6 @@
-#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
 using System.Collections.Generic;
 using UnityEngine;
-using DeviceApplication = UnityEngine.Device.Application;
 
 /// <summary>
 /// In-game editor for the customizable on-screen control layout. While open it dims the screen,
@@ -40,7 +39,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     {
         get
         {
-            if (ApplicationDataManager.IsMobile || DeviceApplication.isMobilePlatform) return true;
+            if (ApplicationDataManager.IsMobile) return true;
 #if UNITY_EDITOR
             return MobileMenuScale.ForcePreviewInEditor;
 #else
@@ -311,13 +310,14 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
         // The toolbar buttons (Switch mode / Reset / Cancel / Save) are drawn in MobileMenuScale
         // space, so compute their RAW pixel footprint: only this rect is reserved — controls can
-        // be moved freely everywhere else, including the top corners next to the toolbar.
+        // be moved freely everywhere else, including the top corners next to the toolbar. On iOS
+        // WebGL the row starts below the system dead zone (same offset as the ribbon).
         float ms = MobileMenuScale.Scale;
         float bw = 140f;
         float bh = 34f;
         float totalW = 4f * bw + 3f * 8f;
         float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
-        _toolbarButtonsRect = new Rect(MobileMenuScale.MenuToScreenX(x0), 2f * ms, totalW * ms, bh * ms);
+        _toolbarButtonsRect = new Rect(MobileMenuScale.MenuToScreenX(x0), 2f * ms + TouchInput.TopDeadZonePixels, totalW * ms, bh * ms);
 
         // Dim the world behind the editor so the markers stay legible no matter what the paused
         // game shows behind them (a bright sky used to swallow the blue outline of the top-right
@@ -457,13 +457,14 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private void DrawToolbar(List<TouchInput.LayoutHandle> handles)
     {
         // Draw in the ribbon's scaled space so the buttons sit on the exact same vertical row as the
-        // PROFILE / CHAT tabs (next to them on the right).
+        // PROFILE / CHAT tabs (next to them on the right). On iOS WebGL the row starts below the
+        // system dead zone (same offset as the ribbon).
         Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
         float vw = MobileMenuScale.VirtualWidth;
         float bw = 140, bh = 34;
         float totalW = 4 * bw + 3 * 8;
         float x0 = (vw - totalW) / 2;
-        float by = 2;
+        float by = 2 + TouchInput.TopDeadZonePixels / MobileMenuScale.Scale;
 
         string modeLabel = ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Switch Single" : "Switch Multi";
         if (GUITools.Button(new Rect(x0, by, bw, bh), new GUIContent(modeLabel), StormFront.ButtonBlue))
@@ -511,9 +512,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
     // Keeps the dragged control's full footprint inside the safe area on X and on screen on Y: the
     // center can't come closer to a side than half the control's size, so a control can never be
-    // dragged under a camera cutout or off-screen and lost. Movement is otherwise free — controls
-    // may go anywhere vertically, including up to the top. For the rotated D-pad the clamp uses its
-    // axis-aligned footprint at the current degree.
+    // dragged under a camera cutout or off-screen and lost. On iOS WebGL the top strip is the
+    // system dead zone, so the control is also kept below it. For the rotated D-pad the clamp uses
+    // its axis-aligned footprint at the current degree.
     private Vector2 ClampDragCenter(Vector2 center)
     {
         float halfW = 24f;
@@ -545,9 +546,12 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
         float minX = MobileMenuScale.SafeLeftPixels + halfW;
         float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - halfW);
-        float maxY = Mathf.Max(halfH, Screen.height - halfH);
+        // This function works in GUI space (top-left origin), so the iOS dead zone is the
+        // top strip: y must stay below TopDeadZonePixels + halfH.
+        float minY = TouchInput.TopDeadZonePixels + halfH;
+        float maxY = Mathf.Max(minY, Screen.height - halfH);
         center.x = Mathf.Clamp(center.x, Mathf.Min(minX, maxX), maxX);
-        center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
+        center.y = Mathf.Clamp(center.y, Mathf.Min(minY, maxY), maxY);
         return center;
     }
 

@@ -91,40 +91,48 @@ public class MapConfiguration : MonoBehaviour
         _camera.gameObject.SetActiveRecursively(enabled);
 
 #if UNITY_ANDROID || UNITY_IPHONE
-        foreach (AudioSource source in GetComponentsInChildren<AudioSource>()) {
-            source.enabled = false;
-        }
-
-        foreach (AudioReverbZone source in GetComponentsInChildren<AudioReverbZone>())
-        {
-            source.enabled = false;
-        }
-
-        foreach (AudioReverbFilter source in GetComponentsInChildren<AudioReverbFilter>())
-        {
-            source.enabled = false;
-        }
-
-        foreach (AudioLowPassFilter source in GetComponentsInChildren<AudioLowPassFilter>())
-        {
-            source.enabled = false;
-        }
-
-        foreach (AudioHighPassFilter source in GetComponentsInChildren<AudioHighPassFilter>())
-        {
-            source.enabled = false;
-        }
-
-        foreach (AudioEchoFilter source in GetComponentsInChildren<AudioEchoFilter>())
-        {
-            source.enabled = false;
-        }
-
-        foreach (AudioChorusFilter source in GetComponentsInChildren<AudioChorusFilter>())
-        {
-            source.enabled = false;
-        }
+        const bool disableMobileAudio = true;
+#elif UNITY_WEBGL
+        bool disableMobileAudio = ApplicationDataManager.IsMobile;
+#else
+        const bool disableMobileAudio = false;
 #endif
+        if (disableMobileAudio)
+        {
+            foreach (AudioSource source in GetComponentsInChildren<AudioSource>()) {
+                source.enabled = false;
+            }
+
+            foreach (AudioReverbZone source in GetComponentsInChildren<AudioReverbZone>())
+            {
+                source.enabled = false;
+            }
+
+            foreach (AudioReverbFilter source in GetComponentsInChildren<AudioReverbFilter>())
+            {
+                source.enabled = false;
+            }
+
+            foreach (AudioLowPassFilter source in GetComponentsInChildren<AudioLowPassFilter>())
+            {
+                source.enabled = false;
+            }
+
+            foreach (AudioHighPassFilter source in GetComponentsInChildren<AudioHighPassFilter>())
+            {
+                source.enabled = false;
+            }
+
+            foreach (AudioEchoFilter source in GetComponentsInChildren<AudioEchoFilter>())
+            {
+                source.enabled = false;
+            }
+
+            foreach (AudioChorusFilter source in GetComponentsInChildren<AudioChorusFilter>())
+            {
+                source.enabled = false;
+            }
+        }
 
         // Unity 2022 additive-re-entry fix (2026-04-24): scenes loaded
         // additively are kept alive across map transitions, so

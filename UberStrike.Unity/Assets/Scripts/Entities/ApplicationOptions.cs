@@ -82,7 +82,8 @@ public class ApplicationOptions
             isReset = true;
             CmunePrefs.Reset();
 #if !UNITY_ANDROID && !UNITY_IPHONE
-            QualitySettings.SetQualityLevel(1, true);
+            if (!ApplicationDataManager.IsMobile)
+                QualitySettings.SetQualityLevel(1, true);
 #endif
             PlayerPrefs.SetString("Version", ApplicationDataManager.VersionShort);
         }
@@ -142,7 +143,7 @@ public class ApplicationOptions
         bool isGamePadEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_InputEnableGamepad, false);
         InputManager.Instance.IsGamepadEnabled = Input.GetJoystickNames().Length > 0 && isGamePadEnabled;
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
         // Mobile
         UseMultiTouch = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileUseMultiTouch, false);
         TouchLookSensitivity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileTouchLookSensitivity, 1.0f), 0.5f, 3.0f);
@@ -197,7 +198,7 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputInvertMouse, InputInvertMouse);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_InputEnableGamepad, InputManager.Instance.IsGamepadEnabled);
 
-#if UNITY_ANDROID || UNITY_IPHONE
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileUseMultiTouch, UseMultiTouch);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchLookSensitivity, TouchLookSensitivity);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchMoveSensitivity, TouchMoveSensitivity);

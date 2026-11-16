@@ -145,7 +145,7 @@ public abstract class FpsGameMode : ClientGameMode
 
         SendMethodToServer(GameRPC.Join, GameState.LocalCharacter);
 #if !UNITY_ANDROID && !UNITY_IPHONE
-        if (LevelCamera.HasCamera)
+        if (LevelCamera.HasCamera && !ApplicationDataManager.IsMobile)
             LevelCamera.Instance.EnableLowPassFilter(false);
 #endif
         OnModeInitialized();
@@ -497,7 +497,7 @@ public abstract class FpsGameMode : ClientGameMode
     protected virtual void OnMatchStart(int matchCount, int matchEndServerTicks)
     {
         GameConnectionManager.Client.PeerListener.UpdateServerTime();
-#if !UNITY_IPHONE
+#if !UNITY_IPHONE && !UNITY_WEBGL
         CheatDetection.SyncSystemTime();
 #endif
 

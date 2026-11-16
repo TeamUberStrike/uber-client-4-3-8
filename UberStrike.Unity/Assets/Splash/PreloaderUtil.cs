@@ -26,7 +26,14 @@ public class PreloaderUtil
                 }
             case RuntimePlatform.WebGLPlayer:
                 {
-                    url = Application.absoluteURL.Replace(ApplicationDataManager.HeaderFilename, ApplicationDataManager.MainFilename);
+                    // Modern WebGL builds host index.html next to UberStrikeMain.unity3d,
+                    // so resolve the bundle from the directory of the hosting page.
+                    string pageUrl = Application.absoluteURL;
+                    int mark = pageUrl.IndexOfAny(new char[] { '?', '#' });
+                    if (mark >= 0) pageUrl = pageUrl.Substring(0, mark);
+                    int slash = pageUrl.LastIndexOf('/');
+                    string baseUrl = (slash >= 0) ? pageUrl.Substring(0, slash + 1) : pageUrl;
+                    url = baseUrl + ApplicationDataManager.MainFilename + ".unity3d";
                     break;
                 }
         }

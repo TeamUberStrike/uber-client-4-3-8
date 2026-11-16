@@ -157,9 +157,9 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
     /// </summary>
     /// <param name="pageType"></param>
     /// <param name="forceReload">If true the page will reload and replay the camera animation eventhough we are already on that page</param>
-    public void LoadPage(PageType pageType, bool forceReload = false)
-    {
-        if (GameState.HasCurrentGame)
+     public void LoadPage(PageType pageType, bool forceReload = false)
+     {
+         if (GameState.HasCurrentGame)
         {
             ShowLeaveGameWarning(pageType);
         }
