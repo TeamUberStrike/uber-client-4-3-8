@@ -6,6 +6,10 @@ using UberStrike.Core.Types;
 using UberStrike.Realtime.Common;
 using UnityEngine;
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
+
 public class TouchInput : MonoSingleton<TouchInput>
 {
     public enum TouchKeyType
@@ -209,16 +213,38 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     // Keeps a control's center such that its whole footprint (half extents given) stays inside the
     // safe area on X and on screen on Y. If the control is bigger than the available width, its
-    // center is forced to the left edge of that range.
+    // center is forced to the left edge of that range. On iOS WebGL the top of the screen is the
+    // system status-bar dead zone, so controls are also kept below it.
     public static Vector2 ClampCenterToSafeArea(Vector2 center, float halfW, float halfH)
     {
         float minX = MobileMenuScale.SafeLeftPixels + halfW;
         float maxX = Mathf.Max(minX, MobileMenuScale.SafeRightPixels - halfW);
-        float maxY = Mathf.Max(halfH, Screen.height - halfH);
+        float maxY = Mathf.Max(halfH, Screen.height - TopDeadZonePixels - halfH);
         center.x = Mathf.Clamp(center.x, Mathf.Min(minX, maxX), maxX);
         center.y = Mathf.Clamp(center.y, Mathf.Min(halfH, maxY), maxY);
         return center;
     }
+
+    /// <summary>
+    /// Height of the untouchable strip at the top of the screen on iOS WebGL (system status bar /
+    /// Safari tap-to-reveal zone; matches GlobalUIRibbon.MobileTopOffset). 0 everywhere else.
+    /// </summary>
+    public static float TopDeadZonePixels
+    {
+        get
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return UberGetDeviceType() == 1 ? 84f : 0f;
+#else
+            return 0f;
+#endif
+        }
+    }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern int UberGetDeviceType();
+#endif
 
 
     public void CheckKeyboardDone()
