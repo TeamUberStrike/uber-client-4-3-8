@@ -47,6 +47,7 @@ public class GuiDropDown
     public float ButtonHeight = 20;
 #endif
 
+
     public GuiDropDown() { }
 
     public void Add(GUIContent content, Action onClick)
@@ -76,20 +77,26 @@ public class GuiDropDown
 
         if (_isDown)
         {
+            MouseOrbit.Disable = true;
+            
             if (!new Rect(_rect.xMax - ButtonWidth, _rect.yMax, ButtonWidth, ButtonHeight * _data.Count).Contains(Event.current.mousePosition) 
                 && !_rect.Contains(Event.current.mousePosition) 
                 && (Event.current.type == EventType.MouseUp || Event.current.type == EventType.Used))
             {
                 _isDown = false;
+                MouseOrbit.Disable = false;
             }
 
             for (int i = 0; i < _data.Count; i++)
             {
                 if (_data[i].IsEnabled())
                 {
-                    if (GUI.Button(new Rect(_rect.xMax - ButtonWidth, _rect.yMax + (i * ButtonHeight), ButtonWidth, ButtonHeight), _data[i].Content, BlueStonez.dropdown))
+                    GUIStyle style = BlueStonez.dropdown;
+                    if (ApplicationDataManager.IsMobile) style = BlueStonez.dropdown_large;
+                    if (GUI.Button(new Rect(_rect.xMax - ButtonWidth, _rect.yMax + (i * ButtonHeight), ButtonWidth, ButtonHeight), _data[i].Content, style))
                     {
                         _isDown = false;
+                        MouseOrbit.Disable = false;
                         _data[i].Action();
                     }
                 }

@@ -128,7 +128,12 @@ public class GameModeObjectiveHud : Singleton<GameModeObjectiveHud>
         _gameModeText.Position = Vector2.zero;
         _objectiveText.Scale = new Vector2(_textScale, _textScale);
         _objectiveText.Position = new Vector2(50.0f, Screen.height * 0.08f);
+
+#if !UNITY_ANDROID && !UNITY_IPHONE
         _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.02f);
+#else
+        _entireGroup.Position = new Vector2(Screen.width * 0.05f, Screen.height * 0.1f);
+#endif
     }
 
     private MeshGUIText _gameModeText;

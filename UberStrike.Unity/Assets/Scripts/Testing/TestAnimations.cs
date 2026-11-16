@@ -11,7 +11,7 @@ public class TestAnimations : MonoBehaviour
     {
         if (GameState.LocalDecorator != null)
         {
-            //scroll = GUI.BeginScrollView(new Rect(10, 100, itemSize.x + 20, Screen.height - 110), scroll, new Rect(0, 0, itemSize.x, animation.GetClipCount() * itemSize.y));
+            //scroll = GUITools.BeginScrollView(new Rect(10, 100, itemSize.x + 20, Screen.height - 110), scroll, new Rect(0, 0, itemSize.x, animation.GetClipCount() * itemSize.y));
             //{
             //    int i = 0;
             //    foreach (AnimationState clip in animation)
@@ -30,9 +30,9 @@ public class TestAnimations : MonoBehaviour
             //        i++;
             //    }
             //}
-            //GUI.EndScrollView();
+            //GUITools.EndScrollView();
 
-            scroll = GUI.BeginScrollView(new Rect(1, 100, itemSize.x + 20, Screen.height - 20), scroll, new Rect(0, 0, itemSize.x, GameState.LocalDecorator.Animation.GetClipCount() * itemSize.y));
+            scroll = GUITools.BeginScrollView(new Rect(1, 100, itemSize.x + 20, Screen.height - 20), scroll, new Rect(0, 0, itemSize.x, GameState.LocalDecorator.Animation.GetClipCount() * itemSize.y));
             {
                 int i = 0;
                 foreach (AnimationState clip in GameState.LocalDecorator.Animation)
@@ -52,7 +52,7 @@ public class TestAnimations : MonoBehaviour
                     i++;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
     }
 

@@ -357,6 +357,8 @@ Subshader
 			Cull Off
 			
 			CGPROGRAM
+
+			#pragma exclude_renderers gles
 			
 			#pragma target 3.0 
 			
@@ -390,6 +392,8 @@ Subshader
 			
 			CGPROGRAM
 			
+			#pragma exclude_renderers gles
+
 			#pragma target 3.0 
 			
 			#pragma vertex vert300

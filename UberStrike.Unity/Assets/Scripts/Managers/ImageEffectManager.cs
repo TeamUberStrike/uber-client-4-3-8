@@ -119,7 +119,7 @@ public class ImageEffectManager
             _effects[imageEffectType].enabled = true;
             if (imageEffectType == ImageEffectType.BloomAndLensFlares)
             {
-#if UNITY_3_5
+#if UNITY_3_5 && !UNITY_IPHONE
                 _effectsParameters[imageEffectType].SetBaseIntensity(((BloomAndLensFlares)_effects[ImageEffectType.BloomAndLensFlares]).bloomIntensity);
 #endif
             }

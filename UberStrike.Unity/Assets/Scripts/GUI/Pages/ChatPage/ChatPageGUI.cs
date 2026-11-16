@@ -47,18 +47,23 @@ public class ChatPageGUI : PageGUI
 
     protected virtual void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         if (IsOnGUIEnabled)
         {
             GUI.skin = BlueStonez.Skin;
             GUI.depth = (int)GuiDepth.Chat;
 
-            _mainRect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), Screen.width, Screen.height - GlobalUIRibbon.Instance.GetHeight());
+            // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+            _mainRect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
 
             DrawGUI(_mainRect);
 
             if (PopupMenu.Current != null)
                 PopupMenu.Current.Draw();
         }
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void DrawGUI(Rect rect)
@@ -142,7 +147,7 @@ public class ChatPageGUI : PageGUI
         GUI.EndGroup();
 
         if (_checkForPassword)
-            PasswordCheck(new Rect((Screen.width - 280) * 0.5f, (Screen.height - 200) * 0.5f, 280, 200));
+            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth - 280) * 0.5f, (MobileMenuScale.VirtualHeight - 200) * 0.5f, 280, 200));
 
         GuiManager.DrawTooltip();
     }
@@ -385,7 +390,7 @@ public class ChatPageGUI : PageGUI
             float windowHeight = rect.height;
             float contentHeight = Mathf.Max(windowHeight, pane.ContentHeight);
             float y = 0;
-            pane.Scroll = GUI.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rect.width - 17, contentHeight), false, true);
+            pane.Scroll = GUITools.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rect.width - 17, contentHeight), false, true);
             {
                 GUI.BeginGroup(new Rect(0, 0, rect.width, windowHeight + pane.Scroll.y));
                 {
@@ -396,7 +401,7 @@ public class ChatPageGUI : PageGUI
                 }
                 GUI.EndGroup();
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
             pane.ContentHeight = y;
 
             GUI.enabled = tmp;
@@ -416,7 +421,7 @@ public class ChatPageGUI : PageGUI
             float windowHeight = rect.height - controlHeight;
             float contentHeight = Mathf.Max(windowHeight, pane.ContentHeight);
             float y = 0;
-            pane.Scroll = GUI.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rect.width - 17, contentHeight), false, true);
+            pane.Scroll = GUITools.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rect.width - 17, contentHeight), false, true);
             {
                 GUI.BeginGroup(new Rect(0, 0, rect.width, windowHeight + pane.Scroll.y));
                 {
@@ -427,7 +432,7 @@ public class ChatPageGUI : PageGUI
                 }
                 GUI.EndGroup();
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
             pane.ContentHeight = y;
 
             GUI.enabled = tmp;
@@ -448,7 +453,7 @@ public class ChatPageGUI : PageGUI
             float windowHeight = rect.height - controlHeight;
             float contentHeight = Mathf.Max(windowHeight, pane.ContentHeight);
             float y = 0;
-            pane.Scroll = GUI.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rect.width - 17, contentHeight), false, true);
+            pane.Scroll = GUITools.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rect.width - 17, contentHeight), false, true);
             {
                 GUI.BeginGroup(new Rect(0, 0, rect.width, windowHeight + pane.Scroll.y));
                 {
@@ -460,7 +465,7 @@ public class ChatPageGUI : PageGUI
                 }
                 GUI.EndGroup();
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
             pane.ContentHeight = y;
 
             GUI.enabled = tmp;
@@ -662,7 +667,7 @@ public class ChatPageGUI : PageGUI
                 _lastMessageCount = dialog._msgQueue.Count;
             }
 
-            _dialogScroll = GUI.BeginScrollView(new Rect(0, 0, dialog._frameSize.x, dialog._frameSize.y), _dialogScroll, new Rect(0, 0, dialog._contentSize.x, dialog._contentSize.y));
+            _dialogScroll = GUITools.BeginScrollView(new Rect(0, 0, dialog._frameSize.x, dialog._frameSize.y), _dialogScroll, new Rect(0, 0, dialog._contentSize.x, dialog._contentSize.y));
             foreach (InstantMessage msg in dialog._msgQueue)
             {
                 if (dialog.CanShow == null || dialog.CanShow(msg.Context))
@@ -687,7 +692,7 @@ public class ChatPageGUI : PageGUI
                     i++;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
 
             dialog._heightCache = y;
         }

@@ -26,7 +26,11 @@ public class PlanarReflection : MonoBehaviour
     public void Start()
     {
         sharedMaterial = ((WaterBase)gameObject.GetComponent(typeof(WaterBase))).sharedMaterial;
+#if !UNITY_ANDROID && !UNITY_IPHONE
         EnableReflection = true;
+#else
+        EnableReflection = false;
+#endif
     }
 
     private Camera CreateReflectionCameraFor(Camera cam)

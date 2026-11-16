@@ -36,3 +36,7 @@ _particle_work_backup_2026-02-18/
 
 # Outdated migration tracker
 MIGRATION_MAP.md
+
+# Build-time generated mobile config (SceneExporter)
+UberStrike.Unity/Assets/Resources/UberStrike.xml
+UberStrike.Unity/Assets/Resources/UberStrike.xml.meta

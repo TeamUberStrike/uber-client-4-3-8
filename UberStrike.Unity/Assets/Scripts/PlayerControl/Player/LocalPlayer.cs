@@ -66,6 +66,7 @@ public class LocalPlayer : MonoBehaviour
         }
     }
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
     private void OnGUI()
     {
         GUI.depth = (int)GuiDepth.Hud;
@@ -84,6 +85,7 @@ public class LocalPlayer : MonoBehaviour
             }
         }
     }
+#endif
 
     private void FixedUpdate()
     {
@@ -142,10 +144,14 @@ public class LocalPlayer : MonoBehaviour
         if (InputManager.Instance.IsInputEnabled)
         {
             //is it generally possible for the player to look around
+#if !UNITY_ANDROID && !UNITY_IPHONE
             if (Screen.lockCursor)
             {
                 UserInput.UpdateMouse();
             }
+#else
+            UserInput.UpdateMouse();
+#endif
 
             if (GameState.LocalCharacter.IsAlive)
             {
@@ -157,13 +163,17 @@ public class LocalPlayer : MonoBehaviour
                 _cameraTarget.localPosition = Vector3.Lerp(_cameraTarget.localPosition, GameState.LocalCharacter.CurrentOffset, 10 * Time.deltaTime);
 
                 DoCameraBob();
-
-                // enter only if mouse look matches internal state
+#if !UNITY_ANDROID && !UNITY_IPHONE
+                // Enter only if mouse look matches internal state
                 if (IsMouseLockStateConsistent)
                 {
                     UpdateRotation();
                 }
+#else
+                    UpdateRotation();
+#endif
 
+                // CHEAT CODES
                 if (_damageFactor != 0)
                 {
                     if (_damageFactorDuration > 0)
@@ -374,7 +384,9 @@ public class LocalPlayer : MonoBehaviour
                 LevelCamera.SetBobMode(BobMode.None);
                 LevelCamera.Instance.CanDip = true;
                 LevelCamera.Instance.IsZoomedIn = false;
+#if !UNITY_ANDROID && !UNITY_IPHONE
                 LevelCamera.Instance.EnableLowPassFilter(false);
+#endif
             }
 
             if (GameState.LocalCharacter != null)

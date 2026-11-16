@@ -517,6 +517,7 @@ public class CharacterMoveController
         {
             _currentVelocity += _acceleration;
         }
+#if !UNITY_ANDROID && !UNITY_IPHONE
         else if (clamp)
         {
             _currentVelocity = (_currentVelocity + _acceleration).normalized * wishspeed;
@@ -526,6 +527,7 @@ public class CharacterMoveController
         {
             _currentVelocity = (_currentVelocity + _acceleration).normalized * speed;
         }
+#endif
     }
 
     private void CheckDuck()
@@ -757,9 +759,12 @@ public class CharacterMoveController
         ApplyFriction();
 
         Vector3 wishDir = UserInput.Rotation * UserInput.HorizontalDirection;
-        wishDir[1] = 0;
 
+
+        wishDir[1] = 0;
+#if !UNITY_ANDROID && !UNITY_IPHONE
         wishDir.Normalize();
+#endif
 
         // perform acceleration
         ApplyAcceleration(wishDir, _attributes.Speed * SpeedModifier, _currentEnviroment.GroundAcceleration);

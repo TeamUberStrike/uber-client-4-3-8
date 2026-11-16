@@ -154,7 +154,11 @@ public class EventStreamHud : Singleton<EventStreamHud>
     {
         ResetTextGroupTransform();
         ResetBlurTransform();
+#if !UNITY_ANDROID && !UNITY_IPHONE
         _entireGroup.Position = new Vector2(Screen.width * 0.95f, Screen.height * 0.02f);
+#else
+        _entireGroup.Position = new Vector2(Screen.width * 0.5f, Screen.height * 0.85f);
+#endif
     }
 
     private void ResetTextGroupTransform()

@@ -1,3 +1,4 @@
+#if !UNITY_ANDROID && !UNITY_IPHONE
 using UnityEngine;
 using UnityEngine.Video;
 using System.Collections;
@@ -150,3 +151,4 @@ public class SplashLoaderWeb : MonoBehaviour
         }
     }
 }
+#endif

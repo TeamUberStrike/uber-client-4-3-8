@@ -7,6 +7,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 {
     private void Awake()
     {
+        ForceShow = false;
+
         _rect = new Rect();
 
         _panelSize.x = 700;
@@ -36,7 +38,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         if (!GameState.HasCurrentGame || !GameState.HasCurrentPlayer) return;
 
         bool showTabScreen =
-            !InGameChatPageGUI.IsOpen && InputManager.Instance.RawValue(GameInputKey.Tabscreen) > 0 &&
+            (InputManager.Instance.RawValue(GameInputKey.Tabscreen) > 0 || ForceShow) &&
+            !InGameChatPageGUI.IsOpen &&
             !PanelManager.IsAnyPanelOpen &&
             GameState.CurrentGame.CanShowTabscreen;
 
@@ -389,6 +392,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
     {
         get { return _redTeam.Count; }
     }
+
+    public bool ForceShow { get; set; }
 
     #endregion
 

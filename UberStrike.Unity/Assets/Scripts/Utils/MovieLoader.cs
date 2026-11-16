@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+
+#if !UNITY_ANDROID && !UNITY_IPHONE
+using UnityEngine;
 using UnityEngine.Video;
 using System.Collections.Generic;
 
@@ -32,3 +34,4 @@ public class MovieLoader : Singleton<MovieLoader>
         return cachedMovieTextures[name];
     }
 }
+#endif

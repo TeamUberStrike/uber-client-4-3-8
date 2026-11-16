@@ -10,6 +10,7 @@ public class InputManager : AutoMonoBehaviour<InputManager>
         SetDefaultKeyMapping();
     }
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
     private void Update()
     {
         KeyInput.Update();
@@ -58,6 +59,7 @@ public class InputManager : AutoMonoBehaviour<InputManager>
             }
         }
     }
+#endif
 
     /// <summary>
     /// GetKeyDown return true for the moment a key is pressed down

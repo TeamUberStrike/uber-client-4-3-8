@@ -239,6 +239,11 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         return _weapons[1];
     }
 
+    public WeaponSlot GetCurrentWeapon()
+    {
+        return _weapon;
+    }
+
     public void InitializeAllWeapons(Transform _weaponAttachPoint)
     {
         for (int i = 0; i < _weapons.Length; i++)
@@ -746,7 +751,7 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             {
                 bool ready = IsWeaponReady;
 
-                if (Input.GetMouseButton(0))
+                if (!TouchInput.IsSupported && Input.GetMouseButton(0))
                 {
                     _bufferedTapTime = -1f;
 

@@ -1336,6 +1336,7 @@ GameObject:
   - component: {fileID: 341}
   - component: {fileID: 353}
   - component: {fileID: 354}
+  - component: {fileID: 161}
   m_Layer: 0
   m_Name: GuiManager
   m_TagString: Untagged
@@ -2444,6 +2445,7 @@ Transform:
   - {fileID: 146}
   - {fileID: 165}
   - {fileID: 143}
+  - {fileID: 1136736115}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &164
@@ -2951,7 +2953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadMapsUsingWebService: 0
-  _locale: 0
+  backgroundTexture: {fileID: 2800000, guid: c1ac8767db3f64e6c9afa4640425b660, type: 1}
 --- !u!114 &266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5397,6 +5399,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Offset: {x: 0, y: 0}
+  TouchLookSensitivity: {x: 1, y: .5}
   _player: {fileID: 323}
 --- !u!114 &304
 MonoBehaviour:
@@ -113926,6 +113929,95 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 396156ff399ea7c4096e77805a43b827, type: 3}
+--- !u!1 &1136736114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1136736115}
+  - component: {fileID: 1136736118}
+  m_Layer: 0
+  m_Name: TouchInputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+
+--- !u!4 &1136736115
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136736114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 163}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+
+--- !u!114 &1136736118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136736114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 567a9c72aaa81bc489913cb337acad93, type: 1}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guiSkin: {fileID: 11400000, guid: c982d514b5c8c624b8993477e348a1d3, type: 2}
+  leftSideRatio: .5
+  lookInteriaRolloff: {x: 10, y: 12}
+  IdleTimeBeforeHelp: 10
+  LastFireTime: 0
+  HasDisplayedFireHelp: 0
+  CheckIdleTime: 0
+
+--- !u!114 &161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd233db32180c5e44aad26060e5d7047, type: 1}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fireIcon: {fileID: 2800000, guid: fe6a755d386828f45bb243fa03994cbc, type: 1}
+  _jumpIcon: {fileID: 2800000, guid: 3ec711c2983ce2b4a80b56927fba92d5, type: 1}
+  _crouchIcon: {fileID: 2800000, guid: f956a5cc643ef4140b5c5e7a7bd9a7fa, type: 1}
+  _secondFireIcon: {fileID: 2800000, guid: 46c1673be01b5ca4fa756dfe9889d074, type: 1}
+  _keyboardDpad: {fileID: 2800000, guid: 34a8986b6787a204ba0e67cd39834697, type: 1}
+  _sniperSwipeIcon: {fileID: 2800000, guid: 824779b66ae79ab44ae80998588605c4, type: 1}
+  _chatIcon: {fileID: 2800000, guid: f6991d16117622144bb858f31defc225, type: 1}
+  _menuIcon: {fileID: 2800000, guid: 51bfa3a6a8890514ea846de27a66a7d7, type: 1}
+  _scoreboardIcon: {fileID: 2800000, guid: e33ff7d090a737b48ad4fed68ac75a9e, type: 1}
+  _leftIcon: {fileID: 2800000, guid: 7c57695a093c188499543606f84dafe2, type: 1}
+  _rightIcon: {fileID: 2800000, guid: d35cb7f12bdf724438b8f53717af9827, type: 1}
+  _joystickInner: {fileID: 2800000, guid: c54d379e100853f4da38dfe7b9cc232d, type: 1}
+  _joystickOuter: {fileID: 2800000, guid: 0f1f9a2d227f69743b27e131a415fdcc, type: 1}
+  _weaponIcons:
+  - {fileID: 2800000, guid: 4fdcc3b124e93db4fb47f66515402b2c, type: 1}
+  - {fileID: 2800000, guid: 4fdcc3b124e93db4fb47f66515402b2c, type: 1}
+  - {fileID: 2800000, guid: 7eadf78d6098cb642ae3f4123d5611a7, type: 1}
+  - {fileID: 2800000, guid: be0d356920748dc46b389cb9030c0f0a, type: 1}
+  - {fileID: 2800000, guid: 23027aaf2cd91cd4383116dead583710, type: 1}
+  - {fileID: 2800000, guid: f12168dcb6f101141b1ba345b0e6b2fb, type: 1}
+  - {fileID: 2800000, guid: 180c51db0ca068a4886ded3dfe13f4d3, type: 1}
+  - {fileID: 2800000, guid: 4617374076b856942ae7c30e4947cb99, type: 1}
+  - {fileID: 2800000, guid: 4916bfa892e43364eb907f4434489c6a, type: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SplashLoader : MonoBehaviour
 {
+#if !UNITY_ANDROID && !UNITY_IPHONE
     [SerializeField]
     private TextAsset licenseFile;
 
@@ -31,7 +32,7 @@ public class SplashLoader : MonoBehaviour
 
         // Set the player to one minus the current screen resolution
         ScreenResolutionManager.SetTwoMinusMaxResolution();
-        
+
         if (white == null)
         {
             white = new Texture2D(1, 1, TextureFormat.RGB24, false);
@@ -142,4 +143,5 @@ public class SplashLoader : MonoBehaviour
             }
         }
     }
+#endif
 }

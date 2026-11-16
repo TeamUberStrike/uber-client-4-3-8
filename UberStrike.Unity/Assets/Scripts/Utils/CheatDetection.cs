@@ -9,6 +9,7 @@ using Cmune.Util;
 
 public class CheatDetection : MonoBehaviour
 {
+#if !UNITY_IPHONE
     private static int _gameTime;
     private static DateTime _dateTime;
 
@@ -99,4 +100,5 @@ public class CheatDetection : MonoBehaviour
         else if (mean > 1.1f && variance < 0.05f) return true;
         else return false;
     }
+#endif
 }

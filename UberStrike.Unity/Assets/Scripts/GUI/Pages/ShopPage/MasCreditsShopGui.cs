@@ -11,7 +11,7 @@ public class MasCreditsShopGui
     public void Draw(Rect position)
     {
         float contentHeight = Mathf.Max(position.height, scrollHeight);
-        packScroll = GUI.BeginScrollView(position, packScroll, new Rect(0, 0, position.width - 17, contentHeight), false, true);
+        packScroll = GUITools.BeginScrollView(position, packScroll, new Rect(0, 0, position.width - 17, contentHeight), false, true);
         {
             var creditPacks = MasBundleManager.Instance.GetBundlesInCategory(BundleCategoryType.None);
 
@@ -39,7 +39,7 @@ public class MasCreditsShopGui
                 scrollHeight = yOffset;
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawItem(Rect position, IUnityItem baseItem)
@@ -100,7 +100,7 @@ public class MasCreditsShopGui
         {
             GUITools.Clicked();
             if (ScreenResolutionManager.IsFullScreen) ScreenResolutionManager.IsFullScreen = false;
-            MasBundleManager.Instance.BuyStoreKitItem(masBundleView.BundleView.MacAppStoreUniqueId, masBundleView.BundleView.Id);
+            MasBundleManager.Instance.BuyStoreKitItem(masBundleView.BundleView);
         }
         else
         {

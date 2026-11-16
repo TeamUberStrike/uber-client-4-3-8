@@ -12,10 +12,12 @@ public class InGameHelpHud : Singleton<InGameHelpHud>
         {
             if (value)
             {
+#if !UNITY_ANDROID && !UNITY_IPHONE
                 _entireGroup.Show();
                 if (EnableChangeTeamHelp) _changeTeamHelpGroup.Show();
                 else _changeTeamHelpGroup.Hide();
                 ResetTransform();
+#endif
             }
             else
             {

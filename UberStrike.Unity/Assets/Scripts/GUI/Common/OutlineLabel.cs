@@ -108,12 +108,12 @@ public static partial class GUITools
         float height = 0; int index = 0;
         if (buttons.Length > 0)
             height = ((buttons.Length - 1) * buttonHeight);
-        listScroller = GUI.BeginScrollView(position, listScroller, new Rect(0, 0, position.width - 20, height + buttonHeight));
+        listScroller = GUITools.BeginScrollView(position, listScroller, new Rect(0, 0, position.width - 20, height + buttonHeight));
         for (index = 0; index < buttons.Length; index++)
             if (((index + 1) * buttonHeight) > listScroller.y) break;
         for (; index < buttons.Length && (index * buttonHeight) < listScroller.y + position.height; index++)
             GUI.Button(new Rect(0, index * buttonHeight, position.width - 16, buttonHeight), buttons[index]);
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
         return listScroller;
     }
 
