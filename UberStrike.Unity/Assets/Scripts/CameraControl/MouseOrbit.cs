@@ -179,7 +179,11 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 
                 // figure out the gesture movement over the last series of frames
                 if (lastDragDiffs.Count > 9) lastDragDiffs.Dequeue();
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Vector2 lastDiff = (touch.position + touch.deltaPosition) - (secondTouch.position + secondTouch.deltaPosition);
+#else
                 Vector2 lastDiff = (touch.position - touch.deltaPosition) - (secondTouch.position - secondTouch.deltaPosition);
+#endif
                 Vector2 currDiff = touch.position - secondTouch.position;
                 lastDragDiffs.Enqueue(currDiff.sqrMagnitude - lastDiff.sqrMagnitude);
 
