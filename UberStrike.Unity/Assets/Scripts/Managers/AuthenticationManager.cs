@@ -90,6 +90,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
                 webArguments.Hash,
                 ApplicationDataManager.Channel,
                 SystemInfo.deviceUniqueIdentifier,
+                ApplicationDataManager.VersionShort,
                 (ev) => loginResult = ev,
                 (ex) =>
                 {
@@ -98,7 +99,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         }
         else if (!string.IsNullOrEmpty(emailAddress) && !string.IsNullOrEmpty(password))
         {
-            yield return AuthenticationWebServiceClient.LoginMemberEmail(emailAddress, password, ApplicationDataManager.Channel, SystemInfo.deviceUniqueIdentifier,
+            yield return AuthenticationWebServiceClient.LoginMemberEmail(emailAddress, password, ApplicationDataManager.Channel, SystemInfo.deviceUniqueIdentifier, ApplicationDataManager.VersionShort,
                 (ev) => loginResult = ev,
                 (ex) =>
                 {
@@ -121,6 +122,13 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         else if (loginResult.MemberAuthenticationResult != MemberAuthenticationResult.Ok)
         {
             PopupSystem.HideMessage(_progress);
+
+            if (loginResult.MemberAuthenticationResult == MemberAuthenticationResult.IsBetaRestricted)
+            {
+                ShowBetaAccessPopup();
+                yield break;
+            }
+
             LoginPanelGUI.ErrorMessage = LocalizedStrings.LoginFailed + ": " + loginResult.MemberAuthenticationResult.ToString();
             LoginPanelGUI.IsBanned = loginResult.MemberAuthenticationResult == MemberAuthenticationResult.IsBanned;
             if (Application.isEditor || Application.platform == RuntimePlatform.WebGLPlayer)
@@ -346,5 +354,19 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
                 LoginPanelGUI.ErrorMessage = string.Empty;
                 LoginByChannel();
             });
+    }
+
+    private const string StripeBuyAccessUrl = "https://buy.stripe.com/REPLACE_WITH_YOUR_PAYMENT_LINK";
+
+    private void ShowBetaAccessPopup()
+    {
+        PopupSystem.ShowMessage(
+            "Beta Access Required",
+            "Buy access to 4.3 on mobile with this link:\n" + StripeBuyAccessUrl,
+            PopupSystem.AlertType.OK,
+            "Buy Access",
+            () => Application.OpenURL(StripeBuyAccessUrl),
+            "Close",
+            null);
     }
 }
