@@ -80,6 +80,8 @@ public static class UserInput
         UpdateDirections();
     }
 
+    private static bool _gyroWasZoomed;
+
     public static void UpdateMouse()
     {
         if (Camera.main != null)
@@ -103,6 +105,20 @@ public static class UserInput
             else
                 Mouse.y += InputManager.Instance.RawValue(GameInputKey.VerticalLook) * ApplicationDataManager.ApplicationOptions.InputXMouseSensitivity * inv * factor;
             Mouse.y = ClampAngle(Mouse.y, -88, 88);
+
+            bool gyroZoomed = TouchInput.IsSupported && ApplicationDataManager.ApplicationOptions.GyroAimEnabled
+                && GyroAim.Supported && LevelCamera.Exists && LevelCamera.Instance.IsZoomedIn;
+            if (gyroZoomed)
+            {
+                if (!_gyroWasZoomed) GyroAim.Reset();
+                Vector2 gyro = GyroAim.LookDelta(
+                    ApplicationDataManager.ApplicationOptions.GyroStrength,
+                    ApplicationDataManager.ApplicationOptions.GyroInvertY,
+                    ApplicationDataManager.ApplicationOptions.GyroInvertX);
+                Mouse.x = ClampAngle(Mouse.x + gyro.x * factor, -360f, 360f);
+                Mouse.y = ClampAngle(Mouse.y + gyro.y * factor, -88f, 88f);
+            }
+            _gyroWasZoomed = gyroZoomed;
         }
 
         Rotation = Quaternion.AngleAxis(Mouse.x, Vector3.up) * Quaternion.AngleAxis(Mouse.y, Vector3.left);
