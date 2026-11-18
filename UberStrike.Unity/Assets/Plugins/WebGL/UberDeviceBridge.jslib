@@ -66,6 +66,39 @@ var UberDeviceBridge = {
             return -1;
         }
     },
+
+    // Unity unlocks audio on touchstart; iOS Safari needs touchend/click. Playback = ignore silent switch.
+    UberWebAudioSetup__deps: ['$WEBAudio'],
+    UberWebAudioSetup: function() {
+        try {
+            if (navigator.audioSession) navigator.audioSession.type = "playback";
+        } catch (e) {}
+
+        var unlock = function() {
+            try {
+                if (!WEBAudio || !WEBAudio.audioContext) return;
+                var ctx = WEBAudio.audioContext;
+                if (ctx.state !== "running" && ctx.state !== "closed") {
+                    ctx.resume().catch(function() {});
+                }
+                if (WEBAudio.audioCache) {
+                    while (WEBAudio.audioCache.length < 20) {
+                        var audio = new Audio();
+                        audio.autoplay = false;
+                        WEBAudio.audioCache.push(audio);
+                    }
+                }
+            } catch (e) {}
+        };
+
+        var events = ["touchend", "pointerup", "click", "keydown"];
+        for (var i = 0; i < events.length; i++) {
+            window.addEventListener(events[i], unlock, true);
+        }
+        document.addEventListener("visibilitychange", function() {
+            if (!document.hidden) unlock();
+        });
+    },
 };
 
 mergeInto(LibraryManager.library, UberDeviceBridge);
