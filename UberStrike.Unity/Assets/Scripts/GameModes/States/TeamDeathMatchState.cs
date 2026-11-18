@@ -127,8 +127,7 @@ class TeamDeathMatchState : IState
         int blueScore = ev.BlueScore;
         bool isLeading = ev.IsLeading;
 
-        int myKills = (GameState.LocalCharacter.TeamID == TeamID.RED ? redScore : blueScore);
-        MatchStatusHud.Instance.RemainingKills = GameMetaData.SplatLimit - myKills;
+        MatchStatusHud.Instance.RemainingKills = GameMetaData.SplatLimit - Math.Max(redScore, blueScore);
 
         bool playAudio =
             !_teamDeathMatchGameMode.IsGameAboutToEnd &&
