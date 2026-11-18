@@ -42,6 +42,6 @@ public class FpsOverlayHud : MonoBehaviour
 
         float fps = _smoothDelta > 0f ? 1f / _smoothDelta : 0f;
         // Top-left; clear of the weapon/health HUD which sits along the bottom.
-        GUI.Label(new Rect(10, 10, 150, 22), "FPS: " + fps.ToString("F1"), _style);
+        GUI.Label(new Rect(10 + MobileMenuScale.SafeLeftPixels, 10, 150, 22), "FPS: " + fps.ToString("F1"), _style);
     }
 }
