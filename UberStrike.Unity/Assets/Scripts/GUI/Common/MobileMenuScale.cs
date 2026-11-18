@@ -201,12 +201,12 @@ public static class MobileMenuScale
     // Devices that report no cutout get no inset and keep the stock layout. The bottom inset
     // (iPhone home indicator) is intentionally not applied.
     //
-    // The player can set a minimum inset in Options > General > Screen Edge Margin
-    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or a minimum margin in millimetres. It applies
+    // The player can override the inset in Options > General > Screen Edge Margin
+    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or an exact margin in millimetres. It applies
     // to the same side(s) as the safe-area inset: the notch side, or both sides with Symmetric safe
-    // area on (and always for the ribbon and fixed HUDs). The larger of the safe-area inset and the
-    // manual margin is used, so the setting can add clearance for rounded corners/curved edges but
-    // never puts content back under a cutout.
+    // area on (and always for the ribbon and fixed HUDs). The manual margin replaces the reported
+    // inset in both directions: larger for rounded corners/curved edges, or smaller when the device
+    // reports more than its notch really covers.
     //
     // NOTE (Android): Player Settings > Resolution and Presentation > "Render outside safe area" must be
     // ON, otherwise Unity letterboxes the cutout and safeArea always equals the full screen.
@@ -372,13 +372,12 @@ public static class MobileMenuScale
 
         if (manualMm >= 0f)
         {
-            // Manual: a minimum margin on the same side(s) as the safe-area inset (both sides when
-            // symmetric, otherwise the notch side only); a larger safe-area inset still wins.
+            // Manual: the exact margin replaces the safe-area inset, on the same side(s) (both sides
+            // when symmetric, otherwise the notch side only). Values below the reported cutout are
+            // allowed: the reported safe area is often larger than the visible notch.
             float manual = Mathf.Min(Mathf.Min(manualMm, MaxEdgeMarginMm) * PixelsPerMm, maximum);
-            if (symmetric || notchLeft)
-                left = Mathf.Max(left, manual);
-            if (symmetric || !notchLeft)
-                right = Mathf.Max(right, manual);
+            left = symmetric || notchLeft ? manual : 0f;
+            right = symmetric || !notchLeft ? manual : 0f;
         }
     }
 
