@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Cmune.DataCenter.Common.Entities;
 using Cmune.Util;
@@ -125,7 +126,14 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
 
             if (loginResult.MemberAuthenticationResult == MemberAuthenticationResult.IsBetaRestricted)
             {
-                ShowBetaAccessPopup();
+                int cmid = loginResult.MemberView != null ? loginResult.MemberView.PublicProfile.Cmid : 0;
+                if (cmid <= 0)
+                {
+                    ShowLoginErrorPopup(LocalizedStrings.Error, LocalizedStrings.UnspecifiedErrorMsg);
+                    yield break;
+                }
+
+                ShowBetaAccessPopup(cmid);
                 yield break;
             }
 
@@ -356,17 +364,26 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             });
     }
 
-    private const string StripeBuyAccessUrl = "https://buy.stripe.com/REPLACE_WITH_YOUR_PAYMENT_LINK";
+    private const string StripeBuyAccessUrl = "https://buy.stripe.com/test_dRm6oJ78U7hqfTObU12go00";
 
-    private void ShowBetaAccessPopup()
+    private void ShowBetaAccessPopup(int cmid)
     {
+        string buyAccessUrl = BuildStripeBuyAccessUrl(cmid);
+
         PopupSystem.ShowMessage(
             "Beta Access Required",
-            "Buy access to 4.3 on mobile with this link:\n" + StripeBuyAccessUrl,
+            "Buy access to 4.3 on mobile.",
             PopupSystem.AlertType.OK,
-            () => Application.OpenURL(StripeBuyAccessUrl),
-            "Buy Access",
+            () => Application.OpenURL(buyAccessUrl),
+            "BUY NOW",
             null,
             "Close");
+    }
+
+    private static string BuildStripeBuyAccessUrl(int cmid)
+    {
+        string separator = StripeBuyAccessUrl.Contains("?") ? "&" : "?";
+
+        return StripeBuyAccessUrl + separator + "client_reference_id=" + Uri.EscapeDataString(cmid.ToString());
     }
 }
