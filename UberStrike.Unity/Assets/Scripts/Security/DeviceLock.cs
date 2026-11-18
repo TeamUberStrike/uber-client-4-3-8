@@ -36,8 +36,29 @@ public class DeviceLock : MonoBehaviour
     private static void Bootstrap()
     {
         IsAllowed = CheckAllowed();
-        if (IsAllowed) return;
+        if (!IsAllowed) Show();
+    }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    private static void StartCheck()
+    {
+        DeviceCheck.Install();
+    }
+
+    public static void Lock()
+    {
+        IsAllowed = false;
+        if (_instance != null) return;
+        Show();
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            var scene = SceneManager.GetSceneAt(i);
+            if (scene.isLoaded) Freeze(scene);
+        }
+    }
+
+    private static void Show()
+    {
         ApplicationDataManager.AutoLogin = false;
         AudioListener.volume = 0f;
 
