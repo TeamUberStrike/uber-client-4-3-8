@@ -249,6 +249,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                 // Setup Application Options
                 applicationOptions.Initialize();
                 OnApplicationFocus(Application.isFocused);
+                if (applicationOptions.GyroAimEnabled) GyroAim.EnsureRunning();
 
 #if !UNITY_ANDROID && !UNITY_IPHONE
                 // Set the initial Video options based on Cmune Prefs
