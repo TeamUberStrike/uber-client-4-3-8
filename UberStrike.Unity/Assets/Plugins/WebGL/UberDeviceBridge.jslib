@@ -169,6 +169,58 @@ var UberDeviceBridge = {
     // Mobile WebGL keyboard lives in Keyboard.jslib (UberOpenTextKeyboard,
     // UberAddKeyboardLayout, UberLoadKeyboardLayout, UberCloseKeyboard).
 
+    // Gyro for WebGL: devicemotion rates (deg/s) + deviceorientation tilt. iOS needs a tap to grant.
+    UberGyroStart: function() {
+        if (window.__uberGyro) return;
+        var g = window.__uberGyro = { rate: [0, 0, 0], beta: 0, gamma: 0, motionAt: 0, tiltAt: 0, perm: 3 };
+        var listen = function() {
+            window.addEventListener("devicemotion", function(e) {
+                var r = e.rotationRate;
+                if (!r || r.alpha === null) return;
+                g.rate = [r.beta || 0, r.gamma || 0, r.alpha || 0];
+                g.motionAt = performance.now();
+            });
+            window.addEventListener("deviceorientation", function(e) {
+                if (e.beta === null) return;
+                g.beta = e.beta; g.gamma = e.gamma || 0;
+                g.tiltAt = performance.now();
+            });
+        };
+        if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
+            g.perm = 0;
+            var ask = function() {
+                window.removeEventListener("touchend", ask, true);
+                window.removeEventListener("click", ask, true);
+                var p1 = DeviceMotionEvent.requestPermission();
+                var p2 = (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function")
+                    ? DeviceOrientationEvent.requestPermission() : Promise.resolve("granted");
+                Promise.all([p1, p2]).then(function(s) {
+                    g.perm = (s[0] === "granted" && s[1] === "granted") ? 1 : 2;
+                    if (g.perm === 1) listen();
+                }).catch(function() { g.perm = 2; });
+            };
+            window.addEventListener("touchend", ask, true);
+            window.addEventListener("click", ask, true);
+        } else {
+            listen();
+        }
+    },
+
+    // 0 waiting for tap, 1 granted, 2 denied, 3 no prompt needed.
+    UberGyroPermission: function() {
+        return window.__uberGyro ? window.__uberGyro.perm : 0;
+    },
+
+    // out[0..5] = valid, rate x/y/z (deg/s, device axes), beta, gamma (deg).
+    UberGyroRead: function(ptr) {
+        var g = window.__uberGyro, i = ptr >> 2;
+        var now = performance.now();
+        var ok = g && now - g.motionAt < 500 && now - g.tiltAt < 500;
+        HEAPF32[i] = ok ? 1 : 0;
+        if (!ok) return;
+        HEAPF32[i + 1] = g.rate[0]; HEAPF32[i + 2] = g.rate[1]; HEAPF32[i + 3] = g.rate[2];
+        HEAPF32[i + 4] = g.beta; HEAPF32[i + 5] = g.gamma;
+    },
 };
 
 
