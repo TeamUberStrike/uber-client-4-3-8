@@ -692,7 +692,7 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         else
         {
-        bool showGyro = Application.platform != RuntimePlatform.WebGLPlayer;
+        bool showGyro = GyroAim.Supported;
         _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, showGyro ? 250 : 100));
         {
             if (showGyro)
@@ -749,6 +749,7 @@ public class OptionsPanelGUI : PanelGuiBase
         GUI.BeginGroup(area);
         {
             opt.GyroAimEnabled = GUI.Toggle(new Rect(12, 15, 110, 26), opt.GyroAimEnabled, " Gyroscope", BlueStonez.toggle);
+            if (opt.GyroAimEnabled) GyroAim.EnsureRunning();
             opt.GyroInvertY = GUI.Toggle(new Rect(128, 15, 130, 26), opt.GyroInvertY, " Invert Vertical", BlueStonez.toggle);
             opt.GyroInvertX = GUI.Toggle(new Rect(268, 15, 150, 26), opt.GyroInvertX, " Invert Horizontal", BlueStonez.toggle);
 
@@ -757,9 +758,14 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.Label(new Rect(370, 45, 60, 24), s.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
             if (s != opt.GyroStrength) opt.GyroStrength = Mathf.Round(s * 10f) / 10f;
 
+            int perm = GyroAim.WebPermission;
+            if (opt.GyroAimEnabled && (perm == 0 || perm == 2))
+                GUI.Label(new Rect(225, 79, 220, 24), perm == 0 ? "Tap the screen to allow motion" : "Motion blocked: allow in browser settings", BlueStonez.label_interparkbold_11pt_left);
+
             if (!GameState.HasCurrentGame && GUI.Button(new Rect(15, 75, 200, 28), "Try Gyroscope", BlueStonez.button))
             {
                 opt.GyroAimEnabled = true;
+                GyroAim.EnsureRunning();
                 opt.SaveApplicationOptions();
                 PanelManager.Instance.ClosePanel(PanelType.Options);
                 CoroutineManager.StartCoroutine(EnterGyroTryRange);

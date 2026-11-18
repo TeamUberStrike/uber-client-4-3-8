@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
 
 // Scope-only gyro aim. Projects angular velocity on gravity-derived yaw/pitch axes (orientation-agnostic, 360).
 public static class GyroAim
@@ -11,12 +14,30 @@ public static class GyroAim
     private static readonly OneEuro _yawFilter = new OneEuro();
     private static readonly OneEuro _pitchFilter = new OneEuro();
 
-    public static bool Supported { get { return Application.platform != RuntimePlatform.WebGLPlayer && SystemInfo.supportsGyroscope; } }
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")] private static extern void UberGyroStart();
+    [DllImport("__Internal")] private static extern int UberGyroPermission();
+    [DllImport("__Internal")] private static extern void UberGyroRead(float[] values);
+    private static readonly float[] _web = new float[6];
+
+    public static bool Supported { get { return ApplicationDataManager.IsMobile; } }
+
+    // 0 waiting for tap, 1 granted, 2 denied, 3 no prompt needed.
+    public static int WebPermission { get { return _running ? UberGyroPermission() : 0; } }
+#else
+    public static bool Supported { get { return SystemInfo.supportsGyroscope; } }
+
+    public static int WebPermission { get { return 3; } }
+#endif
 
     public static void EnsureRunning()
     {
         if (_running || !Supported) return;
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UberGyroStart();
+#else
         Input.gyro.enabled = true;
+#endif
         _running = true;
     }
 
@@ -35,8 +56,8 @@ public static class GyroAim
         float dt = Time.deltaTime;
         if (dt <= 0f) return Vector2.zero;
 
-        Vector3 w = Input.gyro.rotationRateUnbiased;
-        Vector3 g = Input.gyro.gravity;
+        Vector3 w, g;
+        if (!Sample(out w, out g)) return Vector2.zero;
         if (g.sqrMagnitude < 1e-4f) return Vector2.zero;
         Vector3 up = -g.normalized;
 
@@ -57,6 +78,24 @@ public static class GyroAim
         if (Mathf.Abs(pitchRate) < DeadzoneDegPerSec) pitchRate = 0f;
 
         return new Vector2(yawRate, pitchRate) * (strength * dt);
+    }
+
+    // Device axes, rad/s + gravity (down). WebGL: browser rates are deg/s; gravity from beta/gamma tilt.
+    private static bool Sample(out Vector3 w, out Vector3 g)
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UberGyroRead(_web);
+        w = g = Vector3.zero;
+        if (_web[0] < 0.5f) return false;
+        w = new Vector3(_web[1], _web[2], _web[3]) * Mathf.Deg2Rad;
+        float b = _web[4] * Mathf.Deg2Rad, c = _web[5] * Mathf.Deg2Rad;
+        g = new Vector3(Mathf.Cos(b) * Mathf.Sin(c), -Mathf.Sin(b), -Mathf.Cos(b) * Mathf.Cos(c));
+        return true;
+#else
+        w = Input.gyro.rotationRateUnbiased;
+        g = Input.gyro.gravity;
+        return true;
+#endif
     }
 
     // 1-euro filter (Casiez 2012).
