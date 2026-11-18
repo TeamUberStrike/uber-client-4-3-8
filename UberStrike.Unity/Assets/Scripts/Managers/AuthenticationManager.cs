@@ -81,6 +81,13 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         PopupSystem.Show(_progress);
         MemberAuthenticationResultView loginResult = null;
 
+        yield return DeviceCheck.Run("login");
+        if (!DeviceLock.IsAllowed)
+        {
+            PopupSystem.HideMessage(_progress);
+            yield break;
+        }
+
         if (webArguments != null && webArguments.IsValid)
         {
             yield return UberStrike.WebService.Unity.AuthenticationWebServiceClient.LoginMemberCookie(
@@ -89,7 +96,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
                 webArguments.Content,
                 webArguments.Hash,
                 ApplicationDataManager.Channel,
-                SystemInfo.deviceUniqueIdentifier,
+                DeviceCheck.MachineId(SystemInfo.deviceUniqueIdentifier),
                 (ev) => loginResult = ev,
                 (ex) =>
                 {
@@ -98,7 +105,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         }
         else if (!string.IsNullOrEmpty(emailAddress) && !string.IsNullOrEmpty(password))
         {
-            yield return AuthenticationWebServiceClient.LoginMemberEmail(emailAddress, password, ApplicationDataManager.Channel, SystemInfo.deviceUniqueIdentifier,
+            yield return AuthenticationWebServiceClient.LoginMemberEmail(emailAddress, password, ApplicationDataManager.Channel, DeviceCheck.MachineId(SystemInfo.deviceUniqueIdentifier),
                 (ev) => loginResult = ev,
                 (ex) =>
                 {
