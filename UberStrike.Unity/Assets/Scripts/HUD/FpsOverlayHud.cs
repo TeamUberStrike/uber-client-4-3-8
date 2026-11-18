@@ -41,7 +41,37 @@ public class FpsOverlayHud : MonoBehaviour
         }
 
         float fps = _smoothDelta > 0f ? 1f / _smoothDelta : 0f;
+        if (ApplicationDataManager.IsMobile)
+        {
+            DrawMobile(fps);
+            return;
+        }
         // Top-left; clear of the weapon/health HUD which sits along the bottom.
         GUI.Label(new Rect(10 + MobileMenuScale.SafeLeftPixels, 10, 150, 22), "FPS: " + fps.ToString("F1"), _style);
     }
+
+    // Mobile: top center (HP left, ammo right), sized to screen, colored by speed.
+    private void DrawMobile(float fps)
+    {
+        if (_mobileStyle == null)
+        {
+            _mobileStyle = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
+            _backing = new Texture2D(1, 1);
+            _backing.SetPixel(0, 0, new Color(0f, 0f, 0f, 0.55f));
+            _backing.Apply();
+        }
+        int size = Mathf.Clamp(Mathf.RoundToInt(Screen.height / 28f), 14, 64);
+        _mobileStyle.fontSize = size;
+        _mobileStyle.normal.textColor = fps >= 50f ? new Color(0.45f, 1f, 0.45f) : fps >= 30f ? new Color(1f, 0.85f, 0.3f) : new Color(1f, 0.4f, 0.35f);
+
+        string text = Mathf.RoundToInt(fps) + " FPS";
+        Vector2 sz = _mobileStyle.CalcSize(new GUIContent(text));
+        float w = sz.x + size, h = sz.y + size * 0.3f;
+        Rect r = new Rect((Screen.width - w) / 2f, Mathf.Max(8f, Screen.height * 0.012f) + (Screen.height - Screen.safeArea.yMax), w, h);
+        GUI.DrawTexture(r, _backing);
+        GUI.Label(r, text, _mobileStyle);
+    }
+
+    private GUIStyle _mobileStyle;
+    private Texture2D _backing;
 }

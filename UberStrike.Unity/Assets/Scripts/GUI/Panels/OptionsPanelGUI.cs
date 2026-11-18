@@ -587,7 +587,7 @@ public class OptionsPanelGUI : PanelGuiBase
         Rect videoRect = new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47);
         float width = videoRect.width - GroupMarginX - GroupMarginX - 20;
 
-        _scrollVideo = GUITools.BeginScrollView(videoRect, _scrollVideo, new Rect(0, 0, videoRect.width - 20, 215));
+        _scrollVideo = GUITools.BeginScrollView(videoRect, _scrollVideo, new Rect(0, 0, videoRect.width - 20, 240));
         {
             GUI.enabled = true;
             GUI.changed = false;
@@ -644,6 +644,10 @@ public class OptionsPanelGUI : PanelGuiBase
             }
 
             opt.VideoShowFps = DrawCustomToggle(new Rect(GroupMarginX + 4, 182, 200, 24), opt.VideoShowFps, "Show FPS");
+
+            // Downloaded map textures keep their load-time size; the limit hits the next map.
+            if (GameState.HasCurrentSpace)
+                GUI.Label(new Rect(GroupMarginX, 210, width, 22), "Map textures update when the next map loads.", BlueStonez.label_interparkbold_11pt_left);
 
             if (GUI.changed || graphicsChanged)
                 opt.MobileGraphicsSaved = true;
