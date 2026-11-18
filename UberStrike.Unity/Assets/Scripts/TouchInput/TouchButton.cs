@@ -84,7 +84,7 @@ public class TouchButton : TouchControl
     {
         if (Content != null)
         {
-            GUI.color = new Color(1, 1, 1, Mathf.Clamp(TouchController.Instance.GUIAlpha, MinGUIAlpha, 1.0f));
+            GUI.color = TouchController.Instance.DrawColor(MinGUIAlpha);
 
             if (MenuRect != null)
             {

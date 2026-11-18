@@ -28,6 +28,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private Vector2 _dragStartPos;  // GUI-space position where the pointer went down
     private Vector2 _dragOffset;
     private Rect _toolbarButtonsRect;   // raw-pixel rect of the editor toolbar buttons (reserved field)
+    private Rect _sliderPanelRect;      // raw-pixel rect of the opacity/size sliders (reserved too)
+    private float _opacityAtOpen = 1f;
 
     // Finger/pointer must move this far (squared, 10px) before a touch becomes a drag, so a
     // second finger can still start a pinch on the control.
@@ -63,6 +65,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             _ribbonWasEnabled = GlobalUIRibbon.Exists && GlobalUIRibbon.Instance.IsEnabled;
             if (_ribbonWasEnabled) GlobalUIRibbon.Instance.Hide();
             if (_hintText != null) _hintText.Show();
+            _opacityAtOpen = ApplicationDataManager.ApplicationOptions.TouchControlsOpacity;
         }
         else if (!editMode && _editModePrev)
         {
@@ -147,7 +150,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         switch (t.phase)
         {
             case TouchPhase.Began:
-                if (_toolbarButtonsRect.Contains(pos)) return; // toolbar owns this area
+                if (_toolbarButtonsRect.Contains(pos) || _sliderPanelRect.Contains(pos)) return; // toolbar owns this area
                 if (SelectControlAtGui(pos))
                 {
                     _dragArmed = true;
@@ -249,7 +252,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private bool SelectControlAtGui(Vector2 guiPos)
     {
         if (!TouchInput.Exists) return false;
-        if (_toolbarButtonsRect.Contains(guiPos)) return false; // the toolbar buttons own this area
+        if (_toolbarButtonsRect.Contains(guiPos) || _sliderPanelRect.Contains(guiPos)) return false; // the toolbar buttons own this area
 
         List<TouchInput.LayoutHandle> handles = TouchInput.Instance.GetLayoutHandles();
         for (int i = handles.Count - 1; i >= 0; i--) // top-most first
@@ -318,6 +321,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         float totalW = 4f * bw + 3f * 8f;
         float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
         _toolbarButtonsRect = new Rect(MobileMenuScale.MenuToScreenX(x0), 2f * ms + TouchInput.TopDeadZonePixels, totalW * ms, bh * ms);
+        _sliderPanelRect = new Rect(MobileMenuScale.MenuToScreenX(x0), (2f + bh + SliderGap) * ms + TouchInput.TopDeadZonePixels, totalW * ms, SliderPanelH * ms);
 
         // Dim the world behind the editor so the markers stay legible no matter what the paused
         // game shows behind them (a bright sky used to swallow the blue outline of the top-right
@@ -347,7 +351,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
 
             if (hd.Icon != null)
             {
+                GUI.color = TouchController.Tint;
                 GUI.DrawTexture(hd.Boundary, hd.Icon, ScaleMode.StretchToFill, true);
+                GUI.color = prev;
             }
 
             Color border = selected ? new Color(1f, 0.85f, 0.2f) : new Color(0.2f, 0.5f, 1f, 1f);
@@ -411,7 +417,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
             case EventType.MouseDown:
                 if (e.button != 0) break; // only the left pointer selects/arms; the right button is the second pinch finger
                 if (_pinchActive) break; // a pinch owns the input
-                if (_toolbarButtonsRect.Contains(mouse)) break; // toolbar buttons own this click
+                if (_toolbarButtonsRect.Contains(mouse) || _sliderPanelRect.Contains(mouse)) break; // toolbar buttons own this click
                 if (SelectControlAtGui(mouse))
                 {
                     // Armed, not yet dragging — a second pointer can still start a pinch.
@@ -483,13 +489,17 @@ public class MobileControlLayoutEditor : MonoBehaviour
             MobileControlLayout.Load();
             TouchInput.Instance.ApplyLayout();
             _selectedId = null;
+            ApplicationDataManager.ApplicationOptions.TouchControlsOpacity = _opacityAtOpen;
             MobileControlLayout.EditMode = false;
         }
         if (GUITools.Button(new Rect(x0 + 3 * (bw + 8), by, bw, bh), new GUIContent("Save"), StormFront.ButtonBlue))
         {
             MobileControlLayout.Save();
+            ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
             MobileControlLayout.EditMode = false;
         }
+
+        DrawSliderPanel(handles, x0, by + bh + SliderGap, totalW);
 
         if (_hintText == null)
         {
@@ -497,10 +507,32 @@ public class MobileControlLayoutEditor : MonoBehaviour
             HudStyleUtility.Instance.SetBlueStyle(_hintText);
             _hintText.Scale = new Vector2(0.6f, 0.6f);
         }
+        float baseW = _hintText.Size.x / Mathf.Max(0.001f, _hintText.Scale.x);
+        float fit = Mathf.Min(0.6f, Screen.width * 0.9f / Mathf.Max(1f, baseW));
+        _hintText.Scale = new Vector2(fit, fit);
         _hintText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 100);
         _hintText.Draw();
 
         MobileMenuScale.End(scaleMatrix);
+    }
+
+    private const float SliderGap = 6f;
+    private const float SliderPanelH = 30f;
+
+    // Menu space. Opacity is global; size = pinch.
+    private void DrawSliderPanel(List<TouchInput.LayoutHandle> handles, float x, float y, float w)
+    {
+        Color prev = GUI.color;
+        GUI.color = new Color(0.10f, 0.13f, 0.20f, 0.9f);
+        GUI.DrawTexture(new Rect(x, y, w, SliderPanelH), _pixel);
+        GUI.color = prev;
+
+        ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
+        GUI.Label(new Rect(x + 8, y + 5, 60, 20), "Opacity", BlueStonez.label_interparkbold_11pt_left);
+        float op = GUI.HorizontalSlider(new Rect(x + 70, y + 10, w - 130, 20), opt.TouchControlsOpacity, ApplicationOptions.TouchOpacityMin, 1f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+        op = Mathf.Round(op * 20f) / 20f;
+        if (op != opt.TouchControlsOpacity) opt.TouchControlsOpacity = op;
+        GUI.Label(new Rect(x + w - 52, y + 5, 45, 20), Mathf.RoundToInt(op * 100f) + "%", BlueStonez.label_interparkbold_11pt_left);
     }
 
     private static float GetScale(List<TouchInput.LayoutHandle> handles, string id)

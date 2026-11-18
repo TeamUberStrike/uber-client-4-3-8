@@ -45,6 +45,9 @@ public class ApplicationOptions
     // Set once the player touches the mobile Video tab; until then mobile keeps its platform quality.
     public bool MobileGraphicsSaved = false;
 
+    public const float TouchOpacityMin = 0.2f;
+    public float TouchControlsOpacity = 1f;
+
     // Menu safe-area margin on each side in millimetres; negative = Auto (use the reported camera
     // cutout). Symmetric mirrors the larger side inset to both sides. See MobileMenuScale
     // "Safe-area layout".
@@ -165,6 +168,7 @@ public class ApplicationOptions
         GyroInvertY = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroInvertY, false);
         GyroInvertX = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroInvertX, false);
         MobileGraphicsSaved = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGraphicsSaved, false);
+        TouchControlsOpacity = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileTouchOpacity, 1f), TouchOpacityMin, 1f);
         if (ApplicationDataManager.IsMobile && !MobileGraphicsSaved)
         {
             IsUsingCustom = false;
@@ -230,6 +234,7 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroInvertY, GyroInvertY);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroInvertX, GyroInvertX);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGraphicsSaved, MobileGraphicsSaved);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileTouchOpacity, TouchControlsOpacity);
 
         // Gameplay
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, GameplayAutoPickupEnabled);

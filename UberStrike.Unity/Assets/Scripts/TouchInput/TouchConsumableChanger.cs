@@ -131,6 +131,7 @@ public class TouchConsumableChanger : TouchButton
     public override void Draw()
     {
         base.Draw();
+        GUI.color = TouchController.Tint;
 
         if (ConsumablesHeld > 1)
         {

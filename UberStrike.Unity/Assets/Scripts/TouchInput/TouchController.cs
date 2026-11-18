@@ -8,6 +8,19 @@ public class TouchController : Singleton<TouchController>
 {
     public float GUIAlpha = 1;
 
+    // Player opacity for on-screen controls; draw only, hit areas unchanged.
+    public static float Opacity
+    {
+        get { return ApplicationDataManager.ApplicationOptions != null ? ApplicationDataManager.ApplicationOptions.TouchControlsOpacity : 1f; }
+    }
+
+    public static Color Tint { get { return new Color(1, 1, 1, Opacity); } }
+
+    public Color DrawColor(float minAlpha)
+    {
+        return new Color(1, 1, 1, Mathf.Clamp(GUIAlpha, minAlpha, 1.0f) * Opacity);
+    }
+
     private TouchController()
     {
         _controls = new List<TouchBaseControl>();
@@ -45,8 +58,10 @@ public class TouchController : Singleton<TouchController>
         foreach (TouchBaseControl control in _controls)
         {
             if (!control.Enabled || !control.Visible) continue;
+            GUI.color = Tint;
             control.Draw();
         }
+        GUI.color = Color.white;
     }
 
     public void AddControl(TouchBaseControl control)

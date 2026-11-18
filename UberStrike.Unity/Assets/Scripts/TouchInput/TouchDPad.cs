@@ -262,7 +262,7 @@ public class TouchDPad : TouchBaseControl
 
     public override void Draw()
     {
-        GUI.color = new Color(1, 1, 1, Mathf.Clamp(TouchController.Instance.GUIAlpha, MinGUIAlpha, 1.0f));
+        GUI.color = TouchController.Instance.DrawColor(MinGUIAlpha);
 
         GUIUtility.RotateAroundPivot(_rotation, _centerPosition);
 
