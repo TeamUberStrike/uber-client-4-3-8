@@ -203,7 +203,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
 
             if (effect != null)
             {
-                ShowTrailEffect(effect, trailRenderer, parent, hitPoint, muzzlePosition, distance, direction);
+                ShowTrailEffect(effect, trailRenderer, parent, hitPoint, muzzlePosition, distance, direction, surface == SurfaceEffectType.WaterEffect);
 
                 switch (surface)
                 {
@@ -280,7 +280,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
         }
     }
 
-    private static void ShowTrailEffect(ParticleCobfigurationPerWeapon effect, MoveTrailrendererObject trailRenderer, Transform parent, Vector3 hitPoint, Vector3 muzzlePosition, float distance, Vector3 direction)
+    private static void ShowTrailEffect(ParticleCobfigurationPerWeapon effect, MoveTrailrendererObject trailRenderer, Transform parent, Vector3 hitPoint, Vector3 muzzlePosition, float distance, Vector3 direction, bool stopAtHitPoint)
     {
         if (effect.WeaponImpactEffectConfiguration.UseTrailrendererForTrail)
         {
@@ -296,7 +296,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
         }
         else
         {
-            ParticleEmissionSystem.TrailParticles(hitPoint, direction, effect.WeaponImpactEffectConfiguration.TrailParticleConfigurationForInstantHit, muzzlePosition, distance);
+            ParticleEmissionSystem.TrailParticles(hitPoint, direction, effect.WeaponImpactEffectConfiguration.TrailParticleConfigurationForInstantHit, muzzlePosition, distance, stopAtHitPoint);
         }
     }
 
