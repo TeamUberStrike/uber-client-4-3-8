@@ -108,6 +108,9 @@ public static class ParticleEmissionSystem
         }
     }
 
+    // Impact smoke is drawn at half its 4.3.8 size (start size here, sizeGrow and max size in the migrator's Fire row).
+    public const float ImpactSmokeScale = 0.5f;
+
     public static void FireParticles(Vector3 hitPoint, Vector3 hitNormal, FireParticleConfiguration particleConfiguration)
     {
         if (particleConfiguration.ParticleEmitter != null)
@@ -128,7 +131,7 @@ public static class ParticleEmissionSystem
                 newEmitPoint.z = newEmitPoint.z + Random.Range(0f, 0.4f) * (-1);
                 EmitSafe(particleConfiguration.ParticleEmitter,
                     newEmitPoint, velocity,
-                    Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize),
+                    Random.Range(particleConfiguration.ParticleMinSize, particleConfiguration.ParticleMaxSize) * ImpactSmokeScale,
                     Random.Range(particleConfiguration.ParticleMinLiveTime, particleConfiguration.ParticleMaxLiveTime),
                     particleConfiguration.ParticleColor);
             }
