@@ -80,6 +80,8 @@ public class QuickItemGroupHud
     // Draws the three items as plain icons at their saved placements - identical to the controls editor.
     public void DrawSimple()
     {
+        Color prevColor = GUI.color;
+        GUI.color = TouchController.Tint;
         for (int i = 0; i < _quickItemSlots.Count; i++)
         {
             QuickItemHud q = _quickItemSlots[i];
@@ -93,6 +95,7 @@ public class QuickItemGroupHud
             center = ClampSlotCenter(center, side * 0.5f);
             GUI.DrawTexture(new Rect(center.x - side / 2, center.y - side / 2, side, side), icon, ScaleMode.StretchToFill, true);
         }
+        GUI.color = prevColor;
     }
 
     public Rect GetSimpleCombinedRect()

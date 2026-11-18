@@ -177,6 +177,7 @@ public class TouchWeaponChanger : TouchButton
     public override void Draw()
     {
         base.Draw();
+        GUI.color = TouchController.Tint;
 
         if (_hasWeapon)
         {
@@ -240,18 +241,22 @@ public class TouchWeaponChanger : TouchButton
         {
             float t = (Time.time - _startWeaponSwitch) / WeaponSwitchTime;
             _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(Mathf.Lerp(left, mid, t), 0);
-            _incomingQuad.Alpha = Mathf.Lerp(-1, 1, t); // go negative so only second half of animation is visible
+            _incomingQuad.Alpha = Mathf.Lerp(-1, 1, t) * TouchController.Opacity; // go negative so only second half of animation is visible
             _quad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = new Vector2(Mathf.Lerp(mid, right, t), 0);
-            _quad.Alpha = Mathf.Lerp(1, -1, t);
+            _quad.Alpha = Mathf.Lerp(1, -1, t) * TouchController.Opacity;
         }
         else if (_incomingQuad != null)
         {
             _incomingQuad.QuadMesh.GetComponent<Renderer>().material.mainTextureOffset = Vector2.zero;
-            _incomingQuad.Alpha = 1.0f;
+            _incomingQuad.Alpha = TouchController.Opacity;
 
             if (_quad != null) _quad.FreeObject();
             _quad = _incomingQuad;
             _incomingQuad = null;
+        }
+        else if (_quad != null && _quad.Alpha != TouchController.Opacity)
+        {
+            _quad.Alpha = TouchController.Opacity;
         }
     }
 
