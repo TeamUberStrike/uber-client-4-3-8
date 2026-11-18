@@ -364,9 +364,9 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             "Beta Access Required",
             "Buy access to 4.3 on mobile with this link:\n" + StripeBuyAccessUrl,
             PopupSystem.AlertType.OK,
-            "Buy Access",
             () => Application.OpenURL(StripeBuyAccessUrl),
-            "Close",
-            null);
+            "Buy Access",
+            null,
+            "Close");
     }
 }
