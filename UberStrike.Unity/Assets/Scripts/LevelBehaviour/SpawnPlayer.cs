@@ -21,6 +21,14 @@ public class SpawnPlayer : MonoBehaviour
         _startPosition = _currentPosition = _transform.localPosition;
     }
 
+    public void PinAt(float localY)
+    {
+        _amplitude = 0;
+        _startPosition = _currentPosition = transform.localPosition;
+        _startPosition.y = _currentPosition.y = localY;
+        transform.localPosition = _currentPosition;
+    }
+
     // Update is called once per frame
     void Update()
     {

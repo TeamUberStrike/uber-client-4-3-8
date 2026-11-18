@@ -41,9 +41,18 @@ public abstract class WeaponInputHandler
 
             zoomInfo.CurrentMultiplier = Mathf.Clamp(zoomInfo.CurrentMultiplier + zoom, zoomInfo.MinMultiplier, zoomInfo.MaxMultiplier);
 
-            LevelCamera.Instance.DoZoomIn(60 / zoomInfo.CurrentMultiplier, 20);
+            LevelCamera.Instance.DoZoomIn(ScopeFov(zoomInfo.CurrentMultiplier), 20);
             UserInput.ZoomSpeed = 0.5f;
         }
+    }
+
+    // Same magnification as 4.3.8 (zoom FOV 60 / multiplier against a 60 FOV view), relative to the user's FOV.
+    protected static float ScopeFov(float multiplier)
+    {
+        float view = ApplicationDataManager.ApplicationOptions.VideoFOV;
+        if (view < ApplicationOptions.VideoFOVMin || view > ApplicationOptions.VideoFOVMax) view = 60;
+        float t = Mathf.Tan(view * 0.5f * Mathf.Deg2Rad) * Mathf.Tan(30f / multiplier * Mathf.Deg2Rad) / Mathf.Tan(30f * Mathf.Deg2Rad);
+        return Mathf.Min(100f, 2f * Mathf.Atan(t) * Mathf.Rad2Deg);
     }
 
     protected static void ZoomOut(ZoomInfo zoomInfo, BaseWeaponDecorator weapon)
