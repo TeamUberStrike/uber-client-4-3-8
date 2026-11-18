@@ -9,7 +9,9 @@ public class InGameChatPageGUI : ChatPageGUI
     private void OnEnable()
     {
         _active = this;
-        if (GameState.HasCurrentGame)
+        // Pause only in a running match. On the join screen pausing turns on the in-game pause
+        // controls (touch buttons, Edit Controls), and switching back to the lobby tab never turns them off.
+        if (GameState.HasCurrentGame && !GamePageManager.IsCurrentPage(PageType.PreGame))
             GameState.LocalPlayer.Pause();
         InGameChatHud.Instance.CloseForPanel();
         InputManager.Instance.IsInputEnabled = false;
