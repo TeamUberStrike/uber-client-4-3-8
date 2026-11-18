@@ -202,9 +202,11 @@ public static class MobileMenuScale
     // (iPhone home indicator) is intentionally not applied.
     //
     // The player can set a minimum inset in Options > General > Screen Edge Margin
-    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or a minimum margin in millimetres on both
-    // sides. The larger of the safe-area inset and the manual margin is used, so the setting can add
-    // clearance for rounded corners/curved edges but never puts content back under a cutout.
+    // (ApplicationOptions.MobileScreenEdgeMargin): Auto, or a minimum margin in millimetres. It applies
+    // to the same side(s) as the safe-area inset: the notch side, or both sides with Symmetric safe
+    // area on (and always for the ribbon and fixed HUDs). The larger of the safe-area inset and the
+    // manual margin is used, so the setting can add clearance for rounded corners/curved edges but
+    // never puts content back under a cutout.
     //
     // NOTE (Android): Player Settings > Resolution and Presentation > "Render outside safe area" must be
     // ON, otherwise Unity letterboxes the cutout and safeArea always equals the full screen.
@@ -343,28 +345,40 @@ public static class MobileMenuScale
         float cutoutRight = Mathf.Max(Screen.width - safe.xMax, 0f);
 
         bool symmetric = bothSides || (options != null && options.MobileScreenEdgeSymmetric);
+
+        // Not symmetric: only the notch side is inset. That is the side with the larger reported
+        // cutout; when both sides report the same inset (iOS landscape, or no cutout at all), the
+        // orientation picks the notch side.
+        bool notchLeft = false;
+        if (!symmetric)
+        {
+            bool equalInsets = Mathf.Abs(cutoutLeft - cutoutRight) <= 1f;
+            notchLeft = cutoutLeft > cutoutRight + 1f || (equalInsets && NotchIsOnLeft());
+        }
+
         if (symmetric)
         {
             left = Mathf.Min(Mathf.Max(cutoutLeft, cutoutRight), maximum);
             right = left;
         }
+        else if (notchLeft)
+        {
+            left = Mathf.Min(cutoutLeft, maximum);
+        }
         else
         {
-            // Auto: inset only the reported/current notch side. When both sides report the
-            // same inset (iOS landscape), use the orientation to pick the notch side.
-            bool equalInsets = Mathf.Abs(cutoutLeft - cutoutRight) <= 1f;
-            if (cutoutLeft > cutoutRight + 1f || (equalInsets && NotchIsOnLeft()))
-                left = Mathf.Min(cutoutLeft, maximum);
-            else
-                right = Mathf.Min(cutoutRight, maximum);
+            right = Mathf.Min(cutoutRight, maximum);
         }
 
         if (manualMm >= 0f)
         {
-            // Manual: a symmetric minimum; a larger safe-area inset still wins.
+            // Manual: a minimum margin on the same side(s) as the safe-area inset (both sides when
+            // symmetric, otherwise the notch side only); a larger safe-area inset still wins.
             float manual = Mathf.Min(Mathf.Min(manualMm, MaxEdgeMarginMm) * PixelsPerMm, maximum);
-            left = Mathf.Max(left, manual);
-            right = Mathf.Max(right, manual);
+            if (symmetric || notchLeft)
+                left = Mathf.Max(left, manual);
+            if (symmetric || !notchLeft)
+                right = Mathf.Max(right, manual);
         }
     }
 
