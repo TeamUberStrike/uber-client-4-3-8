@@ -507,6 +507,9 @@ public class MobileControlLayoutEditor : MonoBehaviour
             HudStyleUtility.Instance.SetBlueStyle(_hintText);
             _hintText.Scale = new Vector2(0.6f, 0.6f);
         }
+        float baseW = _hintText.Size.x / Mathf.Max(0.001f, _hintText.Scale.x);
+        float fit = Mathf.Min(0.6f, Screen.width * 0.9f / Mathf.Max(1f, baseW));
+        _hintText.Scale = new Vector2(fit, fit);
         _hintText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 100);
         _hintText.Draw();
 
@@ -516,7 +519,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private const float SliderGap = 6f;
     private const float SliderPanelH = 30f;
 
-    // Menu space. Opacity is global; Size scales the selected control (same as pinch).
+    // Menu space. Opacity is global; size = pinch.
     private void DrawSliderPanel(List<TouchInput.LayoutHandle> handles, float x, float y, float w)
     {
         Color prev = GUI.color;
@@ -525,28 +528,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
         GUI.color = prev;
 
         ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
-        float half = w / 2f;
         GUI.Label(new Rect(x + 8, y + 5, 60, 20), "Opacity", BlueStonez.label_interparkbold_11pt_left);
-        float op = GUI.HorizontalSlider(new Rect(x + 70, y + 10, half - 125, 20), opt.TouchControlsOpacity, ApplicationOptions.TouchOpacityMin, 1f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+        float op = GUI.HorizontalSlider(new Rect(x + 70, y + 10, w - 130, 20), opt.TouchControlsOpacity, ApplicationOptions.TouchOpacityMin, 1f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
         op = Mathf.Round(op * 20f) / 20f;
         if (op != opt.TouchControlsOpacity) opt.TouchControlsOpacity = op;
-        GUI.Label(new Rect(x + half - 50, y + 5, 45, 20), Mathf.RoundToInt(op * 100f) + "%", BlueStonez.label_interparkbold_11pt_left);
-
-        if (string.IsNullOrEmpty(_selectedId))
-        {
-            GUI.Label(new Rect(x + half + 8, y + 5, half - 16, 20), "Select a control to resize", BlueStonez.label_interparkbold_11pt_left);
-            return;
-        }
-
-        float cur = GetScale(handles, _selectedId);
-        GUI.Label(new Rect(x + half + 8, y + 5, 40, 20), "Size", BlueStonez.label_interparkbold_11pt_left);
-        float next = GUI.HorizontalSlider(new Rect(x + half + 50, y + 10, half - 105, 20), cur, MobileControlLayout.MinScale, MobileControlLayout.MaxScale, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
-        GUI.Label(new Rect(x + w - 50, y + 5, 45, 20), next.ToString("N2") + "x", BlueStonez.label_interparkbold_11pt_left);
-        if (Mathf.Abs(next - cur) > 0.001f)
-        {
-            MobileControlLayout.SetScale(_selectedId, next);
-            TouchInput.Instance.ApplyLayout();
-        }
+        GUI.Label(new Rect(x + w - 52, y + 5, 45, 20), Mathf.RoundToInt(op * 100f) + "%", BlueStonez.label_interparkbold_11pt_left);
     }
 
     private static float GetScale(List<TouchInput.LayoutHandle> handles, string id)
