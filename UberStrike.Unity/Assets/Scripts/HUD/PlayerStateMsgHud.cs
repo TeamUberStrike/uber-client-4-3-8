@@ -127,9 +127,12 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         }
         if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing)
         {
-            // Centred on the camera view (the part of the screen left of an open side panel).
-            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth * 0.5f) - 100,
-                virtualHeight * 0.5f + virtualHeight * 0.6f * (1 - cameraWidth), 200, 50),
+            // Centred on the camera view (the part of the screen left of an open side panel). Mobile
+            // keeps the larger touch button of the original mobile game (300 x 75 instead of 200 x 50).
+            float buttonWidth = MobileMenuScale.Active ? 300 : 200;
+            float buttonHeight = MobileMenuScale.Active ? 75 : 50;
+            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth * 0.5f) - buttonWidth * 0.5f,
+                virtualHeight * 0.5f + virtualHeight * 0.6f * (1 - cameraWidth), buttonWidth, buttonHeight),
                     new GUIContent(ButtonCaption), _buttonGuiStyle))
             {
                 if (OnButtonClicked != null)
