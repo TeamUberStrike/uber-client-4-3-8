@@ -377,7 +377,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             "BUY NOW",
             () =>
             {
-                Application.OpenURL(buyAccessUrl);
+                ApplicationDataManager.OpenUrl(string.Empty, buyAccessUrl);
                 PanelManager.Instance.OpenPanel(PanelType.Login);
             }) as BasePopupDialog;
 

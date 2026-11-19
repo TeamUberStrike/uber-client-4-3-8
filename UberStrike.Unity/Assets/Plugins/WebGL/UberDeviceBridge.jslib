@@ -66,6 +66,31 @@ var UberDeviceBridge = {
             return -1;
         }
     },
+
+    // Open a URL in a new browser tab. Application.OpenURL is unreliable on
+    // WebGL (often swallowed by popup blockers). window.open within the click
+    // gesture normally works; the temporary anchor click is the fallback when
+    // it returns null.
+    UberOpenUrl: function(url) {
+        var target = UTF8ToString(url);
+        try {
+            var win = window.open(target, "_blank");
+            if (!win) {
+                var a = document.createElement("a");
+                a.href = target;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        } catch (e) {
+            try {
+                window.open(target, "_blank");
+            } catch (e2) {
+            }
+        }
+    },
 };
 
 mergeInto(LibraryManager.library, UberDeviceBridge);

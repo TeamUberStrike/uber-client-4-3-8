@@ -52,6 +52,9 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 #if UNITY_WEBGL && !UNITY_EDITOR
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern int UberGetDeviceType();
+
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void UberOpenUrl(string url);
 #endif
 
     private static CmuneSystemInfo localSystemInfo;
@@ -774,18 +777,15 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     public static void OpenUrl(string title, string url)
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UberOpenUrl(url);
+#else
+        if (Screen.fullScreen && Application.platform != RuntimePlatform.WindowsPlayer)
         {
-            Application.ExternalCall("displayMessage", title, url);
+            ScreenResolutionManager.IsFullScreen = false;
         }
-        else
-        {
-            if (Screen.fullScreen && Application.platform != RuntimePlatform.WindowsPlayer)
-            {
-                ScreenResolutionManager.IsFullScreen = false;
-            }
-            Application.OpenURL(url);
-        }
+        Application.OpenURL(url);
+#endif
     }
 
     public void OpenBuyCredits()
