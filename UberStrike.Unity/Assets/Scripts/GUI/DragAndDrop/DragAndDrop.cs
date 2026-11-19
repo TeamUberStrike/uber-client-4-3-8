@@ -65,7 +65,9 @@ public class DragAndDrop : Singleton<DragAndDrop>
                 GUI.backgroundColor = new Color(1, 1, 1, _alphaValue);
                 GUI.matrix = Matrix4x4.identity;
 
-                GUI.Label(new Rect(_dragScalePivot.x - 24, _dragScalePivot.y - 24, 48, 48), DraggedItem.Item.Icon, BlueStonez.item_slot_large);
+                // Mobile: 1.25x the menu size, at 48 pixels the icon is hidden under the finger.
+                float size = MobileMenuScale.Active ? 48f * MobileMenuScale.Scale * 1.25f : 48f;
+                GUI.Label(new Rect(_dragScalePivot.x - size * 0.5f, _dragScalePivot.y - size * 0.5f, size, size), DraggedItem.Item.Icon, BlueStonez.item_slot_large);
             }
         }
     }
