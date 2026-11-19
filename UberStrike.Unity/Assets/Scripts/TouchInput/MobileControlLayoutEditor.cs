@@ -28,6 +28,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private Vector2 _dragStartPos;  // GUI-space position where the pointer went down
     private Vector2 _dragOffset;
     private Rect _toolbarButtonsRect;   // raw-pixel rect of the editor toolbar buttons (reserved field)
+    private const float ToolbarScale = 1.25f; // toolbar buttons are drawn 1.25x the menu size
 
     // Finger/pointer must move this far (squared, 10px) before a touch becomes a drag, so a
     // second finger can still start a pinch on the control.
@@ -312,12 +313,12 @@ public class MobileControlLayoutEditor : MonoBehaviour
         // space, so compute their RAW pixel footprint: only this rect is reserved — controls can
         // be moved freely everywhere else, including the top corners next to the toolbar. On iOS
         // WebGL the row starts below the system dead zone (same offset as the ribbon).
-        float ms = MobileMenuScale.Scale;
+        float ms = MobileMenuScale.Scale * ToolbarScale; // same scale DrawToolbar draws at
         float bw = 140f;
         float bh = 34f;
         float totalW = 4f * bw + 3f * 8f;
-        float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
-        _toolbarButtonsRect = new Rect(MobileMenuScale.MenuToScreenX(x0), 2f * ms + TouchInput.TopDeadZonePixels, totalW * ms, bh * ms);
+        float x0 = (MobileMenuScale.VirtualWidth / ToolbarScale - totalW) / 2f;
+        _toolbarButtonsRect = new Rect(MobileMenuScale.InsetLeftPixels + x0 * ms, 2f * ms + TouchInput.TopDeadZonePixels, totalW * ms, bh * ms);
 
         // Dim the world behind the editor so the markers stay legible no matter what the paused
         // game shows behind them (a bright sky used to swallow the blue outline of the top-right
@@ -459,7 +460,7 @@ public class MobileControlLayoutEditor : MonoBehaviour
         // Draw in the ribbon's scaled space so the buttons sit on the exact same vertical row as the
         // PROFILE / CHAT tabs (next to them on the right). On iOS WebGL the row starts below the
         // system dead zone (same offset as the ribbon).
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(ToolbarScale);
         float vw = MobileMenuScale.VirtualWidth;
         float bw = 140, bh = 34;
         float totalW = 4 * bw + 3 * 8;
