@@ -156,7 +156,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         try
         {
-            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true, WorkingDirectory = System.IO.Path.GetDirectoryName(UnityEngine.Application.dataPath) };
+            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
             using (var p = System.Diagnostics.Process.Start(psi))
             {
                 string output = p.StandardOutput.ReadToEnd().Trim();
