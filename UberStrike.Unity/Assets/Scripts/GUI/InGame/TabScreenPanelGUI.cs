@@ -33,7 +33,9 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             // deaths / KDR cells, and all the height between the ribbon and the bottom edge so a
             // full team of eight fits without scrolling.
             float top = ribbon ? GlobalUIRibbon.Instance.GetHeight() + MobileMargin : MobileMargin;
-            _panelSize.x = Mathf.Floor(virtualWidth - 2 * MobileMargin);
+            // Equal insets on both sides (like the Options panel), so the panel is centred on screen.
+            virtualWidth = MobileMenuScale.BothSidesVirtualWidth;
+            _panelSize.x = Mathf.Floor(virtualWidth - 2 * MobileSideMargin);
             _panelSize.y = Mathf.Floor(virtualHeight - top - MobileMargin);
 
             _rect.x = (virtualWidth - _panelSize.x) * 0.5f;
@@ -80,9 +82,9 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             GUI.depth = (int)GuiDepth.Page - 1;
 
             // Same scale and safe-area shift as the menus; no-op on PC.
-            Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+            Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
             DrawTabScreen();
-            MobileMenuScale.End(scaleMatrix);
+            MobileMenuScale.EndBothSides(scaleMatrix);
         }
     }
 
@@ -475,6 +477,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
     // Gap (menu units) between the panel and the screen edges / ribbon on mobile.
     private const float MobileMargin = 8f;
+    // Left/right gap on mobile: clears the scoreboard touch button (about 66 units from the safe edge).
+    private const float MobileSideMargin = 70f;
 
     private static GUIStyle _largeName;
     private static GUIStyle _largeValue;
