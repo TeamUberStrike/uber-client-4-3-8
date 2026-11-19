@@ -64,6 +64,8 @@ GitVersion is required for local builds:
 - macOS: `brew install gitversion`
 - Windows/Linux: download `gitversion-win-x64-*.zip` / `gitversion-linux-x64-*.tar.gz` from [GitVersion releases](https://github.com/GitTools/GitVersion/releases) and add it to `PATH`
 
+`GitVersion.yml` is in the v7 format — GitVersion 7.x (or later) is required; older 5.x/6.x releases will reject it.
+
 ## iOS Build Notes
 
 These settings/fixes are required for the iOS (iPhone/iPad) IL2CPP build to work. They are already committed — this section documents why they exist, in case a Unity upgrade or re-export regresses them.
