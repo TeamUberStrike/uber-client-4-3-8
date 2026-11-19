@@ -372,7 +372,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
 
         PopupSystem.ShowMessage(
             "Beta Access Required",
-            "Buy access to 4.3 on mobile.",
+            "UberStrike 4.3 is currently in beta.\n\nA one-time purchase unlocks access to this account. Buy now and log in again to play.",
             PopupSystem.AlertType.OK,
             () => Application.OpenURL(buyAccessUrl),
             "BUY NOW",
@@ -382,8 +382,15 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
 
     private static string BuildStripeBuyAccessUrl(int cmid)
     {
-        string separator = StripeBuyAccessUrl.Contains("?") ? "&" : "?";
+        string buyAccessUrl = StripeBuyAccessUrl;
 
-        return StripeBuyAccessUrl + separator + "client_reference_id=" + Uri.EscapeDataString(cmid.ToString());
+        if (cmid > 0)
+        {
+            string separator = buyAccessUrl.Contains("?") ? "&" : "?";
+
+            buyAccessUrl += separator + "client_reference_id=" + Uri.EscapeDataString(cmid.ToString());
+        }
+
+        return buyAccessUrl;
     }
 }
