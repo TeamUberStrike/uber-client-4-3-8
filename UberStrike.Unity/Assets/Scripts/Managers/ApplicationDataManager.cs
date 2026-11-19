@@ -144,7 +144,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static string ResolveBuildVersion()
     {
         string version = System.Environment.GetEnvironmentVariable("VERSION");
-        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "/nocache /showvariable InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "--no-cache --output json --show-variable InformationalVersion");
 
         if (string.IsNullOrEmpty(version))
             throw new System.Exception("Failed to resolve the build version: set VERSION or install gitversion.");
@@ -156,7 +156,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     {
         try
         {
-            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+            var psi = new System.Diagnostics.ProcessStartInfo(file, arguments) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true, WorkingDirectory = System.IO.Path.GetDirectoryName(UnityEngine.Application.dataPath) };
             using (var p = System.Diagnostics.Process.Start(psi))
             {
                 string output = p.StandardOutput.ReadToEnd().Trim();
