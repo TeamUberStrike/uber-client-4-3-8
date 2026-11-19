@@ -133,8 +133,8 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
                     yield break;
                 }
 
-                ShowBetaAccessPopup(cmid);
-                yield break;
+                    ShowBetaAccessPopup(cmid);
+                    yield break;
             }
 
             LoginPanelGUI.ErrorMessage = LocalizedStrings.LoginFailed + ": " + loginResult.MemberAuthenticationResult.ToString();
@@ -370,14 +370,21 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
     {
         string buyAccessUrl = BuildStripeBuyAccessUrl(cmid);
 
-        PopupSystem.ShowMessage(
-            "Beta Access Required",
-            "UberStrike 4.3 is currently in beta.\n\nA one-time purchase unlocks access to this account. Buy now and log in again to play.",
+        BasePopupDialog popup = PopupSystem.ShowMessage(
+            "Welcome to UberStrike 4.3",
+            "Unlock your account with a one-time purchase and start playing.\n\nTap BUY NOW below, or visit uberstrike.com/access",
             PopupSystem.AlertType.OK,
-            () => Application.OpenURL(buyAccessUrl),
             "BUY NOW",
-            null,
-            "Close");
+            () =>
+            {
+                Application.OpenURL(buyAccessUrl);
+                PanelManager.Instance.OpenPanel(PanelType.Login);
+            }) as BasePopupDialog;
+
+        if (popup != null)
+        {
+            popup.MobileScaleExtra = 1.5f;
+        }
     }
 
     private static string BuildStripeBuyAccessUrl(int cmid)
