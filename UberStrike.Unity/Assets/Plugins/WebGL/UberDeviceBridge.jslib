@@ -69,27 +69,44 @@ var UberDeviceBridge = {
 
     // Open a URL in a new browser tab. Application.OpenURL is unreliable on
     // WebGL (often swallowed by popup blockers). window.open within the click
-    // gesture normally works; the temporary anchor click is the fallback when
-    // it returns null.
+    // gesture normally works. If it is blocked (iOS Safari blocks it because
+    // Unity IMGUI callbacks run outside the browser's user-activation window),
+    // show a real link overlay so the player's tap is a genuine user gesture.
     UberOpenUrl: function(url) {
         var target = UTF8ToString(url);
         try {
             var win = window.open(target, "_blank");
-            if (!win) {
-                var a = document.createElement("a");
-                a.href = target;
-                a.target = "_blank";
-                a.rel = "noopener noreferrer";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
+            if (win) return;
         } catch (e) {
-            try {
-                window.open(target, "_blank");
-            } catch (e2) {
-            }
         }
+
+        var existing = document.getElementById("uber-open-url-overlay");
+        if (existing) existing.parentNode.removeChild(existing);
+
+        var overlay = document.createElement("div");
+        overlay.id = "uber-open-url-overlay";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:sans-serif;";
+
+        var msg = document.createElement("div");
+        msg.textContent = "Tap below to open the payment page";
+        msg.style.cssText = "color:#fff;font-size:16px;text-align:center;padding:0 24px;";
+
+        var link = document.createElement("a");
+        link.href = target;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "BUY NOW";
+        link.style.cssText = "display:inline-block;background:#1a73e8;color:#fff;font-size:18px;font-weight:bold;padding:14px 28px;border-radius:8px;text-decoration:none;";
+
+        var cancel = document.createElement("button");
+        cancel.textContent = "Cancel";
+        cancel.style.cssText = "background:transparent;border:1px solid #888;color:#ccc;font-size:14px;padding:8px 18px;border-radius:8px;";
+        cancel.onclick = function() { overlay.parentNode.removeChild(overlay); };
+
+        overlay.appendChild(msg);
+        overlay.appendChild(link);
+        overlay.appendChild(cancel);
+        document.body.appendChild(overlay);
     },
 };
 
