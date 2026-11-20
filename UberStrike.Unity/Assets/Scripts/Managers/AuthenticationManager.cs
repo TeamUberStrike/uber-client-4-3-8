@@ -364,7 +364,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             });
     }
 
-    private const string StripeBuyAccessUrl = "https://buy.stripe.com/test_dRm6oJ78U7hqfTObU12go00";
+    private const string StripeBuyAccessUrl = "https://buy.stripe.com/bJe4gsbUf64010La1nao800";
 
     private void ShowBetaAccessPopup(int cmid)
     {
