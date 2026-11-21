@@ -145,6 +145,9 @@ the webservice must also be HTTPS — hence the second tunnel (plain
 `http://192.168.1.51:9000/` from an HTTPS page is blocked as mixed
 content, and `localhost:9000` on the phone is the phone itself).
 
+Stop the tunnels with `docker rm -f cloudflared-webplayer cloudflared-ws`;
+logs via `docker logs -f <container>`.
+
 ### Domain + HTTPS (uberstrike.app)
 
 - Cloudflare DNS: `uberstrike.app` → CNAME `w01a5092.kasserver.com`, **Proxied** (orange cloud).
