@@ -54,22 +54,22 @@ public class SceneExporter
     [MenuItem("File/Build UberStrike/Internal Dev/Android")]
     public static void BuildAndroidDev()
     {
-        BuildAndroid();
+        BuildAndroid(WebserviceLocation.InternalDev);
     }
 
     [MenuItem("File/Build UberStrike/Internal Dev/Android (Main Only)")]
     public static void BuildAndroidDevMainOnly()
     {
-        BuildAndroid(false, WebserviceLocation.InternalDev, false);
+        BuildAndroid(WebserviceLocation.InternalDev, false, false);
     }
 
     [MenuItem("File/Build UberStrike/Local/Android")]
     public static void BuildAndroidLocal()
     {
-        BuildAndroid(true, WebserviceLocation.Localhost);
+        BuildAndroid(WebserviceLocation.Localhost);
     }
 
-    public static void BuildAndroid(bool buildAllMaps = true, WebserviceLocation wsLocation = WebserviceLocation.InternalDev, bool buildSplashLoader = true)
+    public static void BuildAndroid(WebserviceLocation wsLocation, bool buildAllMaps = true, bool buildSplashLoader = true)
     {
         ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
         if (!string.IsNullOrEmpty(ApplicationDataManager.BuildVersion))
