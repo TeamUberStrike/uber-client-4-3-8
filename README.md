@@ -122,6 +122,41 @@ Overridable via env vars: `UNITY`, `DEVICE` (auto-detects the first connected iP
    - also deploys `content-server.htaccess` as `.htaccess` (CORS headers)
 3. Maps: `./deploy_maps.py` stages `Map-XX-*.unity3d` → `LevelName.unity3d` and uploads them to the maps path.
 
+### Local dev tunnels (mobile testing)
+
+`./dev-tunnel.sh` exposes the local WebGL build and the local webservice
+over Cloudflare quick tunnels so an iPhone can test them (HTTPS via the
+Cloudflare edge, no insecure-connection warnings):
+
+- **Webplayer tunnel** — docker container `cloudflared-webplayer`,
+  Cloudflare quick tunnel `--url http://localhost:8000` → forwards to
+  `webplayer_serve.py`.
+- **Webservice tunnel** — docker container `cloudflared-ws`,
+  Cloudflare quick tunnel `--url http://localhost:9000` → forwards to the
+  IIS webservice in the Windows VM (docker port map `9000:9000`).
+
+Both quick-tunnel URLs are random and change on every restart. The script
+just starts the requested tunnel and prints its URL; it does NOT rewrite
+the build config. The webservice URL is hardcoded in `SceneExporter.cs`
+(`GetWebserviceBaseUrl` → `WebserviceLocation.Localhost`, used by the
+Internal Dev WebGL build menu) — update that constant and the generated
+`UberStrike.xml` when the tunnel URL changes. Because the page is HTTPS,
+the webservice must also be HTTPS — hence the second tunnel (plain
+`http://192.168.1.51:9000/` from an HTTPS page is blocked as mixed
+content, and `localhost:9000` on the phone is the phone itself).
+
+Prerequisites for login to work from the phone:
+
+- The Windows VM IIS must serve CORS headers (payment-branch
+  `Global.asax`, commit `1cfa004`); without it every SOAP call is blocked
+  by the browser. See `windows-docker/shared/handover-cors-deploy.md`.
+- The test account must exist in the database the IIS webservice uses
+  (`Cmune.dbo.Members.Login` lookup), with `MemberAccess` for the app and
+  `ApplicationVersions.IsBeta = 1` for `(Version='4.3.8', Channel=4)`.
+
+Stop the tunnels with `docker rm -f cloudflared-webplayer cloudflared-ws`;
+logs via `docker logs -f <container>`.
+
 ### Domain + HTTPS (uberstrike.app)
 
 - Cloudflare DNS: `uberstrike.app` → CNAME `w01a5092.kasserver.com`, **Proxied** (orange cloud).
