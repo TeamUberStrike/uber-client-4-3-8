@@ -22,14 +22,10 @@ public class DeviceLock : MonoBehaviour
 
     public static bool CheckAllowed()
     {
-#if UNITY_EDITOR
-        return true;
-#elif UNITY_ANDROID || UNITY_IOS
-        return Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer;
-#elif UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
         return UberGetDeviceType() != 0;
 #else
-        return false;
+        return true;
 #endif
     }
 
