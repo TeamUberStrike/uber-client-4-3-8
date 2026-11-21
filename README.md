@@ -84,7 +84,7 @@ These settings/fixes are required for the iOS (iPhone/iPad) IL2CPP build to work
 `link.xml` therefore preserves `Assembly-CSharp`, `UberStrike.UnitySdk`, `P31RestKit` and `System.Linq.Enumerable`. (No Photon AOT hints needed — Photon3Unity3D was removed and the rebuilt SDK has no `MakeGenericType` deserialization.)
 
 ### Plain-HTTP content downloads
-The content CDN (`ContentBaseUrl = http://client-dev.uberforever.eu/` for maps/images/audio) is plain HTTP only; the host's 443 listener presents a certificate that does not match the domain, so upgrading the URLs to `https://` is not an option until a real cert is installed. Therefore:
+The content CDN (`ContentBaseUrl = http://client-dev.uberstrike.com/` for maps/images/audio) is plain HTTP only; the host's 443 listener presents a certificate that does not match the domain, so upgrading the URLs to `https://` is not an option until a real cert is installed. Therefore:
 - `insecureHttpOption: 2` (AlwaysAllowed) in ProjectSettings.asset — release builds otherwise throw `InvalidOperationException: Insecure connection not allowed`.
 - `Assets/Editor/IosBuildPostProcessor.cs` re-applies the `NSAppTransportSecurity`/`NSAllowsArbitraryLoads` exception to Info.plist after every export (Unity regenerates Info.plist each build).
 - `TextureLoader` catches synchronous `WWW`/`UnityWebRequest` construction exceptions and falls back to the placeholder texture instead of an unhandled OnGUI exception.
@@ -97,8 +97,8 @@ All `Level*` scenes are in Build Settings, and on mobile `LevelManager.MapLoader
 
 ### Dev config
 `EditorConfiguration.xml` (editor) / `mobileConfigXml` (mobile builds):
-- `WebServiceBaseUrl = https://ws-dev.uberforever.eu/`
-- `ContentBaseUrl = http://client-dev.uberforever.eu/`
+- `WebServiceBaseUrl = https://ws-dev.uberstrike.com/`
+- `ContentBaseUrl = http://client-dev.uberstrike.com/`
 
 ### Build & deploy script (`build-ios.sh`)
 One-command device deployment:
