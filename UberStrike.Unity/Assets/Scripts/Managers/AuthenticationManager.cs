@@ -319,13 +319,14 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             ItemPromotionManager.Instance.WeeklySpecial = new ItemPromotionView(loginResult.WeeklySpecial);
         }
 
-        // Open the tutorial if the player is new
-        if (!loginResult.IsTutorialComplete || _forceTutorialStart)
-        {
-            GameStateController.Instance.LoadLevel(0);
-            GameStateController.Instance.LoadGameMode(GameMode.Tutorial);
-        }
-        else if (!loginResult.IsAccountComplete)
+        // temporarily remove the tutorial since we are mobile only and the tutorial needs to be redone for mobile, eg dont show WASD tooltip but mobile UI
+        //if (!loginResult.IsTutorialComplete || _forceTutorialStart)
+        //{
+        //    GameStateController.Instance.LoadLevel(0);
+        //    GameStateController.Instance.LoadGameMode(GameMode.Tutorial);
+        //}
+        //else if (!loginResult.IsAccountComplete)
+        if (!loginResult.IsAccountComplete)
         {
             // Get the player to choose an in-game name
             PanelManager.Instance.OpenPanel(PanelType.CompleteAccount);
