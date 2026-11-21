@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -60,9 +61,17 @@ public class DeviceLock : MonoBehaviour
         }
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
-        _logo = Resources.Load<Texture2D>("DeviceLockLogo");
+#if UNITY_WEBGL && !UNITY_EDITOR
+        using (var www = new WWW("TemplateData/uberstrike-logo.png"))
+        {
+            yield return www;
+
+            if (string.IsNullOrEmpty(www.error))
+                _logo = www.texture;
+        }
+#endif
         for (int i = 0; i < SceneManager.sceneCount; i++) Freeze(SceneManager.GetSceneAt(i));
     }
 
