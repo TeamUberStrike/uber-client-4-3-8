@@ -112,7 +112,7 @@ public class TouchButtonCircle : TouchButton
 
     public override void Draw()
     {
-        GUI.color = new Color(1, 1, 1, Mathf.Clamp(TouchController.Instance.GUIAlpha, MinGUIAlpha, 1.0f));
+        GUI.color = TouchController.Instance.DrawColor(MinGUIAlpha);
 
         // DrawTexture (not GUI.Label) so the icon scales with the layout-adjustable Boundary.
         if (Content != null && Content.image != null)

@@ -774,12 +774,12 @@ public class OptionsPanelGUI : PanelGuiBase
         else
         {
         bool showGyro = GyroAim.Supported;
-        _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, showGyro ? 250 : 100));
+        _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, showGyro ? 280 : 130));
         {
             if (showGyro)
-                DrawGyroGroup(new Rect(GroupMarginX, 135, _rect.width - 65, 110));
+                DrawGyroGroup(new Rect(GroupMarginX, 165, _rect.width - 65, 110));
 
-            GUI.BeginGroup(new Rect(8, 20, _rect.width - 65, 95), string.Empty, BlueStonez.group_grey81);
+            GUI.BeginGroup(new Rect(8, 20, _rect.width - 65, 125), string.Empty, BlueStonez.group_grey81);
             {
                 bool multiTouch = GUI.Toggle(new Rect(15, 17, 200, 30), ApplicationDataManager.ApplicationOptions.UseMultiTouch, LocalizedStrings.UseMultiTouchInput, BlueStonez.toggle);
                 if (multiTouch != ApplicationDataManager.ApplicationOptions.UseMultiTouch)
@@ -814,6 +814,11 @@ public class OptionsPanelGUI : PanelGuiBase
                     }
 
                 }
+
+                GUI.Label(new Rect(15, 90, 130, 30), "Button Opacity", BlueStonez.label_interparkbold_11pt_left);
+                s = GUI.HorizontalSlider(new Rect(155, 98, 200, 30), ApplicationDataManager.ApplicationOptions.TouchControlsOpacity, ApplicationOptions.TouchOpacityMin, 1f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+                GUI.Label(new Rect(370, 90, 100, 30), Mathf.RoundToInt(s * 100f) + "%", BlueStonez.label_interparkbold_11pt_left);
+                ApplicationDataManager.ApplicationOptions.TouchControlsOpacity = Mathf.Round(s * 20f) / 20f;
             }
             GUI.EndGroup();
             GUI.Label(new Rect(8 + 18, 20 - 8, GetWidth(LocalizedStrings.TouchInput), 16), LocalizedStrings.TouchInput, BlueStonez.label_group_interparkbold_18pt);

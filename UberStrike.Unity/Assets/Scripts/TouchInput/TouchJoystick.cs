@@ -99,7 +99,7 @@ public class TouchJoystick : TouchBaseControl
         {
             GUI.Label(new Rect(_joystickPos.x - JoystickTexture.width / 2, (Screen.height - _joystickPos.y) - JoystickTexture.height / 2, JoystickTexture.width, JoystickTexture.height), JoystickTexture);
 
-            GUI.color = new Color(1, 1, 1, Mathf.Clamp(TouchController.Instance.GUIAlpha, MinGUIAlpha, 1.0f));
+            GUI.color = TouchController.Instance.DrawColor(MinGUIAlpha);
             GUI.Label(new Rect(_finger.StartPos.x - BackgroundTexture.width / 2, (Screen.height - _finger.StartPos.y) - BackgroundTexture.height / 2, BackgroundTexture.width, BackgroundTexture.height), BackgroundTexture);
             GUI.color = Color.white;
         }

@@ -67,6 +67,7 @@ public static class CmunePrefs
         Options_MobileGyroInvertY = 157,
         Options_MobileGyroInvertX = 158,
         Options_MobileGraphicsSaved = 159,
+        Options_MobileTouchOpacity = 160,
 
         Keymap_None = 300,
         Keymap_HorizontalLook = 301,
