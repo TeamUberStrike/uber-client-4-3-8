@@ -18,6 +18,17 @@ public abstract class BasePopupDialog : IPopupDialog
     protected Action _callbackCancel;
     protected Action _onGUIAction;
 
+    /// <summary>
+    /// Extra mobile scale for this dialog (see MobileMenuScale.Begin). 1 = default menu scale;
+    /// dialogs that need to be bigger on small screens set this higher.
+    /// </summary>
+    public float MobileScaleExtra
+    {
+        get { return _mobileScaleExtra; }
+        set { _mobileScaleExtra = Mathf.Max(0.1f, value); }
+    }
+    private float _mobileScaleExtra = 1f;
+
     public virtual void OnHide() { }
 
     public void SetAlertType(PopupSystem.AlertType type)
@@ -27,7 +38,7 @@ public abstract class BasePopupDialog : IPopupDialog
 
     public void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(MobileScaleExtra);
         // Centre against the virtual (scaled) screen so the popup stays centred under the mobile menu scale.
         Rect rect = new Rect((MobileMenuScale.VirtualWidth - _size.x) * 0.5f, (MobileMenuScale.VirtualHeight - _size.y - 56) * 0.5f, _size.x, _size.y);
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
@@ -67,7 +78,7 @@ public abstract class BasePopupDialog : IPopupDialog
         }
 
         Rect rect = new Rect((_size.x - 120) * 0.5f, _size.y - 40, 120, 32);
-        GUIContent content = new GUIContent(string.IsNullOrEmpty(_okCaption) ? LocalizedStrings.OkCaps : _okCaption);
+        GUIContent content = new GUIContent(string.IsNullOrEmpty(_okCaption) ? LocalizedStrings.OkCaps : _okCaption, string.Empty);
 
         if (GUITools.Button(rect, content, style))
         {
