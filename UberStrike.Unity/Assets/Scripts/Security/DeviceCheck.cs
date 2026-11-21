@@ -107,7 +107,7 @@ public class DeviceCheck : MonoBehaviour
             _ok = true;
             if (!string.IsNullOrEmpty(r.token)) Token = r.token;
             Verdict = r.verdict;
-            if ((r.kick || r.verdict == "block") && !Application.isEditor) DeviceLock.Lock();
+            if ((r.kick || r.verdict == "block") && Application.platform == RuntimePlatform.WebGLPlayer) DeviceLock.Lock();
         }
     }
 
