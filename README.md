@@ -145,18 +145,6 @@ the webservice must also be HTTPS — hence the second tunnel (plain
 `http://192.168.1.51:9000/` from an HTTPS page is blocked as mixed
 content, and `localhost:9000` on the phone is the phone itself).
 
-Prerequisites for login to work from the phone:
-
-- The Windows VM IIS must serve CORS headers (payment-branch
-  `Global.asax`, commit `1cfa004`); without it every SOAP call is blocked
-  by the browser. See `windows-docker/shared/handover-cors-deploy.md`.
-- The test account must exist in the database the IIS webservice uses
-  (`Cmune.dbo.Members.Login` lookup), with `MemberAccess` for the app and
-  `ApplicationVersions.IsBeta = 1` for `(Version='4.3.8', Channel=4)`.
-
-Stop the tunnels with `docker rm -f cloudflared-webplayer cloudflared-ws`;
-logs via `docker logs -f <container>`.
-
 ### Domain + HTTPS (uberstrike.app)
 
 - Cloudflare DNS: `uberstrike.app` → CNAME `w01a5092.kasserver.com`, **Proxied** (orange cloud).
