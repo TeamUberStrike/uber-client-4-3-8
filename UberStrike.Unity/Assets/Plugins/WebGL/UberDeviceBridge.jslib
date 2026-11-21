@@ -97,11 +97,14 @@ var UberDeviceBridge = {
         link.rel = "noopener noreferrer";
         link.textContent = "BUY NOW";
         link.style.cssText = "display:inline-block;background:#1a73e8;color:#fff;font-size:18px;font-weight:bold;padding:14px 28px;border-radius:8px;text-decoration:none;";
+        link.addEventListener("click", function() {
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        });
 
         var cancel = document.createElement("button");
         cancel.textContent = "Cancel";
         cancel.style.cssText = "background:transparent;border:1px solid #888;color:#ccc;font-size:14px;padding:8px 18px;border-radius:8px;";
-        cancel.onclick = function() { overlay.parentNode.removeChild(overlay); };
+        cancel.onclick = function() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); };
 
         overlay.appendChild(msg);
         overlay.appendChild(link);
