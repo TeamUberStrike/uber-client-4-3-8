@@ -147,7 +147,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
     public static string ResolveBuildVersion()
     {
         string version = System.Environment.GetEnvironmentVariable("VERSION");
-        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "--no-cache --output json --show-variable InformationalVersion");
+        if (string.IsNullOrEmpty(version)) version = RunTool("gitversion", "--output json --show-variable InformationalVersion");
 
         if (string.IsNullOrEmpty(version))
             throw new System.Exception("Failed to resolve the build version: set VERSION or install gitversion.");
