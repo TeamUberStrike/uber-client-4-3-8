@@ -624,8 +624,7 @@ public class SceneExporter
 
         BuildWebGLPlayer();
 
-        ChannelType channelType = ChannelType.IPad;
-        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename), buildType, wsLocation, channelType);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename), buildType, wsLocation, ChannelType.IPad);
 
         Debug.Log("Finished Web Player Build.");
     }
