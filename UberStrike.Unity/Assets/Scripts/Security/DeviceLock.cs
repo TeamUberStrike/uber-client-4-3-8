@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -21,14 +22,10 @@ public class DeviceLock : MonoBehaviour
 
     public static bool CheckAllowed()
     {
-#if UNITY_EDITOR
-        return true;
-#elif UNITY_ANDROID || UNITY_IOS
-        return Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer;
-#elif UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
         return UberGetDeviceType() != 0;
 #else
-        return false;
+        return true;
 #endif
     }
 
@@ -81,9 +78,19 @@ public class DeviceLock : MonoBehaviour
         }
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
-        _logo = Resources.Load<Texture2D>("DeviceLockLogo");
+#if UNITY_WEBGL && !UNITY_EDITOR
+        using (var www = new WWW("TemplateData/uberstrike-logo.png"))
+        {
+            yield return www;
+
+            if (string.IsNullOrEmpty(www.error))
+                _logo = www.texture;
+        }
+#else
+        yield return null;
+#endif
         for (int i = 0; i < SceneManager.sceneCount; i++) Freeze(SceneManager.GetSceneAt(i));
     }
 
