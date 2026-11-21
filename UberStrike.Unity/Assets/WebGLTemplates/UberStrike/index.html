@@ -58,33 +58,6 @@
       </div>
     </div>
     <script>
-      // ?audiodebug=1 : capture audio logs from page start for the on-screen audio panel.
-      if (/[?&]audiodebug=1/.test(location.search)) (function() {
-        var dbg = window.__uberAudioDbg = { log: [], ev: {}, res: [] };
-        var re = /audio|sound|decode|AudioContext|NotAllowed/i;
-        var t0 = performance.now();
-        var add = function(lvl, msg) {
-          msg = String(msg);
-          if (!re.test(msg)) return;
-          var line = lvl + " " + msg.substring(0, 160);
-          if (dbg.lastLine === line) { dbg.repeat++; dbg.log[dbg.log.length - 1] = dbg.lastStamp + " x" + dbg.repeat + " " + line; return; }
-          dbg.lastLine = line; dbg.repeat = 1; dbg.lastStamp = ((performance.now() - t0) / 1000).toFixed(1) + "s";
-          dbg.log.push(dbg.lastStamp + " " + line);
-          if (dbg.log.length > 30) dbg.log.shift();
-        };
-        ["error", "warn", "log"].forEach(function(lvl) {
-          var orig = console[lvl];
-          console[lvl] = function() {
-            try { add(lvl[0].toUpperCase(), Array.prototype.join.call(arguments, " ")); } catch (e) {}
-            return orig.apply(console, arguments);
-          };
-        });
-        window.addEventListener("error", function(e) { add("X", e.message); });
-        window.addEventListener("unhandledrejection", function(e) { add("R", e.reason && (e.reason.name + ": " + e.reason.message)); });
-        ["touchstart", "touchend", "pointerup", "mousedown", "click", "keydown"].forEach(function(t) {
-          window.addEventListener(t, function() { dbg.ev[t] = (dbg.ev[t] || 0) + 1; }, true);
-        });
-      })();
 
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
