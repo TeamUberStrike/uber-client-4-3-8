@@ -9,13 +9,13 @@ using UnityEngine;
 
 public class SceneExporter
 {
-    public const string BaseContentUrlProduction = "https://client.uberforever.eu/";
-    public const string BaseContentUrlExternalQA = "https://client-qa.uberforever.eu/";
-    public const string BaseContentUrlInternalDev = "https://client-dev.uberforever.eu/";
+    public const string BaseContentUrlProduction = "https://client.uberstrike.com/";
+    public const string BaseContentUrlExternalQA = "https://client-qa.uberstrike.com/";
+    public const string BaseContentUrlInternalDev = "https://client-dev.uberstrike.com/";
 
-    public const string BaseWebServiceUrlProduction = "https://ws.uberforever.eu/";
-    public const string BaseWebServiceUrlExternalQA = "https://ws-qa.uberforever.eu/";
-    public const string BaseWebServiceUrlInternalDev = "https://ws-dev.uberforever.eu/";
+    public const string BaseWebServiceUrlProduction = "https://ws.uberstrike.com/";
+    public const string BaseWebServiceUrlExternalQA = "https://ws-qa.uberstrike.com/";
+    public const string BaseWebServiceUrlInternalDev = "https://ws-dev.uberstrike.com/";
     public const string BaseWebServiceUrlLocalhost = "http://localhost:9000/";
 
     public static readonly string WebPlayerFolder = Application.dataPath + "/../Latest/WebPlayer";
