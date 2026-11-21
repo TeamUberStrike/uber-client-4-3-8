@@ -18,12 +18,53 @@
 ./UberStrike.Unity/Assets/Scenes/Latest.unity:8131:  _localCommServer:
 ```
 
+## Unity MCP (AI editor integration)
+
+The Unity project pins [MCP for Unity](https://github.com/CoplayDev/unity-mcp) (`com.coplaydev.unity-mcp`, v10.3.0) in `UberStrike.Unity/Packages/manifest.json`; Unity installs it automatically.
+
+Prerequisites: `uv` (the MCP server runs on Python 3.10+):
+
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+1. In the Unity Editor: **Window → MCP for Unity**.
+2. Set the port to **8090** (8080 is used by Adminer on this machine) and click **Start Server**.
+3. Add the server to `~/.config/opencode/opencode.json`:
+
+```json
+"mcp": {
+  "unity": {
+    "type": "remote",
+    "url": "http://127.0.0.1:8090/mcp",
+    "enabled": true
+  }
+}
+```
+
+4. Restart opencode and run `/mcp` to confirm `unity` is connected.
+
+Notes:
+- Use `127.0.0.1`, not `localhost` (the server binds IPv4; `localhost` may resolve to `::1`).
+- The connection drops after script recompiles or leaving Play mode — reconnect via `/mcp` or the MCP for Unity window.
+- If HTTP transport is unavailable, use stdio instead (use `~/.local/bin/uvx` if opencode cannot find `uvx`):
+
+```json
+"unity": {
+  "type": "local",
+  "command": ["uvx", "--from", "mcpforunityserver", "mcp-for-unity", "--transport", "stdio"],
+  "enabled": true
+}
+```
+
 ## Build Versioning
 
 GitVersion is required for local builds:
 
 - macOS: `brew install gitversion`
 - Windows/Linux: download `gitversion-win-x64-*.zip` / `gitversion-linux-x64-*.tar.gz` from [GitVersion releases](https://github.com/GitTools/GitVersion/releases) and add it to `PATH`
+
+`GitVersion.yml` is in the v7 format — GitVersion 7.x (or later) is required; older 5.x/6.x releases will reject it.
 
 ## iOS Build Notes
 

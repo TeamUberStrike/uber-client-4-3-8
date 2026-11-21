@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#v10.3.0",
     "com.heroiclabs.nakama-unity": "https://github.com/heroiclabs/nakama-unity.git?path=/Packages/Nakama#v3.22.1",
     "com.unity.toolchain.linux-x86_64": "2.0.11",
     "com.unity.toolchain.macos-x86_64-linux-x86_64": "2.0.11",
