@@ -95,7 +95,8 @@ public class OptionsPanelGUI : PanelGuiBase
             _optionsTabs = new GUIContent[] { 
                 new GUIContent(LocalizedStrings.GeneralCaps), 
                 new GUIContent(LocalizedStrings.ControlsCaps),
-                new GUIContent(LocalizedStrings.AudioCaps) 
+                new GUIContent(LocalizedStrings.AudioCaps),
+                new GUIContent(LocalizedStrings.VideoCaps)
             };
 
             _selectedOptionsTab = TAB_CONTROL;
@@ -150,7 +151,7 @@ public class OptionsPanelGUI : PanelGuiBase
         //Draw Stats Tabs
         if (ApplicationDataManager.IsMobile)
         {
-            _selectedOptionsTab = GUI.SelectionGrid(new Rect(2, 31, _rect.width - 5, 22), _selectedOptionsTab, _optionsTabs, 3, BlueStonez.tab_medium);
+            _selectedOptionsTab = GUI.SelectionGrid(new Rect(2, 31, _rect.width - 5, 22), _selectedOptionsTab, _optionsTabs, 4, BlueStonez.tab_medium);
         }
         else
         {
@@ -175,7 +176,8 @@ public class OptionsPanelGUI : PanelGuiBase
                 break;
 
             case TAB_VIDEO:
-                DoVideoGroup();
+                if (ApplicationDataManager.IsMobile) DoMobileVideoGroup();
+                else DoVideoGroup();
                 break;
 
             case TAB_AUDIO:
@@ -570,6 +572,85 @@ public class OptionsPanelGUI : PanelGuiBase
                 }
                 GUI.EndGroup();
             }
+        }
+        GUITools.EndScrollView();
+    }
+
+    private static readonly string[] mobileWaterSet = new string[] { "Low", "Medium" };
+
+    // Mobile: quality, framerate cap, textures, water, FOV, post fx, FPS. No vsync/AA/queued frames/resolution.
+    private void DoMobileVideoGroup()
+    {
+        GUI.skin = BlueStonez.Skin;
+        ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
+
+        Rect videoRect = new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 47);
+        float width = videoRect.width - GroupMarginX - GroupMarginX - 20;
+
+        _scrollVideo = GUITools.BeginScrollView(videoRect, _scrollVideo, new Rect(0, 0, videoRect.width - 20, 240));
+        {
+            GUI.enabled = true;
+            GUI.changed = false;
+            _targetFrameRate = Mathf.Clamp(_targetFrameRate, 30, 120);
+
+            int qindex = GUI.SelectionGrid(new Rect(0, 5, videoRect.width - 30, 22), _currentQuality, qualitySet, qualitySet.Length, BlueStonez.tab_medium);
+            if (qindex != _currentQuality)
+            {
+                SetCurrentQuality(qindex);
+                SfxManager.Play2dAudioClip(SoundEffectType.UIButtonClick);
+            }
+
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 33, 140, 24), _limitFrameRate, LocalizedStrings.LimitFramerate) != _limitFrameRate)
+            {
+                _limitFrameRate = !_limitFrameRate;
+                UpdateApplicationFrameRate();
+            }
+            GUI.enabled = _limitFrameRate;
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 30, width, 30), string.Empty, ref _targetFrameRate, 30, 120))
+            {
+                _targetFrameRate = Mathf.Round(_targetFrameRate / 5) * 5;
+                graphicsChanged = true;
+            }
+            GUI.enabled = true;
+
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 60, width, 30), "Texture Quality:", ref _textureQuality, 0, MasterTextureLimit))
+            {
+                graphicsChanged = true;
+                SetCurrentQuality(qualitySet.Length - 1);
+            }
+
+            int water = Mathf.Clamp(_waterQuality, 0, 1);
+            if (HorizontalGridbar(new Rect(GroupMarginX, 90, width, 30), "Water Quality:", ref water, mobileWaterSet))
+            {
+                _waterQuality = water;
+                opt.VideoWaterMode = water;
+                SetCurrentQuality(qualitySet.Length - 1);
+            }
+
+            bool fovWide = opt.VideoFOV >= ApplicationOptions.VideoFOVWide;
+            if (DrawCustomToggle(new Rect(GroupMarginX + 4, 123, 200, 24), fovWide, "FOV Mode") != fovWide)
+            {
+                opt.VideoFOV = fovWide ? ApplicationOptions.VideoFOVNormal : ApplicationOptions.VideoFOVWide;
+                if (LevelCamera.Exists && !LevelCamera.Instance.IsZoomedIn)
+                    LevelCamera.Instance.ResetZoom();
+            }
+
+            float strength = opt.VideoPostProcessingStrength;
+            if (HorizontalScrollbar(new Rect(GroupMarginX, 150, width, 30), "Post Processing:", ref strength, 0f, 100f))
+            {
+                opt.VideoPostProcessingStrength = Mathf.RoundToInt(strength);
+                if (RenderSettingsController.Instance != null)
+                    RenderSettingsController.Instance.EnableImageEffects();
+            }
+
+            opt.VideoShowFps = DrawCustomToggle(new Rect(GroupMarginX + 4, 182, 200, 24), opt.VideoShowFps, "Show FPS");
+
+            // Downloaded map textures keep their load-time size; the limit hits the next map.
+            if (GameState.HasCurrentSpace)
+                GUI.Label(new Rect(GroupMarginX, 210, width, 22), "Map textures update when the next map loads.", BlueStonez.label_interparkbold_11pt_left);
+
+            if (GUI.changed || graphicsChanged)
+                opt.MobileGraphicsSaved = true;
         }
         GUITools.EndScrollView();
     }

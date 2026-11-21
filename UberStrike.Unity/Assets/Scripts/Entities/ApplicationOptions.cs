@@ -42,6 +42,9 @@ public class ApplicationOptions
     public bool GyroInvertY = false;
     public bool GyroInvertX = false;
 
+    // Set once the player touches the mobile Video tab; until then mobile keeps its platform quality.
+    public bool MobileGraphicsSaved = false;
+
     // Menu safe-area margin on each side in millimetres; negative = Auto (use the reported camera
     // cutout). Symmetric mirrors the larger side inset to both sides. See MobileMenuScale
     // "Safe-area layout".
@@ -161,6 +164,13 @@ public class ApplicationOptions
         GyroStrength = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroStrength, 1.5f), 0.2f, 4.0f);
         GyroInvertY = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroInvertY, false);
         GyroInvertX = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroInvertX, false);
+        MobileGraphicsSaved = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGraphicsSaved, false);
+        if (ApplicationDataManager.IsMobile && !MobileGraphicsSaved)
+        {
+            IsUsingCustom = false;
+            VideoQualityLevel = QualitySettings.GetQualityLevel();
+            VideoTextureQuality = QualitySettings.globalTextureMipmapLimit;
+        }
 
         // Gameplay
         GameplayAutoPickupEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, true);
@@ -219,6 +229,7 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroStrength, GyroStrength);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroInvertY, GyroInvertY);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroInvertX, GyroInvertX);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGraphicsSaved, MobileGraphicsSaved);
 
         // Gameplay
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, GameplayAutoPickupEnabled);

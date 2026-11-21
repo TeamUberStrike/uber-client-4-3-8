@@ -270,6 +270,13 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                     }
                 }
 #endif
+                if (ApplicationDataManager.IsMobile && applicationOptions.MobileGraphicsSaved)
+                {
+                    if (applicationOptions.IsUsingCustom)
+                        QualitySettings.globalTextureMipmapLimit = applicationOptions.VideoTextureQuality;
+                    else
+                        QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
+                }
 
                 // Set the initial Audio options based on Cmune Prefs
                 SfxManager.EnableAudio(ApplicationOptions.AudioEnabled);
