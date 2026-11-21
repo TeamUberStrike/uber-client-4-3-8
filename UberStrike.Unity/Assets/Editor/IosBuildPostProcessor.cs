@@ -8,7 +8,7 @@ using UnityEditor.iOS.Xcode;
 /// <summary>
 /// Unity regenerates Info.plist on every iOS export, which drops manually added
 /// keys. Content (item icons, weekly special images, maps, audio) is served over
-/// plain http:// (client-dev.uberstrike.com has no matching TLS certificate yet),
+/// plain http:// (client-dev.uberforever.eu has no matching TLS certificate yet),
 /// so the release build needs the App Transport Security exception in place.
 /// </summary>
 public class IosBuildPostProcessor : IPostprocessBuildWithReport
