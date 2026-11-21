@@ -71,6 +71,8 @@ public class DeviceLock : MonoBehaviour
             if (string.IsNullOrEmpty(www.error))
                 _logo = www.texture;
         }
+#else
+        yield return null;
 #endif
         for (int i = 0; i < SceneManager.sceneCount; i++) Freeze(SceneManager.GetSceneAt(i));
     }
