@@ -128,13 +128,13 @@ public class SceneExporter
     [MenuItem("File/Build UberStrike/Internal Dev/iOS")]
     public static void BuildiOS()
     {
-        BuildiOS(true, false);
+        BuildiOS(true, false, WebserviceLocation.InternalDev);
     }
 
     [MenuItem("File/Build UberStrike/Internal Dev/iOS (Main Only)")]
     public static void BuildiOSMainOnly()
     {
-        BuildiOS(false, false);
+        BuildiOS(false, false, WebserviceLocation.InternalDev);
     }
 
     [MenuItem("File/Build UberStrike/Local/iOS")]
@@ -149,7 +149,7 @@ public class SceneExporter
         BuildiOS(false, false, WebserviceLocation.Localhost);
     }
 
-    public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, WebserviceLocation wsLocation = WebserviceLocation.InternalDev, BuildOptions buildOptions = BuildOptions.None)
+    public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, WebserviceLocation wsLocation, BuildOptions buildOptions = BuildOptions.None)
     {
         ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
         PlayerSettings.bundleVersion = ResolveShortVersion();
