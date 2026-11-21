@@ -251,6 +251,8 @@ var UberDeviceBridge = {
         refresh();
         setInterval(refresh, 500);
 
+    },
+
     // Open a URL in a new browser tab. Application.OpenURL is unreliable on
     // WebGL (often swallowed by popup blockers). window.open within the click
     // gesture normally works. If it is blocked (iOS Safari blocks it because
