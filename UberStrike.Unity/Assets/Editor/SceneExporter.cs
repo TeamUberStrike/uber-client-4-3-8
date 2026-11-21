@@ -16,6 +16,7 @@ public class SceneExporter
     public const string BaseWebServiceUrlProduction = "https://ws.uberstrike.com/";
     public const string BaseWebServiceUrlExternalQA = "https://ws-qa.uberstrike.com/";
     public const string BaseWebServiceUrlInternalDev = "https://ws-dev.uberstrike.com/";
+    public const string BaseWebServiceUrlLocalhost = "http://localhost:9000/";
 
     public static readonly string WebPlayerFolder = Application.dataPath + "/../Latest/WebPlayer";
     public static readonly string WindowsStandaloneFolder = Application.dataPath + "/../Latest/WindowsStandalone";
@@ -139,16 +140,16 @@ public class SceneExporter
     [MenuItem("File/Build UberStrike/Local/iOS")]
     public static void BuildiOSLocal()
     {
-        BuildiOS(true, false, BuildOptions.None, WebserviceLocation.Localhost);
+        BuildiOS(true, false, WebserviceLocation.Localhost);
     }
 
     [MenuItem("File/Build UberStrike/Local/iOS (Main Only)")]
     public static void BuildiOSLocalMainOnly()
     {
-        BuildiOS(false, false, BuildOptions.None, WebserviceLocation.Localhost);
+        BuildiOS(false, false, WebserviceLocation.Localhost);
     }
 
-    public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, BuildOptions buildOptions = BuildOptions.None, WebserviceLocation wsLocation = WebserviceLocation.InternalDev)
+    public static void BuildiOS(bool buildAllMaps, bool buildSplashLoader, WebserviceLocation wsLocation = WebserviceLocation.InternalDev, BuildOptions buildOptions = BuildOptions.None)
     {
         ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
         PlayerSettings.bundleVersion = ResolveShortVersion();
@@ -1078,7 +1079,7 @@ public class SceneExporter
             case WebserviceLocation.InternalDev:
                 return BaseWebServiceUrlInternalDev;
             case WebserviceLocation.Localhost:
-                return "https://ws-dev.uberstrike.com/";
+                return BaseWebServiceUrlLocalhost;
             default:
                 return BaseWebServiceUrlProduction;
         }
