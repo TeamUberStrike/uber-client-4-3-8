@@ -56,6 +56,10 @@ public class ItemToolTip
     {
         _rect = _rect.Lerp(_finalRect, Time.deltaTime * 5);
 
+        // Fade out quickly when a finger scroll starts.
+        if (IsEnabled && GUITools.IsHoverSuppressedByTouchScroll)
+            _alpha = Mathf.Min(_alpha, Time.time + 0.15f);
+
         if (IsEnabled)
         {
             GUI.color = new Color(1, 1, 1, Alpha);
@@ -114,6 +118,9 @@ public class ItemToolTip
     public void SetItem(IUnityItem item, Rect bounds, PopupViewSide side, int daysLeft = -1, BuyingDurationType duration = BuyingDurationType.None)
     {
         if (Event.current.type != EventType.Repaint || item == null || ItemManager.Instance.IsDefaultGearItem(item.ItemId)) return;
+
+        // Not during a finger scroll (stale pointer).
+        if (GUITools.IsHoverSuppressedByTouchScroll) return;
 
         //reset position hard if the tooltip window was nearly invisible when the next item is selected
         bool _hardSetPosition = _alpha < Time.time + 0.1f;
