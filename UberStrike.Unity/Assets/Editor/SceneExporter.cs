@@ -703,6 +703,13 @@ public class SceneExporter
     // download (it never completes on iOS Safari). Maps still load from the CDN.
     private static void BuildWebGLPlayer()
     {
+        // linux editor encodes webgl audio (aac) with ffmpeg. no ffmpeg = every clip dropped, silent build
+        if (Application.platform == RuntimePlatform.LinuxEditor && !HasFfmpegOnPath())
+        {
+            FailWebGLAudio("ffmpeg not found on PATH. Linux editor needs it to encode WebGL audio (AAC). Install ffmpeg, restart Unity, reimport Assets/Audio.");
+            return;
+        }
+
         PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
         PlayerSettings.WebGL.dataCaching = true;
         PlayerSettings.WebGL.decompressionFallback = true;
@@ -720,7 +727,38 @@ public class SceneExporter
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
         }
+
+        int clips = buildResult.packedAssets.SelectMany(p => p.contents).Count(c => c.type == typeof(AudioClip));
+        Debug.Log("WebGL build audio clips: " + clips);
+        if (clips == 0)
+        {
+            FailWebGLAudio("WebGL build has 0 audio clips, game will be silent. On Linux: install ffmpeg, reimport Assets/Audio, rebuild.");
+        }
+    }
+
+    private static bool HasFfmpegOnPath()
+    {
+        string path = System.Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+        foreach (string dir in path.Split(Path.PathSeparator))
+        {
+            if (dir.Length > 0 && File.Exists(Path.Combine(dir, "ffmpeg")))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void FailWebGLAudio(string message)
+    {
+        Debug.LogError(message);
+        if (Application.isBatchMode)
+        {
+            EditorApplication.Exit(1);
+        }
+        throw new System.Exception(message);
     }
 
     private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
