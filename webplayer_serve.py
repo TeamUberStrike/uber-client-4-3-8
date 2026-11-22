@@ -66,6 +66,13 @@ FORWARDER_JS = f"""<script>
 
 
 class UnityWebGLHandler(SimpleHTTPRequestHandler):
+    build_directory = None
+
+    def __init__(self, *args, **kwargs):
+        if UnityWebGLHandler.build_directory:
+            kwargs["directory"] = UnityWebGLHandler.build_directory
+        super().__init__(*args, **kwargs)
+
     extensions_map = {
         **SimpleHTTPRequestHandler.extensions_map,
         ".wasm": "application/wasm",
@@ -109,7 +116,7 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
             except KeyError:
                 pass
         clean_path = self.path.split("?", 1)[0]
-        build_id, build_time = get_build_info(os.getcwd())
+        build_id, build_time = get_build_info(self.directory)
         print(f"[serve] {clean_path} buildId: {build_id} ({build_time})", flush=True)
         if clean_path.endswith((".data.unityweb", ".framework.js.unityweb", ".wasm.unityweb", ".loader.js")):
             query = self.path.split("?", 1)[1] if "?" in self.path else ""
@@ -130,7 +137,7 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
         except OSError:
             self.send_error(404)
             return
-        build_id, build_time = get_build_info(os.getcwd())
+        build_id, build_time = get_build_info(self.directory)
         if MARKER.encode() not in content:
             idx = content.lower().find(b"<body>")
             if idx >= 0:
@@ -331,9 +338,10 @@ def main():
                 else:
                     args.port += 1
 
-    os.chdir(args.dir)
-    build_id, build_time = get_build_info(os.getcwd())
-    print(f"Serving {os.path.abspath(args.dir)} at http://localhost:{args.port} "
+    build_dir = os.path.abspath(args.dir)
+    UnityWebGLHandler.build_directory = build_dir
+    build_id, build_time = get_build_info(build_dir)
+    print(f"Serving {build_dir} at http://localhost:{args.port} "
           f"(build {build_time}; log forwarding {'ON' if args.logs else 'OFF'} -> {CLIENT_LOG})", flush=True)
     try:
         server.serve_forever()
