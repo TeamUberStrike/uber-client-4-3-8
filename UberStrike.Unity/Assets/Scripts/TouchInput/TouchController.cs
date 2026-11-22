@@ -23,7 +23,12 @@ public class TouchController : Singleton<TouchController>
         if (MobileControlLayout.EditMode) return;
         // The end-of-match screen owns it too: the player is paused there, and the pause, chat and scoreboard
         // buttons must not sit over the results (the pause button would close them).
-        if (GamePageManager.IsCurrentPage(PageType.EndOfMatch)) return;
+        if (GamePageManager.IsCurrentPage(PageType.EndOfMatch))
+        {
+            // A scoreboard held as the match ended never sees its finger lift here, so close it.
+            if (TabScreenPanelGUI.Exists) TabScreenPanelGUI.Instance.ForceShow = false;
+            return;
+        }
 #endif
 
         foreach (TouchBaseControl control in _controls)
