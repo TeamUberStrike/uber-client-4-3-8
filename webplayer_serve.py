@@ -6,6 +6,7 @@ import signal
 import socket
 import subprocess
 import time
+import urllib.parse
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 BUILD_DIR = os.path.join(
@@ -17,6 +18,21 @@ LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_log")
 CLIENT_LOG = os.path.join(LOG_DIR, "client-logs.log")
 
 MARKER = "<!-- webplayer-log-forwarder -->"
+
+
+def get_build_info(directory):
+    try:
+        paths = [os.path.join(directory, "index.html")]
+        build_dir = os.path.join(directory, "Build")
+        if os.path.isdir(build_dir):
+            paths += [os.path.join(build_dir, n) for n in os.listdir(build_dir)]
+        mtimes = [os.path.getmtime(p) for p in paths if os.path.isfile(p)]
+        if not mtimes:
+            return 0, "unknown"
+        latest = max(mtimes)
+        return int(latest * 1000), time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(latest))
+    except OSError:
+        return 0, "unknown"
 
 FORWARDER_JS = f"""<script>
 {MARKER}
@@ -70,7 +86,7 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cross-Origin-Opener-Policy", "same-origin")
         self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
-        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
     protocol_version = "HTTP/1.1"
@@ -87,6 +103,23 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
         if self.inject_logs and self.path.split("?", 1)[0].rstrip("/") in ("", "/index.html"):
             self.serve_injected_index()
             return
+        for h in ("If-Modified-Since", "If-None-Match"):
+            try:
+                del self.headers[h]
+            except KeyError:
+                pass
+        clean_path = self.path.split("?", 1)[0]
+        build_id, build_time = get_build_info(os.getcwd())
+        print(f"[serve] {clean_path} buildId: {build_id} ({build_time})", flush=True)
+        if clean_path.endswith((".data.unityweb", ".framework.js.unityweb", ".wasm.unityweb", ".loader.js")):
+            query = self.path.split("?", 1)[1] if "?" in self.path else ""
+            req_v = urllib.parse.parse_qs(query).get("v", [None])[0]
+            if req_v is None:
+                print(f"[build] UNVERSIONED request for {clean_path} - client likely holds a stale page; "
+                      f"serving latest buildId: {build_id} ({build_time})", flush=True)
+            elif req_v != str(build_id):
+                print(f"[build] STALE client asked for buildId: {req_v} ({clean_path}); "
+                      f"current buildId: {build_id} ({build_time}) - serving latest anyway", flush=True)
         super().do_GET()
 
     def serve_injected_index(self):
@@ -97,16 +130,33 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
         except OSError:
             self.send_error(404)
             return
+        build_id, build_time = get_build_info(os.getcwd())
         if MARKER.encode() not in content:
             idx = content.lower().find(b"<body>")
             if idx >= 0:
                 idx += len(b"<body>")
-                content = content[:idx] + b"\n" + FORWARDER_JS.encode() + content[idx:]
+                stamp_js = (
+                    f'<script>window.__BUILD_ID={build_id};window.__BUILD_TIME="{build_time}";'
+                    f'(function(){{var t=document.getElementById("unity-build-title");'
+                    f'if(t)t.textContent+=" - build {build_time}";'
+                    f'console.log("build served:", "{build_time}", {build_id});}})();</script>'
+                )
+                content = content[:idx] + b"\n" + stamp_js.encode() + b"\n" + FORWARDER_JS.encode() + content[idx:]
+        content = self.stamp_asset_urls(content, build_id)
+        print(f"[build] index.html buildId: {build_id} ({build_time})", flush=True)
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
         self.wfile.write(content)
+
+    @staticmethod
+    def stamp_asset_urls(content, build_id):
+        build_q = f"?v={build_id}".encode()
+        for name in (b"WebPlayer.loader.js", b"WebPlayer.data.unityweb",
+                     b"WebPlayer.framework.js.unityweb", b"WebPlayer.wasm.unityweb"):
+            content = content.replace(b'"/' + name + b'"', b'"/' + name + build_q + b'"')
+        return content
 
     def do_POST(self):
         if self.path != "/__log":
@@ -282,8 +332,9 @@ def main():
                     args.port += 1
 
     os.chdir(args.dir)
+    build_id, build_time = get_build_info(os.getcwd())
     print(f"Serving {os.path.abspath(args.dir)} at http://localhost:{args.port} "
-          f"(log forwarding {'ON' if args.logs else 'OFF'} -> {CLIENT_LOG})", flush=True)
+          f"(build {build_time}; log forwarding {'ON' if args.logs else 'OFF'} -> {CLIENT_LOG})", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
