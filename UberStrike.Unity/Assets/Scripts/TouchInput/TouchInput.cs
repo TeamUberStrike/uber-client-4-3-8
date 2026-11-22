@@ -1773,9 +1773,15 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             ReleasePrimaryFire("application lost focus");
 #if !UNITY_EDITOR
-            if (_keyboard == null)
+            // Only ever pause a running match. This used to call OnMenu(), the menu button's toggle: on Recents it
+            // closed the pregame, Loadout/Chat or end-of-match panel, or unpaused a paused player.
+            // Try Weapon quits to the shop on pause, so it keeps running.
+            if (_keyboard == null && GameState.HasCurrentGame && GamePageManager.IsCurrentPage(PageType.None) &&
+                !GameState.LocalPlayer.IsGamePaused &&
+                GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.TryWeapon)
             {
-                OnMenu();
+                GameState.LocalPlayer.Pause();
+                if (GlobalUIRibbon.Exists) GlobalUIRibbon.Instance.Show();
             }
 #endif
         }
