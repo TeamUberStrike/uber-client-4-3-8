@@ -44,7 +44,8 @@ public class ItemPopupDialog : IPopupDialog
 
     public void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the popup is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         UpdateAlpha();
 
@@ -84,7 +85,7 @@ public class ItemPopupDialog : IPopupDialog
 
         GUI.color = Color.white;
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     public void OnHide()

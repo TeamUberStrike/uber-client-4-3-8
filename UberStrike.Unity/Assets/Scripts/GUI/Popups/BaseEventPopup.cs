@@ -46,7 +46,8 @@ public abstract class BaseEventPopup : IPopupDialog
 
     public void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the popup is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         //on the first draw call we set the start time
         if (_startTime == 0) _startTime = Time.time;
@@ -82,7 +83,7 @@ public abstract class BaseEventPopup : IPopupDialog
 
         OnAfterGUI();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     public virtual void OnAfterGUI() { }

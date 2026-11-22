@@ -27,7 +27,8 @@ public abstract class BasePopupDialog : IPopupDialog
 
     public void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the popup is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
         // Centre against the virtual (scaled) screen so the popup stays centred under the mobile menu scale.
         Rect rect = new Rect((MobileMenuScale.VirtualWidth - _size.x) * 0.5f, (MobileMenuScale.VirtualHeight - _size.y - 56) * 0.5f, _size.x, _size.y);
         GUI.BeginGroup(rect, GUIContent.none, BlueStonez.window_standard_grey38);
@@ -50,7 +51,7 @@ public abstract class BasePopupDialog : IPopupDialog
             }
         }
         GUI.EndGroup();
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     protected abstract void DrawPopupWindow();
