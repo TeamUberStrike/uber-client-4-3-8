@@ -19,7 +19,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         _blueTeam = new List<UberStrike.Realtime.Common.CharacterInfo>(0);
     }
 
-    private void Update()
+    // Called inside OnGUI's both-sides block, so the layout uses the same scale and inset as the drawing.
+    private void UpdateLayout()
     {
         // Laid out in menu units (the scaled space DrawTabScreen runs in), so rows and text keep the
         // menu's size on phones. On PC menu units are screen pixels and the layout is as before.
@@ -33,12 +34,28 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             // deaths / KDR cells, and all the height between the ribbon and the bottom edge so a
             // full team of eight fits without scrolling.
             float top = ribbon ? GlobalUIRibbon.Instance.GetHeight() + MobileMargin : MobileMargin;
-            // Equal insets on both sides (like the Options panel), so the panel is centred on screen.
+            float bottom = virtualHeight - MobileMargin;
+            // The safe area on both sides, whatever the symmetric screen edge option says, with a small
+            // margin on every side...
             virtualWidth = MobileMenuScale.BothSidesVirtualWidth;
-            _panelSize.x = Mathf.Floor(virtualWidth - 2 * MobileSideMargin);
-            _panelSize.y = Mathf.Floor(virtualHeight - top - MobileMargin);
+            float left = MobileMargin;
+            float right = virtualWidth - MobileMargin;
 
-            _rect.x = (virtualWidth - _panelSize.x) * 0.5f;
+            // ...and clear of the scoreboard button, the only touch control left on screen while the
+            // scoreboard is held open. It can be moved with Edit Controls, so use where it really is.
+            Rect button;
+            if (TryGetScoreButtonMenuRect(out button) && button.yMax > top && button.yMin < bottom)
+            {
+                if (button.center.x < virtualWidth * 0.5f)
+                    left = Mathf.Max(left, button.xMax + MobileMargin);
+                else
+                    right = Mathf.Min(right, button.xMin - MobileMargin);
+            }
+
+            _panelSize.x = Mathf.Floor(right - left);
+            _panelSize.y = Mathf.Floor(bottom - top);
+
+            _rect.x = left;
             _rect.y = top;
         }
         else
@@ -55,6 +72,24 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
         _rect.width = _panelSize.x;
         _rect.height = _panelSize.y;
+    }
+
+    // The scoreboard touch button in the scoreboard's both-sides menu units, if it is on screen.
+    private static bool TryGetScoreButtonMenuRect(out Rect rect)
+    {
+        rect = new Rect();
+        TouchButton button;
+        if (!TouchInput.Exists || TouchInput.Instance.Buttons == null ||
+            !TouchInput.Instance.Buttons.TryGetValue((int)TouchInput.TouchKeyType.Score, out button) ||
+            button == null || !button.Enabled)
+            return false;
+
+        // Both-sides space has the same inset on each side of the screen.
+        float scale = MobileMenuScale.Scale;
+        float insetLeft = (Screen.width - MobileMenuScale.BothSidesVirtualWidth * scale) * 0.5f;
+        Rect screen = button.Boundary;
+        rect = new Rect((screen.x - insetLeft) / scale, screen.y / scale, screen.width / scale, screen.height / scale);
+        return true;
     }
 
     private void OnGUI()
@@ -81,8 +116,9 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             //remove 1 to display even on top of end of the match screen
             GUI.depth = (int)GuiDepth.Page - 1;
 
-            // Same scale and safe-area shift as the menus; no-op on PC.
+            // Menu scale with the both-sides safe area, like the ribbon; no-op on PC.
             Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
+            UpdateLayout();
             DrawTabScreen();
             MobileMenuScale.EndBothSides(scaleMatrix);
         }
@@ -477,8 +513,6 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
     // Gap (menu units) between the panel and the screen edges / ribbon on mobile.
     private const float MobileMargin = 8f;
-    // Left/right gap on mobile: clears the scoreboard touch button (about 66 units from the safe edge).
-    private const float MobileSideMargin = 70f;
 
     private static GUIStyle _largeName;
     private static GUIStyle _largeValue;
