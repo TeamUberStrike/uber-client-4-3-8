@@ -301,6 +301,19 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         int pingWidth = large ? 56 : 50;
         int nameWidth = Mathf.Clamp(Mathf.RoundToInt(position.width - 30 - offset - iconWidth - levelWidth - splatsWidth - weaponWidth - descriptionWidth - deadWidth - pingWidth - killedWidth - kdrWidth - pointsWidth), 110, large ? 340 : 300);
 
+        // Touch devices: the large Deaths and KDR headers touch at their base widths. When the name
+        // column has room to spare, move up to 20 units of it to those two columns.
+        if (large && killedWidth > 0 && kdrWidth > 0)
+        {
+            int spare = Mathf.Min(nameWidth - 140, 20);
+            if (spare > 0)
+            {
+                killedWidth += spare / 2;
+                kdrWidth += spare - spare / 2;
+                nameWidth -= spare;
+            }
+        }
+
         GUI.BeginGroup(position, GUIContent.none, BlueStonez.box_overlay);
         {
             int x = 10 + offset + iconWidth;
