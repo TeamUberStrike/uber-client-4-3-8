@@ -16,7 +16,8 @@ public class HelpPanelGUI : PanelGuiBase
     {
         GUI.depth = (int)GuiDepth.Panel;
 
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         int height = Mathf.RoundToInt((MobileMenuScale.VirtualHeight - 56) * 0.75f);
         // centre x against the virtual screen for mobile menu scale (y stays anchored to the ribbon)
@@ -28,7 +29,7 @@ public class HelpPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     private void DrawHelpPanel()

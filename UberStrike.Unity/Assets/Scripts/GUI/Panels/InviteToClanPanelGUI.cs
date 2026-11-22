@@ -18,12 +18,13 @@ public class InviteToClanPanelGUI : PanelGuiBase
 
     void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         // size against the virtual screen for mobile menu scale (window is centred within this rect)
         DrawInvitePlayerMessage(new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight()));
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     /// <summary>

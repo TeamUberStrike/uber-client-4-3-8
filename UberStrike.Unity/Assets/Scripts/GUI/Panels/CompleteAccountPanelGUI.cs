@@ -58,7 +58,8 @@ public class CompleteAccountPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         float width = 400;
 
@@ -130,7 +131,7 @@ public class CompleteAccountPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     private void DrawCheckAvailabilityButton(Rect position)

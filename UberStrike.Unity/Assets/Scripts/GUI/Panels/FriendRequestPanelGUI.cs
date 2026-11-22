@@ -31,7 +31,8 @@ public class FriendRequestPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         GUI.depth = (int)GuiDepth.Panel;
         GUI.skin = BlueStonez.Skin;
@@ -45,7 +46,7 @@ public class FriendRequestPanelGUI : PanelGuiBase
 
         GUI.enabled = true;
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     private void DoInvite(Rect rect)

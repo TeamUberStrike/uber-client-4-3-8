@@ -26,7 +26,8 @@ public class BuyPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         GUI.skin = BlueStonez.Skin;
         GUI.depth = (int)GuiDepth.Panel;
@@ -36,7 +37,7 @@ public class BuyPanelGUI : PanelGuiBase
         // centre against the virtual screen for mobile menu scale
         DrawUnityItem(new Rect((MobileMenuScale.VirtualWidth - WIDTH) / 2, (MobileMenuScale.VirtualHeight - Height) / 2, WIDTH, Height));
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }

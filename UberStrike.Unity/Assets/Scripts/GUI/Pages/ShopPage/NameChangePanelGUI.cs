@@ -12,7 +12,8 @@ public class NameChangePanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         // Center the panel against the virtual (scaled) screen size for the mobile menu scale.
         _groupRect = new Rect((MobileMenuScale.VirtualWidth - 340) * 0.5f, (MobileMenuScale.VirtualHeight - 200) * 0.5f, 340, 200);
@@ -118,7 +119,7 @@ public class NameChangePanelGUI : PanelGuiBase
             WaitingTexture.Draw(new Vector2(groupRect.x + 305, groupRect.y + 114));
         }
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }

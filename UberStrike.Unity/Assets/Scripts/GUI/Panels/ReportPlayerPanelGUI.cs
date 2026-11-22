@@ -37,7 +37,8 @@ public class ReportPlayerPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         // centre against the virtual screen for mobile menu scale
         _rect = new Rect((MobileMenuScale.VirtualWidth - 570) * 0.5f, (MobileMenuScale.VirtualHeight - 345) * 0.5f, 570, 345);
@@ -46,7 +47,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
         DrawReportPanel();
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     public override void Show()

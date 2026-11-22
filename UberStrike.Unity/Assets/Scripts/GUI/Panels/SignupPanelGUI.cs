@@ -104,7 +104,8 @@ public class SignupPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         // centre against the virtual screen for mobile menu scale
         Rect position = new Rect((MobileMenuScale.VirtualWidth - 500) * 0.5f, (MobileMenuScale.VirtualHeight - _height) * 0.5f, 500, _height);
@@ -286,7 +287,7 @@ public class SignupPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     private void ShowSignUpErrorPopup(string title, string message)

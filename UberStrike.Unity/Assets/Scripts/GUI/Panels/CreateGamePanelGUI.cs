@@ -84,21 +84,22 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
                 }
             }
         }
-
-        // centre against the virtual screen for mobile menu scale
-        _windowRect.x = (MobileMenuScale.VirtualWidth - _windowRect.width) * 0.5f;
-        _windowRect.y = (MobileMenuScale.VirtualHeight - _windowRect.height) * 0.5f + 25;
     }
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
+
+        // Centred here, inside the scale block, so it uses the same scale and inset as the drawing.
+        _windowRect.x = (MobileMenuScale.VirtualWidth - _windowRect.width) * 0.5f;
+        _windowRect.y = (MobileMenuScale.VirtualHeight - _windowRect.height) * 0.5f + 25;
 
         GUI.BeginGroup(_windowRect, GUIContent.none, BlueStonez.window);
         DrawCreateGamePanel();
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }

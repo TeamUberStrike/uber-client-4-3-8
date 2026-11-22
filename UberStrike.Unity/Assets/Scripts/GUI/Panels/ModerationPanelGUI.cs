@@ -17,7 +17,8 @@ public class ModerationPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         // centre against the virtual screen for mobile menu scale
         _rect = new Rect((MobileMenuScale.VirtualWidth * 0.5f) - 320, (MobileMenuScale.VirtualHeight * 0.5f) - 202, 640, 404);
@@ -25,7 +26,7 @@ public class ModerationPanelGUI : PanelGuiBase
         DrawModerationPanel();
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     public override void Show()
