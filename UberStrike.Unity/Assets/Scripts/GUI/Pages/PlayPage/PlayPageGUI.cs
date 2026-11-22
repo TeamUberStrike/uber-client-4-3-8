@@ -102,7 +102,8 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
 
         if (_checkForPassword)
         {
-            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth - 280) / 2, (MobileMenuScale.VirtualHeight - 200) / 2, 280, 200));
+            // The bleed terms centre it on the screen, not in the page's notch-side safe area.
+            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft - 280) / 2, (MobileMenuScale.VirtualHeight - 200) / 2, 280, 200));
         }
 
         MobileMenuScale.End(scaleMatrix);

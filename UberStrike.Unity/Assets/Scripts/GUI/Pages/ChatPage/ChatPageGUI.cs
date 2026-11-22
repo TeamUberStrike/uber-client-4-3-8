@@ -160,8 +160,9 @@ public class ChatPageGUI : PageGUI
         }
         GUI.EndGroup();
 
+        // The bleed terms centre it on the screen, not in the page's notch-side safe area.
         if (_checkForPassword)
-            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth - 280) * 0.5f, (MobileMenuScale.VirtualHeight - 200) * 0.5f, 280, 200));
+            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft - 280) * 0.5f, (MobileMenuScale.VirtualHeight - 200) * 0.5f, 280, 200));
 
         GuiManager.DrawTooltip();
     }

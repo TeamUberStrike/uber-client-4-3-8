@@ -317,7 +317,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
         float bw = 140f;
         float bh = 34f;
         float totalW = 4f * bw + 3f * 8f;
-        float x0 = (MobileMenuScale.VirtualWidth / ToolbarScale - totalW) / 2f;
+        // Same x0 as DrawToolbar, in toolbar units: centred on the screen.
+        float x0 = ((MobileMenuScale.VirtualWidth + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft) / ToolbarScale - totalW) / 2f;
         _toolbarButtonsRect = new Rect(MobileMenuScale.InsetLeftPixels + x0 * ms, 2f * ms + TouchInput.TopDeadZonePixels, totalW * ms, bh * ms);
 
         // Dim the world behind the editor so the markers stay legible no matter what the paused
@@ -464,7 +465,8 @@ public class MobileControlLayoutEditor : MonoBehaviour
         float vw = MobileMenuScale.VirtualWidth;
         float bw = 140, bh = 34;
         float totalW = 4 * bw + 3 * 8;
-        float x0 = (vw - totalW) / 2;
+        // The bleed terms centre the row on the screen, in line with the hint text.
+        float x0 = (vw + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft - totalW) / 2;
         float by = 2 + TouchInput.TopDeadZonePixels / MobileMenuScale.Scale;
 
         string modeLabel = ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Switch Single" : "Switch Multi";

@@ -40,7 +40,8 @@ public class TrainingPageGUI : MonoBehaviour
         MobileMenuScale.DrawBackground(new Rect(0, TopOffset, MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - TopOffset), BlueStonez.box_grey31);
 
         //Stats GUI Panel
-        GUI.BeginGroup(new Rect((MobileMenuScale.VirtualWidth - PageWidth) * 0.5f, ((MobileMenuScale.VirtualHeight + TopOffset) - PageHeight) * 0.5f, PageWidth, PageHeight), string.Empty, BlueStonez.window);
+        // The bleed terms centre it on the screen, not in the page's notch-side safe area.
+        GUI.BeginGroup(new Rect((MobileMenuScale.VirtualWidth + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft - PageWidth) * 0.5f, ((MobileMenuScale.VirtualHeight + TopOffset) - PageHeight) * 0.5f, PageWidth, PageHeight), string.Empty, BlueStonez.window);
         {
             GUI.Label(new Rect(10, 20, PageWidth - 30, 48), LocalizedStrings.TrainingCaps, BlueStonez.label_interparkbold_48pt);
             GUI.Label(new Rect(30, 50, PageWidth - 60, 120), LocalizedStrings.TrainingModeDesc, BlueStonez.label_interparkbold_13pt);
@@ -140,7 +141,8 @@ public class TrainingPageGUI : MonoBehaviour
     private float GetExtraScale()
     {
         float fitHeight = MobileMenuScale.VirtualHeight / (TopOffset + PageHeight + FitMargin * 2f);
-        float fitWidth = MobileMenuScale.VirtualWidth / (PageWidth + FitMargin * 2f);
+        // The panel is centred on the screen, so it must fit between equal insets on both sides.
+        float fitWidth = MobileMenuScale.BothSidesVirtualWidth / (PageWidth + FitMargin * 2f);
         return Mathf.Max(1f, Mathf.Min(MobileExtraScale, Mathf.Min(fitHeight, fitWidth)));
     }
 }
