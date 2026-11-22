@@ -17,6 +17,7 @@ on:
           - iOS
           - Android
           - Windows
+          - WebGL
 
 jobs:
   prepare:
@@ -33,7 +34,8 @@ jobs:
           include='[
             {"platform":"Windows","target":"StandaloneWindows","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildWindowsStandaloneDev","artifactPath":"UberStrike.Unity/Latest/WindowsStandalone"},
             {"platform":"Android","target":"Android","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildAndroidDev","artifactPath":"UberStrike.Unity/Latest/Android/*.apk"},
-            {"platform":"iOS","target":"iOS","runner":"macos-15-intel","buildMethod":"SceneExporter.BuildiOS"}
+            {"platform":"iOS","target":"iOS","runner":"macos-15-intel","buildMethod":"SceneExporter.BuildiOS"},
+            {"platform":"WebGL","target":"WebGL","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildWebPlayerDevMain","artifactPath":"UberStrike.Unity/Latest/WebPlayer"}
           ]'
           if [ "$PLATFORM" != "all" ]; then
             include=$(printf '%s' "$include" | jq -c --arg p "$PLATFORM" '[.[] | select(.platform == $p)]')
@@ -81,6 +83,21 @@ jobs:
           restore-keys: |
             Library-${{ matrix.target }}-
 
+      # linux unity encodes webgl audio (aac) with ffmpeg. stock image has none = silent build
+      - name: WebGL editor image with ffmpeg
+        if: matrix.platform == 'WebGL'
+        id: webglimage
+        run: |
+          UNITY_VERSION=$(sed -n 's/^m_EditorVersion: //p' UberStrike.Unity/ProjectSettings/ProjectVersion.txt | tr -d '\r')
+          mkdir -p /tmp/webgl-image
+          {
+            echo "FROM unityci/editor:ubuntu-${UNITY_VERSION}-webgl-3"
+            echo "RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*"
+          } > /tmp/webgl-image/Dockerfile
+          docker build -t "uberstrike/unity-webgl-ffmpeg:${UNITY_VERSION}" /tmp/webgl-image
+          docker run --rm --entrypoint ffmpeg "uberstrike/unity-webgl-ffmpeg:${UNITY_VERSION}" -hide_banner -version | head -1
+          echo "image=uberstrike/unity-webgl-ffmpeg:${UNITY_VERSION}" >> "$GITHUB_OUTPUT"
+
       - name: Build ${{ matrix.platform }} in Unity
         uses: game-ci/unity-builder@v4
         env:
@@ -93,6 +110,7 @@ jobs:
           buildMethod: ${{ matrix.buildMethod }}
           versioning: Custom
           version: ${{ steps.gitversion.outputs.informationalVersion }}
+          customImage: ${{ steps.webglimage.outputs.image }}
 
       - name: Build iOS .ipa in Xcode
         if: matrix.platform == 'iOS'
