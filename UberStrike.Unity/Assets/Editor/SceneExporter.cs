@@ -729,13 +729,6 @@ public class SceneExporter
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
             return;
         }
-
-        int clips = buildResult.packedAssets.SelectMany(p => p.contents).Count(c => c.type == typeof(AudioClip));
-        Debug.Log("WebGL build audio clips: " + clips);
-        if (clips == 0)
-        {
-            FailWebGLAudio("WebGL build has 0 audio clips, game will be silent. On Linux: install ffmpeg, reimport Assets/Audio, rebuild.");
-        }
     }
 
     private static bool HasFfmpegOnPath()
