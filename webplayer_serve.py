@@ -30,7 +30,7 @@ def get_build_info(directory):
         if not mtimes:
             return 0, "unknown"
         latest = max(mtimes)
-        return int(latest * 1000), time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(latest))
+        return int(latest * 1000), time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(latest))
     except OSError:
         return 0, "unknown"
 
@@ -60,7 +60,7 @@ FORWARDER_JS = f"""<script>
   console.warn = function(){{ push('warn', arguments); origWarn.apply(null, arguments); }};
   console.error = function(){{ push('err', arguments); origErr.apply(null, arguments); }};
   window.addEventListener('error', function(e){{ push('jserr', [e.message + ' @ ' + e.filename + ':' + e.lineno]); }});
-  push('boot', ['page loaded']);
+  push('boot', ['page loaded buildId=' + (window.__BUILD_ID || '?') + ' buildTime=' + (window.__BUILD_TIME || '?')]);
 }})();
 </script>"""
 
@@ -146,7 +146,12 @@ class UnityWebGLHandler(SimpleHTTPRequestHandler):
                     f'<script>window.__BUILD_ID={build_id};window.__BUILD_TIME="{build_time}";'
                     f'(function(){{var t=document.getElementById("unity-build-title");'
                     f'if(t)t.textContent+=" - build {build_time}";'
-                    f'console.log("build served:", "{build_time}", {build_id});}})();</script>'
+                    f'var b=document.createElement("div");'
+                    f'b.textContent="build {build_time}";'
+                    f'b.style.cssText="position:fixed;left:4px;bottom:max(4px,env(safe-area-inset-bottom));z-index:2000;'
+                    f'background:rgba(0,0,0,.55);color:#fff;font:11px arial;padding:2px 6px;border-radius:3px;pointer-events:none;";'
+                    f'document.body.appendChild(b);'
+                    f'setTimeout(function(){{console.log("build served:", "{build_time}", {build_id});}},0);}})();</script>'
                 )
                 content = content[:idx] + b"\n" + stamp_js.encode() + b"\n" + FORWARDER_JS.encode() + content[idx:]
         content = self.stamp_asset_urls(content, build_id)
