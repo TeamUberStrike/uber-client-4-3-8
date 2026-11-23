@@ -64,26 +64,6 @@ public class TouchShooter : TouchBaseControl
             if (!ValidArea(touch.position))
                 return;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            // Unity WebGL re-numbers fingers when another finger lifts and then re-delivers
-            // TouchPhase.Began for fingers that are already down. Without this, the fire finger's
-            // re-numbered "Began" binds the free aim slot and the camera follows the fire finger.
-            if (_secondaryFinger.FingerId != -1 && CloseTo(touch.position, _secondaryFinger.LastPos))
-            {
-                _secondaryFinger.FingerId = touch.fingerId;
-                _secondaryFinger.LastPos = touch.position;
-                _secondaryLastFrame = Time.frameCount;
-                return;
-            }
-            if (_primaryFinger.FingerId != -1 && CloseTo(touch.position, _primaryFinger.LastPos))
-            {
-                _primaryFinger.FingerId = touch.fingerId;
-                _primaryFinger.LastPos = touch.position;
-                _primaryLastFrame = Time.frameCount;
-                return;
-            }
-#endif
-
             if (_primaryFinger.FingerId == -1)
             {
                 _primaryFinger = new TouchFinger()
@@ -93,7 +73,6 @@ public class TouchShooter : TouchBaseControl
                     LastPos = touch.position,
                     FingerId = touch.fingerId,
                 };
-                _primaryLastFrame = Time.frameCount;
                 Debug.Log("[ShooterDiag] primary bind finger=" + touch.fingerId + " pos=" + touch.position);
 
                 // if finger was tapped within time and close enough
@@ -116,7 +95,6 @@ public class TouchShooter : TouchBaseControl
                     LastPos = touch.position,
                     FingerId = touch.fingerId,
                 };
-                _secondaryLastFrame = Time.frameCount;
                 Debug.Log("[ShooterDiag] secondary bind -> FIRE finger=" + touch.fingerId + " pos=" + touch.position);
                 if (OnFireStart != null) OnFireStart();
             }
@@ -125,7 +103,6 @@ public class TouchShooter : TouchBaseControl
         {
             if (_primaryFinger.FingerId == touch.fingerId)
             {
-                _primaryLastFrame = Time.frameCount;
 #if UNITY_WEBGL && !UNITY_EDITOR
                 // Unity's Touch.deltaPosition on WebGL reports the ABSOLUTE position on the
                 // first Moved/Stationary frame (difference from (0,0)), so a tap would snap
@@ -145,12 +122,6 @@ public class TouchShooter : TouchBaseControl
                     _diagSamples++;
                     Debug.Log("[TouchDiag] finger=" + touch.fingerId + " delta=" + touch.deltaPosition + " pos=" + touch.position + " aim=" + Aim);
                 }
-            }
-            else if (_secondaryFinger.FingerId == touch.fingerId)
-            {
-                // On WebGL the touch array only lists fingers with events this frame; refresh the
-                // fire finger's liveness here so FinalUpdate does not prune it while it is held.
-                _secondaryLastFrame = Time.frameCount;
             }
         }
         else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
@@ -174,23 +145,6 @@ public class TouchShooter : TouchBaseControl
         // _primaryFinger stays bound to a finger that is gone, and the next finger binds as the
         // SECONDARY (fire) finger instead of the primary, so the POV stops moving. Prune any
         // finger that has left the live touch set so a fresh finger can re-bind as primary.
-        //
-        // WebGL additionally lists only fingers that changed this frame, so a stationary aim
-        // finger vanishes from Input.touches whenever the other finger moves. Prune with a grace
-        // window (frames since last seen) instead of instantly, or the aim finger re-binds on
-        // every move of the second finger and the camera jerks.
-#if UNITY_WEBGL && !UNITY_EDITOR
-        if (_primaryFinger.FingerId != -1 && Time.frameCount - _primaryLastFrame > 30)
-        {
-            _primaryFinger.Reset();
-            Aim = Vector2.zero;
-        }
-        if (_secondaryFinger.FingerId != -1 && Time.frameCount - _secondaryLastFrame > 30)
-        {
-            _secondaryFinger.Reset();
-            if (OnFireEnd != null) OnFireEnd();
-        }
-#else
         if (_primaryFinger.FingerId != -1 && !IsFingerLive(_primaryFinger.FingerId))
         {
             _primaryFinger.Reset();
@@ -201,7 +155,6 @@ public class TouchShooter : TouchBaseControl
             _secondaryFinger.Reset();
             if (OnFireEnd != null) OnFireEnd();
         }
-#endif
     }
 
     private static bool IsFingerLive(int fingerId)
@@ -239,18 +192,10 @@ public class TouchShooter : TouchBaseControl
         return true;
     }
 
-    private static bool CloseTo(Vector2 a, Vector2 b)
-    {
-        return (a - b).sqrMagnitude < 40f * 40f;
-    }
-
     #region Fields
 
     private TouchFinger _primaryFinger;
     private TouchFinger _secondaryFinger;
-
-    private int _primaryLastFrame;
-    private int _secondaryLastFrame;
 
     private int _diagSamples;
 
