@@ -33,10 +33,13 @@ public class EndOfRoundPageScene : PageScene
         {
             float x = Screen.height * 0.2f;
             Rect pixelRect = GameState.CurrentSpace.Camera.pixelRect;
+            // Top of the score boxes in screen pixels. On mobile the ribbon is drawn at the menu scale, so they
+            // start 30 units below its real bottom edge instead of under it.
+            float top = MobileMenuScale.Active ? (GlobalUIRibbon.Instance.GetHeight() + 30) * MobileMenuScale.Scale : GlobalUIRibbon.HEIGHT + 30;
             if (GameState.CurrentGameMode == GameMode.TeamDeathMatch ||
                 GameState.CurrentGameMode == GameMode.TeamElimination)
             {
-                Rect rect = new Rect((pixelRect.width - x * 2 - 40) / 2, GlobalUIRibbon.HEIGHT + 30, x * 2 + 40, x);
+                Rect rect = new Rect((pixelRect.width - x * 2 - 40) / 2, top, x * 2 + 40, x);
 
                 GUI.BeginGroup(rect);
                 {
@@ -72,7 +75,7 @@ public class EndOfRoundPageScene : PageScene
             // Scale the READY toggle like the other menu buttons; the MeshGUI score splats stay
             // in raw screen space (they ignore GUI.matrix).
             Matrix4x4 readyScale = MobileMenuScale.Begin();
-            Rect readyRect = new Rect(MobileMenuScale.ScreenToMenu(new Vector2((pixelRect.width - x * 2 - 60) / 2, GlobalUIRibbon.HEIGHT + x + 40)),
+            Rect readyRect = new Rect(MobileMenuScale.ScreenToMenu(new Vector2((pixelRect.width - x * 2 - 60) / 2, top + x + 10)),
                 new Vector2((x * 2 + 60) / MobileMenuScale.Scale, 50f));
             DrawReadyButton(readyRect);
             MobileMenuScale.End(readyScale);

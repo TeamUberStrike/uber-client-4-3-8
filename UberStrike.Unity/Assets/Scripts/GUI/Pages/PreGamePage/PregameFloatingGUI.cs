@@ -29,6 +29,12 @@ public class PregameFloatingGUI : MonoBehaviour
 
         if (GameState.HasCurrentSpace)
         {
+            // The title is a screen-space mesh text (it ignores GUI.matrix; its camera covers only the 3D view,
+            // which puts x = Screen.width / 2 at the view's centre). On mobile the ribbon is drawn at the menu scale
+            // and covers the 120 pixels the title was placed at, so it goes 30 units below the ribbon's real bottom edge.
+            float titleY = MobileMenuScale.Active ? (GlobalUIRibbon.Instance.GetHeight() + 30) * MobileMenuScale.Scale : 120;
+            _gameModeText.Position = new Vector2(Screen.width / 2, titleY);
+
             // The join buttons are laid out in menu units, at MobileJoinAreaScale of the menu's size.
             // The area is the whole camera view (the part of the screen left of the panel), not the
             // safe area, so the buttons stay centred over the avatar. On PC menu units are screen
@@ -101,7 +107,6 @@ public class PregameFloatingGUI : MonoBehaviour
 
     private void DrawJoinArea(Rect rect)
     {
-        _gameModeText.Position = new Vector2(Screen.width / 2, 120);
         _gameModeText.Draw();
 
         if (_joinGameGUI != null)
