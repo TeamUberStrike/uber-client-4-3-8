@@ -244,6 +244,12 @@ public class TouchInput : MonoSingleton<TouchInput>
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern int UberGetDeviceType();
+
+    [DllImport("__Internal")]
+    private static extern void UberOpenChatKeyboard(string text, string gameObjectName);
+
+    [DllImport("__Internal")]
+    private static extern void UberCloseChatKeyboard();
 #endif
 
 
@@ -1319,6 +1325,20 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnChatBegan()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (UberGetDeviceType() != 0)
+        {
+            InGameChatHud.Instance.OpenChat(false);
+
+            // need to force push because it doesn't automatically call OnEnter
+            _previousState = _stateMachine.CurrentStateId;
+            _webGLKeyboardOpen = true;
+            _stateMachine.SetState((int)TouchState.Chatting);
+            UberOpenChatKeyboard(string.Empty, gameObject.name);
+            return;
+        }
+#endif
+
         _keyboard = TouchScreenKeyboard.isSupported
             ? TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false)
             : null;
@@ -1327,6 +1347,28 @@ public class TouchInput : MonoSingleton<TouchInput>
         // need to force push because it doesn't automatically call OnEnter
         _previousState = _stateMachine.CurrentStateId;
         _stateMachine.SetState((int)TouchState.Chatting);
+    }
+
+    public void OnWebGLChatSend(string text)
+    {
+        if (!_webGLKeyboardOpen) return;
+
+        _webGLKeyboardOpen = false;
+
+        if (string.IsNullOrEmpty(text) || text.Trim().Length == 0)
+            InGameChatHud.Instance.CancelChat();
+        else
+            InGameChatHud.Instance.PushMessage(text);
+
+        _stateMachine.SetState(_previousState);
+    }
+
+    private void CloseWebGLChatKeyboard()
+    {
+        _webGLKeyboardOpen = false;
+#if UNITY_WEBGL && !UNITY_EDITOR
+        UberCloseChatKeyboard();
+#endif
     }
 
     #endregion
@@ -1543,7 +1585,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         public void OnExit()
         {
-
+            TouchInput.Instance.CloseWebGLChatKeyboard();
         }
 
         public void OnUpdate()
@@ -1551,7 +1593,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput ti = TouchInput.Instance;
             ti.CheckKeyboardDone();
 
-            if (ti._keyboard == null && !InGameChatHud.Instance.CanInput &&
+            if (ti._keyboard == null && !ti._webGLKeyboardOpen && !InGameChatHud.Instance.CanInput &&
                 ti._stateMachine.CurrentStateId == (int)TouchState.Chatting)
             {
                 ti._stateMachine.SetState(ti._previousState);
@@ -1940,6 +1982,7 @@ public class TouchInput : MonoSingleton<TouchInput>
     private UberstrikeItemClass _currWeapon;
 
     private TouchScreenKeyboard _keyboard;
+    private bool _webGLKeyboardOpen;
     private float _loadoutDebugTimer;
 
     private StateMachine _stateMachine;

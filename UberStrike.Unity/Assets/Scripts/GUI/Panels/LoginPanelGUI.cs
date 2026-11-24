@@ -22,6 +22,8 @@ public class LoginPanelGUI : PanelGuiBase
     private TouchScreenKeyboard _loginKeyboard;
     private TouchScreenKeyboard _passwordKeyboard;
 
+    private int _webGLField;
+
     public static string ErrorMessage { get; set; }
     public static bool IsBanned { get; set; }
 
@@ -38,8 +40,24 @@ public class LoginPanelGUI : PanelGuiBase
     public override void Hide()
     {
         base.Hide();
+        WebGLKeyboard.Close();
         _errorAlpha = 0.0f;
         ErrorMessage = string.Empty;
+    }
+
+    public void OnWebGLTextInput(string text)
+    {
+        WebGLKeyboard.Close();
+
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        if (_webGLField == 1)
+            _emailAddress = text;
+        else if (_webGLField == 2)
+            _password = text;
+
+        _webGLField = 0;
     }
 
     public override void Show()
@@ -162,6 +180,33 @@ public class LoginPanelGUI : PanelGuiBase
             if (GUI.Button(new Rect(8, 92, 220, 24), new GUIContent(maskedPassword), BlueStonez.textField))
             {
                 _passwordKeyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true, false);
+            }
+        }
+        else if (Application.platform == RuntimePlatform.WebGLPlayer && WebGLKeyboard.IsMobile)
+        {
+            if (GUI.Button(new Rect(8, 64, 220, 24), new GUIContent(_emailAddress), BlueStonez.textField))
+            {
+                _webGLField = 1;
+                WebGLKeyboard.Open(_emailAddress, gameObject, "OnWebGLTextInput", false);
+            }
+            if (string.IsNullOrEmpty(_emailAddress))
+            {
+                GUI.color = Color.white.SetAlpha(0.3f);
+                GUI.Label(new Rect(8, 64, 200, 24), "  " + LocalizedStrings.Email, BlueStonez.label_interparkbold_13pt_left);
+                GUI.color = Color.white;
+            }
+
+            string maskedPassword = "".PadLeft(_password.Length, '*');
+            if (GUI.Button(new Rect(8, 92, 220, 24), new GUIContent(maskedPassword), BlueStonez.textField))
+            {
+                _webGLField = 2;
+                WebGLKeyboard.Open(_password, gameObject, "OnWebGLTextInput", true);
+            }
+            if (string.IsNullOrEmpty(_password))
+            {
+                GUI.color = Color.white.SetAlpha(0.3f);
+                GUI.Label(new Rect(8, 92, 200, 24), "  " + LocalizedStrings.Password, BlueStonez.label_interparkbold_13pt_left);
+                GUI.color = Color.white;
             }
         }
         else

@@ -868,45 +868,72 @@ public class ChatPageGUI : PageGUI
 
             bool canSend = GUI.enabled && _lastMessageSentTimer > 0.29f;
 
-            // Chat Input Textfield
-            _currentChatMessage = GUI.TextField(new Rect(6, 6, rect.width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
-            _currentChatMessage = _currentChatMessage.Trim(new char[] { '\n' });
-
-            if (_spammingNotificationTime > Time.time)
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (WebGLKeyboard.IsMobile)
             {
-                GUI.color = Color.red;
-                GUI.Label(new Rect(15, 6, rect.width - 66, rect.height - 12), LocalizedStrings.DontSpamTheLobbyChat, BlueStonez.label_interparkmed_10pt_left);
-                GUI.color = Color.white;
-            }
-            // Input tip label
-            else
-            {
-                string chatMsg = string.Empty;// "Type a message here";
-
-                if (dialog != null && dialog.UserCmid > 0)// && d.User != null)
+                if (GUI.Button(new Rect(6, 6, rect.width - 60, rect.height - 12), new GUIContent(_currentChatMessage), BlueStonez.textField))
                 {
-                    if (dialog.CanChat)
-                        chatMsg = LocalizedStrings.EnterAMessageHere; // "Type a message to " + d.UserName + " here";
-                    else
-                        chatMsg = dialog.UserName + LocalizedStrings.Offline;
-                }
-                else
-                {
-                    chatMsg = LocalizedStrings.EnterAMessageHere;
+                    _webGLChatTarget = context;
+                    _webGLCanSend = canSend;
+                    WebGLKeyboard.Open(_currentChatMessage, gameObject, "OnWebGLChatInput", false);
                 }
 
-                if (string.IsNullOrEmpty(_currentChatMessage) && GUI.GetNameOfFocusedControl() != "@CurrentChatMessage")
+                if (_spammingNotificationTime > Time.time)
+                {
+                    GUI.color = Color.red;
+                    GUI.Label(new Rect(15, 6, rect.width - 66, rect.height - 12), LocalizedStrings.DontSpamTheLobbyChat, BlueStonez.label_interparkmed_10pt_left);
+                    GUI.color = Color.white;
+                }
+                else if (string.IsNullOrEmpty(_currentChatMessage))
                 {
                     GUI.color = new Color(1, 1, 1, 0.3f);
-                    GUI.Label(new Rect(10, 6, rect.width - 66, rect.height - 12), chatMsg, BlueStonez.label_interparkmed_10pt_left);
+                    GUI.Label(new Rect(10, 6, rect.width - 66, rect.height - 12), LocalizedStrings.EnterAMessageHere, BlueStonez.label_interparkmed_10pt_left);
                     GUI.color = Color.white;
                 }
             }
-
-            // If we hit enter, make sure we don't lose focus of the chat input textfield
-            if (GUI.GetNameOfFocusedControl() == "@CurrentChatMessage" && Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return)
+            else
+#endif
             {
-                GUI.FocusControl("@CurrentChatMessage");
+                // Chat Input Textfield
+                _currentChatMessage = GUI.TextField(new Rect(6, 6, rect.width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
+                _currentChatMessage = _currentChatMessage.Trim(new char[] { '\n' });
+
+                if (_spammingNotificationTime > Time.time)
+                {
+                    GUI.color = Color.red;
+                    GUI.Label(new Rect(15, 6, rect.width - 66, rect.height - 12), LocalizedStrings.DontSpamTheLobbyChat, BlueStonez.label_interparkmed_10pt_left);
+                    GUI.color = Color.white;
+                }
+                // Input tip label
+                else
+                {
+                    string chatMsg = string.Empty;// "Type a message here";
+
+                    if (dialog != null && dialog.UserCmid > 0)// && d.User != null)
+                    {
+                        if (dialog.CanChat)
+                            chatMsg = LocalizedStrings.EnterAMessageHere; // "Type a message to " + d.UserName + " here";
+                        else
+                            chatMsg = dialog.UserName + LocalizedStrings.Offline;
+                    }
+                    else
+                    {
+                        chatMsg = LocalizedStrings.EnterAMessageHere;
+                    }
+
+                    if (string.IsNullOrEmpty(_currentChatMessage) && GUI.GetNameOfFocusedControl() != "@CurrentChatMessage")
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(10, 6, rect.width - 66, rect.height - 12), chatMsg, BlueStonez.label_interparkmed_10pt_left);
+                        GUI.color = Color.white;
+                    }
+                }
+
+                // If we hit enter, make sure we don't lose focus of the chat input textfield
+                if (GUI.GetNameOfFocusedControl() == "@CurrentChatMessage" && Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Return)
+                {
+                    GUI.FocusControl("@CurrentChatMessage");
+                }
             }
 
             if (GUITools.Button(new Rect(rect.width - 51, 6, 45, rect.height - 12), new GUIContent(LocalizedStrings.Send), BlueStonez.buttondark_small))
@@ -1249,6 +1276,27 @@ public class ChatPageGUI : PageGUI
 
     private string _inputedPassword = string.Empty;
     private string _currentChatMessage = string.Empty;
+
+    private TabArea? _webGLChatTarget;
+    private bool _webGLCanSend;
+
+    public void OnWebGLChatInput(string text)
+    {
+        WebGLKeyboard.Close();
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            _webGLChatTarget = null;
+            return;
+        }
+
+        _currentChatMessage = text;
+
+        if (_webGLCanSend && _lastMessageSentTimer > 0.29f)
+            SendChatMessage(_webGLChatTarget);
+
+        _webGLChatTarget = null;
+    }
 
     private GameMetaData _game;
     private PopupMenu _playerMenu;
