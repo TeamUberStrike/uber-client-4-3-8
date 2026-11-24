@@ -103,20 +103,9 @@ public class TouchShooter : TouchBaseControl
         {
             if (_primaryFinger.FingerId == touch.fingerId)
             {
-#if UNITY_WEBGL && !UNITY_EDITOR
-                // Unity's Touch.deltaPosition on WebGL reports the ABSOLUTE position on the
-                // first Moved/Stationary frame (difference from (0,0)), so a tap would snap
-                // the camera to the touch point. Track the delta manually, like the native
-                // players effectively do.
-                TouchFinger f = _primaryFinger;
-                Vector2 delta = touch.position - f.LastPos;
-                f.LastPos = touch.position;
-                _primaryFinger = f;
-                Aim = delta * 500 / Screen.width;
-#else
                 // record finger movement scaling for screen size
                 Aim = touch.deltaPosition * 500 / Screen.width;
-#endif
+
                 if (_diagSamples < 15)
                 {
                     _diagSamples++;
