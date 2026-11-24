@@ -158,15 +158,13 @@ var UberDeviceBridge = {
 
     // Mobile WebGL keyboard. TouchScreenKeyboard and Unity's hidden HTML input
     // are unreliable on mobile browsers, so the game opens this DOM overlay instead.
-    // It is used for the in-game chat, the login screen and any other text field.
+    // The input box is a readonly textarea/password field so the browser provides
+    // the caret, text selection and copy/paste. It is used for the in-game chat,
+    // the login screen and any other text field.
     // There is deliberately no cancel button: the only visible action is Send (sending
     // an empty message just closes the overlay). The C# caller passes the GameObject
     // and method that receive the text; password fields pass masked=1 so the text is
     // shown as bullets.
-    UberOpenChatKeyboard: function(initialTextPtr, gameObjectNamePtr) {
-        UberDeviceBridge.UberOpenTextKeyboard(initialTextPtr, gameObjectNamePtr, 0, 0);
-    },
-
     UberOpenTextKeyboard: function(initialTextPtr, gameObjectNamePtr, methodNamePtr, maskedPtr) {
         try {
             var initial = initialTextPtr ? UTF8ToString(initialTextPtr) : "";
@@ -177,18 +175,25 @@ var UberDeviceBridge = {
             if (!window.uberChatKeyboard) {
                 window.uberChatKeyboard = (function() {
                     var MAX_LENGTH = 140;
-                    var text = "";
                     var shift = false;
                     var symbols = false;
+                    var layoutMenuOpen = false;
+                    var layoutSearch = "";
                     var keyboardLayout = "qwerty";
                     var layoutDetected = false;
                     var manualLayout = false;
                     var root = null;
-                    var display = null;
+                    var textInput = null;
+                    var passInput = null;
+                    var inputEl = null;
                     var keysHost = null;
+                    var menuBackdrop = null;
+                    var panelEl = null;
+                    var sendButtonEl = null;
                     var targetObject = "TouchInputManager";
                     var sendMethod = "OnWebGLChatSend";
                     var maskedMode = false;
+                    var transparentMode = false;
 
                     var LAYOUTS = {
                         qwerty: [
@@ -205,7 +210,25 @@ var UberDeviceBridge = {
                             ["q", "w", "e", "r", "t", "z", "u", "i", "o", "p"],
                             ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
                             ["\u21E7", "y", "x", "c", "v", "b", "n", "m", "\u232B"]
+                        ],
+                        dvorak: [
+                            ["'", ",", ".", "p", "y", "f", "g", "c", "r", "l"],
+                            ["a", "o", "e", "u", "i", "d", "h", "t", "n", "s"],
+                            ["\u21E7", ";", "q", "j", "k", "x", "b", "m", "w", "v", "z", "\u232B"]
+                        ],
+                        colemak: [
+                            ["q", "w", "f", "p", "g", "j", "l", "u", "y", ";"],
+                            ["a", "r", "s", "t", "d", "h", "n", "e", "i", "o"],
+                            ["\u21E7", "z", "x", "c", "v", "b", "k", "m", "\u232B"]
                         ]
+                    };
+
+                    var LAYOUT_LABELS = {
+                        qwerty: "QWERTY",
+                        azerty: "AZERTY",
+                        qwertz: "QWERTZ",
+                        dvorak: "DVORAK",
+                        colemak: "COLEMAK"
                     };
 
                     function fire(ev) {
@@ -215,9 +238,11 @@ var UberDeviceBridge = {
                         }
                     }
 
-                    function bindPress(button, onPress) {
+                    function bindPress(button, onPress, repeat) {
                         var maxTimer = null;
                         var releaseTimer = null;
+                        var repeatDelayTimer = null;
+                        var repeatInterval = null;
                         var pressedAt = 0;
 
                         function setPressed(pressed) {
@@ -233,8 +258,20 @@ var UberDeviceBridge = {
                             }
                         }
 
+                        function stopRepeat() {
+                            if (repeatDelayTimer) {
+                                clearTimeout(repeatDelayTimer);
+                                repeatDelayTimer = null;
+                            }
+                            if (repeatInterval) {
+                                clearInterval(repeatInterval);
+                                repeatInterval = null;
+                            }
+                        }
+
                         function release() {
                             clearMaxTimer();
+                            stopRepeat();
                             var elapsed = Date.now() - pressedAt;
                             var delay = Math.max(0, 80 - elapsed);
                             if (releaseTimer) clearTimeout(releaseTimer);
@@ -246,10 +283,21 @@ var UberDeviceBridge = {
                         var handler = function(ev) {
                             fire(ev);
                             pressedAt = Date.now();
+                            if (releaseTimer) {
+                                clearTimeout(releaseTimer);
+                                releaseTimer = null;
+                            }
                             setPressed(true);
                             clearMaxTimer();
                             maxTimer = setTimeout(release, 1200);
                             onPress();
+
+                            if (repeat) {
+                                stopRepeat();
+                                repeatDelayTimer = setTimeout(function() {
+                                    repeatInterval = setInterval(repeat, 110);
+                                }, 400);
+                            }
                         };
 
                         if (window.PointerEvent) {
@@ -265,17 +313,18 @@ var UberDeviceBridge = {
                         }
                     }
 
-                    function makeButton(label, flex, onPress, height) {
+                    function makeButton(label, flex, onPress, height, repeat) {
                         var button = document.createElement("button");
                         button.type = "button";
                         button.textContent = label;
                         button.style.cssText =
                             "flex:" + flex + ";min-width:0;height:" + (height || "clamp(34px,10vh,42px)") +
-                            ";margin:0;padding:0;outline:none;border:0;border-radius:7px;background:#333;color:#fff;" +
+                            ";margin:0;padding:0;outline:none;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0") + ";border-radius:7px;" +
+                            "background:" + (transparentMode ? "rgba(51,51,51,0.35)" : "#333") + ";color:#fff;" +
                             "font:600 17px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                             "cursor:pointer;touch-action:manipulation;-webkit-touch-callout:none;" +
-                            "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease;";
-                        bindPress(button, onPress);
+                            "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease,box-shadow 50ms ease;";
+                        bindPress(button, onPress, repeat);
                         return button;
                     }
 
@@ -316,15 +365,21 @@ var UberDeviceBridge = {
 
                         var lang = "en";
                         try {
-                            lang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+                            var langs = navigator.languages && navigator.languages.length
+                                ? navigator.languages
+                                : [navigator.language || navigator.userLanguage || "en"];
+                            lang = (langs[0] || "en").toLowerCase();
                         } catch (e) {
                         }
 
                         var layout = "qwerty";
-                        if (lang.indexOf("fr") === 0 || lang.indexOf("be") === 0) layout = "azerty";
-                        else if (lang.indexOf("de") === 0 || lang.indexOf("hu") === 0 ||
-                            lang.indexOf("cs") === 0 || lang.indexOf("sk") === 0 ||
-                            lang.indexOf("ro") === 0 || lang.indexOf("ch") === 0) layout = "qwertz";
+                        if (lang.indexOf("fr-ca") === 0) layout = "qwerty";
+                        else if (lang.indexOf("fr") === 0 || lang.indexOf("be") === 0 || lang.indexOf("lu") === 0) layout = "azerty";
+                        else if (lang.indexOf("de") === 0 || lang.indexOf("at") === 0 ||
+                            lang.indexOf("hu") === 0 || lang.indexOf("cs") === 0 ||
+                            lang.indexOf("sk") === 0 || lang.indexOf("ro") === 0 ||
+                            lang.indexOf("ch") === 0 || lang.indexOf("sl") === 0 ||
+                            lang.indexOf("hr") === 0) layout = "qwertz";
                         if (LAYOUTS[layout]) keyboardLayout = layout;
                     }
 
@@ -333,35 +388,84 @@ var UberDeviceBridge = {
                         keyboardLayout = id;
                         shift = false;
                         symbols = false;
+                        layoutMenuOpen = false;
+                        layoutSearch = "";
                         renderKeys();
                     }
 
-                    function makeLayoutButton(label, id) {
-                        var button = makeButton(label, 1, function() {
+                    function makeMenuEntry(id) {
+                        var label = LAYOUT_LABELS[id] || id.toUpperCase();
+                        var active = keyboardLayout === id;
+                        var button = makeButton(label + (active ? " \u2713" : ""), 0, function() {
                             setLayout(id);
-                        }, "clamp(24px,4.4vh,28px)");
-                        button.style.fontSize = "11px";
+                        }, "clamp(28px,5.5vh,36px)");
+                        button.style.flex = "none";
+                        button.style.width = "100%";
+                        button.style.fontSize = "13px";
                         button.style.fontWeight = "700";
                         button.style.letterSpacing = "0.4px";
-                        if (keyboardLayout === id) button.style.background = "#1a73e8";
+                        button.style.textAlign = "left";
+                        button.style.padding = "0 10px";
+                        button.style.background = active ? (transparentMode ? "rgba(26,115,232,0.55)" : "#1a73e8") : (transparentMode ? "rgba(51,51,51,0.35)" : "#333");
                         return button;
                     }
 
                     function addChar(ch) {
-                        if (text.length >= MAX_LENGTH) return;
-                        text += ch;
-                        updateDisplay();
+                        if (!inputEl) return;
+
+                        var start = inputEl.selectionStart;
+                        var end = inputEl.selectionEnd;
+                        if (start === null || start === undefined) {
+                            start = end = inputEl.value.length;
+                        }
+
+                        if (inputEl.value.length - (end - start) + ch.length > MAX_LENGTH) return;
+
+                        inputEl.value = inputEl.value.slice(0, start) + ch + inputEl.value.slice(end);
+                        selectInput(start + ch.length, start + ch.length);
+                        syncInputHeight();
+                    }
+
+                    function doBackspace() {
+                        if (!inputEl) return;
+
+                        var start = inputEl.selectionStart;
+                        var end = inputEl.selectionEnd;
+                        if (start === null || start === undefined) {
+                            start = end = inputEl.value.length;
+                        }
+
+                        if (start !== end) {
+                            inputEl.value = inputEl.value.slice(0, start) + inputEl.value.slice(end);
+                            selectInput(start, start);
+                        } else if (start > 0) {
+                            inputEl.value = inputEl.value.slice(0, start - 1) + inputEl.value.slice(start);
+                            selectInput(start - 1, start - 1);
+                        }
+
+                        syncInputHeight();
                     }
 
                     function makeCharKey(ch) {
                         return makeButton(ch, 1, function() {
-                            addChar(ch);
+                            if (layoutMenuOpen) {
+                                layoutSearch += ch;
+                                renderKeys();
+                            } else {
+                                addChar(ch);
+                            }
                         });
                     }
 
                     function makeLetterKey(ch) {
-                        return makeButton(shift ? ch.toUpperCase() : ch, 1, function() {
-                            addChar(shift ? ch.toUpperCase() : ch);
+                        var out = shift ? ch.toUpperCase() : ch;
+                        return makeButton(out, 1, function() {
+                            if (layoutMenuOpen) {
+                                layoutSearch += out;
+                                renderKeys();
+                            } else {
+                                addChar(out);
+                            }
                             if (shift) {
                                 shift = false;
                                 renderKeys();
@@ -369,27 +473,65 @@ var UberDeviceBridge = {
                         });
                     }
 
-                    function updateDisplay() {
-                        if (!display) return;
-                        var shown = text;
-                        if (maskedMode && text.length) {
-                            shown = new Array(text.length + 1).join("\u2022");
+                    function getText() {
+                        return inputEl ? inputEl.value : "";
+                    }
+
+                    function syncInputHeight() {
+                        if (!inputEl || inputEl === passInput) return;
+                        inputEl.style.height = "auto";
+                        inputEl.style.height = inputEl.scrollHeight + "px";
+                    }
+
+                    function selectInput(start, end) {
+                        if (!inputEl) return;
+                        inputEl.setSelectionRange(start, end);
+                        try {
+                            setTimeout(function() {
+                                if (inputEl) inputEl.focus();
+                            }, 0);
+                        } catch (e) {
                         }
-                        display.textContent = text.length ? shown : "Type a message...";
-                        display.style.color = text.length ? "#fff" : "#777";
-                        display.scrollTop = display.scrollHeight;
+                    }
+
+                    var focusTimer = null;
+
+                    function applyTheme() {
+                        var solidPanel = transparentMode ? "transparent" : "#161616";
+                        var solidRoot = transparentMode ? "transparent" : "rgba(0,0,0,0.55)";
+                        var solidInput = transparentMode ? "rgba(11,11,11,0.75)" : "#0b0b0b";
+
+                        if (root) root.style.background = solidRoot;
+                        if (panelEl) panelEl.style.background = solidPanel;
+                        if (textInput) textInput.style.background = solidInput;
+                        if (passInput) passInput.style.background = solidInput;
+                        if (sendButtonEl) {
+                            sendButtonEl.style.background = transparentMode ? "rgba(51,51,51,0.35)" : "#333";
+                            sendButtonEl.style.border = transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0";
+                        }
+                    }
+
+                    function ensureFocus() {
+                        if (!inputEl) return;
+                        if (layoutMenuOpen) return;
+                        try {
+                            if (document.activeElement !== inputEl) {
+                                inputEl.focus();
+                            }
+                        } catch (e) {
+                        }
+                    }
+
+                    function clearFocusTimer() {
+                        if (focusTimer) {
+                            clearInterval(focusTimer);
+                            focusTimer = null;
+                        }
                     }
 
                     function renderKeys() {
                         if (!keysHost) return;
                         while (keysHost.firstChild) keysHost.removeChild(keysHost.firstChild);
-
-                        var layoutRow = [];
-                        var layoutOptions = [["QWERTY", "qwerty"], ["AZERTY", "azerty"], ["QWERTZ", "qwertz"]];
-                        for (var li = 0; li < layoutOptions.length; li++) {
-                            layoutRow.push(makeLayoutButton(layoutOptions[li][0], layoutOptions[li][1]));
-                        }
-                        keysHost.appendChild(makeRow(layoutRow));
 
                         var rows;
                         if (symbols) {
@@ -407,19 +549,24 @@ var UberDeviceBridge = {
                             for (var c = 0; c < rows[r].length; c++) {
                                 var label = rows[r][c];
                                 var key;
-                                if (label === "\u21E7") {
-                                    key = makeButton(label, 1.5, function() {
+                                if (label === "\u21E7" || label === "{shift}") {
+                                    key = makeButton("\u21E7", 1.5, function() {
                                         shift = !shift;
                                         renderKeys();
                                     });
-                                    if (shift) key.style.background = "#1a73e8";
-                                } else if (label === "\u232B") {
-                                    key = makeButton(label, 1.5, function() {
-                                        if (text.length) {
-                                            text = text.slice(0, -1);
-                                            updateDisplay();
+                                    if (shift) key.style.background = transparentMode ? "rgba(26,115,232,0.55)" : "#1a73e8";
+                                } else if (label === "\u232B" || label === "{bksp}") {
+                                    var doBack = function() {
+                                        if (layoutMenuOpen) {
+                                            if (layoutSearch) {
+                                                layoutSearch = layoutSearch.slice(0, -1);
+                                                renderKeys();
+                                            }
+                                        } else {
+                                            doBackspace();
                                         }
-                                    });
+                                    };
+                                    key = makeButton(label, 1.5, doBack, null, doBack);
                                 } else if (/^[a-z]$/.test(label)) {
                                     key = makeLetterKey(label);
                                 } else {
@@ -431,6 +578,20 @@ var UberDeviceBridge = {
                         }
 
                         var bottom = [];
+
+                        // layout switcher in the standard position: bottom-left corner
+                        var currentLabel = LAYOUT_LABELS[keyboardLayout] || keyboardLayout.toUpperCase();
+                        var switcher = makeButton(currentLabel + " \u25BE", 1.6, function() {
+                            layoutMenuOpen = !layoutMenuOpen;
+                            if (!layoutMenuOpen) layoutSearch = "";
+                            renderKeys();
+                        }, "clamp(34px,10vh,42px)");
+                        switcher.style.fontSize = "11px";
+                        switcher.style.fontWeight = "700";
+                        switcher.style.letterSpacing = "0.2px";
+                        switcher.style.background = layoutMenuOpen ? (transparentMode ? "rgba(26,115,232,0.55)" : "#1a73e8") : (transparentMode ? "rgba(51,51,51,0.35)" : "#333");
+                        bottom.push(switcher);
+
                         if (symbols) {
                             bottom.push(makeButton("ABC", 1.5, function() {
                                 symbols = false;
@@ -438,7 +599,12 @@ var UberDeviceBridge = {
                                 renderKeys();
                             }));
                             bottom.push(makeButton("SPACE", 5, function() {
-                                addChar(" ");
+                                if (layoutMenuOpen) {
+                                    layoutSearch += " ";
+                                    renderKeys();
+                                } else {
+                                    addChar(" ");
+                                }
                             }));
                         } else {
                             bottom.push(makeButton("123", 1.5, function() {
@@ -448,21 +614,78 @@ var UberDeviceBridge = {
                             }));
                             bottom.push(makeCharKey(","));
                             bottom.push(makeButton("SPACE", 4, function() {
-                                addChar(" ");
+                                if (layoutMenuOpen) {
+                                    layoutSearch += " ";
+                                    renderKeys();
+                                } else {
+                                    addChar(" ");
+                                }
                             }));
                             bottom.push(makeCharKey("."));
                             bottom.push(makeCharKey("?"));
                         }
                         keysHost.appendChild(makeRow(bottom));
+
+                        if (menuBackdrop) {
+                            menuBackdrop.style.display = layoutMenuOpen ? "block" : "none";
+                        }
+
+                        if (layoutMenuOpen) {
+                            var menu = document.createElement("div");
+                            menu.style.cssText =
+                                "position:absolute;left:0;right:0;" +
+                                "bottom:calc(clamp(34px,10vh,42px) + clamp(3px,0.8vh,6px) + 2px);" +
+                                "z-index:10;max-height:clamp(160px,38vh,280px);overflow-y:auto;" +
+                                "background:" + (transparentMode ? "rgba(26,26,26,0.92)" : "#1a1a1a") + ";border:1px solid #3a3a3a;border-radius:10px;padding:6px;" +
+                                "box-shadow:0 8px 24px rgba(0,0,0,0.6);" +
+                                "display:flex;flex-direction:column;gap:4px;";
+                            var searchInput = document.createElement("input");
+                            searchInput.type = "text";
+                            searchInput.className = "uber-input";
+                            searchInput.readOnly = true;
+                            searchInput.placeholder = "Search format...";
+                            searchInput.value = layoutSearch;
+                            searchInput.style.cssText =
+                                "display:block;width:100%;box-sizing:border-box;flex:none;" +
+                                "background:rgba(11,11,11,0.9);border:1px solid #3a3a3a;border-radius:8px;" +
+                                "padding:0 8px;height:clamp(26px,4.5vh,32px);margin-bottom:4px;" +
+                                "color:#fff;caret-color:#fff;font-size:13px;outline:none;" +
+                                "user-select:text;-webkit-user-select:text;-webkit-touch-callout:default;";
+                            menu.appendChild(searchInput);
+                            try {
+                                searchInput.focus();
+                            } catch (e) {
+                            }
+
+                            var query = layoutSearch.toLowerCase();
+                            for (var layoutId in LAYOUTS) {
+                                if (!LAYOUTS.hasOwnProperty(layoutId)) continue;
+                                var entryName = (LAYOUT_LABELS[layoutId] || layoutId).toLowerCase();
+                                if (query && entryName.indexOf(query) < 0 && layoutId.toLowerCase().indexOf(query) < 0) continue;
+                                menu.appendChild(makeMenuEntry(layoutId));
+                            }
+                            keysHost.appendChild(menu);
+                        }
                     }
 
                     function hide() {
                         if (root) root.style.display = "none";
-                        text = "";
+                        if (inputEl) inputEl.value = "";
+                        layoutMenuOpen = false;
+                        layoutSearch = "";
+                        if (menuBackdrop) menuBackdrop.style.display = "none";
+                        clearFocusTimer();
                     }
 
                     function send() {
-                        var message = text;
+                        if (layoutMenuOpen) {
+                            layoutMenuOpen = false;
+                            layoutSearch = "";
+                            renderKeys();
+                            return;
+                        }
+
+                        var message = getText();
                         try {
                             SendMessage(targetObject, sendMethod, message);
                         } catch (e) {
@@ -474,70 +697,250 @@ var UberDeviceBridge = {
                         root.id = "uber-chat-keyboard";
                         root.style.cssText =
                             "position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;display:none;" +
-                            "flex-direction:column;align-items:center;justify-content:flex-end;" +
-                            "background:rgba(0,0,0,0.55);" +
+                            "align-items:flex-end;justify-content:center;" +
+                            "background:transparent;" +
                             "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                             "touch-action:manipulation;user-select:none;-webkit-user-select:none;" +
                             "-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;";
 
-                        var panel = document.createElement("div");
-                        panel.style.cssText =
-                            "width:100%;max-width:900px;background:#161616;border-radius:16px 16px 0 0;" +
+                        panelEl = document.createElement("div");
+                        panelEl.style.cssText =
+                            "position:relative;z-index:9;width:100%;max-width:900px;" +
+                            "background:transparent;" +
                             "padding:6px calc(10px + env(safe-area-inset-right,0px)) " +
                             "calc(6px + env(safe-area-inset-bottom,0px)) " +
-                            "calc(10px + env(safe-area-inset-left,0px));box-sizing:border-box;" +
-                            "box-shadow:0 -8px 30px rgba(0,0,0,0.5);";
+                            "calc(10px + env(safe-area-inset-left,0px));box-sizing:border-box;";
 
-                        display = document.createElement("div");
-                        display.style.cssText =
-                            "flex:1 1 auto;min-height:0;width:100%;max-width:900px;box-sizing:border-box;" +
-                            "overflow-y:auto;background:rgba(11,11,11,0.92);border-radius:12px 12px 0 0;" +
-                            "padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px));" +
-                            "margin:0;color:#fff;font-size:18px;line-height:1.3;" +
-                            "word-wrap:break-word;white-space:pre-wrap;text-align:left;";
+                        var placeholderStyle = document.createElement("style");
+                        placeholderStyle.textContent =
+                            "#uber-chat-keyboard .uber-input::placeholder { color:#777; }" +
+                            "#uber-chat-keyboard .uber-input::-webkit-input-placeholder { color:#777; }";
+                        root.appendChild(placeholderStyle);
+
+                        textInput = document.createElement("textarea");
+                        textInput.className = "uber-input";
+                        textInput.inputMode = "none";
+                        textInput.placeholder = "Type a message...";
+                        textInput.style.cssText =
+                            "display:block;width:100%;box-sizing:border-box;resize:none;outline:none;" +
+                            "min-height:clamp(34px,8vh,42px);max-height:clamp(96px,26vh,190px);overflow-y:auto;" +
+                            "background:#0b0b0b;border:1px solid #3a3a3a;border-radius:10px;padding:6px 10px;" +
+                            "margin-bottom:6px;color:#fff;caret-color:#fff;font-size:18px;line-height:1.25;" +
+                            "word-wrap:break-word;white-space:pre-wrap;user-select:text;-webkit-user-select:text;" +
+                            "touch-action:auto;-webkit-touch-callout:default;";
+
+                        passInput = document.createElement("input");
+                        passInput.className = "uber-input";
+                        passInput.type = "password";
+                        passInput.inputMode = "none";
+                        passInput.placeholder = "Type a message...";
+                        passInput.style.cssText =
+                            "display:none;width:100%;box-sizing:border-box;outline:none;" +
+                            "height:clamp(34px,8vh,42px);background:#0b0b0b;border:1px solid #3a3a3a;" +
+                            "border-radius:10px;padding:6px 10px;margin-bottom:6px;color:#fff;caret-color:#fff;" +
+                            "font-size:18px;line-height:1.25;user-select:text;-webkit-user-select:text;" +
+                            "touch-action:auto;-webkit-touch-callout:default;";
 
                         keysHost = document.createElement("div");
+                        keysHost.style.cssText = "position:relative;width:100%;";
 
-                        var sendButton = document.createElement("button");
-                        sendButton.type = "button";
-                        sendButton.textContent = "SEND";
-                        sendButton.style.cssText =
-                            "display:block;width:100%;height:clamp(46px,13vh,56px);margin-top:6px;border:0;border-radius:12px;" +
-                            "background:#1a73e8;color:#fff;outline:none;cursor:pointer;" +
-                            "font:800 22px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
+                        menuBackdrop = document.createElement("div");
+                        menuBackdrop.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;z-index:8;display:none;";
+                        var closeMenu = function() {
+                            if (layoutMenuOpen) {
+                                layoutMenuOpen = false;
+                                layoutSearch = "";
+                                renderKeys();
+                            }
+                        };
+                        menuBackdrop.addEventListener("pointerdown", closeMenu, false);
+                        menuBackdrop.addEventListener("touchstart", closeMenu, false);
+                        root.appendChild(menuBackdrop);
+
+                        sendButtonEl = document.createElement("button");
+                        sendButtonEl.type = "button";
+                        sendButtonEl.textContent = "SEND";
+                        sendButtonEl.style.cssText =
+                            "display:block;width:100%;height:clamp(46px,13vh,56px);margin-top:6px;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0") + ";border-radius:7px;" +
+                            "background:" + (transparentMode ? "rgba(51,51,51,0.35)" : "#333") + ";color:#fff;outline:none;cursor:pointer;" +
+                            "font:700 18px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                             "letter-spacing:1px;touch-action:manipulation;-webkit-touch-callout:none;" +
-                            "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease;";
+                            "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease,box-shadow 50ms ease;";
 
-                        bindPress(sendButton, send);
+                        bindPress(sendButtonEl, send);
 
-                        panel.appendChild(keysHost);
-                        panel.appendChild(sendButton);
-                        root.appendChild(display);
-                        root.appendChild(panel);
+                        var preventNativeKeyboard = function(ev) {
+                            var el = ev && ev.target;
+                            try {
+                                if (el && el.setAttribute && el.removeAttribute) {
+                                    el.setAttribute("readonly", "readonly");
+                                    setTimeout(function() {
+                                        el.removeAttribute("readonly");
+                                    }, 0);
+                                }
+                            } catch (e) {
+                            }
+                        };
+                        textInput.addEventListener("focus", preventNativeKeyboard, false);
+                        passInput.addEventListener("focus", preventNativeKeyboard, false);
+
+                        panelEl.appendChild(textInput);
+                        panelEl.appendChild(passInput);
+                        panelEl.appendChild(keysHost);
+                        panelEl.appendChild(sendButtonEl);
+                        root.appendChild(panelEl);
                         document.body.appendChild(root);
                     }
 
                     return {
                         show: function(initialText, targetName, methodName, masked) {
+                            transparentMode = methodName === "OnWebGLChatSend";
                             if (!root) build();
                             detectKeyboardLayout();
+                            var pending = window.__uberPendingLayouts;
+                            if (pending) {
+                                window.__uberPendingLayouts = null;
+                                for (var pi = 0; pi < pending.length; pi++) {
+                                    LAYOUTS[pending[pi].id] = pending[pi].rows;
+                                    LAYOUT_LABELS[pending[pi].id] = pending[pi].label || pending[pi].id.toUpperCase();
+                                    keyboardLayout = pending[pi].id;
+                                }
+                                manualLayout = true;
+                            }
                             targetObject = targetName || "TouchInputManager";
                             sendMethod = methodName || "OnWebGLChatSend";
                             maskedMode = !!masked;
-                            text = initialText || "";
-                            if (text.length > MAX_LENGTH) text = text.slice(0, MAX_LENGTH);
-                            shift = false;
+
+                            if (maskedMode) {
+                                textInput.value = "";
+                                inputEl = passInput;
+                                textInput.style.display = "none";
+                                passInput.style.display = "block";
+                            } else {
+                                passInput.value = "";
+                                inputEl = textInput;
+                                passInput.style.display = "none";
+                                textInput.style.display = "block";
+                            }
+
+                            inputEl.value = initialText || "";
+                            if (inputEl.value.length > MAX_LENGTH) inputEl.value = inputEl.value.slice(0, MAX_LENGTH);
+
                             symbols = false;
-                            updateDisplay();
+                            shift = false;
+                            layoutMenuOpen = false;
+                            layoutSearch = "";
+                            applyTheme();
                             renderKeys();
                             root.style.display = "flex";
+                            syncInputHeight();
+
+                            inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
+                            inputEl.focus();
+                            try {
+                                setTimeout(function() {
+                                    if (inputEl) inputEl.focus();
+                                }, 60);
+                            } catch (e) {
+                            }
+
+                            clearFocusTimer();
+                            try {
+                                focusTimer = setInterval(ensureFocus, 700);
+                            } catch (e) {
+                            }
                         },
-                        hide: hide
+                        hide: hide,
+                        addLayout: function(id, label, rows, force) {
+                            LAYOUTS[id] = rows;
+                            LAYOUT_LABELS[id] = label || id.toUpperCase();
+                            if (force || !manualLayout) {
+                                keyboardLayout = id;
+                                manualLayout = true;
+                                shift = false;
+                                symbols = false;
+                                layoutMenuOpen = false;
+                                layoutSearch = "";
+                                if (root && root.style.display === "flex") renderKeys();
+                            }
+                        },
+                        loadLayout: function(url, id, label) {
+                            try {
+                                fetch(url).then(function(resp) {
+                                    if (!resp || !resp.ok) return;
+                                    return resp.json();
+                                }).then(function(rows) {
+                                    if (rows && rows.length) {
+                                        LAYOUTS[id] = rows;
+                                        LAYOUT_LABELS[id] = label || id.toUpperCase();
+                                        keyboardLayout = id;
+                                        manualLayout = true;
+                                        shift = false;
+                                        symbols = false;
+                                        layoutMenuOpen = false;
+                                        if (root && root.style.display === "flex") renderKeys();
+                                    }
+                                }).catch(function() {
+                                });
+                            } catch (e) {
+                            }
+                        }
                     };
                 })();
             }
 
             window.uberChatKeyboard.show(initial, gameObjectName, methodName, masked);
+        } catch (e) {
+            try {
+                if (window.console && window.console.error) window.console.error("UberOpenTextKeyboard failed:", e);
+            } catch (e2) {
+            }
+        }
+    },
+
+    UberAddKeyboardLayout: function(idPtr, labelPtr, rowsJsonPtr) {
+        try {
+            var id = idPtr ? UTF8ToString(idPtr) : "";
+            var label = labelPtr ? UTF8ToString(labelPtr) : "";
+            var rowsJson = rowsJsonPtr ? UTF8ToString(rowsJsonPtr) : "";
+            if (!id || !rowsJson) return;
+            var rows = JSON.parse(rowsJson);
+            if (!rows || !rows.length) return;
+
+            if (window.uberChatKeyboard) {
+                window.uberChatKeyboard.addLayout(id, label, rows, true);
+            } else {
+                if (!window.__uberPendingLayouts) window.__uberPendingLayouts = [];
+                window.__uberPendingLayouts.push({ id: id, label: label, rows: rows });
+            }
+        } catch (e) {
+        }
+    },
+
+    UberLoadKeyboardLayout: function(urlPtr, idPtr, labelPtr) {
+        try {
+            var url = urlPtr ? UTF8ToString(urlPtr) : "";
+            var id = idPtr ? UTF8ToString(idPtr) : "";
+            var label = labelPtr ? UTF8ToString(labelPtr) : "";
+            if (!url || !id) return;
+
+            try {
+                fetch(url).then(function(resp) {
+                    if (!resp || !resp.ok) return;
+                    return resp.json();
+                }).then(function(rows) {
+                    if (!rows || !rows.length) return;
+
+                    if (window.uberChatKeyboard) {
+                        window.uberChatKeyboard.addLayout(id, label, rows, false);
+                    } else {
+                        if (!window.__uberPendingLayouts) window.__uberPendingLayouts = [];
+                        window.__uberPendingLayouts.push({ id: id, label: label, rows: rows });
+                    }
+                }).catch(function() {
+                });
+            } catch (e) {
+            }
         } catch (e) {
         }
     },
@@ -549,5 +952,6 @@ var UberDeviceBridge = {
         }
     },
 };
+
 
 mergeInto(LibraryManager.library, UberDeviceBridge);

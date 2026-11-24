@@ -70,6 +70,17 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
     }
 
+    public static bool IsChatKeyboardOpen
+    {
+        get
+        {
+            if (!Exists) return false;
+            TouchInput ti = Instance;
+            return ti != null && ti._stateMachine != null &&
+                ti._stateMachine.CurrentStateId == (int)TouchState.Chatting;
+        }
+    }
+
     public Dictionary<int, TouchButton> Buttons;
     public TouchDPad Dpad;
     public TouchShooter Shooter;
@@ -246,7 +257,7 @@ public class TouchInput : MonoSingleton<TouchInput>
     private static extern int UberGetDeviceType();
 
     [DllImport("__Internal")]
-    private static extern void UberOpenChatKeyboard(string text, string gameObjectName);
+    private static extern void UberOpenTextKeyboard(string text, string gameObjectName, string methodName, bool masked);
 
     [DllImport("__Internal")]
     private static extern void UberCloseChatKeyboard();
@@ -1334,7 +1345,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             _previousState = _stateMachine.CurrentStateId;
             _webGLKeyboardOpen = true;
             _stateMachine.SetState((int)TouchState.Chatting);
-            UberOpenChatKeyboard(string.Empty, gameObject.name);
+            UberOpenTextKeyboard(string.Empty, gameObject.name, "OnWebGLChatSend", false);
             return;
         }
 #endif

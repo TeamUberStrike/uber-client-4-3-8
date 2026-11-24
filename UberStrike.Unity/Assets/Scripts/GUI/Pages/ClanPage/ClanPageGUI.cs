@@ -447,9 +447,9 @@ public class ClanPageGUI : MonoBehaviour
             GUI.Label(new Rect(labelCol, tagRow, 100, 20), LocalizedStrings.Tag, BlueStonez.label_interparkbold_18pt_left);
             GUI.Label(new Rect(labelCol, mottoRow, 100, 20), LocalizedStrings.Motto, BlueStonez.label_interparkbold_18pt_left);
 
-            _newClanName = GUI.TextField(new Rect(textCol, nameRow, textWidth, 24), _newClanName, BlueStonez.textField);
-            _newClanTag = GUI.TextField(new Rect(textCol, tagRow, textWidth, 24), _newClanTag, BlueStonez.textField);
-            _newClanMotto = GUI.TextField(new Rect(textCol, mottoRow, textWidth, 24), _newClanMotto, BlueStonez.textField);
+            _newClanName = WebGLKeyboard.TextField(new Rect(textCol, nameRow, textWidth, 24), _newClanName, BlueStonez.textField, 110);
+            _newClanTag = WebGLKeyboard.TextField(new Rect(textCol, tagRow, textWidth, 24), _newClanTag, BlueStonez.textField, 111);
+            _newClanMotto = WebGLKeyboard.TextField(new Rect(textCol, mottoRow, textWidth, 24), _newClanMotto, BlueStonez.textField, 112);
 
             GUI.Label(new Rect(textCol, nameRow + 25, 300, 20), LocalizedStrings.ThisIsTheOfficialNameOfYourClan, BlueStonez.label_interparkmed_10pt_left);
             GUI.Label(new Rect(textCol, tagRow + 25, 300, 20), LocalizedStrings.ThisTagGetsDisplayedNextToYourName, BlueStonez.label_interparkmed_10pt_left);

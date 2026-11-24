@@ -87,7 +87,7 @@ public class CompleteAccountPanelGUI : PanelGuiBase
 
                 GUI.changed = false;
                 GUI.SetNextControlName("@Name");
-                _characterName = GUI.TextField(new Rect(40, 60, 180, 22), _characterName, MAX_CHARACTER_NAME_LENGTH, BlueStonez.textField);
+                _characterName = WebGLKeyboard.TextField(new Rect(40, 60, 180, 22), _characterName, BlueStonez.textField, 160, false, MAX_CHARACTER_NAME_LENGTH);
                 _characterName = _characterName.Trim(new char[] { '\n', '\t' });
 
                 if (GUI.changed)

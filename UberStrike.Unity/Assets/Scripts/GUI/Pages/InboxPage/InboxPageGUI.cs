@@ -146,7 +146,7 @@ public class InboxPageGUI : MonoBehaviour
                 Rect editRect = new Rect(rect.width - 368, 8, 140, 24);
 
                 GUI.SetNextControlName("SearchMessage");
-                _searchMessage = GUI.TextField(editRect, _searchMessage, BlueStonez.textField);
+                _searchMessage = WebGLKeyboard.TextField(editRect, _searchMessage, BlueStonez.textField, 130);
                 if (string.IsNullOrEmpty(_searchMessage) && GUI.GetNameOfFocusedControl() != "SearchMessage")
                 {
                     GUI.color = new Color(1, 1, 1, 0.3f);
@@ -187,7 +187,7 @@ public class InboxPageGUI : MonoBehaviour
             }
 
             GUI.SetNextControlName("SearchFriend");
-            _searchFriend = GUI.TextField(new Rect(rect.width - 258, 8, 123, 24), _searchFriend, BlueStonez.textField);
+            _searchFriend = WebGLKeyboard.TextField(new Rect(rect.width - 258, 8, 123, 24), _searchFriend, BlueStonez.textField, 131);
             if (string.IsNullOrEmpty(_searchFriend) && GUI.GetNameOfFocusedControl() != "SearchFriend")
             {
                 GUI.color = new Color(1, 1, 1, 0.3f);
@@ -352,7 +352,7 @@ public class InboxPageGUI : MonoBehaviour
         GUI.BeginGroup(replyRect);
         {
             GUI.SetNextControlName("Reply Edit");
-            _replyMessage = GUI.TextField(new Rect(0, 0, replyRect.width - 64, 24), _replyMessage, 140, BlueStonez.textField);
+            _replyMessage = WebGLKeyboard.TextField(new Rect(0, 0, replyRect.width - 64, 24), _replyMessage, BlueStonez.textField, 132, false, 140);
             _replyMessage = _replyMessage.Trim(new char[] { '\n' });
 
             if (GUI.GetNameOfFocusedControl().Equals("Reply Edit") && !string.IsNullOrEmpty(_replyMessage) &&

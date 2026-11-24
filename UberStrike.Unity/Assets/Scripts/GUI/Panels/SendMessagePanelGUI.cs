@@ -83,7 +83,7 @@ public class SendMessagePanelGUI : PanelGuiBase
             //RECEIVER
             GUI.enabled = tmp && !_useFixedReceiver;
             GUI.SetNextControlName(FocusReceiver);
-            _msgReceiver = GUI.TextField(new Rect(textCol, toRow, textWidth, 24), _msgReceiver, BlueStonez.textField);
+            _msgReceiver = WebGLKeyboard.TextField(new Rect(textCol, toRow, textWidth, 24), _msgReceiver, BlueStonez.textField, 210);
             if (string.IsNullOrEmpty(_msgReceiver) && !GUI.GetNameOfFocusedControl().Equals(FocusReceiver))
             {
                 GUI.color = new Color(1, 1, 1, 0.3f);

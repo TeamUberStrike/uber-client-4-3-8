@@ -77,6 +77,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         }
 #endif
 
+        // The JS chat keyboard is transparent in-game, so the mid-screen
+        // messages (waiting for players etc.) would show through it.
+        if (TouchInput.IsSupported && TouchInput.Exists && TouchInput.IsChatKeyboardOpen)
+        {
+            _temporaryMsgText.Hide();
+            _permanentMsgText.Hide();
+        }
+
         // The buttons are laid out in menu units, inside the same scaled and safe-area shifted space
         // as the menus, so they match the ribbon's size on phones. On PC menu units are screen pixels.
         Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
