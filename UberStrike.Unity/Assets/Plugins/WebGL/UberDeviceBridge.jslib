@@ -767,7 +767,11 @@ var UberDeviceBridge = {
                             "letter-spacing:1px;touch-action:manipulation;-webkit-touch-callout:none;" +
                             "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease,box-shadow 50ms ease;";
 
-                        bindPress(sendButtonEl, send);
+                        bindPress(sendButtonEl, function() {
+                            setTimeout(function() {
+                                send();
+                            }, 120);
+                        });
 
                         var preventNativeKeyboard = function(ev) {
                             var el = ev && ev.target;

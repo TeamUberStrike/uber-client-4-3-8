@@ -1591,12 +1591,34 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
 
+            // Same HUD hiding as the scoreboard: the transparent in-game keyboard
+            // must not have the weapon HUD or the movement controls behind it.
+            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag & ~HudDrawFlags.Weapons;
+
+            if (UseMultiTouch)
+            {
+                TouchInput.Instance.Dpad.Visible = false;
+                if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = false;
+                if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = false;
+            }
+            else
+            {
+                TouchInput.Instance.Joystick.Visible = false;
+            }
+
             TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
         {
             TouchInput.Instance.CloseWebGLChatKeyboard();
+
+            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+
+            TouchInput.Instance.Dpad.Visible = true;
+            if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
+            if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = true;
+            TouchInput.Instance.Joystick.Visible = true;
         }
 
         public void OnUpdate()
