@@ -156,21 +156,6 @@ public class TouchControl : TouchBaseControl
         return Boundary.ContainsTouch(position);
     }
 
-    /// <summary>
-    /// True when the screen position lies inside this control's on-screen hit area, including
-    /// its layout-editor rotation. Used for the look-around dead zones so they always match the
-    /// control exactly where it is drawn, no matter how it was moved or rotated on screen.
-    /// </summary>
-    public bool ContainsLookPoint(Vector2 screenPosition)
-    {
-        Vector2 pos = screenPosition;
-        if (_rotationAngle != 0)
-        {
-            pos = Mathfx.RotateVector2AboutPoint(screenPosition, new Vector2(_rotationPoint.x, Screen.height - _rotationPoint.y), _rotationAngle);
-        }
-        return TouchInside(pos);
-    }
-
     private bool _inside = false;
 }
 

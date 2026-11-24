@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using System;
 
 public class MouseOrbit : MonoSingleton<MouseOrbit>
@@ -34,10 +33,6 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 #if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
     private Queue lastTouchDeltas = new Queue();
     private Queue lastDragDiffs = new Queue();
-
-    // Fingers that began on an on-screen control (joystick, D-pad, fire/jump/... buttons) are
-    // owned by that control and must never orbit the camera, even after moving off the control.
-    private readonly HashSet<int> deadTouchIds = new HashSet<int>();
 #endif
 
     public float MaxX = 0;
@@ -170,8 +165,6 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
     {
         if (!PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen && !Disable && TouchSource.TouchCount > 0)
         {
-            TrackDeadZoneTouches();
-
             Touch touch = TouchSource.Touches[0];
 
             if (TouchSource.TouchCount > 1)
@@ -204,12 +197,7 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
             else
             {
                 // drag
-                if (deadTouchIds.Contains(touch.fingerId))
-                {
-                    if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-                        deadTouchIds.Remove(touch.fingerId);
-                }
-                else if (touch.phase == TouchPhase.Began)
+                if (touch.phase == TouchPhase.Began)
                 {
                     if (GameState.HasCurrentSpace 
                         && GameState.CurrentSpace.Camera.pixelRect.ContainsTouch(touch.position) 
@@ -276,27 +264,6 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
         Quaternion rotation = Quaternion.Euler(yOrbit, xOrbit, 0);
         transform.rotation = rotation;
         transform.position = target.position + rotation * new Vector3(0, 0, -zoomDistance);
-    }
-
-    // Records which fingers started on an on-screen control (joystick, D-pad, fire/jump
-    // buttons, ...). Those fingers are dead for the camera look-around even after moving off
-    // the control.
-    private void TrackDeadZoneTouches()
-    {
-        for (int i = 0; i < TouchSource.TouchCount; i++)
-        {
-            Touch t = TouchSource.Touches[i];
-
-            // Only a fresh start can claim a finger. The synthesized touch stream deduplicates
-            // re-delivered Begans, so a Began is always a genuinely new finger.
-            if (t.phase != TouchPhase.Began)
-                continue;
-
-            if (TouchInput.IsLookDeadZone(t.position))
-                deadTouchIds.Add(t.fingerId);
-            else
-                deadTouchIds.Remove(t.fingerId);
-        }
     }
 #endif
 

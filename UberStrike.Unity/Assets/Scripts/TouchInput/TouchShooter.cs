@@ -47,6 +47,8 @@ public class TouchShooter : TouchBaseControl
     {
         _primaryFinger = new TouchFinger();
         _secondaryFinger = new TouchFinger();
+
+        _ignoreTouches = new ArrayList();
     }
 
 
@@ -153,13 +155,30 @@ public class TouchShooter : TouchBaseControl
         return false;
     }
 
-    // Fingers that start on the D-pad, joystick, fire/jump/... buttons, quick items, weapon
-    // changer or scope swipe belong to those controls and must never count as the look (first)
-    // or shoot (second) finger. The controls are queried live, so the dead zones always match
-    // the current on-screen layout — including layout-editor moves, scaling and rotation.
+    // Replaces the full set of zones that do not participate in the look/shoot finger counting
+    // (D-pad, joystick, fire/jump/... buttons, quick items, weapon changer, scope swipe).
+    // TouchInput rebuilds this every frame from the controls that are currently enabled, so it
+    // always matches the current state, mode and custom layout.
+    public void SetIgnoreRects(IEnumerable<Rect> rects)
+    {
+        _ignoreTouches.Clear();
+        if (rects == null) return;
+        foreach (Rect r in rects)
+        {
+            if (!_ignoreTouches.Contains(r))
+                _ignoreTouches.Add(r);
+        }
+    }
+
     private bool ValidArea(Vector2 pos)
     {
-        return !TouchInput.IsLookDeadZone(pos);
+        if (_ignoreTouches.Count == 0) return true;
+
+        foreach (Rect r in _ignoreTouches)
+        {
+            if (r.ContainsTouch(pos)) return false;
+        }
+        return true;
     }
 
     #region Fields
@@ -171,6 +190,8 @@ public class TouchShooter : TouchBaseControl
 
     private float _lastFireTouch = 0;
     private Vector2 _lastFirePosition = Vector2.zero;
+
+    private ArrayList _ignoreTouches;
 
     #endregion
 }
