@@ -17,7 +17,7 @@ public class TouchDPad : TouchBaseControl
 
             _dpadRect = new Rect(value.x, value.y, _dpad.image.width * s, _dpad.image.height * s);
 
-            _leftRect = new Rect(value.x, value.y, 104 * s, 209 * s);
+            _leftRect = new Rect(value.x, value.y + 104 * s, 104 * s, 105 * s);
 
             _forwardRect = new Rect(value.x + 104 * s, value.y, 104 * s, 104 * s);
             _backwardRect = new Rect(value.x + 104 * s, value.y + 104 * s, 104 * s, 106 * s);
@@ -28,13 +28,17 @@ public class TouchDPad : TouchBaseControl
 
             if (CrouchButton != null)
             {
-                Rect crouchRect = new Rect(value.x + 311 * s, value.y + 103 * s, 88 * s, 106 * s);
-                CrouchButton.Boundary = crouchRect;
+                _crouchCenter = new Vector2(value.x + 354 * s, value.y + 155.5f * s);
+                _crouchRadius = 43 * s;
+                CrouchButton.Boundary = new Rect(value.x + 311 * s, value.y + 113 * s, 86 * s, 85 * s);
+                SetCircle(CrouchButton, _crouchCenter, _crouchRadius);
             }
             if (JumpButton != null)
             {
-                Rect jumpRect = new Rect(value.x + 207 * s, value.y, 192 * s, 104 * s);
-                JumpButton.Boundary = jumpRect;
+                _jumpCenter = new Vector2(value.x + 259.5f * s, value.y + 55.5f * s);
+                _jumpRadius = 43 * s;
+                JumpButton.Boundary = new Rect(value.x + 217 * s, value.y + 13 * s, 85 * s, 85 * s);
+                SetCircle(JumpButton, _jumpCenter, _jumpRadius);
             }
 
             // Refresh the rotation pivot after a move/resize so Jump/Crouch rotate about the new centre.
@@ -115,13 +119,30 @@ public class TouchDPad : TouchBaseControl
     {
         _dpad = new GUIContent(dpad);
 
-        JumpButton = new TouchButton();
-        CrouchButton = new TouchButton();
+        JumpButton = new DpadCircleButton();
+        CrouchButton = new DpadCircleButton();
+    }
+
+    private static void SetCircle(TouchButton button, Vector2 center, float radius)
+    {
+        DpadCircleButton circle = button as DpadCircleButton;
+        if (circle != null)
+            circle.SetCircle(center, radius);
     }
 
     public Rect DpadBoundary
     {
         get { return _dpadRect; }
+    }
+
+    public void GetIgnoreZones(out Rect[] rects, out Vector2[] circleCenters, out float[] circleRadii,
+        out Vector2 pivot, out float rotation)
+    {
+        rects = new Rect[] { _leftRect, _forwardRect, _backwardRect, _rightRect };
+        circleCenters = new Vector2[] { _jumpCenter, _crouchCenter };
+        circleRadii = new float[] { _jumpRadius, _crouchRadius };
+        pivot = _centerPosition;
+        rotation = _rotation;
     }
 
     // does the touch fall within any of the four buttons
@@ -274,6 +295,24 @@ public class TouchDPad : TouchBaseControl
         GUI.color = Color.white;
     }
 
+    private class DpadCircleButton : TouchButton
+    {
+        private Vector2 _center;
+        private float _sqrRadius;
+
+        public void SetCircle(Vector2 center, float radius)
+        {
+            _center = center;
+            _sqrRadius = radius * radius;
+        }
+
+        protected override bool TouchInside(Vector2 position)
+        {
+            Vector2 center = new Vector2(_center.x, Screen.height - _center.y);
+            return (center - position).sqrMagnitude < _sqrRadius;
+        }
+    }
+
     #region Fields
 
     private Rect _leftRect;
@@ -281,6 +320,10 @@ public class TouchDPad : TouchBaseControl
     private Rect _forwardRect;
     private Rect _backwardRect;
     private Rect _dpadRect;
+    private Vector2 _jumpCenter;
+    private float _jumpRadius;
+    private Vector2 _crouchCenter;
+    private float _crouchRadius;
     private Dictionary<int, TouchFinger> _fingers;
     private readonly List<int> _staleIds = new List<int>();
 

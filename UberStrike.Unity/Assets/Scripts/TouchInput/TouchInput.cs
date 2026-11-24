@@ -1066,7 +1066,21 @@ public class TouchInput : MonoSingleton<TouchInput>
         if (ConsumableChanger != null && ConsumableChanger.Enabled)
             _shooterIgnoreBuffer.Add(ConsumableChanger.Boundary);
         if (Dpad != null && Dpad.Enabled)
-            _shooterIgnoreBuffer.Add(Dpad.DpadBoundary);
+        {
+            Rect[] dpadRects;
+            Vector2[] dpadCircleCenters;
+            float[] dpadCircleRadii;
+            Vector2 dpadPivot;
+            float dpadRotation;
+            Dpad.GetIgnoreZones(out dpadRects, out dpadCircleCenters, out dpadCircleRadii,
+                out dpadPivot, out dpadRotation);
+            Shooter.SetDpadIgnoreZones(dpadRects, dpadCircleCenters, dpadCircleRadii,
+                dpadPivot, dpadRotation);
+        }
+        else
+        {
+            Shooter.SetDpadIgnoreZones(null, null, null, Vector2.zero, 0f);
+        }
         if (Joystick != null && Joystick.Enabled)
             _shooterIgnoreBuffer.Add(Joystick.Boundary);
         if (ScopeSwipe != null && ScopeSwipe.Enabled)
