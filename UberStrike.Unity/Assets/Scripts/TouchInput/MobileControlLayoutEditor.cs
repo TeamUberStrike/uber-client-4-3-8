@@ -34,7 +34,6 @@ public class MobileControlLayoutEditor : MonoBehaviour
     // second finger can still start a pinch on the control.
     private const float DragThresholdSqr = 100f;
     private Texture2D _pixel;
-    private MeshGUIText _hintText;
 
     private static bool ShouldShow
     {
@@ -63,12 +62,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
         {
             _ribbonWasEnabled = GlobalUIRibbon.Exists && GlobalUIRibbon.Instance.IsEnabled;
             if (_ribbonWasEnabled) GlobalUIRibbon.Instance.Hide();
-            if (_hintText != null) _hintText.Show();
         }
         else if (!editMode && _editModePrev)
         {
             if (_ribbonWasEnabled && GlobalUIRibbon.Exists) GlobalUIRibbon.Instance.Show();
-            if (_hintText != null) _hintText.Hide();
             if (HudAssets.Exists) WeaponsHud.Instance.QuickItems.RefreshPosition();
         }
         _editModePrev = editMode;
@@ -494,14 +491,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
             MobileControlLayout.EditMode = false;
         }
 
-        if (_hintText == null)
-        {
-            _hintText = new MeshGUIText("Drag to move, pinch to resize. Twist to rotate the D-Pad.", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
-            HudStyleUtility.Instance.SetBlueStyle(_hintText);
-            _hintText.Scale = new Vector2(0.6f, 0.6f);
-        }
-        _hintText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 100);
-        _hintText.Draw();
+        // Drawn with the GUI after the dark overlay so it stays bright (a mesh text renders under it), centred on
+        // the full screen 100 pixels above the middle.
+        Rect hintRect = new Rect(-MobileMenuScale.BleedLeft, (Screen.height * 0.5f - 100f) / MobileMenuScale.Scale - 20f,
+            MobileMenuScale.BleedLeft + vw + MobileMenuScale.BleedRight, 40f);
+        GUITools.LabelShadow(hintRect, "Drag to move, pinch to resize. Twist to rotate the D-Pad.", BlueStonez.label_interparkbold_18pt, Color.white);
 
         MobileMenuScale.End(scaleMatrix);
     }
