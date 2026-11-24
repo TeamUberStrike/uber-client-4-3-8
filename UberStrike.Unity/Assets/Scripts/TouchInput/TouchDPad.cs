@@ -133,6 +133,27 @@ public class TouchDPad : TouchBaseControl
             || _backwardRect.ContainsTouch(position);
     }
 
+    /// <summary>
+    /// True when the screen position lies inside the D-pad cluster as drawn on screen: the four
+    /// direction zones plus the jump/crouch buttons, rotated by the layout-editor rotation.
+    /// Used for the look-around dead zones so they always match the visible cluster.
+    /// </summary>
+    public bool ContainsLookPoint(Vector2 screenPosition)
+    {
+        Vector2 pos = Mathfx.RotateVector2AboutPoint(screenPosition, new Vector2(_centerPosition.x, Screen.height - _centerPosition.y), _rotation);
+
+        if (InsideBoundary(pos))
+            return true;
+
+        if (JumpButton != null && JumpButton.Enabled && JumpButton.Boundary.ContainsTouch(pos))
+            return true;
+
+        if (CrouchButton != null && CrouchButton.Enabled && CrouchButton.Boundary.ContainsTouch(pos))
+            return true;
+
+        return false;
+    }
+
     // check if a double tap on a button was recorded
     /*public void CheckDoubleTap(Vector2 position)
     {

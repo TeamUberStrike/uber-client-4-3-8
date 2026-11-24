@@ -391,9 +391,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         Shooter = new TouchShooter();
         Shooter.Boundary = new Rect(0, 0, Screen.width, Screen.height);
         // Tap-anywhere-to-fire is intentionally not hooked: firing is always the on-screen Fire
-        // button in both joystick and D-pad modes.
-        // Button/D-pad/joystick/quick-item zones are fed to the Shooter by RefreshShooterIgnores()
-        // (on state changes and layout edits) so they always match the current state, mode and layout.
+        // button in both joystick and D-pad modes. Dead zones (controls that must never count as
+        // the look or shoot finger) are queried live via TouchInput.IsLookDeadZone(), so they
+        // always match the current state, mode and on-screen layout.
 
         AimHelpText = new MeshGUIText("Drag finger to aim", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
         HudStyleUtility.Instance.SetDefaultStyle(AimHelpText);
@@ -705,8 +705,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
 
         // Control positions/scales may have changed (layout editor, mode toggle, resolution),
-        // so rebuild the Shooter's ignore zones once here.
-        RefreshShooterIgnores();
+        // Control positions/scales may have changed (layout editor, mode toggle, resolution).
     }
 
     // Snapshot of every editable control for the layout editor (id, current rect, icon, scale).
@@ -874,8 +873,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.MultiSecondaryFire].Enabled = false;
         }
 
-        // The scope buttons may have flipped on/off; rebuild the Shooter's ignore zones.
-        RefreshShooterIgnores();
+        // The scope buttons may have flipped on/off.
     }
 
     // Compact corner zone for the single-input movement wheel, scaled like the other default
@@ -982,7 +980,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             if (Buttons[(int)TouchKeyType.Loadout].Enabled != showLoadout)
             {
                 Buttons[(int)TouchKeyType.Loadout].Enabled = showLoadout;
-                RefreshShooterIgnores();
             }
         }
 
@@ -1035,44 +1032,32 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
     }
 
-    // Rebuilds the Shooter's ignore zones from every on-screen control that is currently
-    // enabled. Triggered on discrete events only — entering a state, layout changes
-    // (ApplyLayout), walking/input toggles, weapon changes and the loadout-button flip — so
-    // the zones always match the current state, input mode and custom layout without any
-    // per-frame cost. Fingers that start on the D-pad, joystick, fire/jump/... buttons,
-    // quick items, weapon changer or scope swipe belong to those controls and must never count
-    // as the look (first) or shoot (second) finger.
-    private void RefreshShooterIgnores()
+    /// <summary>
+    /// True when the screen position lies inside an on-screen control (joystick, D-pad, fire,
+    /// jump, crouch, quick items, ...). Fingers that start on those controls belong to them and
+    /// must never drive a look-around camera. The controls are queried live, so the zones always
+    /// match the current on-screen layout — including layout-editor moves, scaling and rotation.
+    /// </summary>
+    public static bool IsLookDeadZone(Vector2 screenPosition)
     {
-        if (Shooter == null) return;
+        TouchInput ti = TouchInput.Instance;
+        if (ti == null) return false;
 
-        _shooterIgnoreBuffer.Clear();
+        if (ti.Dpad != null && ti.Dpad.Enabled && ti.Dpad.ContainsLookPoint(screenPosition)) return true;
+        if (ti.Joystick != null && ti.Joystick.Enabled && ti.Joystick.ContainsLookPoint(screenPosition)) return true;
+        if (ti.WeaponChanger != null && ti.WeaponChanger.Enabled && ti.WeaponChanger.ContainsLookPoint(screenPosition)) return true;
+        if (ti.ConsumableChanger != null && ti.ConsumableChanger.Enabled && ti.ConsumableChanger.ContainsLookPoint(screenPosition)) return true;
+        if (ti.ScopeSwipe != null && ti.ScopeSwipe.Enabled && ti.ScopeSwipe.ContainsLookPoint(screenPosition)) return true;
 
-        if (Buttons != null)
+        if (ti.Buttons != null)
         {
-            // Iterate ALL buttons rather than a fixed key list: the pause/menu button, chat,
-            // score, fire, jump, crouch, secondary, loadout — every button claims its current
-            // (layout-editor-variable) area while enabled, so a finger that starts on any of
-            // them never counts as the aim or fire finger.
-            foreach (TouchButton b in Buttons.Values)
+            foreach (TouchButton b in ti.Buttons.Values)
             {
-                if (b != null && b.Enabled)
-                    _shooterIgnoreBuffer.Add(b.Boundary);
+                if (b != null && b.Enabled && b.ContainsLookPoint(screenPosition)) return true;
             }
         }
 
-        if (WeaponChanger != null && WeaponChanger.Enabled)
-            _shooterIgnoreBuffer.Add(WeaponChanger.Boundary);
-        if (ConsumableChanger != null && ConsumableChanger.Enabled)
-            _shooterIgnoreBuffer.Add(ConsumableChanger.Boundary);
-        if (Dpad != null && Dpad.Enabled)
-            _shooterIgnoreBuffer.Add(Dpad.DpadBoundary);
-        if (Joystick != null && Joystick.Enabled)
-            _shooterIgnoreBuffer.Add(Joystick.Boundary);
-        if (ScopeSwipe != null && ScopeSwipe.Enabled)
-            _shooterIgnoreBuffer.Add(ScopeSwipe.Boundary);
-
-        Shooter.SetIgnoreRects(_shooterIgnoreBuffer);
+        return false;
     }
 
     private void LateUpdate()
@@ -1343,7 +1328,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1414,7 +1398,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.ScopeSwipe.Enabled = false;
             TouchInput.Instance.Shooter.Enabled = true;
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1467,7 +1450,6 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.UpdateFireMode(false);
             }
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnUpdate()
@@ -1524,7 +1506,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.WishLook = Vector2.zero;
             TouchInput.WishDirection = Vector2.zero;
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1590,7 +1571,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             else
                 TouchInput.Instance.ScopeSwipe.Enabled = false;
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1641,7 +1621,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1683,7 +1662,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.WishDirection = Vector2.zero;
             TouchInput.WishLook = Vector2.zero;
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1739,7 +1717,6 @@ public class TouchInput : MonoSingleton<TouchInput>
                 TouchInput.Instance.Dpad.Enabled = false;
             }
 
-            TouchInput.Instance.RefreshShooterIgnores();
         }
 
         public void OnExit()
@@ -1932,8 +1909,6 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private int _previousState;
 
-    // Reused buffer for RefreshShooterIgnores() to avoid re-allocating on every refresh.
-    private readonly List<Rect> _shooterIgnoreBuffer = new List<Rect>();
 
     #endregion
 }

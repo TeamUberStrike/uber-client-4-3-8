@@ -47,8 +47,6 @@ public class TouchShooter : TouchBaseControl
     {
         _primaryFinger = new TouchFinger();
         _secondaryFinger = new TouchFinger();
-
-        _ignoreTouches = new ArrayList();
     }
 
 
@@ -103,20 +101,9 @@ public class TouchShooter : TouchBaseControl
         {
             if (_primaryFinger.FingerId == touch.fingerId)
             {
-#if UNITY_WEBGL && !UNITY_EDITOR
-                // Unity's Touch.deltaPosition on WebGL reports the ABSOLUTE position on the
-                // first Moved/Stationary frame (difference from (0,0)), so a tap would snap
-                // the camera to the touch point. Track the delta manually, like the native
-                // players effectively do.
-                TouchFinger f = _primaryFinger;
-                Vector2 delta = touch.position - f.LastPos;
-                f.LastPos = touch.position;
-                _primaryFinger = f;
-                Aim = delta * 500 / Screen.width;
-#else
                 // record finger movement scaling for screen size
                 Aim = touch.deltaPosition * 500 / Screen.width;
-#endif
+
                 if (_diagSamples < 15)
                 {
                     _diagSamples++;
@@ -166,30 +153,13 @@ public class TouchShooter : TouchBaseControl
         return false;
     }
 
-    // Replaces the full set of zones that do not participate in the look/shoot finger counting
-    // (D-pad, joystick, fire/jump/... buttons, quick items, weapon changer, scope swipe).
-    // TouchInput rebuilds this every frame from the controls that are currently enabled, so it
-    // always matches the current state, mode and custom layout.
-    public void SetIgnoreRects(IEnumerable<Rect> rects)
-    {
-        _ignoreTouches.Clear();
-        if (rects == null) return;
-        foreach (Rect r in rects)
-        {
-            if (!_ignoreTouches.Contains(r))
-                _ignoreTouches.Add(r);
-        }
-    }
-
+    // Fingers that start on the D-pad, joystick, fire/jump/... buttons, quick items, weapon
+    // changer or scope swipe belong to those controls and must never count as the look (first)
+    // or shoot (second) finger. The controls are queried live, so the dead zones always match
+    // the current on-screen layout — including layout-editor moves, scaling and rotation.
     private bool ValidArea(Vector2 pos)
     {
-        if (_ignoreTouches.Count == 0) return true;
-
-        foreach (Rect r in _ignoreTouches)
-        {
-            if (r.ContainsTouch(pos)) return false;
-        }
-        return true;
+        return !TouchInput.IsLookDeadZone(pos);
     }
 
     #region Fields
@@ -201,8 +171,6 @@ public class TouchShooter : TouchBaseControl
 
     private float _lastFireTouch = 0;
     private Vector2 _lastFirePosition = Vector2.zero;
-
-    private ArrayList _ignoreTouches;
 
     #endregion
 }

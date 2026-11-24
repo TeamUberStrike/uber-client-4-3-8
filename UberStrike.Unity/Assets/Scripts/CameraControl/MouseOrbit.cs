@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class MouseOrbit : MonoSingleton<MouseOrbit>
@@ -33,11 +34,10 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 #if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
     private Queue lastTouchDeltas = new Queue();
     private Queue lastDragDiffs = new Queue();
-#endif
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-    private int lastTouchFingerId = -1;
-    private Vector2 lastTouchPos;
+    // Fingers that began on an on-screen control (joystick, D-pad, fire/jump/... buttons) are
+    // owned by that control and must never orbit the camera, even after moving off the control.
+    private readonly HashSet<int> deadTouchIds = new HashSet<int>();
 #endif
 
     public float MaxX = 0;
@@ -168,14 +168,16 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 #if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
     private void UpdateTouchOrbit()
     {
-        if (!PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen && !Disable && Input.touchCount > 0)
+        if (!PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen && !Disable && TouchSource.TouchCount > 0)
         {
-            Touch touch = Input.touches[0];
+            TrackDeadZoneTouches();
 
-            if (Input.touchCount > 1)
+            Touch touch = TouchSource.Touches[0];
+
+            if (TouchSource.TouchCount > 1)
             {
                 // pinch zoom
-                Touch secondTouch = Input.touches[1];
+                Touch secondTouch = TouchSource.Touches[1];
 
                 if (secondTouch.phase == TouchPhase.Began)
                 {
@@ -184,11 +186,7 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 
                 // figure out the gesture movement over the last series of frames
                 if (lastDragDiffs.Count > 9) lastDragDiffs.Dequeue();
-#if UNITY_WEBGL && !UNITY_EDITOR
-                Vector2 lastDiff = (touch.position + touch.deltaPosition) - (secondTouch.position + secondTouch.deltaPosition);
-#else
                 Vector2 lastDiff = (touch.position - touch.deltaPosition) - (secondTouch.position - secondTouch.deltaPosition);
-#endif
                 Vector2 currDiff = touch.position - secondTouch.position;
                 lastDragDiffs.Enqueue(currDiff.sqrMagnitude - lastDiff.sqrMagnitude);
 
@@ -206,7 +204,12 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
             else
             {
                 // drag
-                if (touch.phase == TouchPhase.Began)
+                if (deadTouchIds.Contains(touch.fingerId))
+                {
+                    if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                        deadTouchIds.Remove(touch.fingerId);
+                }
+                else if (touch.phase == TouchPhase.Began)
                 {
                     if (GameState.HasCurrentSpace 
                         && GameState.CurrentSpace.Camera.pixelRect.ContainsTouch(touch.position) 
@@ -231,44 +234,13 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
 
                     lastTouchDeltas.Clear();
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-                    if (ApplicationDataManager.IsMobile)
-                        lastTouchFingerId = -1;
-#endif
-
                     float velocity = Mathf.Clamp(avgDrag.magnitude, 0, 100);
 
                     mouseAxisSpin = avgDrag.normalized * velocity;
                 }
                 else if (touch.position.x < MaxX && touch.position.y < Screen.height - GlobalUIRibbon.HEIGHT)
                 {
-#if UNITY_WEBGL && !UNITY_EDITOR
-                    // Unity's Touch.deltaPosition on WebGL reports the ABSOLUTE position on the
-                    // first Moved/Stationary frame (difference from (0,0)) and is inverted
-                    // (previous minus current), so a tap would spin the avatar. Track the delta
-                    // manually like TouchShooter does, so WebGL behaves like native iOS.
-                    Vector2 delta;
-                    if (ApplicationDataManager.IsMobile)
-                    {
-                        if (touch.fingerId != lastTouchFingerId)
-                        {
-                            lastTouchFingerId = touch.fingerId;
-                            lastTouchPos = touch.position;
-                            delta = Vector2.zero;
-                        }
-                        else
-                        {
-                            delta = touch.position - lastTouchPos;
-                            lastTouchPos = touch.position;
-                        }
-                    }
-                    else
-                    {
-                        delta = touch.deltaPosition;
-                    }
-#else
                     Vector2 delta = touch.deltaPosition;
-#endif
 
                     // record the last touch deltas
                     if (lastTouchDeltas.Count > 4) lastTouchDeltas.Dequeue();
@@ -304,6 +276,27 @@ public class MouseOrbit : MonoSingleton<MouseOrbit>
         Quaternion rotation = Quaternion.Euler(yOrbit, xOrbit, 0);
         transform.rotation = rotation;
         transform.position = target.position + rotation * new Vector3(0, 0, -zoomDistance);
+    }
+
+    // Records which fingers started on an on-screen control (joystick, D-pad, fire/jump
+    // buttons, ...). Those fingers are dead for the camera look-around even after moving off
+    // the control.
+    private void TrackDeadZoneTouches()
+    {
+        for (int i = 0; i < TouchSource.TouchCount; i++)
+        {
+            Touch t = TouchSource.Touches[i];
+
+            // Only a fresh start can claim a finger. The synthesized touch stream deduplicates
+            // re-delivered Begans, so a Began is always a genuinely new finger.
+            if (t.phase != TouchPhase.Began)
+                continue;
+
+            if (TouchInput.IsLookDeadZone(t.position))
+                deadTouchIds.Add(t.fingerId);
+            else
+                deadTouchIds.Remove(t.fingerId);
+        }
     }
 #endif
 

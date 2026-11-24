@@ -105,6 +105,15 @@ public class TouchJoystick : TouchBaseControl
         }
     }
 
+    /// <summary>
+    /// True when the screen position lies inside the joystick's claim area. Used for the
+    /// look-around dead zones.
+    /// </summary>
+    public bool ContainsLookPoint(Vector2 screenPosition)
+    {
+        return Boundary.ContainsTouch(screenPosition);
+    }
+
     #region Fields
 
     private TouchFinger _finger;
