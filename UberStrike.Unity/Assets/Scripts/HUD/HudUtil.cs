@@ -54,7 +54,7 @@ class HudUtil : Singleton<HudUtil>
     public void ShowRespawnButton()
     {
         PlayerStateMsgHud.Instance.ButtonEnabled = true;
-        PlayerStateMsgHud.Instance.TemporaryMsgEnabled = false;
+        PlayerStateMsgHud.Instance.HideRespawnText();
         PlayerStateMsgHud.Instance.ButtonCaption = LocalizedStrings.Respawn;
         PlayerStateMsgHud.Instance.OnButtonClicked = OnRespawnButtonClicked;
     }

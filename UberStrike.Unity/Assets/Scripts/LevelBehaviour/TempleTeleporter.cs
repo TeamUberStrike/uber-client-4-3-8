@@ -348,7 +348,7 @@ public class TempleTeleporter : SecretDoor
     // Temple of the Raven scene: builds the LightningParticles big-variant PS,
     // builds the SparkGather PS (gated off until ritual completes), wires a
     // realtime point light, and attaches a TempleSecretRitualActivator. Runs
-    // at most once per session.
+    // once per instance, so every load of the Temple scene gets it.
     //
     // Lives next to TempleTeleporter because the prefab in question doesn't
     // own a MonoBehaviour of its own — there's no natural script host for it
@@ -360,8 +360,9 @@ public class TempleTeleporter : SecretDoor
         ApplyStandaloneTeleporterParticles(SceneManager.GetActiveScene());
     }
 
-    private static bool _standaloneAppliedThisSession;
     private const string TempleSceneName = "LevelTempleOfTheRaven";
+    // The secret room orb (and its exit trigger) stays just above the statue's head instead of sweeping 20 m up and down.
+    private const float SecretOrbLocalY = 14.5f;
 
     private static void OnTempleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -371,7 +372,6 @@ public class TempleTeleporter : SecretDoor
     private static void ApplyStandaloneTeleporterParticles(Scene scene)
     {
         if (!scene.IsValid() || scene.name != TempleSceneName) return;
-        if (_standaloneAppliedThisSession) return;
 
         var bluePlasma = Resources.Load<Material>("BluePlasmaLightning");
         var blueSpark  = Resources.Load<Material>("BlueLongSpark");
@@ -384,6 +384,7 @@ public class TempleTeleporter : SecretDoor
         foreach (var t in Object.FindObjectsOfType<Transform>(includeInactive: true))
         {
             if (t == null || t.name != "TeleporterParticles") continue;
+            if (t.GetComponent<TempleSecretRitualActivator>() != null) continue;
 
             // Activate the root + the two particle children only. CRITICAL: do
             // NOT activate the prefab's authored "Point light" child — it has
@@ -393,6 +394,9 @@ public class TempleTeleporter : SecretDoor
             // rendered flat-lit once TeleporterParticles came online — regression
             // from 2026-04-21 when the glowing sparks landed).
             t.gameObject.SetActive(true);
+
+            var orb = t.GetComponent<SpawnPlayer>();
+            if (orb != null) orb.PinAt(SecretOrbLocalY);
 
             Transform lightning = FindChildByName(t, "LightningParticles");
             if (lightning != null)
@@ -436,16 +440,13 @@ public class TempleTeleporter : SecretDoor
 
             if (sparkPS != null || ritualLight != null)
             {
-                var activator = t.GetComponent<TempleSecretRitualActivator>()
-                             ?? t.gameObject.AddComponent<TempleSecretRitualActivator>();
-                activator.Setup(sparkPS, ritualLight);
+                t.gameObject.AddComponent<TempleSecretRitualActivator>().Setup(sparkPS, ritualLight);
             }
 
             count++;
         }
 
         Debug.Log("[TempleTeleporter] Standalone TeleporterParticles set up: " + count + " instance(s).");
-        _standaloneAppliedThisSession = true;
     }
 
     private static Transform FindChildByName(Transform root, string name)
