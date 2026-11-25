@@ -182,6 +182,8 @@ var UberDeviceBridge = {
                     var mirrorInput = null;
                     var textWrap = null;
                     var passWrap = null;
+                    var audioCtx = null;
+                    var keyNoiseBuf = null;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
                     var shift = false;
@@ -254,6 +256,125 @@ var UberDeviceBridge = {
                             ev.preventDefault();
                             ev.stopPropagation();
                         }
+                    }
+
+                    function ensureAudio() {
+                        try {
+                            var AC = window.AudioContext || window.webkitAudioContext;
+                            if (!AC) return null;
+                            if (!audioCtx) audioCtx = new AC();
+                            if (audioCtx.state === "suspended") {
+                                audioCtx.resume().catch(function() {
+                                });
+                            }
+                            return audioCtx;
+                        } catch (e) {
+                            return null;
+                        }
+                    }
+
+                    function keyNoise() {
+                        if (keyNoiseBuf) return keyNoiseBuf;
+                        var ctx = ensureAudio();
+                        if (!ctx) return null;
+                        try {
+                            var dur = 0.008;
+                            keyNoiseBuf = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * dur)), ctx.sampleRate);
+                            var data = keyNoiseBuf.getChannelData(0);
+                            for (var i = 0; i < data.length; i++) {
+                                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
+                            }
+                            return keyNoiseBuf;
+                        } catch (e) {
+                            return null;
+                        }
+                    }
+
+                    function playKeyClick(freq) {
+                        var ctx = ensureAudio();
+                        if (!ctx) return;
+                        try {
+                            var t = ctx.currentTime;
+                            var osc = ctx.createOscillator();
+                            var gain = ctx.createGain();
+                            osc.type = "sine";
+                            osc.frequency.value = freq || 1800;
+                            gain.gain.setValueAtTime(0.12, t);
+                            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start(t);
+                            osc.stop(t + 0.05);
+
+                            var buf = keyNoise();
+                            if (buf) {
+                                var src = ctx.createBufferSource();
+                                src.buffer = buf;
+                                var ng = ctx.createGain();
+                                ng.gain.value = 0.05;
+                                src.connect(ng);
+                                ng.connect(ctx.destination);
+                                src.start(t);
+                            }
+                        } catch (e) {
+                        }
+                    }
+
+                    var soundBuffers = {};
+                    var soundsLoading = false;
+
+                    function loadKeySounds() {
+                        if (soundsLoading) return;
+                        soundsLoading = true;
+                        var files = {
+                            standard: "StreamingAssets/Audio/Keyboard/KeypressStandard.wav",
+                            spacebar: "StreamingAssets/Audio/Keyboard/KeypressSpacebar.wav",
+                            "delete": "StreamingAssets/Audio/Keyboard/KeypressDelete.wav"
+                        };
+                        for (var key in files) {
+                            if (!files.hasOwnProperty(key)) continue;
+                            (function(k, url) {
+                                try {
+                                    fetch(url).then(function(resp) {
+                                        if (!resp || !resp.ok) throw new Error("http");
+                                        return resp.arrayBuffer();
+                                    }).then(function(ab) {
+                                        var ctx = ensureAudio();
+                                        if (!ctx) throw new Error("no ctx");
+                                        var done = function(decoded) {
+                                            soundBuffers[k] = decoded;
+                                        };
+                                        var pr = ctx.decodeAudioData(ab, done, function() {
+                                        });
+                                        if (pr && typeof pr.then === "function") pr.then(done, function() {
+                                        });
+                                    }).catch(function() {
+                                    });
+                                } catch (e) {
+                                }
+                            })(key, files[key]);
+                        }
+                    }
+
+                    function playKeySound(key, fallbackFreq) {
+                        loadKeySounds();
+                        var ctx = ensureAudio();
+                        if (!ctx) return;
+                        var buf = soundBuffers[key];
+                        if (buf) {
+                            try {
+                                var src = ctx.createBufferSource();
+                                src.buffer = buf;
+                                var g = ctx.createGain();
+                                g.gain.value = 0.7;
+                                src.connect(g);
+                                g.connect(ctx.destination);
+                                src.start(0);
+                                return;
+                            } catch (e) {
+                            }
+                        }
+                        playKeyClick(fallbackFreq);
                     }
 
                     function bindPress(button, onPress, repeat, onLongPress) {
@@ -607,6 +728,11 @@ var UberDeviceBridge = {
 
                         inputEl.value = inputEl.value.slice(0, start) + ch + inputEl.value.slice(end);
                         selectInput(start + ch.length, start + ch.length);
+                        if (ch === " ") {
+                            playKeySound("spacebar", 1200);
+                        } else {
+                            playKeySound("standard", 1600 + Math.floor(Math.random() * 600));
+                        }
                         syncInputHeight();
                     }
 
@@ -627,6 +753,7 @@ var UberDeviceBridge = {
                             selectInput(start - 1, start - 1);
                         }
 
+                        playKeySound("delete", 900);
                         syncInputHeight();
                     }
 
@@ -971,6 +1098,7 @@ var UberDeviceBridge = {
                         textInput.placeholder = "Type a message...";
                         textInput.style.cssText =
                             "display:block;width:100%;box-sizing:border-box;resize:none;outline:none;caret-color:transparent;" +
+                            "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                             "min-height:clamp(34px,8vh,42px);max-height:clamp(96px,26vh,190px);overflow-y:auto;" +
                             "background:#0b0b0b;border:1px solid #3a3a3a;border-radius:10px;padding:6px 10px;" +
                             "color:#fff;font-size:18px;line-height:1.25;" +
@@ -984,6 +1112,7 @@ var UberDeviceBridge = {
                         passInput.placeholder = "Type a message...";
                         passInput.style.cssText =
                             "display:none;width:100%;box-sizing:border-box;outline:none;caret-color:transparent;" +
+                            "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                             "height:clamp(34px,8vh,42px);background:#0b0b0b;border:1px solid #3a3a3a;" +
                             "border-radius:10px;padding:6px 10px;color:#fff;font-size:18px;line-height:1.25;" +
                             "user-select:text;-webkit-user-select:text;" +
