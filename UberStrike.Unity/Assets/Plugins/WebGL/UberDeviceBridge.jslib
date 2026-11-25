@@ -175,10 +175,11 @@ var UberDeviceBridge = {
             if (!window.uberChatKeyboard) {
                 window.uberChatKeyboard = (function() {
                     var MAX_LENGTH = 140;
+                    var LONG_PRESS_MS = 450;
+                    var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
                     var shift = false;
                     var symbols = false;
                     var layoutMenuOpen = false;
-                    var layoutSearch = "";
                     var keyboardLayout = "qwerty";
                     var layoutDetected = false;
                     var manualLayout = false;
@@ -231,6 +232,15 @@ var UberDeviceBridge = {
                         colemak: "COLEMAK"
                     };
 
+                    try {
+                        var savedLayout = window.localStorage.getItem(LAYOUT_STORAGE_KEY);
+                        if (savedLayout && LAYOUTS[savedLayout]) {
+                            keyboardLayout = savedLayout;
+                            manualLayout = true;
+                        }
+                    } catch (e) {
+                    }
+
                     function fire(ev) {
                         if (ev) {
                             ev.preventDefault();
@@ -238,7 +248,7 @@ var UberDeviceBridge = {
                         }
                     }
 
-                    function bindPress(button, onPress, repeat) {
+                    function bindPress(button, onPress, repeat, onLongPress) {
                         var releaseTimer = null;
                         var repeatDelayTimer = null;
                         var repeatInterval = null;
@@ -249,6 +259,8 @@ var UberDeviceBridge = {
                         var mouseActive = false;
                         var ignoreMouseUntil = 0;
                         var listening = false;
+                        var holdTimer = null;
+                        var longPressFired = false;
 
                         function setPressed(pressed) {
                             button.style.filter = pressed ? "brightness(1.8)" : "";
@@ -266,6 +278,13 @@ var UberDeviceBridge = {
                                 repeatInterval = null;
                             }
                             repeatCount = 0;
+                        }
+
+                        function clearHold() {
+                            if (holdTimer) {
+                                clearTimeout(holdTimer);
+                                holdTimer = null;
+                            }
                         }
 
                         function isInside(x, y) {
@@ -307,10 +326,12 @@ var UberDeviceBridge = {
                         function finish(commit) {
                             detachWindowListeners();
                             stopRepeat();
+                            clearHold();
                             activePointerId = null;
                             activeTouchId = null;
                             mouseActive = false;
-                            if (!repeat && commit) onPress();
+                            if (!repeat && commit && !longPressFired) onPress();
+                            longPressFired = false;
                             unpress();
                         }
 
@@ -357,6 +378,16 @@ var UberDeviceBridge = {
                                 releaseTimer = null;
                             }
                             setPressed(true);
+
+                            longPressFired = false;
+                            clearHold();
+                            if (onLongPress) {
+                                holdTimer = setTimeout(function() {
+                                    holdTimer = null;
+                                    longPressFired = true;
+                                    onLongPress();
+                                }, LONG_PRESS_MS);
+                            }
 
                             if (!listening) {
                                 listening = true;
@@ -413,7 +444,7 @@ var UberDeviceBridge = {
                         }
                     }
 
-                    function makeButton(label, flex, onPress, height, repeat) {
+                    function makeButton(label, flex, onPress, height, repeat, onLongPress) {
                         var button = document.createElement("button");
                         button.type = "button";
                         button.textContent = label;
@@ -424,7 +455,7 @@ var UberDeviceBridge = {
                             "font:600 17px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                             "cursor:pointer;touch-action:manipulation;-webkit-touch-callout:none;" +
                             "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease,box-shadow 50ms ease;";
-                        bindPress(button, onPress, repeat);
+                        bindPress(button, onPress, repeat, onLongPress);
                         return button;
                     }
 
@@ -447,9 +478,15 @@ var UberDeviceBridge = {
                                     var layout = null;
                                     try {
                                         var q = (map.get("KeyQ") || "").toLowerCase();
+                                        var w = (map.get("KeyW") || "").toLowerCase();
+                                        var e = (map.get("KeyE") || "").toLowerCase();
+                                        var r = (map.get("KeyR") || "").toLowerCase();
+                                        var t = (map.get("KeyT") || "").toLowerCase();
                                         var y = (map.get("KeyY") || "").toLowerCase();
                                         if (q === "a") layout = "azerty";
                                         else if (y === "z") layout = "qwertz";
+                                        else if (q === "'" && w === ",") layout = "dvorak";
+                                        else if (e === "f" && r === "p" && t === "g") layout = "colemak";
                                         else if (q === "q") layout = "qwerty";
                                     } catch (e) {
                                     }
@@ -480,7 +517,14 @@ var UberDeviceBridge = {
                             lang.indexOf("sk") === 0 || lang.indexOf("ro") === 0 ||
                             lang.indexOf("ch") === 0 || lang.indexOf("sl") === 0 ||
                             lang.indexOf("hr") === 0) layout = "qwertz";
-                        if (LAYOUTS[layout]) keyboardLayout = layout;
+                        if (!manualLayout && LAYOUTS[layout]) keyboardLayout = layout;
+                    }
+
+                    function persistLayout(id) {
+                        try {
+                            window.localStorage.setItem(LAYOUT_STORAGE_KEY, id);
+                        } catch (e) {
+                        }
                     }
 
                     function setLayout(id) {
@@ -489,24 +533,48 @@ var UberDeviceBridge = {
                         shift = false;
                         symbols = false;
                         layoutMenuOpen = false;
-                        layoutSearch = "";
+                        persistLayout(id);
+                        renderKeys();
+                    }
+
+                    function cycleLayout() {
+                        var ids = [];
+                        var id;
+                        for (id in LAYOUTS) {
+                            if (LAYOUTS.hasOwnProperty(id)) ids.push(id);
+                        }
+                        if (ids.length < 2) return;
+                        var index = ids.indexOf(keyboardLayout);
+                        setLayout(ids[(index + 1) % ids.length]);
+                    }
+
+                    function openLayoutPicker() {
+                        layoutMenuOpen = true;
+                        renderKeys();
+                    }
+
+                    function closeLayoutPicker() {
+                        if (!layoutMenuOpen) return;
+                        layoutMenuOpen = false;
                         renderKeys();
                     }
 
                     function makeMenuEntry(id) {
                         var label = LAYOUT_LABELS[id] || id.toUpperCase();
                         var active = keyboardLayout === id;
-                        var button = makeButton(label + (active ? " \u2713" : ""), 0, function() {
+                        var button = makeButton((active ? "\u2713  " : "\u2003  ") + label, 0, function() {
                             setLayout(id);
-                        }, "clamp(28px,5.5vh,36px)");
+                        }, "clamp(38px,7vh,48px)");
                         button.style.flex = "none";
                         button.style.width = "100%";
-                        button.style.fontSize = "13px";
-                        button.style.fontWeight = "700";
-                        button.style.letterSpacing = "0.4px";
+                        button.style.fontSize = "14px";
+                        button.style.fontWeight = active ? "700" : "600";
+                        button.style.letterSpacing = "0.2px";
                         button.style.textAlign = "left";
-                        button.style.padding = "0 10px";
+                        button.style.padding = "0 12px";
                         button.style.background = active ? (transparentMode ? "rgba(26,115,232,0.55)" : "#1a73e8") : (transparentMode ? "rgba(51,51,51,0.35)" : "#333");
+                        button.setAttribute("role", "menuitemradio");
+                        button.setAttribute("aria-checked", active ? "true" : "false");
                         return button;
                     }
 
@@ -548,29 +616,52 @@ var UberDeviceBridge = {
 
                     function makeCharKey(ch) {
                         return makeButton(ch, 1, function() {
-                            if (layoutMenuOpen) {
-                                layoutSearch += ch;
-                                renderKeys();
-                            } else {
-                                addChar(ch);
-                            }
+                            addChar(ch);
                         });
                     }
 
                     function makeLetterKey(ch) {
                         var out = shift ? ch.toUpperCase() : ch;
                         return makeButton(out, 1, function() {
-                            if (layoutMenuOpen) {
-                                layoutSearch += out;
-                                renderKeys();
-                            } else {
-                                addChar(out);
-                            }
+                            addChar(out);
                             if (shift) {
                                 shift = false;
                                 renderKeys();
                             }
                         });
+                    }
+
+                    function makeLayoutKey() {
+                        var label = LAYOUT_LABELS[keyboardLayout] || keyboardLayout.toUpperCase();
+                        var globe = makeButton("", 1.5, cycleLayout, null, null, openLayoutPicker);
+                        globe.textContent = "";
+                        globe.style.display = "flex";
+                        globe.style.flexDirection = "column";
+                        globe.style.alignItems = "center";
+                        globe.style.justifyContent = "center";
+                        globe.style.gap = "1px";
+                        globe.style.lineHeight = "1";
+                        globe.setAttribute("aria-label", "Keyboard layout: " + label + ". Tap to switch, hold for list.");
+                        globe.setAttribute("aria-haspopup", "menu");
+                        globe.setAttribute("aria-expanded", layoutMenuOpen ? "true" : "false");
+                        globe.title = "Keyboard layout: " + label + " (tap to switch, hold for list)";
+
+                        var glyph = document.createElement("span");
+                        glyph.textContent = "\uD83C\uDF10";
+                        glyph.style.fontSize = "15px";
+                        glyph.style.lineHeight = "1";
+
+                        var name = document.createElement("span");
+                        name.textContent = label;
+                        name.style.fontSize = "8px";
+                        name.style.fontWeight = "700";
+                        name.style.letterSpacing = "0.2px";
+                        name.style.lineHeight = "1";
+                        name.style.opacity = "0.85";
+
+                        globe.appendChild(glyph);
+                        globe.appendChild(name);
+                        return globe;
                     }
 
                     function getText() {
@@ -656,17 +747,7 @@ var UberDeviceBridge = {
                                     });
                                     if (shift) key.style.background = transparentMode ? "rgba(26,115,232,0.55)" : "#1a73e8";
                                 } else if (label === "\u232B" || label === "{bksp}") {
-                                    var doBack = function() {
-                                        if (layoutMenuOpen) {
-                                            if (layoutSearch) {
-                                                layoutSearch = layoutSearch.slice(0, -1);
-                                                renderKeys();
-                                            }
-                                        } else {
-                                            doBackspace();
-                                        }
-                                    };
-                                    key = makeButton(label, 1.5, doBack, null, doBack);
+                                    key = makeButton(label, 1.5, doBackspace, null, doBackspace);
                                 } else if (/^[a-z]$/.test(label)) {
                                     key = makeLetterKey(label);
                                 } else {
@@ -679,33 +760,16 @@ var UberDeviceBridge = {
 
                         var bottom = [];
 
-                        // layout switcher in the standard position: bottom-left corner
-                        var currentLabel = LAYOUT_LABELS[keyboardLayout] || keyboardLayout.toUpperCase();
-                        var switcher = makeButton(currentLabel + " \u25BE", 1.6, function() {
-                            layoutMenuOpen = !layoutMenuOpen;
-                            if (!layoutMenuOpen) layoutSearch = "";
-                            renderKeys();
-                        }, "clamp(34px,10vh,42px)");
-                        switcher.style.fontSize = "11px";
-                        switcher.style.fontWeight = "700";
-                        switcher.style.letterSpacing = "0.2px";
-                        switcher.style.background = layoutMenuOpen ? (transparentMode ? "rgba(26,115,232,0.55)" : "#1a73e8") : (transparentMode ? "rgba(51,51,51,0.35)" : "#333");
-                        bottom.push(switcher);
-
                         if (symbols) {
                             bottom.push(makeButton("ABC", 1.5, function() {
                                 symbols = false;
                                 shift = false;
                                 renderKeys();
                             }));
+                            bottom.push(makeLayoutKey());
                             bottom.push(makeButton("SPACE", 5, function() {
-                                if (layoutMenuOpen) {
-                                    layoutSearch += " ";
-                                    renderKeys();
-                                } else {
-                                    addChar(" ");
-                                }
-                            }));
+                                addChar(" ");
+                            }, null, null, openLayoutPicker));
                         } else {
                             bottom.push(makeButton("123", 1.5, function() {
                                 symbols = true;
@@ -713,14 +777,10 @@ var UberDeviceBridge = {
                                 renderKeys();
                             }));
                             bottom.push(makeCharKey(","));
+                            bottom.push(makeLayoutKey());
                             bottom.push(makeButton("SPACE", 4, function() {
-                                if (layoutMenuOpen) {
-                                    layoutSearch += " ";
-                                    renderKeys();
-                                } else {
-                                    addChar(" ");
-                                }
-                            }));
+                                addChar(" ");
+                            }, null, null, openLayoutPicker));
                             bottom.push(makeCharKey("."));
                             bottom.push(makeCharKey("?"));
                         }
@@ -731,7 +791,22 @@ var UberDeviceBridge = {
                         }
 
                         if (layoutMenuOpen) {
+                            var scrim = document.createElement("div");
+                            scrim.style.cssText =
+                                "position:absolute;left:0;right:0;top:0;bottom:0;z-index:9;" +
+                                "background:rgba(0,0,0,0.35);";
+                            scrim.addEventListener("pointerdown", function(ev) {
+                                fire(ev);
+                                closeLayoutPicker();
+                            }, false);
+                            scrim.addEventListener("touchstart", function(ev) {
+                                fire(ev);
+                                closeLayoutPicker();
+                            }, false);
+                            keysHost.appendChild(scrim);
+
                             var menu = document.createElement("div");
+                            menu.setAttribute("role", "menu");
                             menu.style.cssText =
                                 "position:absolute;left:0;right:0;" +
                                 "bottom:calc(clamp(34px,10vh,42px) + clamp(3px,0.8vh,6px) + 2px);" +
@@ -739,29 +814,16 @@ var UberDeviceBridge = {
                                 "background:" + (transparentMode ? "rgba(26,26,26,0.92)" : "#1a1a1a") + ";border:1px solid #3a3a3a;border-radius:10px;padding:6px;" +
                                 "box-shadow:0 8px 24px rgba(0,0,0,0.6);" +
                                 "display:flex;flex-direction:column;gap:4px;";
-                            var searchInput = document.createElement("input");
-                            searchInput.type = "text";
-                            searchInput.className = "uber-input";
-                            searchInput.readOnly = true;
-                            searchInput.placeholder = "Search format...";
-                            searchInput.value = layoutSearch;
-                            searchInput.style.cssText =
-                                "display:block;width:100%;box-sizing:border-box;flex:none;" +
-                                "background:rgba(11,11,11,0.9);border:1px solid #3a3a3a;border-radius:8px;" +
-                                "padding:0 8px;height:clamp(26px,4.5vh,32px);margin-bottom:4px;" +
-                                "color:#fff;caret-color:#fff;font-size:13px;outline:none;" +
-                                "user-select:text;-webkit-user-select:text;-webkit-touch-callout:default;";
-                            menu.appendChild(searchInput);
-                            try {
-                                searchInput.focus();
-                            } catch (e) {
-                            }
 
-                            var query = layoutSearch.toLowerCase();
+                            var header = document.createElement("div");
+                            header.textContent = "Keyboard layout";
+                            header.style.cssText =
+                                "font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;" +
+                                "color:#9aa0a6;padding:2px 8px 4px;";
+                            menu.appendChild(header);
+
                             for (var layoutId in LAYOUTS) {
                                 if (!LAYOUTS.hasOwnProperty(layoutId)) continue;
-                                var entryName = (LAYOUT_LABELS[layoutId] || layoutId).toLowerCase();
-                                if (query && entryName.indexOf(query) < 0 && layoutId.toLowerCase().indexOf(query) < 0) continue;
                                 menu.appendChild(makeMenuEntry(layoutId));
                             }
                             keysHost.appendChild(menu);
@@ -772,16 +834,13 @@ var UberDeviceBridge = {
                         if (root) root.style.display = "none";
                         if (inputEl) inputEl.value = "";
                         layoutMenuOpen = false;
-                        layoutSearch = "";
                         if (menuBackdrop) menuBackdrop.style.display = "none";
                         clearFocusTimer();
                     }
 
                     function send() {
                         if (layoutMenuOpen) {
-                            layoutMenuOpen = false;
-                            layoutSearch = "";
-                            renderKeys();
+                            closeLayoutPicker();
                             return;
                         }
 
@@ -847,11 +906,7 @@ var UberDeviceBridge = {
                         menuBackdrop = document.createElement("div");
                         menuBackdrop.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;z-index:8;display:none;";
                         var closeMenu = function() {
-                            if (layoutMenuOpen) {
-                                layoutMenuOpen = false;
-                                layoutSearch = "";
-                                renderKeys();
-                            }
+                            closeLayoutPicker();
                         };
                         menuBackdrop.addEventListener("pointerdown", closeMenu, false);
                         menuBackdrop.addEventListener("touchstart", closeMenu, false);
@@ -910,6 +965,7 @@ var UberDeviceBridge = {
                                     keyboardLayout = pending[pi].id;
                                 }
                                 manualLayout = true;
+                                persistLayout(keyboardLayout);
                             }
                             targetObject = targetName || "TouchInputManager";
                             sendMethod = methodName || "OnWebGLChatSend";
@@ -933,7 +989,6 @@ var UberDeviceBridge = {
                             symbols = false;
                             shift = false;
                             layoutMenuOpen = false;
-                            layoutSearch = "";
                             applyTheme();
                             renderKeys();
                             root.style.display = "flex";
@@ -964,7 +1019,7 @@ var UberDeviceBridge = {
                                 shift = false;
                                 symbols = false;
                                 layoutMenuOpen = false;
-                                layoutSearch = "";
+                                persistLayout(id);
                                 if (root && root.style.display === "flex") renderKeys();
                             }
                         },
@@ -982,6 +1037,7 @@ var UberDeviceBridge = {
                                         shift = false;
                                         symbols = false;
                                         layoutMenuOpen = false;
+                                        persistLayout(id);
                                         if (root && root.style.display === "flex") renderKeys();
                                     }
                                 }).catch(function() {
