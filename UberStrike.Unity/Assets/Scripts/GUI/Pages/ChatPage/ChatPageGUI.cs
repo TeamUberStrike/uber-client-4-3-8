@@ -181,14 +181,14 @@ public class ChatPageGUI : PageGUI
     }
 
     /// <summary>
-    /// Position for the player popup menu. GUIToScreenPoint returns screen pixels (GUI.matrix applied);
-    /// on the chat page the menu is drawn at the top level of the scaled block, so convert back to page
-    /// units. Identity on PC (scale 1) and for the in-game panel.
+    /// Position for the player popup menu: the tap point at the top level of this page's scaled block,
+    /// where the menu is drawn. Under the mobile scale GUIToScreenPoint adds the offsets of the
+    /// enclosing groups unscaled, so dividing its result by the scale put the menu up and left of the
+    /// tap; ToTopLevel keeps those offsets in page units. Same as GUIToScreenPoint on PC.
     /// </summary>
     private Vector2 PopupMenuPosition()
     {
-        Vector2 screenPoint = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
-        return IsInGamePanel ? screenPoint : MobileMenuScale.ScreenToMenu(screenPoint);
+        return GUITools.ToTopLevel(new Rect(Event.current.mousePosition, Vector2.zero)).position;
     }
 
     protected void DrawInGamePanel(Rect rect)
