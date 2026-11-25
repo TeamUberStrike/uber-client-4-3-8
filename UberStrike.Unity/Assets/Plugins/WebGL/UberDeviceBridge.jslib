@@ -175,6 +175,13 @@ var UberDeviceBridge = {
             if (!window.uberChatKeyboard) {
                 window.uberChatKeyboard = (function() {
                     var MAX_LENGTH = 140;
+                    var caretText = null;
+                    var caretPass = null;
+                    var mirrorDiv = null;
+                    var mirrorMark = null;
+                    var mirrorInput = null;
+                    var textWrap = null;
+                    var passWrap = null;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
                     var shift = false;
@@ -264,9 +271,17 @@ var UberDeviceBridge = {
                         var longPressFired = false;
 
                         function setPressed(pressed) {
-                            button.style.filter = pressed ? "brightness(1.8)" : "";
                             button.style.transform = pressed ? "scale(0.92)" : "";
                             button.style.boxShadow = pressed ? "inset 0 0 0 2px rgba(255,255,255,0.7)" : "";
+                            if (pressed) {
+                                if (button.__savedBg === undefined) button.__savedBg = button.style.background;
+                                button.style.background = transparentMode ? "rgba(115,115,115,0.6)" : "#5a5a5a";
+                            } else {
+                                if (button.__savedBg !== undefined) {
+                                    button.style.background = button.__savedBg;
+                                    button.__savedBg = undefined;
+                                }
+                            }
                         }
 
                         function stopRepeat() {
@@ -669,21 +684,76 @@ var UberDeviceBridge = {
                         return inputEl ? inputEl.value : "";
                     }
 
-                    function syncInputHeight() {
+                    var pendingHeightSync = false;
+
+                    function applyInputHeight() {
                         if (!inputEl || inputEl === passInput) return;
                         inputEl.style.height = "auto";
-                        inputEl.style.height = inputEl.scrollHeight + "px";
+                        var h = inputEl.scrollHeight;
+                        if (h > 0) inputEl.style.height = h + "px";
+                    }
+
+                    function syncInputHeight() {
+                        if (pendingHeightSync) return;
+                        pendingHeightSync = true;
+                        if (window.requestAnimationFrame) {
+                            window.requestAnimationFrame(function() {
+                                pendingHeightSync = false;
+                                applyInputHeight();
+                            });
+                        } else {
+                            pendingHeightSync = false;
+                            applyInputHeight();
+                        }
                     }
 
                     function selectInput(start, end) {
                         if (!inputEl) return;
                         inputEl.setSelectionRange(start, end);
+                        updateCaret();
+                    }
+
+                    function updateCaret() {
+                        if (!inputEl || !root || root.style.display !== "flex") return;
+                        var caretEl = inputEl === passInput ? caretPass : caretText;
+                        if (caretText) caretText.style.display = "none";
+                        if (caretPass) caretPass.style.display = "none";
+                        if (!caretEl) return;
+                        if (document.activeElement !== inputEl) return;
+
+                        var s = inputEl.selectionStart;
+                        var e = inputEl.selectionEnd;
+                        if (typeof s !== "number" || typeof e !== "number") return;
+
+                        var pos = e;
                         try {
-                            setTimeout(function() {
-                                if (inputEl) inputEl.focus();
-                            }, 0);
-                        } catch (e) {
+                            if (inputEl.selectionDirection === "backward") pos = s;
+                        } catch (err) {
                         }
+
+                        var x, y, h;
+                        if (inputEl === passInput) {
+                            var masked = "";
+                            for (var i = 0; i < pos; i++) masked += "\u2022";
+                            mirrorInput.textContent = masked;
+                            x = 1 + 10 + mirrorInput.offsetWidth - (inputEl.scrollLeft || 0);
+                            y = 1 + Math.max(0, Math.round((inputEl.clientHeight - 22) / 2));
+                            h = Math.min(22, inputEl.clientHeight - 2);
+                        } else {
+                            mirrorDiv.style.width = Math.max(10, inputEl.clientWidth - 22) + "px";
+                            while (mirrorDiv.firstChild) mirrorDiv.removeChild(mirrorDiv.firstChild);
+                            mirrorDiv.appendChild(document.createTextNode(inputEl.value.slice(0, pos)));
+                            mirrorDiv.appendChild(mirrorMark);
+                            x = 1 + 10 + mirrorMark.offsetLeft - inputEl.scrollLeft;
+                            y = 1 + 6 + mirrorMark.offsetTop - inputEl.scrollTop;
+                            h = 22;
+                        }
+
+                        if (y < -2 || y > inputEl.clientHeight + 2) return;
+                        caretEl.style.left = x + "px";
+                        caretEl.style.top = y + "px";
+                        caretEl.style.height = h + "px";
+                        caretEl.style.display = "block";
                     }
 
                     var focusTimer = null;
@@ -710,12 +780,11 @@ var UberDeviceBridge = {
                     }
 
                     function ensureFocus() {
-                        if (!inputEl) return;
+                        if (!inputEl || !root || root.style.display !== "flex") return;
                         if (layoutMenuOpen) return;
                         try {
-                            if (document.activeElement !== inputEl) {
-                                inputEl.focus();
-                            }
+                            if (document.activeElement !== inputEl) inputEl.focus();
+                            updateCaret();
                         } catch (e) {
                         }
                     }
@@ -842,6 +911,8 @@ var UberDeviceBridge = {
                         if (inputEl) inputEl.value = "";
                         layoutMenuOpen = false;
                         if (menuBackdrop) menuBackdrop.style.display = "none";
+                        if (caretText) caretText.style.display = "none";
+                        if (caretPass) caretPass.style.display = "none";
                         clearFocusTimer();
                     }
 
@@ -881,7 +952,11 @@ var UberDeviceBridge = {
                         var placeholderStyle = document.createElement("style");
                         placeholderStyle.textContent =
                             "#uber-chat-keyboard .uber-input::placeholder { color:#777; }" +
-                            "#uber-chat-keyboard .uber-input::-webkit-input-placeholder { color:#777; }";
+                            "#uber-chat-keyboard .uber-input::-webkit-input-placeholder { color:#777; }" +
+                            "#uber-chat-keyboard .uber-caret { position:absolute;width:2px;height:22px;background:#fff;" +
+                            "border-radius:1px;pointer-events:none;display:none;z-index:5;" +
+                            "animation:uberCaretBlink 1.06s steps(1,end) infinite; }" +
+                            "@keyframes uberCaretBlink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }";
                         root.appendChild(placeholderStyle);
 
                         textInput = document.createElement("textarea");
@@ -889,10 +964,10 @@ var UberDeviceBridge = {
                         textInput.inputMode = "none";
                         textInput.placeholder = "Type a message...";
                         textInput.style.cssText =
-                            "display:block;flex:1 1 0%;min-width:0;width:auto;box-sizing:border-box;resize:none;outline:none;" +
+                            "display:block;width:100%;box-sizing:border-box;resize:none;outline:none;caret-color:transparent;" +
                             "min-height:clamp(34px,8vh,42px);max-height:clamp(96px,26vh,190px);overflow-y:auto;" +
                             "background:#0b0b0b;border:1px solid #3a3a3a;border-radius:10px;padding:6px 10px;" +
-                            "color:#fff;caret-color:#fff;font-size:18px;line-height:1.25;" +
+                            "color:#fff;font-size:18px;line-height:1.25;" +
                             "word-wrap:break-word;white-space:pre-wrap;user-select:text;-webkit-user-select:text;" +
                             "touch-action:auto;-webkit-touch-callout:default;";
 
@@ -902,10 +977,10 @@ var UberDeviceBridge = {
                         passInput.inputMode = "none";
                         passInput.placeholder = "Type a message...";
                         passInput.style.cssText =
-                            "display:none;flex:1 1 0%;min-width:0;width:auto;box-sizing:border-box;outline:none;" +
+                            "display:none;width:100%;box-sizing:border-box;outline:none;caret-color:transparent;" +
                             "height:clamp(34px,8vh,42px);background:#0b0b0b;border:1px solid #3a3a3a;" +
-                            "border-radius:10px;padding:6px 10px;color:#fff;caret-color:#fff;" +
-                            "font-size:18px;line-height:1.25;user-select:text;-webkit-user-select:text;" +
+                            "border-radius:10px;padding:6px 10px;color:#fff;font-size:18px;line-height:1.25;" +
+                            "user-select:text;-webkit-user-select:text;" +
                             "touch-action:auto;-webkit-touch-callout:default;";
 
                         keysHost = document.createElement("div");
@@ -919,6 +994,15 @@ var UberDeviceBridge = {
                         menuBackdrop.addEventListener("pointerdown", closeMenu, false);
                         menuBackdrop.addEventListener("touchstart", closeMenu, false);
                         root.appendChild(menuBackdrop);
+
+                        var refocusSoon = function() {
+                            setTimeout(function() {
+                                if (!layoutMenuOpen) ensureFocus();
+                            }, 0);
+                        };
+                        root.addEventListener("pointerdown", refocusSoon, false);
+                        root.addEventListener("touchstart", refocusSoon, false);
+                        window.addEventListener("focus", refocusSoon, false);
 
                         var makeCircleButton = function(label, ariaLabel, fontSize, onClick) {
                             var b = document.createElement("button");
@@ -951,11 +1035,39 @@ var UberDeviceBridge = {
                             }, 120);
                         });
 
+                        textWrap = document.createElement("div");
+                        textWrap.style.cssText = "position:relative;flex:1 1 0%;min-width:0;";
+                        passWrap = document.createElement("div");
+                        passWrap.style.cssText = "position:relative;flex:1 1 0%;min-width:0;display:none;";
+                        textWrap.appendChild(textInput);
+                        passWrap.appendChild(passInput);
+
+                        caretText = document.createElement("div");
+                        caretText.className = "uber-caret";
+                        textWrap.appendChild(caretText);
+                        caretPass = document.createElement("div");
+                        caretPass.className = "uber-caret";
+                        passWrap.appendChild(caretPass);
+
+                        mirrorDiv = document.createElement("div");
+                        mirrorDiv.style.cssText =
+                            "position:absolute;top:-9999px;left:-9999px;visibility:hidden;" +
+                            "white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;" +
+                            "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:18px;line-height:1.25;";
+                        mirrorMark = document.createElement("span");
+
+                        mirrorInput = document.createElement("span");
+                        mirrorInput.style.cssText =
+                            "position:absolute;top:-9999px;left:-9999px;visibility:hidden;white-space:pre;" +
+                            "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:18px;line-height:1.25;";
+                        document.body.appendChild(mirrorDiv);
+                        document.body.appendChild(mirrorInput);
+
                         var topBar = document.createElement("div");
                         topBar.style.cssText = "display:flex;align-items:flex-start;gap:8px;width:100%;margin-bottom:6px;";
                         topBar.appendChild(cancelButtonEl);
-                        topBar.appendChild(textInput);
-                        topBar.appendChild(passInput);
+                        topBar.appendChild(textWrap);
+                        topBar.appendChild(passWrap);
                         topBar.appendChild(okButtonEl);
 
                         var preventNativeKeyboard = function(ev) {
@@ -972,6 +1084,14 @@ var UberDeviceBridge = {
                         };
                         textInput.addEventListener("focus", preventNativeKeyboard, false);
                         passInput.addEventListener("focus", preventNativeKeyboard, false);
+                        textInput.addEventListener("focus", updateCaret, false);
+                        passInput.addEventListener("focus", updateCaret, false);
+                        textInput.addEventListener("blur", updateCaret, false);
+                        passInput.addEventListener("blur", updateCaret, false);
+                        textInput.addEventListener("scroll", updateCaret, false);
+                        document.addEventListener("selectionchange", function() {
+                            if (root && root.style.display === "flex") updateCaret();
+                        }, false);
 
                         panelEl.appendChild(topBar);
                         panelEl.appendChild(keysHost);
@@ -1013,11 +1133,15 @@ var UberDeviceBridge = {
                                 inputEl = passInput;
                                 textInput.style.display = "none";
                                 passInput.style.display = "block";
+                                textWrap.style.display = "none";
+                                passWrap.style.display = "block";
                             } else {
                                 passInput.value = "";
                                 inputEl = textInput;
                                 passInput.style.display = "none";
                                 textInput.style.display = "block";
+                                passWrap.style.display = "none";
+                                textWrap.style.display = "block";
                             }
 
                             inputEl.value = initialText || "";
@@ -1033,16 +1157,26 @@ var UberDeviceBridge = {
 
                             inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
                             inputEl.focus();
+                            updateCaret();
                             try {
                                 setTimeout(function() {
                                     if (inputEl) inputEl.focus();
+                                    updateCaret();
                                 }, 60);
+                                setTimeout(function() {
+                                    if (inputEl) inputEl.focus();
+                                    updateCaret();
+                                }, 150);
+                                setTimeout(function() {
+                                    if (inputEl) inputEl.focus();
+                                    updateCaret();
+                                }, 400);
                             } catch (e) {
                             }
 
                             clearFocusTimer();
                             try {
-                                focusTimer = setInterval(ensureFocus, 700);
+                                focusTimer = setInterval(ensureFocus, 400);
                             } catch (e) {
                             }
                         },
