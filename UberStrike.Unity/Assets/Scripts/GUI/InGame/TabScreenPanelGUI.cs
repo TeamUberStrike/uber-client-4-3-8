@@ -261,25 +261,14 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         int splatsWidth = large ? 40 : 30;
         int weaponWidth = large ? 40 : 32;
         int descriptionWidth = position.width > (large ? 640 : 540) ? (large ? 180 : 150) : 0;
-        int killedWidth = position.width > (large ? 440 : 420) ? (large ? 46 : 50) : 0;
-        int kdrWidth = position.width > (large ? 440 : 450) ? (large ? 42 : 30) : 0;
+        // Touch devices: at the large size "Deaths" is 43 units wide and "KDR" 27, so Deaths gets the wider cell
+        // and both titles keep a gap before the next column.
+        int killedWidth = position.width > (large ? 440 : 420) ? (large ? 52 : 50) : 0;
+        int kdrWidth = position.width > (large ? 440 : 450) ? (large ? 36 : 30) : 0;
         int pointsWidth = !large && position.width > 490 ? 40 : 0;
         int deadWidth = large ? 32 : 30;
         int pingWidth = large ? 56 : 50;
         int nameWidth = Mathf.Clamp(Mathf.RoundToInt(position.width - 30 - offset - iconWidth - levelWidth - splatsWidth - weaponWidth - descriptionWidth - deadWidth - pingWidth - killedWidth - kdrWidth - pointsWidth), 110, large ? 340 : 300);
-
-        // Touch devices: the large Deaths and KDR headers touch at their base widths. When the name
-        // column has room to spare, move up to 20 units of it to those two columns.
-        if (large && killedWidth > 0 && kdrWidth > 0)
-        {
-            int spare = Mathf.Min(nameWidth - 140, 20);
-            if (spare > 0)
-            {
-                killedWidth += spare / 2;
-                kdrWidth += spare - spare / 2;
-                nameWidth -= spare;
-            }
-        }
 
         GUI.BeginGroup(position, GUIContent.none, BlueStonez.box_overlay);
         {
