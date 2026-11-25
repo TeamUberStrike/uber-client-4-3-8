@@ -53,6 +53,8 @@ public static class CmunePrefs
         Options_VideoPostProcessingStrength = 130,
         Options_GeneralLimitFrameRate = 131,
         Options_GeneralFrameRateVersion = 132,
+        Options_VideoScreenWidth = 133,
+        Options_VideoScreenHeight = 134,
 
 #if UNITY_ANDROID || UNITY_IPHONE || UNITY_WEBGL
         Options_MobileUseMultiTouch = 150,

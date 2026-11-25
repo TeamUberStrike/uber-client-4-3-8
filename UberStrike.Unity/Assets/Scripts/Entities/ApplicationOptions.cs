@@ -16,6 +16,9 @@ public class ApplicationOptions
     public int VideoAntiAliasing = 0;
     public int VideoWaterMode = 1;
     public int ScreenResolution = 0;
+    // Size of the resolution picked in the options (0 = none yet), restored at startup.
+    public int ScreenWidth = 0;
+    public int ScreenHeight = 0;
     public bool IsFullscreen = false;
     public bool VideoBloomAndFlares = false;
     public bool VideoVignetting = false;
@@ -125,6 +128,8 @@ public class ApplicationOptions
 
         IsFullscreen = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoIsFullscreen, true);
         ScreenResolution = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoScreenRes, ScreenResolutionManager.CurrentResolutionIndex);
+        ScreenWidth = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoScreenWidth, 0);
+        ScreenHeight = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoScreenHeight, 0);
 
         VideoFOV = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV) >= (VideoFOVNormal + VideoFOVWide) * 0.5f ? VideoFOVWide : VideoFOVNormal;
         VideoShowFps = CmunePrefs.ReadKey(CmunePrefs.Key.Options_VideoShowFps, VideoShowFps);
@@ -183,6 +188,8 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoColorCorrection, VideoVignetting);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoMotionBlur, VideoMotionBlur);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoScreenRes, ScreenResolution);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoScreenWidth, ScreenWidth);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoScreenHeight, ScreenHeight);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoIsFullscreen, IsFullscreen);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoFOV, VideoFOV);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_VideoShowFps, VideoShowFps);

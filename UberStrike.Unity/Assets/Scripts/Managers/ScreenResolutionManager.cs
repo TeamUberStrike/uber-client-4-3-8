@@ -49,7 +49,12 @@ public static class ScreenResolutionManager
             }
             else
             {
-                Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, value);
+                // Keep the resolution picked in the options instead of jumping to the desktop resolution.
+                Resolution saved;
+                if (TryGetSavedResolution(out saved))
+                    Screen.SetResolution(saved.width, saved.height, value);
+                else
+                    Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, value);
             }
             
             ApplicationDataManager.ApplicationOptions.IsFullscreen = value;
@@ -123,7 +128,75 @@ public static class ScreenResolutionManager
             Screen.SetResolution(resolutions[newResIndex].width, resolutions[newResIndex].height, fullscreen);
 
             // Update the Application Player Prefs to reflect the selected resolution
-            ApplicationDataManager.ApplicationOptions.ScreenResolution = newResIndex;
+            SaveResolution(newResIndex, fullscreen);
+        }
+    }
+
+    // Remember the picked resolution (by size, the list index changes with the monitor) and the
+    // fullscreen state, so RestoreSavedResolution can put them back on the next start.
+    private static void SaveResolution(int index, bool fullscreen)
+    {
+        ApplicationOptions options = ApplicationDataManager.ApplicationOptions;
+        options.ScreenResolution = index;
+        options.ScreenWidth = resolutions[index].width;
+        options.ScreenHeight = resolutions[index].height;
+        options.IsFullscreen = fullscreen;
+        options.SaveApplicationOptions();
+    }
+
+    private static bool TryGetSavedResolution(out Resolution saved)
+    {
+        ApplicationOptions options = ApplicationDataManager.ApplicationOptions;
+        int index = options != null ? resolutions.FindIndex(r => r.width == options.ScreenWidth && r.height == options.ScreenHeight) : -1;
+        saved = index >= 0 ? resolutions[index] : default(Resolution);
+        return index >= 0;
+    }
+
+    /// <summary>
+    /// Desktop only, at startup: Unity starts a fullscreen player at the desktop resolution, so put
+    /// back the resolution and fullscreen state picked in the options. -screen-* launch arguments win.
+    /// </summary>
+    public static void RestoreSavedResolution()
+    {
+        if (Application.platform != RuntimePlatform.WindowsPlayer && Application.platform != RuntimePlatform.OSXPlayer && Application.platform != RuntimePlatform.LinuxPlayer)
+            return;
+        foreach (string arg in System.Environment.GetCommandLineArgs())
+            if (arg.StartsWith("-screen-")) return;
+
+        Resolution saved;
+        if (!TryGetSavedResolution(out saved)) return;
+
+        bool fullscreen = ApplicationDataManager.ApplicationOptions.IsFullscreen;
+        // A window at the desktop size hangs off the screen; Unity's own saved window size is used instead.
+        if (!fullscreen && saved.width == resolutions[resolutions.Count - 1].width && saved.height == resolutions[resolutions.Count - 1].height)
+            return;
+        if (Screen.width != saved.width || Screen.height != saved.height || Screen.fullScreen != fullscreen)
+        {
+            Debug.Log("Screen: restoring " + saved.width + "x" + saved.height + (fullscreen ? " fullscreen" : " windowed") + " (started at " + Screen.width + "x" + Screen.height + (Screen.fullScreen ? " fullscreen)" : " windowed)"));
+            Screen.SetResolution(saved.width, saved.height, fullscreen);
+        }
+    }
+
+    /// <summary>
+    /// Desktop only, on quit: remember the screen as it is (also after Unity's own Alt+Enter), so the
+    /// next start comes back the same.
+    /// </summary>
+    public static void SaveCurrentScreen()
+    {
+        if (Application.platform != RuntimePlatform.WindowsPlayer && Application.platform != RuntimePlatform.OSXPlayer && Application.platform != RuntimePlatform.LinuxPlayer)
+            return;
+        if (ApplicationDataManager.ApplicationOptions == null)
+            return;
+
+        int index = resolutions.FindIndex(r => r.width == Screen.width && r.height == Screen.height);
+        if (index >= 0)
+        {
+            SaveResolution(index, Screen.fullScreen);
+        }
+        else
+        {
+            ApplicationDataManager.ApplicationOptions.IsFullscreen = Screen.fullScreen;
+            ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
         }
     }
 
@@ -177,7 +250,7 @@ public static class ScreenResolutionManager
             Screen.SetResolution((int)desiredResolution.x, (int)desiredResolution.y, true);
 
             // Update the Application Player Prefs to reflect the selected resolution
-            ApplicationDataManager.ApplicationOptions.ScreenResolution = desiredResolutionIndex;
+            SaveResolution(desiredResolutionIndex, true);
         }
     }
 
