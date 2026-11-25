@@ -716,10 +716,13 @@ var UberDeviceBridge = {
                     function updateCaret() {
                         if (!inputEl || !root || root.style.display !== "flex") return;
                         var caretEl = inputEl === passInput ? caretPass : caretText;
-                        if (caretText) caretText.style.display = "none";
-                        if (caretPass) caretPass.style.display = "none";
+                        if (caretText && caretText !== caretEl && caretText.style.display !== "none") caretText.style.display = "none";
+                        if (caretPass && caretPass !== caretEl && caretPass.style.display !== "none") caretPass.style.display = "none";
                         if (!caretEl) return;
-                        if (document.activeElement !== inputEl) return;
+                        if (document.activeElement !== inputEl) {
+                            if (caretEl.style.display !== "none") caretEl.style.display = "none";
+                            return;
+                        }
 
                         var s = inputEl.selectionStart;
                         var e = inputEl.selectionEnd;
@@ -749,11 +752,14 @@ var UberDeviceBridge = {
                             h = 22;
                         }
 
-                        if (y < -2 || y > inputEl.clientHeight + 2) return;
+                        if (y < -2 || y > inputEl.clientHeight + 2) {
+                            if (caretEl.style.display !== "none") caretEl.style.display = "none";
+                            return;
+                        }
                         caretEl.style.left = x + "px";
                         caretEl.style.top = y + "px";
                         caretEl.style.height = h + "px";
-                        caretEl.style.display = "block";
+                        if (caretEl.style.display !== "block") caretEl.style.display = "block";
                     }
 
                     var focusTimer = null;
@@ -955,8 +961,8 @@ var UberDeviceBridge = {
                             "#uber-chat-keyboard .uber-input::-webkit-input-placeholder { color:#777; }" +
                             "#uber-chat-keyboard .uber-caret { position:absolute;width:2px;height:22px;background:#fff;" +
                             "border-radius:1px;pointer-events:none;display:none;z-index:5;" +
-                            "animation:uberCaretBlink 1.06s steps(1,end) infinite; }" +
-                            "@keyframes uberCaretBlink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }";
+                            "animation:uberCaretBlink 1.06s linear infinite; }" +
+                            "@keyframes uberCaretBlink { 0%,49.99% { opacity:1; } 50%,100% { opacity:0; } }";
                         root.appendChild(placeholderStyle);
 
                         textInput = document.createElement("textarea");
