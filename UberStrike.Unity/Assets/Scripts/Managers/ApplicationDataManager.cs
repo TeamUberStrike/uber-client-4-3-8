@@ -268,7 +268,7 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                         QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
                     }
 
-                    ScreenResolutionManager.RestoreSavedResolution();
+                    StartCoroutine(RestoreSavedResolutionWhenFocused());
                 }
 #endif
 
@@ -325,8 +325,21 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
 
     protected override void OnShutdown()
     {
-        // If we are a standalone build, we get out of fullscreen on quit, so that it won't try to start fullscreen when we next open the app
-        PlayerPrefs.SetInt("Screenmanager Is Fullscreen mode", 0);
+        // Remember the screen as it is on quit (size and fullscreen), so the next start comes back the same.
+        // Older builds set "Screenmanager Is Fullscreen mode" to 0 here to always start windowed; drop that
+        // leftover so Unity starts in the saved mode.
+        PlayerPrefs.DeleteKey("Screenmanager Is Fullscreen mode");
+        ScreenResolutionManager.SaveCurrentScreen();
+    }
+
+    // Changing the resolution while the window is still starting up can leave the mouse stuck until
+    // alt-tab, so wait until the window has focus and has drawn a couple of frames.
+    private IEnumerator RestoreSavedResolutionWhenFocused()
+    {
+        while (!Application.isFocused) yield return null;
+        yield return null;
+        yield return null;
+        ScreenResolutionManager.RestoreSavedResolution();
     }
 
     private void OnApplicationFocus(bool isFocused)

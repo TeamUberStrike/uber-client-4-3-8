@@ -171,7 +171,33 @@ public static class ScreenResolutionManager
         if (!fullscreen && saved.width == resolutions[resolutions.Count - 1].width && saved.height == resolutions[resolutions.Count - 1].height)
             return;
         if (Screen.width != saved.width || Screen.height != saved.height || Screen.fullScreen != fullscreen)
+        {
+            Debug.Log("Screen: restoring " + saved.width + "x" + saved.height + (fullscreen ? " fullscreen" : " windowed") + " (started at " + Screen.width + "x" + Screen.height + (Screen.fullScreen ? " fullscreen)" : " windowed)"));
             Screen.SetResolution(saved.width, saved.height, fullscreen);
+        }
+    }
+
+    /// <summary>
+    /// Desktop only, on quit: remember the screen as it is (also after Unity's own Alt+Enter), so the
+    /// next start comes back the same.
+    /// </summary>
+    public static void SaveCurrentScreen()
+    {
+        if (Application.platform != RuntimePlatform.WindowsPlayer && Application.platform != RuntimePlatform.OSXPlayer && Application.platform != RuntimePlatform.LinuxPlayer)
+            return;
+        if (ApplicationDataManager.ApplicationOptions == null)
+            return;
+
+        int index = resolutions.FindIndex(r => r.width == Screen.width && r.height == Screen.height);
+        if (index >= 0)
+        {
+            SaveResolution(index, Screen.fullScreen);
+        }
+        else
+        {
+            ApplicationDataManager.ApplicationOptions.IsFullscreen = Screen.fullScreen;
+            ApplicationDataManager.ApplicationOptions.SaveApplicationOptions();
+        }
     }
 
     /// <summary>
