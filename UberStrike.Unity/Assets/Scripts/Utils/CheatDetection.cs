@@ -32,6 +32,7 @@ public class CheatDetection : MonoBehaviour
     {
         StartCoroutine(StartNewSpeedhackDetection());
         StartCoroutine(StartCheckSecureMemory());
+        UberBeat.EnsureRunning();
     }
 
     private IEnumerator StartCheckSecureMemory()
