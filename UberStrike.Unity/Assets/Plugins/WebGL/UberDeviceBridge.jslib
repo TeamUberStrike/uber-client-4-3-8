@@ -174,7 +174,7 @@ var UberDeviceBridge = {
 
             if (!window.uberChatKeyboard) {
                 window.uberChatKeyboard = (function() {
-                    var MAX_LENGTH = 140;
+                    var MAX_LENGTH = 280;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
                     var shift = false;
@@ -190,7 +190,8 @@ var UberDeviceBridge = {
                     var keysHost = null;
                     var menuBackdrop = null;
                     var panelEl = null;
-                    var sendButtonEl = null;
+                    var cancelButtonEl = null;
+                    var okButtonEl = null;
                     var targetObject = "TouchInputManager";
                     var sendMethod = "OnWebGLChatSend";
                     var maskedMode = false;
@@ -696,9 +697,15 @@ var UberDeviceBridge = {
                         if (panelEl) panelEl.style.background = solidPanel;
                         if (textInput) textInput.style.background = solidInput;
                         if (passInput) passInput.style.background = solidInput;
-                        if (sendButtonEl) {
-                            sendButtonEl.style.background = transparentMode ? "rgba(51,51,51,0.35)" : "#333";
-                            sendButtonEl.style.border = transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0";
+                        var circleBg = transparentMode ? "rgba(51,51,51,0.35)" : "#333";
+                        var circleBorder = transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0";
+                        if (cancelButtonEl) {
+                            cancelButtonEl.style.background = circleBg;
+                            cancelButtonEl.style.border = circleBorder;
+                        }
+                        if (okButtonEl) {
+                            okButtonEl.style.background = circleBg;
+                            okButtonEl.style.border = circleBorder;
                         }
                     }
 
@@ -865,10 +872,11 @@ var UberDeviceBridge = {
                         panelEl = document.createElement("div");
                         panelEl.style.cssText =
                             "position:relative;z-index:9;width:100%;max-width:900px;" +
-                            "background:transparent;" +
-                            "padding:6px calc(10px + env(safe-area-inset-right,0px)) " +
-                            "calc(6px + env(safe-area-inset-bottom,0px)) " +
-                            "calc(10px + env(safe-area-inset-left,0px));box-sizing:border-box;";
+                            "background:transparent;box-sizing:border-box;";
+                        panelEl.style.paddingTop = "6px";
+                        panelEl.style.paddingRight = "calc(10px + env(safe-area-inset-right,0px))";
+                        panelEl.style.paddingBottom = "env(safe-area-inset-bottom,0px)";
+                        panelEl.style.paddingLeft = "calc(10px + env(safe-area-inset-left,0px))";
 
                         var placeholderStyle = document.createElement("style");
                         placeholderStyle.textContent =
@@ -881,10 +889,10 @@ var UberDeviceBridge = {
                         textInput.inputMode = "none";
                         textInput.placeholder = "Type a message...";
                         textInput.style.cssText =
-                            "display:block;width:100%;box-sizing:border-box;resize:none;outline:none;" +
+                            "display:block;flex:1 1 0%;min-width:0;width:auto;box-sizing:border-box;resize:none;outline:none;" +
                             "min-height:clamp(34px,8vh,42px);max-height:clamp(96px,26vh,190px);overflow-y:auto;" +
                             "background:#0b0b0b;border:1px solid #3a3a3a;border-radius:10px;padding:6px 10px;" +
-                            "margin-bottom:6px;color:#fff;caret-color:#fff;font-size:18px;line-height:1.25;" +
+                            "color:#fff;caret-color:#fff;font-size:18px;line-height:1.25;" +
                             "word-wrap:break-word;white-space:pre-wrap;user-select:text;-webkit-user-select:text;" +
                             "touch-action:auto;-webkit-touch-callout:default;";
 
@@ -894,9 +902,9 @@ var UberDeviceBridge = {
                         passInput.inputMode = "none";
                         passInput.placeholder = "Type a message...";
                         passInput.style.cssText =
-                            "display:none;width:100%;box-sizing:border-box;outline:none;" +
+                            "display:none;flex:1 1 0%;min-width:0;width:auto;box-sizing:border-box;outline:none;" +
                             "height:clamp(34px,8vh,42px);background:#0b0b0b;border:1px solid #3a3a3a;" +
-                            "border-radius:10px;padding:6px 10px;margin-bottom:6px;color:#fff;caret-color:#fff;" +
+                            "border-radius:10px;padding:6px 10px;color:#fff;caret-color:#fff;" +
                             "font-size:18px;line-height:1.25;user-select:text;-webkit-user-select:text;" +
                             "touch-action:auto;-webkit-touch-callout:default;";
 
@@ -912,21 +920,43 @@ var UberDeviceBridge = {
                         menuBackdrop.addEventListener("touchstart", closeMenu, false);
                         root.appendChild(menuBackdrop);
 
-                        sendButtonEl = document.createElement("button");
-                        sendButtonEl.type = "button";
-                        sendButtonEl.textContent = "SEND";
-                        sendButtonEl.style.cssText =
-                            "display:block;width:100%;height:clamp(46px,13vh,56px);margin-top:6px;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0") + ";border-radius:7px;" +
-                            "background:" + (transparentMode ? "rgba(51,51,51,0.35)" : "#333") + ";color:#fff;outline:none;cursor:pointer;" +
-                            "font:700 18px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
-                            "letter-spacing:1px;touch-action:manipulation;-webkit-touch-callout:none;" +
-                            "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease,box-shadow 50ms ease;";
+                        var makeCircleButton = function(label, ariaLabel, fontSize, onClick) {
+                            var b = document.createElement("button");
+                            b.type = "button";
+                            b.textContent = label;
+                            b.setAttribute("aria-label", ariaLabel);
+                            b.style.cssText =
+                                "display:flex;align-items:center;justify-content:center;flex:none;" +
+                                "width:clamp(38px,9vh,46px);height:clamp(38px,9vh,46px);" +
+                                "border-radius:50%;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0") + ";" +
+                                "background:" + (transparentMode ? "rgba(51,51,51,0.35)" : "#333") + ";color:#fff;outline:none;cursor:pointer;" +
+                                "font:700 " + fontSize + "px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
+                                "letter-spacing:0.3px;touch-action:manipulation;-webkit-touch-callout:none;" +
+                                "-webkit-tap-highlight-color:transparent;transition:transform 50ms ease,filter 50ms ease,box-shadow 50ms ease;";
+                            bindPress(b, onClick);
+                            return b;
+                        };
 
-                        bindPress(sendButtonEl, function() {
+                        cancelButtonEl = makeCircleButton("\u2715", "Cancel", 18, function() {
+                            try {
+                                SendMessage(targetObject, sendMethod, "");
+                            } catch (e) {
+                            }
+                            hide();
+                        });
+
+                        okButtonEl = makeCircleButton("OK", "OK", 14, function() {
                             setTimeout(function() {
                                 send();
                             }, 120);
                         });
+
+                        var topBar = document.createElement("div");
+                        topBar.style.cssText = "display:flex;align-items:flex-start;gap:8px;width:100%;margin-bottom:6px;";
+                        topBar.appendChild(cancelButtonEl);
+                        topBar.appendChild(textInput);
+                        topBar.appendChild(passInput);
+                        topBar.appendChild(okButtonEl);
 
                         var preventNativeKeyboard = function(ev) {
                             var el = ev && ev.target;
@@ -943,10 +973,8 @@ var UberDeviceBridge = {
                         textInput.addEventListener("focus", preventNativeKeyboard, false);
                         passInput.addEventListener("focus", preventNativeKeyboard, false);
 
-                        panelEl.appendChild(textInput);
-                        panelEl.appendChild(passInput);
+                        panelEl.appendChild(topBar);
                         panelEl.appendChild(keysHost);
-                        panelEl.appendChild(sendButtonEl);
                         root.appendChild(panelEl);
                         document.body.appendChild(root);
                     }
