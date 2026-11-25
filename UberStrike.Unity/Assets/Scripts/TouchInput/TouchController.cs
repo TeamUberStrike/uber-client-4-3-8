@@ -25,8 +25,8 @@ public class TouchController : Singleton<TouchController>
         // buttons must not sit over the results (the pause button would close them).
         if (GamePageManager.IsCurrentPage(PageType.EndOfMatch))
         {
-            // A scoreboard held as the match ended never sees its finger lift here, so close it.
-            if (TabScreenPanelGUI.Exists) TabScreenPanelGUI.Instance.ForceShow = false;
+            // A scoreboard held as the match ended never sees its finger lift here, so release it.
+            if (TouchInput.Exists) TouchInput.Instance.ReleaseScoreboardForEndOfMatch();
             return;
         }
 #endif

@@ -859,6 +859,24 @@ public class TouchInput : MonoSingleton<TouchInput>
         TabScreenPanelGUI.Instance.ForceShow = true;
     }
 
+    /// <summary>
+    /// The end-of-match screen stops touch processing, so a scoreboard held as the match ends never sees its
+    /// finger lift. Release it here instead: into Paused, as every mode pauses the player at match end (when
+    /// the player was paused already, no pause event comes to do it), and drop the finger so a later touch
+    /// that reuses its id can't count as the lift.
+    /// </summary>
+    public void ReleaseScoreboardForEndOfMatch()
+    {
+        TouchButton score;
+        if (Buttons != null && Buttons.TryGetValue((int)TouchKeyType.Score, out score) && score != null && score.IsActive)
+            score.CancelTouch();
+
+        if (_stateMachine != null && _stateMachine.CurrentStateId == (int)TouchState.Scoreboard)
+            _stateMachine.SetState((int)TouchState.Paused);
+
+        if (TabScreenPanelGUI.Exists) TabScreenPanelGUI.Instance.ForceShow = false;
+    }
+
     void OnWeaponChanged()
     {
         TouchInput.Instance.WeaponChanger.CheckWeaponChanged();
