@@ -323,19 +323,31 @@ var UberDeviceBridge = {
                     var soundBuffers = {};
                     var soundsLoading = false;
 
+                    function keyboardPlatform() {
+                        try {
+                            var ua = navigator.userAgent.toLowerCase();
+                            if (/iphone|ipod|ipad/.test(ua)) return "ios";
+                            if (navigator.maxTouchPoints > 1 && /macintosh/.test(ua)) return "ios";
+                            if (/android/.test(ua)) return "android";
+                        } catch (e) {
+                        }
+                        return "ios";
+                    }
+
                     function loadKeySounds() {
                         if (soundsLoading) return;
                         soundsLoading = true;
                         var files = {
-                            standard: "StreamingAssets/Audio/Keyboard/KeypressStandard.wav",
-                            spacebar: "StreamingAssets/Audio/Keyboard/KeypressSpacebar.wav",
-                            "delete": "StreamingAssets/Audio/Keyboard/KeypressDelete.wav"
+                            standard: "KeypressStandard.wav",
+                            spacebar: "KeypressSpacebar.wav",
+                            "delete": "KeypressDelete.wav"
                         };
                         for (var key in files) {
                             if (!files.hasOwnProperty(key)) continue;
-                            (function(k, url) {
+                            (function(k, file) {
                                 try {
-                                    fetch(url).then(function(resp) {
+                                    var base = "StreamingAssets/Audio/Keyboard/" + keyboardPlatform() + "/";
+                                    fetch(base + "44k/" + file + "?v=5").then(function(resp) {
                                         if (!resp || !resp.ok) throw new Error("http");
                                         return resp.arrayBuffer();
                                     }).then(function(ab) {
@@ -349,6 +361,24 @@ var UberDeviceBridge = {
                                         if (pr && typeof pr.then === "function") pr.then(done, function() {
                                         });
                                     }).catch(function() {
+                                        try {
+                                            fetch(base + "48k/" + file + "?v=5").then(function(resp) {
+                                                if (!resp || !resp.ok) throw new Error("http");
+                                                return resp.arrayBuffer();
+                                            }).then(function(ab) {
+                                                var ctx = ensureAudio();
+                                                if (!ctx) throw new Error("no ctx");
+                                                var done = function(decoded) {
+                                                    soundBuffers[k] = decoded;
+                                                };
+                                                var pr = ctx.decodeAudioData(ab, done, function() {
+                                                });
+                                                if (pr && typeof pr.then === "function") pr.then(done, function() {
+                                                });
+                                            }).catch(function() {
+                                            });
+                                        } catch (e) {
+                                        }
                                     });
                                 } catch (e) {
                                 }
@@ -366,7 +396,7 @@ var UberDeviceBridge = {
                                 var src = ctx.createBufferSource();
                                 src.buffer = buf;
                                 var g = ctx.createGain();
-                                g.gain.value = 0.7;
+                                g.gain.value = 0.6;
                                 src.connect(g);
                                 g.connect(ctx.destination);
                                 src.start(0);
