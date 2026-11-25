@@ -73,7 +73,7 @@ public class ItemManager : Singleton<ItemManager>
         foreach (var itemView in shopView.WeaponItems) AddItemToShop(itemView);
         foreach (var itemView in shopView.FunctionalItems)
         {
-            if (itemView.ID == 1094)
+            if (itemView.ID == 1094 || itemView.ID == UberStrikeCommonConfig.ClanLeaderLicenseId)
             {
                 AddItemToShop(itemView);
             }
