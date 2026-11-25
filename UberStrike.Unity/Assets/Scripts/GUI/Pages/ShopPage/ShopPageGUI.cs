@@ -680,7 +680,7 @@ public class ShopPageGUI : PageGUI
             }
 
             //Draw Loadout Contents
-            Rect contentRect = new Rect(1, 72, rect.width - 1, rect.height - 72);
+            Rect contentRect = new Rect(1, 72, rect.width - 1, rect.height - 72 - PresetStripHeight);
             switch (_loadoutAreaSelection.Current)
             {
                 case LoadoutArea.Weapons:
@@ -693,8 +693,40 @@ public class ShopPageGUI : PageGUI
                     DrawQuickItemLoadout(contentRect);
                     break;
             }
+
+            DrawLoadoutPresets(new Rect(0, rect.height - PresetStripHeight, rect.width, PresetStripHeight));
         }
         GUI.EndGroup();
+    }
+
+    private const int PresetStripHeight = 62;
+
+    // loadout templates: number loads, Save stores the current loadout
+    private void DrawLoadoutPresets(Rect rect)
+    {
+        GUI.Label(new Rect(rect.x + 6, rect.y + 2, rect.width - 12, 16), "TEMPLATES", BlueStonez.label_interparkmed_10pt_left);
+        float w = (rect.width - 12) / LoadoutPresets.Count;
+        for (int i = 1; i <= LoadoutPresets.Count; i++)
+        {
+            float x = rect.x + 6 + (i - 1) * w;
+            bool saved = LoadoutPresets.HasCached(i);
+            GUI.enabled = saved && PlayerDataManager.IsPlayerLoggedIn;
+            if (GUITools.Button(new Rect(x + 1, rect.y + 18, w - 2, 20), new GUIContent(i.ToString(), LoadoutPresets.DescribeCached(i)), BlueStonez.buttondark_medium))
+            {
+                GUITools.Clicked();
+                int skipped = LoadoutPresets.Load(i);
+                SfxManager.Play2dAudioClip(SoundEffectType.UIButtonClick);
+                if (skipped > 0) Debug.Log("Loadout template " + i + ": " + skipped + " item(s) no longer owned, skipped");
+            }
+            GUI.enabled = PlayerDataManager.IsPlayerLoggedIn;
+            if (GUITools.Button(new Rect(x + 1, rect.y + 40, w - 2, 18), new GUIContent("Save", "Save the current loadout as template " + i), BlueStonez.buttondark_medium))
+            {
+                GUITools.Clicked();
+                LoadoutPresets.Save(i);
+                SfxManager.Play2dAudioClip(SoundEffectType.UIButtonClick);
+            }
+            GUI.enabled = true;
+        }
     }
 
     private void DrawShop(Rect labsRect)
