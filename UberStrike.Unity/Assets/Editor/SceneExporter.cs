@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using Cmune.DataCenter.Common.Entities;
@@ -8,26 +9,29 @@ using UnityEngine;
 
 public class SceneExporter
 {
-    public const string BaseContentUrlProduction = "http://client.uberforever.eu/";
-    public const string BaseContentUrlExternalQA = "http://client-qa.uberforever.eu/";
-    public const string BaseContentUrlInternalDev = "http://client-dev.uberforever.eu/";
+    public const string BaseContentUrlProduction = "https://client.uberstrike.com/";
+    public const string BaseContentUrlExternalQA = "https://client-qa.uberstrike.com/";
+    public const string BaseContentUrlInternalDev = "https://client-dev.uberstrike.com/";
 
-    public const string BaseWebServiceUrlProduction = "https://ws.uberforever.eu/";
-    public const string BaseWebServiceUrlExternalQA = "https://ws-qa.uberforever.eu/";
-    public const string BaseWebServiceUrlInternalDev = "https://ws-dev.uberforever.eu/";
+    public const string BaseWebServiceUrlProduction = "https://ws.uberstrike.com/";
+    public const string BaseWebServiceUrlExternalQA = "https://ws-qa.uberstrike.com/";
+    public const string BaseWebServiceUrlInternalDev = "https://ws-dev.uberstrike.com/";
+    public const string BaseWebServiceUrlLocalhost = "http://localhost:9000/";
 
     public static readonly string WebPlayerFolder = Application.dataPath + "/../Latest/WebPlayer";
     public static readonly string WindowsStandaloneFolder = Application.dataPath + "/../Latest/WindowsStandalone";
     public static readonly string Windows64StandaloneFolder = Application.dataPath + "/../Latest/Windows64Standalone";
     public static readonly string OsxStandaloneFolder = Application.dataPath + "/../Latest/OsxStandalone";
     public static readonly string MacAppStoreStandaloneFolder = Application.dataPath + "/../Latest/MacAppStoreStandalone";
+    public static readonly string AndroidFolder = Application.dataPath + "/../Latest/Android";
+    public static readonly string IOSBuildFolder = Application.dataPath + "/../BuildIos/";
 
     public const string SceneFolder = "Assets/Scenes/";
     public const string SplashScene = "Splash";
     public const string SplashSceneWeb = "SplashWeb";
+    public const string SplashSceneMobile = "SplashMobile";
     public const string MainScene = "Latest";
     public const string SpaceshipScene = "LevelSpaceship";
-    public const string ClientVersion = "4.3.8";
     //TODO: read out version from ClientSdk 
     public const string ApiVersion = "4.3.7";
 
@@ -45,21 +49,230 @@ public class SceneExporter
         { 10, "LevelSpaceportAlpha" },
      };
 
+    #region Android
+
+    [MenuItem("File/Build UberStrike/Internal Dev/Android")]
+    public static void BuildAndroidDev()
+    {
+        BuildAndroid(WebserviceLocation.InternalDev);
+    }
+
+    [MenuItem("File/Build UberStrike/Internal Dev/Android (Main Only)")]
+    public static void BuildAndroidDevMainOnly()
+    {
+        BuildAndroid(WebserviceLocation.InternalDev, BuildType.Dev, false, false);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/Android")]
+    public static void BuildAndroidLocal()
+    {
+        BuildAndroid(WebserviceLocation.Localhost);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/Android (Main Only)")]
+    public static void BuildAndroidLocalMainOnly()
+    {
+        BuildAndroid(WebserviceLocation.Localhost, BuildType.Dev, false, false);
+    }
+
+    [MenuItem("File/Build UberStrike/External QA/Android")]
+    public static void BuildAndroidQa()
+    {
+        BuildAndroid(WebserviceLocation.ExternalQA, BuildType.Staging);
+    }
+
+    [MenuItem("File/Build UberStrike/External QA/Android (Main Only)")]
+    public static void BuildAndroidQaMainOnly()
+    {
+        BuildAndroid(WebserviceLocation.ExternalQA, BuildType.Staging, false, false);
+    }
+
+    [MenuItem("File/Build UberStrike/Production/Android")]
+    public static void BuildAndroidProd()
+    {
+        BuildAndroid(WebserviceLocation.Production, BuildType.Prod);
+    }
+
+    [MenuItem("File/Build UberStrike/Production/Android (Main Only)")]
+    public static void BuildAndroidProdMainOnly()
+    {
+        BuildAndroid(WebserviceLocation.Production, BuildType.Prod, false, false);
+    }
+
+    public static void BuildAndroid(WebserviceLocation wsLocation, BuildType buildType = BuildType.Dev, bool buildAllMaps = true, bool buildSplashLoader = true)
+    {
+        ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
+        if (!string.IsNullOrEmpty(ApplicationDataManager.BuildVersion))
+            PlayerSettings.bundleVersion = ApplicationDataManager.BuildVersion;
+        PlayerSettings.Android.bundleVersionCode = int.Parse(ResolveShortVersion().Replace(".", ""));
+
+        WriteConfigurationXml(Application.dataPath + "/Resources/UberStrike.xml", buildType, wsLocation, ChannelType.Android);
+        AssetDatabase.ImportAsset("Assets/Resources/UberStrike.xml");
+
+        PrepareBuildFolder(AndroidFolder);
+        BuildAndroidPlayer(AndroidFolder, buildAllMaps, buildSplashLoader, BuildOptions.None);
+    }
+
+    private static void BuildAndroidPlayer(string buildFolder, bool buildAllMaps, bool buildSplashLoader, BuildOptions buildOptions = BuildOptions.BuildAdditionalStreamedScenes)
+    {
+        string path = string.Empty;
+
+        List<string> scenesToBuild = new List<string>();
+
+        if (buildSplashLoader)
+        {
+            scenesToBuild.Add(SceneFolder + SplashSceneMobile + ".unity");
+        }
+
+        scenesToBuild.Add(SceneFolder + MainScene + ".unity");
+        scenesToBuild.Add(SceneFolder + SpaceshipScene + ".unity");
+
+        if (buildAllMaps)
+        {
+            scenesToBuild.Add(SceneFolder + MapsToExport[1] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[2] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[3] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[4] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[5] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[6] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[7] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[8] + ".unity");
+            scenesToBuild.Add(SceneFolder + MapsToExport[10] + ".unity");
+        }
+
+        // Setup the correct output path
+        path = ApplicationDataManager.StandaloneFilename + ".apk";
+
+        var buildResult = BuildPipeline.BuildPlayer(scenesToBuild.ToArray(), string.Format("{0}/{1}", buildFolder, path), BuildTarget.Android, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
+    }
+
+    #endregion
+
+    #region iOS
+
+    [MenuItem("File/Build UberStrike/Internal Dev/iOS")]
+    public static void BuildiOS()
+    {
+        BuildiOS(WebserviceLocation.InternalDev);
+    }
+
+    [MenuItem("File/Build UberStrike/Internal Dev/iOS (Main Only)")]
+    public static void BuildiOSMainOnly()
+    {
+        BuildiOS(WebserviceLocation.InternalDev, BuildType.Dev, false);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/iOS")]
+    public static void BuildiOSLocal()
+    {
+        BuildiOS(WebserviceLocation.Localhost);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/iOS (Main Only)")]
+    public static void BuildiOSLocalMainOnly()
+    {
+        BuildiOS(WebserviceLocation.Localhost, BuildType.Dev, false);
+    }
+
+    [MenuItem("File/Build UberStrike/External QA/iOS")]
+    public static void BuildiOSQa()
+    {
+        BuildiOS(WebserviceLocation.ExternalQA, BuildType.Staging);
+    }
+
+    [MenuItem("File/Build UberStrike/External QA/iOS (Main Only)")]
+    public static void BuildiOSQaMainOnly()
+    {
+        BuildiOS(WebserviceLocation.ExternalQA, BuildType.Staging, false);
+    }
+
+    [MenuItem("File/Build UberStrike/Production/iOS")]
+    public static void BuildiOSProd()
+    {
+        BuildiOS(WebserviceLocation.Production, BuildType.Prod);
+    }
+
+    [MenuItem("File/Build UberStrike/Production/iOS (Main Only)")]
+    public static void BuildiOSProdMainOnly()
+    {
+        BuildiOS(WebserviceLocation.Production, BuildType.Prod, false);
+    }
+
+    public static void BuildiOS(WebserviceLocation wsLocation, BuildType buildType = BuildType.Dev, bool buildAllMaps = true, bool buildSplashLoader = false, BuildOptions buildOptions = BuildOptions.None)
+    {
+        ApplicationDataManager.BuildVersion = ApplicationDataManager.ResolveBuildVersion();
+        PlayerSettings.bundleVersion = ResolveShortVersion();
+        PlayerSettings.iOS.buildNumber = ResolveShortVersion();
+
+        WriteConfigurationXml(Application.dataPath + "/Resources/UberStrike.xml", buildType, wsLocation, ChannelType.IPad);
+        AssetDatabase.ImportAsset("Assets/Resources/UberStrike.xml");
+
+        string[] scenesToBuild;
+
+        if (buildAllMaps)
+        {
+            // Build exactly the scene list from Editor Build Settings (SplashMobile, Latest and
+            // every Level* scene), matching a Build Settings UI export. The old hardcoded list
+            // omitted SplashMobile and several maps, which broke device builds.
+            scenesToBuild = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
+        }
+        else
+        {
+            List<string> scenes = new List<string>();
+
+            if (buildSplashLoader)
+            {
+                scenes.Add(SceneFolder + SplashSceneMobile + ".unity");
+            }
+
+            scenes.Add(SceneFolder + MainScene + ".unity");
+            scenes.Add(SceneFolder + SpaceshipScene + ".unity");
+            scenesToBuild = scenes.ToArray();
+        }
+
+        //PrepareiOSBuildFolder(IOSBuildFolder);
+        var buildResult = BuildPipeline.BuildPlayer(scenesToBuild, IOSBuildFolder, BuildTarget.iOS, buildOptions);
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
+    }
+
+    #endregion
+
     #region Mac App Store
 
     [MenuItem("File/Build UberStrike/Internal Dev/Mac App Store")]
     public static void BuildMacAppStoreStandaloneDev()
     {
         BuildMacAppStoreStandalone(true, true);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.MacAppStore);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/Mac App Store")]
+    public static void BuildMacAppStoreStandaloneLocal()
+    {
+        BuildMacAppStoreStandalone(true, true);
+        WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.MacAppStore);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/Mac App Store (Main Only)")]
+    public static void BuildMacAppStoreStandaloneLocalMainOnly()
+    {
+        BuildMacAppStoreStandalone(false, true);
+        WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.MacAppStore);
     }
 
     [MenuItem("File/Build UberStrike/Internal Dev/Mac App Store (Main Only)")]
     public static void BuildMacAppStoreStandaloneDevMainOnly()
     {
         BuildMacAppStoreStandalone(false, true);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.MacAppStore);
     }
 
@@ -67,7 +280,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneExternalQA()
     {
         BuildMacAppStoreStandalone(true, true);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.MacAppStore);
     }
 
@@ -75,7 +287,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneExternalQAMainOnly()
     {
         BuildMacAppStoreStandalone(false, false);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.MacAppStore);
     }
 
@@ -83,7 +294,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneProd()
     {
         BuildMacAppStoreStandalone(true, false);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.MacAppStore);
     }
 
@@ -91,7 +301,6 @@ public class SceneExporter
     public static void BuildMacAppStoreStandaloneProdMainOnly()
     {
         BuildMacAppStoreStandalone(false, false);
-
         WriteConfigurationXml(MacAppStoreStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.MacAppStore);
     }
 
@@ -118,12 +327,44 @@ public class SceneExporter
         WriteConfigurationXml(OsxStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.OSXStandalone);
     }
 
+    [MenuItem("File/Build UberStrike/Local/OSX Standalone")]
+    public static void BuildOsxStandaloneLocal()
+    {
+        BuildOsxStandalone();
+
+        WriteConfigurationXml(OsxStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.OSXStandalone);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/OSX Standalone (Main Only)")]
+    public static void BuildOsxStandaloneLocalMain()
+    {
+        BuildOsxStandalone(false);
+
+        WriteConfigurationXml(OsxStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.OSXStandalone);
+    }
+
     [MenuItem("File/Build UberStrike/Internal Dev/OSX Standalone Intel (Main Only)")]
     public static void BuildOsxStandaloneDevMain()
     {
         BuildOsxStandalone(false);
 
         WriteConfigurationXml(OsxStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.OSXStandalone);
+    }
+
+    [MenuItem("File/Build UberStrike/External QA/OSX Standalone")]
+    public static void BuildOsxStandaloneQa()
+    {
+        BuildOsxStandalone();
+
+        WriteConfigurationXml(OsxStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.OSXStandalone);
+    }
+
+    [MenuItem("File/Build UberStrike/External QA/OSX Standalone (Main Only)")]
+    public static void BuildOsxStandaloneQaMain()
+    {
+        BuildOsxStandalone(false);
+
+        WriteConfigurationXml(OsxStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + ".app/Contents/Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.OSXStandalone);
     }
 
     public static void BuildOsxStandalone(bool buildAllMaps = true)
@@ -221,6 +462,22 @@ public class SceneExporter
         WriteConfigurationXml(WindowsStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + "_Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WindowsStandalone);
     }
 
+    [MenuItem("File/Build UberStrike/Local/Windows Standlone")]
+    public static void BuildWindowsStandaloneLocal()
+    {
+        BuildWindowsStandalone();
+
+        WriteConfigurationXml(WindowsStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + "_Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WindowsStandalone);
+    }
+
+    [MenuItem("File/Build UberStrike/Local/Windows Standalone (Main Only)")]
+    public static void BuildWindowsStandaloneLocalMain()
+    {
+        BuildWindowsStandalone(false);
+
+        WriteConfigurationXml(WindowsStandaloneFolder + "/" + ApplicationDataManager.StandaloneFilename + "_Data/" + ApplicationDataManager.StandaloneFilename + ".xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WindowsStandalone);
+    }
+
     [MenuItem("File/Build UberStrike/External QA/Windows Standalone (Main Only)")]
     public static void BuildWindowsStandaloneDevMain()
     {
@@ -276,19 +533,25 @@ public class SceneExporter
 
     #region Web Player
 
-    [MenuItem("File/Build UberStrike/Internal Dev/Web Player (Local Debug)")]
-    public static void BuildWebPlayerDevLocal()
+    [MenuItem("File/Build UberStrike/Local/Web Player")]
+    public static void BuildWebPlayerLocal()
     {
         BuildWebPlayer(false);
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WebPortal, true);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Dev, WebserviceLocation.Localhost, ChannelType.IPad, true);
         Debug.Log("Finished Web Player Build.");
+    }
+
+    [MenuItem("File/Build UberStrike/Local/Web Player (Main Only)")]
+    public static void BuildWebPlayerLocalMain()
+    {
+        BuildWebPlayerMain(BuildType.Dev, WebserviceLocation.Localhost);
     }
 
     [MenuItem("File/Build UberStrike/Internal Dev/Web Player")]
     public static void BuildWebPlayerDev()
     {
         BuildWebPlayer();
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WebPortal);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad);
         Debug.Log("Finished Web Player Build.");
     }
 
@@ -296,7 +559,7 @@ public class SceneExporter
     public static void BuildWebPlayerExternalQA()
     {
         BuildWebPlayer();
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.WebPortal);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename), BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.IPad);
         Debug.Log("Finished Web Player Build.");
     }
 
@@ -421,46 +684,94 @@ public class SceneExporter
     {
         PrepareBuildFolder(WebPlayerFolder);
 
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
+        BuildWebGLPlayer();
         if (buildMaps) BuildMapScenes(WebPlayerFolder, BuildTarget.WebGL, enableLevelHashing);
-
-        // Move the Header up a folder, next to the MainScene
-        if (Directory.Exists(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.DeleteFileOrDirectory(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-        }
-
-        if (Directory.Exists(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename));
-        }
     }
 
     public static void BuildWebPlayerMain(BuildType buildType, WebserviceLocation wsLocation)
     {
         PrepareBuildFolder(WebPlayerFolder);
-        BuildSplashPlayer(WebPlayerFolder, BuildTarget.WebGL);
-        BuildMainScene(WebPlayerFolder, BuildTarget.WebGL);
 
-        // Move the Header up a folder, next to the MainScene
-        if (Directory.Exists(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.html", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-            FileUtil.DeleteFileOrDirectory(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename));
-        }
+        BuildWebGLPlayer();
 
-        if (Directory.Exists(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename)))
-        {
-            FileUtil.MoveFileOrDirectory(string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename), string.Format("{0}/{1}.unity3d", WebPlayerFolder, ApplicationDataManager.MainFilename));
-        }
-
-        WriteConfigurationXml(string.Format("{0}/{1}.xml", WebPlayerFolder, ApplicationDataManager.HeaderFilename), buildType, wsLocation, ChannelType.WebPortal);
+        WriteConfigurationXml(string.Format("{0}/{1}", WebPlayerFolder, ApplicationDataManager.HeaderFilename), buildType, wsLocation, ChannelType.IPad);
 
         Debug.Log("Finished Web Player Build.");
+    }
+
+    // Single-player WebGL build: Latest baked as the entry scene, no header bundle
+    // download (it never completes on iOS Safari). Maps still load from the CDN.
+    private static void BuildWebGLPlayer()
+    {
+        // linux editor encodes webgl audio (aac) with ffmpeg. no ffmpeg = every clip dropped, silent build
+        if (Application.platform == RuntimePlatform.LinuxEditor && !HasFfmpegOnPath())
+        {
+            FailWebGLAudio("ffmpeg not found on PATH. Linux editor needs it to encode WebGL audio (AAC). Install ffmpeg, restart Unity, reimport Assets/Audio.");
+            return;
+        }
+
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.dataCaching = true;
+        PlayerSettings.WebGL.decompressionFallback = true;
+
+        var buildResult = BuildPlayer(
+            new string[]
+            {
+                SceneFolder + MainScene + ".unity",
+                SceneFolder + SpaceshipScene + ".unity",
+            },
+            WebPlayerFolder,
+            BuildTarget.WebGL,
+            BuildOptions.None);
+
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
+            return;
+        }
+    }
+
+    private static bool HasFfmpegOnPath()
+    {
+        string path = System.Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+        foreach (string dir in path.Split(Path.PathSeparator))
+        {
+            if (dir.Length > 0 && File.Exists(Path.Combine(dir, "ffmpeg")))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void FailWebGLAudio(string message)
+    {
+        Debug.LogError(message);
+        if (Application.isBatchMode)
+        {
+            EditorApplication.Exit(1);
+        }
+        throw new System.Exception(message);
+    }
+
+    private static UnityEditor.Build.Reporting.BuildReport BuildPlayer(string[] scenes, string path, BuildTarget buildTarget, BuildOptions buildOptions)
+    {
+        bool stripEngineCode = PlayerSettings.stripEngineCode;
+        if (buildTarget == BuildTarget.WebGL)
+        {
+            PlayerSettings.stripEngineCode = false;
+        }
+
+        var buildResult = BuildPipeline.BuildPlayer(scenes, path, buildTarget, buildOptions);
+        PlayerSettings.stripEngineCode = stripEngineCode;
+        if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+        {
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(1);
+            }
+        }
+        return buildResult;
     }
 
     private static void BuildSplashPlayer(string buildFolder, BuildTarget buildTarget)
@@ -481,12 +792,14 @@ public class SceneExporter
                 scenename = SplashScene;
                 break;
             case BuildTarget.WebGL:
-                filename = ApplicationDataManager.HeaderFilename;
+                // Not used by the current pipeline (WebGL builds go straight to
+                // WebPlayerFolder); must NOT use HeaderFilename (config XML name).
+                filename = "WebPlayer";
                 scenename = SplashSceneWeb;
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + scenename + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, BuildOptions.ConnectWithProfiler | BuildOptions.Development | BuildOptions.AllowDebugging);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
@@ -509,11 +822,13 @@ public class SceneExporter
                 filename = ApplicationDataManager.StandaloneFilename + ".app";
                 break;
             case BuildTarget.WebGL:
-                filename = ApplicationDataManager.HeaderFilename;
+                // Not used by the current pipeline (WebGL builds go straight to
+                // WebPlayerFolder); must NOT use HeaderFilename (config XML name).
+                filename = "WebPlayer";
                 break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}", buildFolder, filename), buildTarget, buildOptions);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
@@ -538,9 +853,12 @@ public class SceneExporter
             case BuildTarget.WebGL:
                 path = ApplicationDataManager.MainFilename;
                 break;
+            case BuildTarget.Android:
+                path = ApplicationDataManager.StandaloneFilename + ".apk";
+                break;
         }
 
-        var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
+        var buildResult = BuildPlayer(new string[] { SceneFolder + MainScene + ".unity", SceneFolder + SpaceshipScene + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path), buildTarget, buildOptions);
         if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
         {
             Debug.LogError("BuildPlayer failed: " + buildResult.summary.result);
@@ -576,7 +894,7 @@ public class SceneExporter
             if (obj != null)
             {
                 Debug.Log("Build Map: " + map.Value);
-                var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+                var buildResult = BuildPlayer(new string[] { SceneFolder + map.Value + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, path + map.Value), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
                 if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 {
@@ -613,7 +931,7 @@ public class SceneExporter
         if (obj != null)
         {
             Debug.Log("Build Map: " + sceneName);
-            var buildResult = BuildPipeline.BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+            var buildResult = BuildPlayer(new string[] { SceneFolder + sceneName + ".unity" }, string.Format("{0}/{1}.unity3d", buildFolder, sceneName), buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 
             if (buildResult.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
             {
@@ -641,6 +959,13 @@ public class SceneExporter
         Directory.CreateDirectory(exportFolder);
     }
 
+    private static void PrepareiOSBuildFolder(string exportFolder)
+    {
+        //if (Directory.Exists(exportFolder)) FileUtil.DeleteFileOrDirectory(exportFolder);
+        if (!Directory.Exists(exportFolder))
+            Directory.CreateDirectory(exportFolder);
+    }
+
     #region Create Local Configuration XML
 
     [MenuItem("File/Create Editor Configuration Xml/Local/Mac App Store")]
@@ -660,6 +985,9 @@ public class SceneExporter
 
     [MenuItem("File/Create Editor Configuration Xml/Local/Windows Standalone")]
     private static void CreateConfigurationXmlLocalWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.WindowsStandalone); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Local/iOS")]
+    private static void CreateConfigurationXmlLocaliOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.Localhost, ChannelType.IPad); }
 
     #endregion
 
@@ -683,6 +1011,12 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Internal Dev/Windows Standalone")]
     private static void CreateConfigurationXmlInternalDevWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.WindowsStandalone); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Internal Dev/Android")]
+    private static void CreateConfigurationXmlInternalDevAndroid() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.Android); }
+
+    [MenuItem("File/Create Editor Configuration Xml/Internal Dev/iOS")]
+    private static void CreateConfigurationXmlInternalDeviOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Dev, WebserviceLocation.InternalDev, ChannelType.IPad); }
+
     #endregion
 
     #region Create External QA Configuration XML
@@ -701,6 +1035,9 @@ public class SceneExporter
 
     [MenuItem("File/Create Editor Configuration Xml/External QA/Windows Standalone")]
     private static void CreateConfigurationXmlExternalQAWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.WindowsStandalone); }
+
+    [MenuItem("File/Create Editor Configuration Xml/External QA/iOS")]
+    private static void CreateConfigurationXmlExternalQAiOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Staging, WebserviceLocation.ExternalQA, ChannelType.IPad); }
 
     #endregion
 
@@ -721,6 +1058,9 @@ public class SceneExporter
     [MenuItem("File/Create Editor Configuration Xml/Production/Windows Standalone")]
     private static void CreateConfigurationXmlProductionWindows() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.WindowsStandalone); }
 
+    [MenuItem("File/Create Editor Configuration Xml/Production/iOS")]
+    private static void CreateConfigurationXmlProductioniOS() { WriteConfigurationXml(Application.dataPath + "/../EditorConfiguration.xml", BuildType.Prod, WebserviceLocation.Production, ChannelType.IPad); }
+
     #endregion
 
     private static void WriteConfigurationXml(string path, BuildType buildType, WebserviceLocation webserviceLocation, ChannelType channelType, bool runLocally = false)
@@ -729,7 +1069,8 @@ public class SceneExporter
         {
             BuildType = buildType,
             DebugLevel = DebugLevel.Debug,
-            Version = ClientVersion,
+            Version = ResolveShortVersion(),
+            BuildVersion = ApplicationDataManager.ResolveBuildVersion(),
             WebServiceBaseUrl = GetWebserviceBaseUrl(webserviceLocation),
             ContentBaseUrl = GetContentBaseUrl(webserviceLocation),
             ChannelType = channelType,
@@ -754,6 +1095,8 @@ public class SceneExporter
                 xml.WriteAttributeString("BuildType", clientConfiguration.BuildType.ToString());
                 xml.WriteAttributeString("DebugLevel", clientConfiguration.DebugLevel.ToString());
                 xml.WriteAttributeString("Version", clientConfiguration.Version);
+                if (!string.IsNullOrEmpty(clientConfiguration.BuildVersion))
+                    xml.WriteAttributeString("BuildVersion", clientConfiguration.BuildVersion);
                 xml.WriteAttributeString("WebServiceBaseUrl", clientConfiguration.WebServiceBaseUrl);
                 xml.WriteAttributeString("ContentBaseUrl", clientConfiguration.ContentBaseUrl);
                 xml.WriteAttributeString("ChannelType", clientConfiguration.ChannelType.ToString());
@@ -775,6 +1118,14 @@ public class SceneExporter
         {
             Debug.LogError("Invalid url supplied for the Configuration XML file.\n'" + configurationXmlFilePath + "'");
         }
+    }
+
+    public static string ResolveShortVersion()
+    {
+        string version = ApplicationDataManager.ResolveBuildVersion();
+        int cut = version.IndexOf('-');
+        if (cut >= 0) version = version.Substring(0, cut);
+        return version;
     }
 
     private static string CreateMd5Checksum(string filename)
@@ -828,7 +1179,7 @@ public class SceneExporter
             case WebserviceLocation.InternalDev:
                 return BaseWebServiceUrlInternalDev;
             case WebserviceLocation.Localhost:
-                return "http://localhost:9000/";
+                return BaseWebServiceUrlLocalhost;
             default:
                 return BaseWebServiceUrlProduction;
         }

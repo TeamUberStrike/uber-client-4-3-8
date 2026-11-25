@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Cmune.DataCenter.Common.Entities;
 using Cmune.Util;
@@ -47,6 +48,9 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             case ChannelType.OSXStandalone:
             case ChannelType.WindowsStandalone:
             case ChannelType.MacAppStore:
+            case ChannelType.Android:
+            case ChannelType.IPad:
+            case ChannelType.IPhone:
                 {
                     // Show the login panel
                     MenuPageManager.Instance.LoadPage(PageType.Login, true);
@@ -87,6 +91,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
                 webArguments.Hash,
                 ApplicationDataManager.Channel,
                 SystemInfo.deviceUniqueIdentifier,
+                ApplicationDataManager.VersionShort,
                 (ev) => loginResult = ev,
                 (ex) =>
                 {
@@ -95,7 +100,7 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         }
         else if (!string.IsNullOrEmpty(emailAddress) && !string.IsNullOrEmpty(password))
         {
-            yield return AuthenticationWebServiceClient.LoginMemberEmail(emailAddress, password, ApplicationDataManager.Channel, SystemInfo.deviceUniqueIdentifier,
+            yield return AuthenticationWebServiceClient.LoginMemberEmail(emailAddress, password, ApplicationDataManager.Channel, SystemInfo.deviceUniqueIdentifier, ApplicationDataManager.VersionShort,
                 (ev) => loginResult = ev,
                 (ex) =>
                 {
@@ -118,6 +123,20 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         else if (loginResult.MemberAuthenticationResult != MemberAuthenticationResult.Ok)
         {
             PopupSystem.HideMessage(_progress);
+
+            if (loginResult.MemberAuthenticationResult == MemberAuthenticationResult.IsBetaRestricted)
+            {
+                int cmid = loginResult.MemberView != null ? loginResult.MemberView.PublicProfile.Cmid : 0;
+                if (cmid <= 0)
+                {
+                    ShowLoginErrorPopup(LocalizedStrings.Error, LocalizedStrings.UnspecifiedErrorMsg);
+                    yield break;
+                }
+
+                    ShowBetaAccessPopup(cmid);
+                    yield break;
+            }
+
             LoginPanelGUI.ErrorMessage = LocalizedStrings.LoginFailed + ": " + loginResult.MemberAuthenticationResult.ToString();
             LoginPanelGUI.IsBanned = loginResult.MemberAuthenticationResult == MemberAuthenticationResult.IsBanned;
             if (Application.isEditor || Application.platform == RuntimePlatform.WebGLPlayer)
@@ -180,6 +199,11 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
         {
             case ChannelType.MacAppStore:
             case ChannelType.WindowsStandalone:
+            case ChannelType.Android:
+            case ChannelType.IPhone:
+            case ChannelType.IPad:
+                // Mobile ships HD map assets too (per the mobile-il2cpp build); request HD
+                // map data so the definitions match the baked scenes (server 4.3.8 rows are HD).
                 mapType = MapType.HighDefinition;
                 break;
         }
@@ -295,13 +319,14 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
             ItemPromotionManager.Instance.WeeklySpecial = new ItemPromotionView(loginResult.WeeklySpecial);
         }
 
-        // Open the tutorial if the player is new
-        if (!loginResult.IsTutorialComplete || _forceTutorialStart)
-        {
-            GameStateController.Instance.LoadLevel(0);
-            GameStateController.Instance.LoadGameMode(GameMode.Tutorial);
-        }
-        else if (!loginResult.IsAccountComplete)
+        // temporarily remove the tutorial since we are mobile only and the tutorial needs to be redone for mobile, eg dont show WASD tooltip but mobile UI
+        //if (!loginResult.IsTutorialComplete || _forceTutorialStart)
+        //{
+        //    GameStateController.Instance.LoadLevel(0);
+        //    GameStateController.Instance.LoadGameMode(GameMode.Tutorial);
+        //}
+        //else if (!loginResult.IsAccountComplete)
+        if (!loginResult.IsAccountComplete)
         {
             // Get the player to choose an in-game name
             PanelManager.Instance.OpenPanel(PanelType.CompleteAccount);
@@ -338,5 +363,42 @@ public class AuthenticationManager : Singleton<AuthenticationManager>
                 LoginPanelGUI.ErrorMessage = string.Empty;
                 LoginByChannel();
             });
+    }
+
+    private const string StripeBuyAccessUrl = "https://buy.stripe.com/bJe4gsbUf64010La1nao800";
+
+    private void ShowBetaAccessPopup(int cmid)
+    {
+        string buyAccessUrl = BuildStripeBuyAccessUrl(cmid);
+
+        BasePopupDialog popup = PopupSystem.ShowMessage(
+            "Welcome to UberStrike 4.3",
+            "Unlock your account with a one-time purchase and start playing.\n\nTap BUY NOW below, or visit uberstrike.com/access",
+            PopupSystem.AlertType.OK,
+            "BUY NOW",
+            () =>
+            {
+                ApplicationDataManager.OpenUrl(string.Empty, buyAccessUrl);
+                PanelManager.Instance.OpenPanel(PanelType.Login);
+            }) as BasePopupDialog;
+
+        if (popup != null)
+        {
+            popup.MobileScaleExtra = 1.5f;
+        }
+    }
+
+    private static string BuildStripeBuyAccessUrl(int cmid)
+    {
+        string buyAccessUrl = StripeBuyAccessUrl;
+
+        if (cmid > 0)
+        {
+            string separator = buyAccessUrl.Contains("?") ? "&" : "?";
+
+            buyAccessUrl += separator + "client_reference_id=" + Uri.EscapeDataString(cmid.ToString());
+        }
+
+        return buyAccessUrl;
     }
 }

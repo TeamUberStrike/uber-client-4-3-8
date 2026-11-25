@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>UberStrike on Web</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.png">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="UberStrike">
+    <link rel="manifest" href="TemplateData/manifest.json">
+    <link rel="apple-touch-icon" href="TemplateData/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="TemplateData/icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="TemplateData/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="TemplateData/icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="TemplateData/icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="TemplateData/icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="TemplateData/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="TemplateData/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="TemplateData/icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="TemplateData/icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="TemplateData/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="TemplateData/icon-512x512.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1E1E1E">
+    <style>
+      html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#1E1E1E; overscroll-behavior:none; }
+      #unity-container { background:#1E1E1E; }
+      #unity-container.unity-mobile { position:fixed; top:0; left:0; width:100vw; height:100vh; height:100dvh; }
+      .unity-mobile #unity-canvas { display:block; width:100%; height:100%; background:#1E1E1E; touch-action:none; }
+      #rotate-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1E1E1E; color:#fff; z-index:1000; align-items:center; justify-content:center; text-align:center; flex-direction:column; font-family:sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation; }
+      #rotate-overlay .rotate-logo { width:min(70vw, 320px); height:auto; margin-bottom:32px; }
+      #rotate-overlay .rotate-phone { width:44px; height:80px; border:3px solid #fff; border-radius:8px; margin-bottom:24px; transform:rotate(0deg); animation:rotatePhone 2s ease-in-out infinite; }
+      #rotate-overlay p { margin:0 24px; font-size:16px; line-height:1.5; }
+      @keyframes rotatePhone { 0%,20% { transform:rotate(0deg); } 50%,70% { transform:rotate(90deg); } 100% { transform:rotate(90deg); } }
+    </style>
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=990 height=660 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">{{{ PRODUCT_NAME }}}</div>
+      </div>
+      <div id="rotate-overlay">
+        <img class="rotate-logo" src="TemplateData/uberstrike-logo.png" alt="UberStrike">
+        <div class="rotate-phone"></div>
+        <p>Please rotate your device to landscape</p>
+      </div>
+    </div>
+    <script>
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var warningBanner = document.querySelector("#unity-warning");
+      var rotateOverlay = document.querySelector("#rotate-overlay");
+
+      function isMobileDevice() {
+        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+               (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
+      }
+
+      function isPortrait() {
+        return window.innerHeight > window.innerWidth;
+      }
+
+      function updateOrientationOverlay() {
+        if (isMobileDevice() && isPortrait()) {
+          rotateOverlay.style.display = 'flex';
+        } else {
+          rotateOverlay.style.display = 'none';
+        }
+      }
+
+      // The Screen Orientation API lock is the only way to actually force landscape,
+      // and it only exists on some browsers (iOS Safari does not support it at all).
+      // Where unsupported, the overlay above keeps the game covered in portrait.
+      function tryLockLandscape() {
+        if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+          window.screen.orientation.lock('landscape').catch(function() {});
+        }
+      }
+
+      window.addEventListener('resize', updateOrientationOverlay);
+      window.addEventListener('orientationchange', updateOrientationOverlay);
+      document.addEventListener('fullscreenchange', function() {
+        if (document.fullscreenElement) tryLockLandscape();
+      });
+      rotateOverlay.addEventListener('click', tryLockLandscape);
+      updateOrientationOverlay();
+
+
+
+      (function() {
+        // iOS Safari can drift the touch mapping after orientation changes and when the
+        // toolbar appears. Re-fire resize events so Unity re-reads the canvas rect.
+        function forceUnityResize() {
+          // A 180-degree landscape flip keeps the same window size, so Unity ignores plain
+          // resize events and the canvas/UI would stay on the old side. Pulse the container
+          // size by 1px so Unity really re-reads the orientation, then restore the fit.
+          var container = document.querySelector('#unity-container');
+          if (container) {
+            container.style.height = (parseFloat(container.style.height || '0') - 1) + 'px';
+            setTimeout(function() { fitCanvasToVisualViewport(); }, 80);
+          }
+          for (var i = 1; i <= 6; i++) {
+            setTimeout(function() { window.dispatchEvent(new Event('resize')); }, i * 200);
+          }
+        }
+        window.addEventListener('orientationchange', forceUnityResize);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', forceUnityResize);
+          window.visualViewport.addEventListener('scroll', function() {
+            for (var i = 1; i <= 3; i++) {
+              setTimeout(function() { window.dispatchEvent(new Event('resize')); }, i * 150);
+            }
+          });
+        }
+        // Keep the canvas fitted to the visible viewport (Safari toolbar collapse etc).
+        // The game itself places its UI below the iOS dead zone (GlobalUIRibbon
+        // MobileTopOffset), so the canvas stays truly full-bleed.
+        function fitCanvasToVisualViewport() {
+          if (!isMobileDevice()) return;
+          var vv = window.visualViewport;
+          var container = document.querySelector('#unity-container');
+          if (!container) return;
+          var top = 0, height = window.innerHeight, width = window.innerWidth;
+          if (vv) {
+            top = Math.max(vv.offsetTop, window.innerHeight - vv.height);
+            height = vv.height;
+            width = vv.width;
+          }
+          container.style.position = 'fixed';
+          container.style.top = top + 'px';
+          container.style.left = '0px';
+          container.style.width = width + 'px';
+          container.style.height = height + 'px';
+        }
+        window.addEventListener('resize', fitCanvasToVisualViewport);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', fitCanvasToVisualViewport);
+          window.visualViewport.addEventListener('scroll', fitCanvasToVisualViewport);
+        }
+        fitCanvasToVisualViewport();
+      })();
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+      var config = {
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+#if USE_WASM
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#endif
+#if MEMORY_FILENAME
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+        productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+        productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
+        showBanner: unityShowBanner,
+      };
+
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      // If you would like all file writes inside Unity Application.persistentDataPath
+      // directory to automatically persist so that the contents are remembered when
+      // the user revisits the site the next time, uncomment the following line:
+      // config.autoSyncPersistentDataPath = true;
+      // This autosyncing is currently not the default behavior to avoid regressing
+      // existing user projects that might rely on the earlier manual
+      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
+      // expected to change.
+
+      // iPadOS reports a desktop macOS user agent; treat it as mobile so it gets
+      // the same full-bleed canvas and safe-area handling as the iPhone/iPad builds.
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+          (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent))) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        container.className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        canvas.style.width = "990px";
+        canvas.style.height = "660px";
+      }
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+              }).then((unityInstance) => {
+                loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+              }).catch((message) => {
+                alert(message);
+              });
+            };
+
+      document.body.appendChild(script);
+
+    </script>
+  </body>
+</html>

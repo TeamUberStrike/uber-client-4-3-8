@@ -1,8 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cmune.Core.Models.Views;
+using Cmune.DataCenter.Common.Entities;
 using Cmune.Realtime.Common;
 using UnityEngine;
 
@@ -48,11 +48,19 @@ public class GameServerManager : Singleton<GameServerManager>
         servers.Sort((s, t) => s.Latency - t.Latency);
 
         GameServerView server = null;
+#if UNITY_ANDROID || UNITY_IPHONE
+        const bool mobileServer = true;
+#elif UNITY_WEBGL
+        bool mobileServer = ApplicationDataManager.IsMobile;
+#else
+        const bool mobileServer = false;
+#endif
         for (int i = 0; i < servers.Count; i++)
         {
             GameServerView s = servers[i];
 
             if (s.Latency == 0) continue;
+            if (mobileServer && s.UsageType != PhotonUsageType.Mobile) continue;
 
             if (server == null)
             {
@@ -128,7 +136,6 @@ public class GameServerManager : Singleton<GameServerManager>
     {
         _gameServers.Add(view.PhotonId, new GameServerView(view));
 
-        Debug.Log(view.Name + " " + view.MinLatency);
         //_sortedServers = new List<GameServerView>(_gameServers.Values);
 
         SortServers();

@@ -42,7 +42,7 @@ public class MasBundlePopup : LotteryPopupDialog
             Rect imgRect = new Rect((width - LotteryManager.IMG_WIDTH) / 2, (height - LotteryManager.IMG_HEIGHT) / 2, LotteryManager.IMG_WIDTH, LotteryManager.IMG_HEIGHT);
             masBundle.Image.Draw(imgRect);
 
-            _lotteryItemGrid.Show = imgRect.Contains(Event.current.mousePosition);
+            _lotteryItemGrid.Show = imgRect.Contains(Event.current.mousePosition) || ApplicationDataManager.IsMobile;
 
             _lotteryItemGrid.Draw(new Rect(0, 0, width, height));
         }
@@ -84,7 +84,7 @@ public class MasBundlePopup : LotteryPopupDialog
         {
             GUITools.Clicked();
             if (ScreenResolutionManager.IsFullScreen) ScreenResolutionManager.IsFullScreen = false;
-            MasBundleManager.Instance.BuyStoreKitItem(masBundle.BundleView.MacAppStoreUniqueId, masBundle.BundleView.Id);
+            MasBundleManager.Instance.BuyStoreKitItem(masBundle.BundleView);
         }
         else
         {

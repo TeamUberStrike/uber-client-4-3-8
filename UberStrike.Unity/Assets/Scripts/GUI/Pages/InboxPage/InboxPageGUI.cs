@@ -49,13 +49,19 @@ public class InboxPageGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
 
-        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), Screen.width, Screen.height - GlobalUIRibbon.Instance.GetHeight());
+        // Anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+        Rect rect = new Rect(0, GlobalUIRibbon.Instance.GetHeight(), MobileMenuScale.VirtualWidth, MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight());
         _threadWidth = (int)rect.width / 4;
 
-        GUI.BeginGroup(rect, BlueStonez.window_standard_grey38);
+        // Backgrounds (page and title strip) reach the real screen edges; content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(rect, BlueStonez.window_standard_grey38);
+        MobileMenuScale.DrawBleed(new Rect(rect.x, rect.y, rect.width, 72), BlueStonez.tab_strip_large);
+        GUI.BeginGroup(rect);
         {
             GUI.enabled = PlayerDataManager.IsPlayerLoggedIn && IsNoPanelOpen();
 
@@ -64,6 +70,8 @@ public class InboxPageGUI : MonoBehaviour
             GUI.enabled = true;
         }
         GUI.EndGroup();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     private void DrawInbox(Rect rect)
@@ -215,7 +223,7 @@ public class InboxPageGUI : MonoBehaviour
 
         if (InboxManager.Instance.ThreadCount > 0)
         {
-            Vector2 newThreadScroll = GUI.BeginScrollView(rect, _threadScroll, new Rect(0, 0, _threadViewWidth, _threadViewHeight));
+            Vector2 newThreadScroll = GUITools.BeginScrollView(rect, _threadScroll, new Rect(0, 0, _threadViewWidth, _threadViewHeight));
             bool isScrollYIncreased = newThreadScroll.y > _threadScroll.y;
             _threadScroll = newThreadScroll;
             int y = 0;
@@ -258,7 +266,7 @@ public class InboxPageGUI : MonoBehaviour
             _threadViewHeight = y;
             _threadViewWidth = (int)((_threadViewHeight > rect.height) ? rect.width - 22 : rect.width - 8);
 
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         else
         {
@@ -304,7 +312,7 @@ public class InboxPageGUI : MonoBehaviour
         Rect msgRect = new Rect(r.x + 8, r.y + 48, r.width - 8, r.height - (isAdminThread ? 49 : 90));
         if (InboxThread.Current != null)
         {
-            thread.Scroll = GUI.BeginScrollView(msgRect, thread.Scroll, new Rect(0, 0, _messageViewWidth, _messageViewHeight));
+            thread.Scroll = GUITools.BeginScrollView(msgRect, thread.Scroll, new Rect(0, 0, _messageViewWidth, _messageViewHeight));
             {
                 y = thread.DrawMessageList(y, _messageViewWidth, msgRect.height, thread.Scroll.y);
 
@@ -320,7 +328,7 @@ public class InboxPageGUI : MonoBehaviour
                     _messageViewWidth = (int)msgRect.width - 8;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         else
         {
@@ -396,7 +404,7 @@ public class InboxPageGUI : MonoBehaviour
 
             if (PlayerDataManager.Instance.FriendsCount > 0)
             {
-                _friendScroll = GUI.BeginScrollView(r, _friendScroll, new Rect(0, 0, _friendWidth, _friendHeight));
+                _friendScroll = GUITools.BeginScrollView(r, _friendScroll, new Rect(0, 0, _friendWidth, _friendHeight));
 
                 int j = 0;
                 string search = _searchFriend.ToLower();
@@ -412,11 +420,14 @@ public class InboxPageGUI : MonoBehaviour
                 }
 
                 _friendHeight = j - 2;
-                GUI.EndScrollView();
+                GUITools.EndScrollView();
             }
             else
             {
-                GUI.Label(r, "You have no friends ... yet!\n\nOpen the chat window and connect to other Uberstrikers.\nUse the 'Add as Friend' function to send out a friend request :)", BlueStonez.label_interparkbold_13pt);
+                // The list area starts at x=240 to leave room for the side texture; without one, centre
+                // the empty-state message on the whole panel instead of the right-hand part.
+                Rect emptyRect = _sideTexture ? r : new Rect(0, 0, friRect.width, friRect.height);
+                GUI.Label(emptyRect, "You have no friends ... yet!\n\nOpen the chat window and connect to other Uberstrikers.\nUse the 'Add as Friend' function to send out a friend request :)", BlueStonez.label_interparkbold_13pt);
             }
         }
         GUI.EndGroup();
@@ -498,7 +509,7 @@ public class InboxPageGUI : MonoBehaviour
             _requestWidth = (int)reqRect.width - (_requestHeight > reqRect.height ? 22 : 8);
 
             //FRIEND REQUESTS
-            _requestScroll = GUI.BeginScrollView(new Rect(0, voffset, reqRect.width, reqRect.height), _requestScroll, new Rect(0, 0, _requestWidth, _requestHeight));
+            _requestScroll = GUITools.BeginScrollView(new Rect(0, voffset, reqRect.width, reqRect.height), _requestScroll, new Rect(0, 0, _requestWidth, _requestHeight));
             {
                 GUI.Box(new Rect(4, 0, _requestWidth, 50), GUIContent.none, BlueStonez.box_grey38);
                 GUI.Label(new Rect(14, 0, _requestWidth - 10, 50), string.Format(LocalizedStrings.FriendRequestsYouHaveNPendingRequests, InboxManager.Instance._friendRequests.Count.ToString(), (InboxManager.Instance._friendRequests.Count != 1 ? "s" : string.Empty)), BlueStonez.label_interparkmed_18pt_left);
@@ -539,7 +550,7 @@ public class InboxPageGUI : MonoBehaviour
                 }
 
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
 
         }
         GUI.EndGroup();

@@ -12,6 +12,8 @@ public class ShopPageGUI : PageGUI
 
     private const int SlotHeight = 70;
     private const int LoadoutWidth = 190;
+    private const int ShopWidth = 590;
+    private static readonly Color PanelBackingColor = new Color(0.12f, 0.12f, 0.12f, 1f);
 
     MasBundleShopGUI _masBundleGui = new MasBundleShopGUI();
     MasCreditsShopGui _masCreditsGui = new MasCreditsShopGui();
@@ -97,7 +99,10 @@ public class ShopPageGUI : PageGUI
         _shopAreaSelection.Add(ShopArea.Inventory, new GUIContent(string.Empty, UberstrikeIcons.LabInventory, "Inventory"));
         _shopAreaSelection.Add(ShopArea.Shop, new GUIContent(string.Empty, UberstrikeIcons.LabShop, "Shop"));
         _shopAreaSelection.Add(ShopArea.MysteryBox, new GUIContent(string.Empty, UberstrikeTextures.IconLottery, "Mystery Box"));
-        if (Application.isEditor || ApplicationDataManager.Channel == ChannelType.MacAppStore)
+        if (Application.isEditor 
+            || ApplicationDataManager.Channel == ChannelType.MacAppStore 
+            || ApplicationDataManager.Channel == ChannelType.IPad 
+            || ApplicationDataManager.Channel == ChannelType.IPhone)
         {
             _shopAreaSelection.Add(ShopArea.Packs, new GUIContent(string.Empty, UberstrikeIcons.LabPacks, "Packs"));
             _shopAreaSelection.Add(ShopArea.Credits, new GUIContent(string.Empty, UberstrikeIcons.LabCredits, "Credits"));
@@ -187,6 +192,10 @@ public class ShopPageGUI : PageGUI
 
         StartCoroutine(StartNotifyLoadoutArea());
 
+        // override mouseorbit to prevent scrolling interfering with orbit
+        // (the panel's left edge in screen pixels: menu scale + safe-area inset on mobile, unchanged on PC)
+        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - ShopWidth);
+
         if (IsOnGUIEnabled)
         {
             StartCoroutine(ScrollShopFromRight(0.25f));
@@ -203,6 +212,8 @@ public class ShopPageGUI : PageGUI
         CmuneEventHandler.RemoveListener<ShopHighlightSlotEvent>(OnHighlightSlotEvent);
 
         DragAndDrop.Instance.OnDragBegin -= OnBeginDrag;
+
+        MouseOrbit.Instance.MaxX = Screen.width;
     }
 
     #region Event Handler
@@ -246,7 +257,7 @@ public class ShopPageGUI : PageGUI
         while (t < time)
         {
             t += Time.deltaTime;
-            shopPositionX = Mathf.Lerp(0, 590, (t / time) * (t / time));
+            shopPositionX = Mathf.Lerp(0, ShopWidth, (t / time) * (t / time));
             yield return new WaitForEndOfFrame();
         }
     }
@@ -260,13 +271,18 @@ public class ShopPageGUI : PageGUI
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         if (IsOnGUIEnabled)
         {
-            DrawGUI(new Rect(Screen.width - shopPositionX, GlobalUIRibbon.Instance.GetHeight(), 590,
-                Screen.height - GlobalUIRibbon.Instance.GetHeight() + 1));
+            // Right-anchor the page panel against the virtual (scaled) screen size for the mobile menu scale.
+            DrawGUI(new Rect(MobileMenuScale.VirtualWidth - shopPositionX, GlobalUIRibbon.Instance.GetHeight(), ShopWidth,
+                MobileMenuScale.VirtualHeight - GlobalUIRibbon.Instance.GetHeight() + 1));
 
             ArmorHud.Instance.Update();
         }
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public override void DrawGUI(Rect rect)
@@ -286,6 +302,25 @@ public class ShopPageGUI : PageGUI
 
         GUI.enabled = !PopupSystem.IsAnyPopupOpen && !PanelManager.IsAnyPanelOpen;
 
+        // Mobile: the panel window styles are semi-transparent. Under the menu scale the panels cover a
+        // much larger part of the 3D scene (incl. its bright blue lights), which then shows through.
+        // An opaque backing keeps the panels solid. PC keeps the original look.
+        if (MobileMenuScale.Active)
+        {
+            Color previousColor = GUI.color;
+            GUI.color = PanelBackingColor;
+            // Runs on to the real right screen edge (safe-area strip beside the panel).
+            GUI.DrawTexture(MobileMenuScale.ExpandToScreenEdges(_rectLabs), Texture2D.whiteTexture);
+            GUI.color = previousColor;
+        }
+
+        // Continue the shop panel's own backgrounds (group + box window and the title strip, see
+        // DrawShop / DrawShopTabs) on the safe-area strip, so the panel looks attached to the screen edge.
+        Rect shopPanelRect = new Rect(_rectLabs.x + LoadoutWidth, _rectLabs.y, _rectLabs.width - 200, _rectLabs.height);
+        MobileMenuScale.DrawBleed(shopPanelRect, BlueStonez.window);
+        MobileMenuScale.DrawBleed(shopPanelRect, BlueStonez.window);
+        MobileMenuScale.DrawBleed(new Rect(shopPanelRect.x, shopPanelRect.y, shopPanelRect.width, 72), BlueStonez.tab_strip_large);
+
         GUI.BeginGroup(_rectLabs);
         {
             // Draw the Loadout Panel
@@ -296,8 +331,9 @@ public class ShopPageGUI : PageGUI
         }
         GUI.EndGroup();
 
-        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(0, 55, Screen.width - 580, Screen.height - 55), OnDropAvatar);
-        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(Screen.width - _rectLabs.width + 200, 55, _rectLabs.width - 200, Screen.height - 55), OnDropShop);
+        // Drop zones are anchored to the panel; use virtual (scaled) screen dims for the mobile menu scale.
+        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(0, 55, MobileMenuScale.VirtualWidth - 580, MobileMenuScale.VirtualHeight - 55), OnDropAvatar);
+        DragAndDrop.Instance.DrawSlot<ShopDragSlot>(new Rect(MobileMenuScale.VirtualWidth - _rectLabs.width + 200, 55, _rectLabs.width - 200, MobileMenuScale.VirtualHeight - 55), OnDropShop);
 
         GUITools.PopGUIState();
 
@@ -917,11 +953,21 @@ public class ShopPageGUI : PageGUI
 
         int y = _shopAreaSelection.Current == ShopArea.Inventory ? 93 : (100 + topOffset);
 
-        Rect scrollRect = new Rect(0, y, position.width, position.height - (y + 1));
+        // On mobile the scroll area ends at the safe-area line (it is moved up by the safe
+        // inset); the content ends with the last row so it never renders below that line.
+        // Landscape phones report the safe area on the sides (or not at all), so use the
+        // largest of the bottom and side insets.
+        float bottomSafePixels = Mathf.Max(Screen.height - MobileMenuScale.SafeAreaPixels.yMax,
+            MobileMenuScale.InsetLeftPixels, MobileMenuScale.InsetRightPixels);
+        float bottomSafe = MobileMenuScale.Active ? bottomSafePixels / MobileMenuScale.Scale : 0f;
+        float bottomPadding = MobileMenuScale.Active ? 0f : 106f;
 
-        Rect contentRect = new Rect(0, 0, position.width - 20, ((list.Count - _skippedDefaultGearCount) * height) + 106);
+        Rect scrollRect = new Rect(0, y, position.width, position.height - (y + 1) - bottomSafe);
+
+        Rect contentRect = new Rect(0, 0, position.width - 20, ((list.Count - _skippedDefaultGearCount) * height) + bottomPadding);
+
         bool showTooltip = scrollRect.Contains(Event.current.mousePosition);
-        _labScroll = GUI.BeginScrollView(scrollRect, _labScroll, contentRect);
+        _labScroll = GUITools.BeginScrollView(scrollRect, _labScroll, contentRect);
         {
             //decrease the width of the content when there is a scrollbar
             int decreaseWidth = contentRect.height > scrollRect.height ? 20 : 5;
@@ -956,7 +1002,8 @@ public class ShopPageGUI : PageGUI
                 Rect itemRect = new Rect(0, itemY, position.width - decreaseWidth, height);
                 Rect hoverRect = new Rect(itemRect.x, itemRect.y, itemRect.width - 100, itemRect.height);
 
-                list[i].Draw(itemRect, itemRect.Contains(Event.current.mousePosition));
+                // No highlight during a finger scroll (stale pointer).
+                list[i].Draw(itemRect, itemRect.Contains(Event.current.mousePosition) && !GUITools.IsHoverSuppressedByTouchScroll);
 
                 if (showTooltip && hoverRect.Contains(Event.current.mousePosition) && !DragAndDrop.Instance.IsDragging)
                 {
@@ -964,10 +1011,10 @@ public class ShopPageGUI : PageGUI
                 }
 
                 //do drag/drop control
-                DragAndDrop.Instance.DrawSlot(itemRect, new ShopDragSlot() { Item = list[i].Item, Slot = LoadoutSlotType.Shop }, OnDropShop);
+                DragAndDrop.Instance.DrawSlot(itemRect, new ShopDragSlot() { Item = list[i].Item, Slot = LoadoutSlotType.Shop }, OnDropShop, null, true);
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     // Recompute the filtered index list only when a filter input actually changed.
@@ -1069,7 +1116,7 @@ public class ShopPageGUI : PageGUI
 
     private void DrawWeaponLoadout(Rect position)
     {
-        _loadoutWeaponScroll = GUI.BeginScrollView(position, _loadoutWeaponScroll, new Rect(0, 0, position.width - 20, (SlotHeight * 4) + 5));
+        _loadoutWeaponScroll = GUITools.BeginScrollView(position, _loadoutWeaponScroll, new Rect(0, 0, position.width - 20, (SlotHeight * 4) + 5));
         {
             string[] slotNames = new string[]
             {
@@ -1120,7 +1167,7 @@ public class ShopPageGUI : PageGUI
 
             GUI.color = Color.white;
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawGearLoadout(Rect position)
@@ -1145,7 +1192,7 @@ public class ShopPageGUI : PageGUI
             new Rect(0, SlotHeight * 5 - 10, 5, SlotHeight)
         };
 
-        _loadoutGearScroll = GUI.BeginScrollView(position, _loadoutGearScroll, new Rect(0, 0, position.width - 20, SlotHeight * 7));
+        _loadoutGearScroll = GUITools.BeginScrollView(position, _loadoutGearScroll, new Rect(0, 0, position.width - 20, SlotHeight * 7));
         {
             DrawLoadoutGearItem(LocalizedStrings.Holo, LoadoutManager.Instance.GetItemOnSlot(LoadoutSlotType.GearHolo), LoadoutSlotType.GearHolo, new Rect(0, 0, position.width - 5, SlotHeight), UberstrikeItemClass.GearHolo);
 
@@ -1169,12 +1216,12 @@ public class ShopPageGUI : PageGUI
                 }
             }
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
     private void DrawQuickItemLoadout(Rect position)
     {
-        _loadoutQuickUseFuncScroll = GUI.BeginScrollView(position, _loadoutQuickUseFuncScroll, new Rect(0, 0, position.width - 20, (SlotHeight * 4) + 5));
+        _loadoutQuickUseFuncScroll = GUITools.BeginScrollView(position, _loadoutQuickUseFuncScroll, new Rect(0, 0, position.width - 20, (SlotHeight * 4) + 5));
         {
             Rect highlightRect = new Rect();
 
@@ -1201,7 +1248,7 @@ public class ShopPageGUI : PageGUI
 
             GUI.color = Color.white;
         }
-        GUI.EndScrollView();
+        GUITools.EndScrollView();
     }
 
 

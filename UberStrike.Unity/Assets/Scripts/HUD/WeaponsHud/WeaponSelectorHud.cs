@@ -15,12 +15,14 @@ public class WeaponSelectorHud
         _loadoutWeapons = new Dictionary<LoadoutSlotType, WeaponItem>();
         _weaponIndicesInList = new Dictionary<LoadoutSlotType, int>();
         _weaponListDisplayTime = 3.0f;
-
+        
         if (HudAssets.Exists)
         {
             _weaponList = new MeshGUIList(OnDrawWeaponList);
             _weaponList.Enabled = false;
         }
+
+        _weaponList.Enabled = false;
     }
 
     public void Draw()

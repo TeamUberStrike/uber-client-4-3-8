@@ -23,10 +23,25 @@ public class PlanarReflection : MonoBehaviour
 
     public bool EnableReflection { get; set; }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern int UberGetDeviceType();
+#endif
+
     public void Start()
     {
         sharedMaterial = ((WaterBase)gameObject.GetComponent(typeof(WaterBase))).sharedMaterial;
+#if UNITY_ANDROID || UNITY_IPHONE
+        EnableReflection = false;
+#elif UNITY_WEBGL
+#if UNITY_EDITOR
+        EnableReflection = !Application.isMobilePlatform;
+#else
+        EnableReflection = UberGetDeviceType() == 0;
+#endif
+#else
         EnableReflection = true;
+#endif
     }
 
     private Camera CreateReflectionCameraFor(Camera cam)

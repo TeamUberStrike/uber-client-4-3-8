@@ -1,6 +1,7 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
+using Cmune.DataCenter.Common.Entities;
+using UnityEngine;
 
 public class DragAndDrop : Singleton<DragAndDrop>
 {
@@ -90,9 +91,17 @@ public class DragAndDrop : Singleton<DragAndDrop>
         _isZooming = false;
     }
 
-    public void DrawSlot<T>(Rect rect, T item, Action<int, T> onDropAction = null, Color? color = null) where T : IDragSlot
+    public void DrawSlot<T>(Rect rect, T item, Action<int, T> onDropAction = null, Color? color = null, bool isItemList = false) where T : IDragSlot
     {
         int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Passive);
+
+        // On touch an item-list row is picked up by its icon (left 50 units); the rest scrolls the list.
+        if (MobileMenuScale.Active
+            && Event.current.GetTypeForControl(id) == EventType.MouseDown
+            && isItemList)
+        {
+            rect.width = 50;
+        }
 
         switch (Event.current.GetTypeForControl(id))
         {
@@ -101,6 +110,10 @@ public class DragAndDrop : Singleton<DragAndDrop>
                 {
                     GUIUtility.hotControl = id;
                     Event.current.Use();
+
+                    // Picking up the item: don't scroll its list.
+                    if (isItemList)
+                        GUITools.CancelTouchScroll();
                 } break;
 
             case EventType.MouseUp:

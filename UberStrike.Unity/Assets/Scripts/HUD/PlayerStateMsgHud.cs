@@ -1,4 +1,5 @@
 using Cmune.Util;
+using DeviceApplication = UnityEngine.Device.Application;
 using UberStrike.Realtime.Common;
 using UnityEngine;
 
@@ -67,17 +68,73 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void Draw()
     {
-        if (GameState.HasCurrentGame && GameState.LocalPlayer.IsGamePaused &&
-            !PopupSystem.IsAnyPopupOpen && GUITools.Button(
-                new Rect(Screen.width * CameraRectController.Instance.Width - 240, Screen.height - 150, 220, 50),
-                new GUIContent("Chat"), StormFront.ButtonBlue))
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
+        bool controlsEditing = MobileControlLayout.EditMode;
+#else
+        bool controlsEditing = false;
+#endif
+
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
+        if (MobileControlLayout.EditMode)
         {
-            SceneGuiController.OpenChat();
+            _temporaryMsgText.Hide();
+            _permanentMsgText.Hide();
         }
-        if (ButtonEnabled)
+#endif
+
+        // The buttons are laid out in menu units, inside the same scaled and safe-area shifted space
+        // as the menus, so they match the ribbon's size on phones. On PC menu units are screen pixels.
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        float virtualHeight = MobileMenuScale.VirtualHeight;
+        float cameraWidth = CameraRectController.Instance.Width;
+
+        if (GameState.HasCurrentGame && !PopupSystem.IsAnyPopupOpen)
         {
-            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(Screen.width * CameraRectController.Instance.Width * 0.5f - 100,
-                Screen.height * 0.5f + Screen.height * 0.6f * (1 - CameraRectController.Instance.Width), 200, 50),
+            if (TouchInput.IsSupported && TouchInput.Exists)
+            {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
+                if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
+                    !InGameChatHud.Instance.CanInput && !controlsEditing)
+                {
+                    // Row 0 of the column is TouchInput's Loadout button.
+                    float stackTop = TouchStackTop + TouchStackRowPitch;
+
+                    if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
+                        GUITools.Button(new Rect(TouchStackX, stackTop, TouchStackButtonWidth, TouchStackButtonHeight),
+                            new GUIContent(ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Use Single Input" : LocalizedStrings.UseMultiTouchInput), StormFront.ButtonBlue))
+                    {
+                        TouchInput.Instance.ToggleMovementMode();
+                    }
+
+                    TeamDeathMatchGameMode teamMode = GameState.CurrentGame as TeamDeathMatchGameMode;
+                    if (GameState.LocalPlayer.IsDead && teamMode != null &&
+                        GUITools.Button(new Rect(TouchStackX, stackTop + TouchStackRowPitch, TouchStackButtonWidth, TouchStackButtonHeight),
+                            new GUIContent(LocalizedStrings.ChangeTeam), StormFront.ButtonBlue))
+                    {
+                        teamMode.ChangeTeam();
+                    }
+
+                    if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
+                        GUITools.Button(new Rect(TouchStackX, stackTop + 2 * TouchStackRowPitch, TouchStackButtonWidth, TouchStackButtonHeight),
+                            new GUIContent("Edit Controls"), StormFront.ButtonBlue))
+                    {
+                        MobileControlLayout.EditMode = true;
+                    }
+                }
+#endif
+            }
+            else if (GameState.LocalPlayer.IsGamePaused &&
+                GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth) - 240, virtualHeight - 150, 220, 50),
+                    new GUIContent(LocalizedStrings.Chat), StormFront.ButtonBlue))
+            {
+                SceneGuiController.OpenChat();
+            }
+        }
+        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing)
+        {
+            // Centred on the camera view (the part of the screen left of an open side panel).
+            if (GameState.CurrentSpace != null && GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth * 0.5f) - 100,
+                virtualHeight * 0.5f + virtualHeight * 0.6f * (1 - cameraWidth), 200, 50),
                     new GUIContent(ButtonCaption), _buttonGuiStyle))
             {
                 if (OnButtonClicked != null)
@@ -86,7 +143,11 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                 }
             }
         }
-        // killer HP/AP icons (4.7.1 HUD sprites) next to the numbers
+
+        MobileMenuScale.End(scaleMatrix);
+
+        // killer HP/AP icons (4.7.1 HUD sprites) next to the numbers; screen pixels like the killer text,
+        // so drawn after the menu scale is undone
         if (_killerHp.Length > 0 && _killerMsgText.IsVisible && _killerMsgText.Text.Length > 0)
         {
             if (_hpIcon == null) _hpIcon = Resources.Load<Texture2D>("KillerHud/HealthIcon");
@@ -104,6 +165,38 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
     public void HideRespawnText()
     {
         _temporaryMsgText.Hide();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // Left-hand button column on touch devices, in menu units: Loadout (a TouchInput button), input
+    // mode, Change Team, Edit Controls. One fixed row per button.
+    // ---------------------------------------------------------------------------------------------
+
+    public const float TouchStackX = 20f;
+    public const float TouchStackButtonWidth = 200f;
+    public const float TouchStackButtonHeight = 50f;
+    public const float TouchStackRowPitch = 62f;
+    private const int TouchStackRows = 4;
+    private const float TouchStackBottomMargin = 12f;
+
+    /// <summary>
+    /// Top of the column: 60% down the screen, moved up when the rows would otherwise run off the
+    /// bottom (a phone only has 540 units of height).
+    /// </summary>
+    public static float TouchStackTop
+    {
+        get
+        {
+            float virtualHeight = MobileMenuScale.VirtualHeight;
+            float columnHeight = (TouchStackRows - 1) * TouchStackRowPitch + TouchStackButtonHeight;
+            return Mathf.Min(virtualHeight * 0.6f, virtualHeight - columnHeight - TouchStackBottomMargin);
+        }
+    }
+
+    /// <summary>Screen pixel x to menu-space x (inside Begin/End). Identity on PC.</summary>
+    private static float ScreenToMenuX(float screenX)
+    {
+        return MobileMenuScale.ScreenToMenu(new Vector2(screenX, 0f)).x;
     }
 
     public void DisplayNone()
@@ -148,7 +241,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     public void DisplayClickToRespawnMsg()
     {
-        _temporaryMsgText.Text = LocalizedStrings.ClickToRespawn;
+        if (ApplicationDataManager.IsMobile)
+        {
+            _temporaryMsgText.Text = LocalizedStrings.TapToRespawn;
+        }
+        else
+        {
+            _temporaryMsgText.Text = LocalizedStrings.ClickToRespawn;
+        }
         _temporaryMsgText.Color = Color.white;
         _temporaryMsgText.Position = TemporaryMsgPosition;
         DisplayKillerMsg();

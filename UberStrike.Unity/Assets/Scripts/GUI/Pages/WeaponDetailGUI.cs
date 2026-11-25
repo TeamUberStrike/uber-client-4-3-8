@@ -8,6 +8,7 @@ class WeaponDetailGUI
     private static VideoPlayer videoPlayer;
     private static RenderTexture renderTexture;
     
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     static WeaponDetailGUI()
     {
         // Initialize static VideoPlayer for badge videos
@@ -22,11 +23,13 @@ class WeaponDetailGUI
         videoPlayer.playOnAwake = false;
         videoPlayer.isLooping = true;
     }
+#endif
 
     public void SetWeaponItem(IUnityItem item, RecommendType type)
     {
         _selectedItem = item;
         _curRecomType = type;
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
         if (_curBadge != null && videoPlayer != null)
         {
             videoPlayer.Stop();
@@ -37,6 +40,7 @@ class WeaponDetailGUI
             videoPlayer.clip = _curBadge;
             videoPlayer.Play();
         }
+#endif
     }
 
     public void Draw(Rect rect)
@@ -64,10 +68,12 @@ class WeaponDetailGUI
 
     private void DrawWeaponBadge(Rect rect)
     {
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
         if (_curBadge != null && renderTexture != null)
         {
             GUI.DrawTexture(rect, renderTexture);
         }
+#endif
     }
 
     private void DrawWeaponIcons(Rect rect)
@@ -165,6 +171,8 @@ class WeaponDetailGUI
 
     private void OnSelectionChange(IUnityItem item)
     {
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
+
         if (_curBadge != null && videoPlayer != null)
         {
             videoPlayer.Stop();
@@ -175,10 +183,13 @@ class WeaponDetailGUI
             videoPlayer.clip = _curBadge;
             videoPlayer.Play();
         }
+#endif
     }
 
     private IUnityItem _selectedItem;
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     private VideoClip _curBadge;
+#endif
     private RecommendType _curRecomType;
     #endregion
 }

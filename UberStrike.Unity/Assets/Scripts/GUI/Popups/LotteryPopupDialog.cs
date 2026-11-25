@@ -13,6 +13,7 @@ public abstract class LotteryPopupDialog : IPopupDialog
 
     protected int Width = 650;
     protected int Height = 330;
+    protected bool ClickAnywhereToExit = true;
 
     protected State _state = State.Normal;
     protected Action _onLotteryRolled;
@@ -38,6 +39,8 @@ public abstract class LotteryPopupDialog : IPopupDialog
 
     public void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         Rect rect = GetPosition();
 
         GUI.Box(rect, GUIContent.none, BlueStonez.window);
@@ -47,7 +50,15 @@ public abstract class LotteryPopupDialog : IPopupDialog
 
         GUI.BeginGroup(rect);
         {
-            if (_showExitButton && GUI.Button(new Rect(rect.width - 20, 0, 20, 20), "X", BlueStonez.friends_hidden_button))
+#if UNITY_ANDROID || UNITY_IPHONE
+            const bool mobileExitButton = true;
+#elif UNITY_WEBGL
+            bool mobileExitButton = ApplicationDataManager.IsMobile;
+#else
+            const bool mobileExitButton = false;
+#endif
+            float exitButtonSize = mobileExitButton ? 45 : 20;
+            if (_showExitButton && GUI.Button(new Rect(rect.width - exitButtonSize, 0, exitButtonSize, exitButtonSize), "X", BlueStonez.friends_hidden_button))
             {
                 PopupSystem.HideMessage(this);
                 LotteryAudioPlayer.Instance.Stop();
@@ -64,7 +75,16 @@ public abstract class LotteryPopupDialog : IPopupDialog
             WaitingTexture.Draw(rect.center);
         }
 
+        //if clicked anything that is not a button, we exit
+        if (ClickAnywhereToExit && Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))//GUI.Button(new Rect(0, 0, Screen.width, Screen.height), GUIContent.none, GUIStyle.none))
+        {
+            ClosePopup();
+            Event.current.Use();
+        }
+
         OnAfterGUI();
+
+        MobileMenuScale.End(scaleMatrix);
     }
 
     public virtual void OnAfterGUI()
@@ -103,10 +123,16 @@ public abstract class LotteryPopupDialog : IPopupDialog
         }
     }
 
+    protected void ClosePopup()
+    {
+        PopupSystem.HideMessage(this);
+    }
+
     private Rect GetPosition()
     {
-        float offsetX = (Screen.width - Width) * 0.5f;
-        float offsetY = GlobalUIRibbon.HEIGHT + (Screen.height - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
+        //center against the virtual (scaled) screen
+        float offsetX = (MobileMenuScale.VirtualWidth - Width) * 0.5f;
+        float offsetY = GlobalUIRibbon.HEIGHT + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
 
         return new Rect(offsetX, offsetY, Width, Height);
     }

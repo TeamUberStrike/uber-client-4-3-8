@@ -20,6 +20,8 @@ namespace UberStrike.Realtime.NakamaAdapter
             NakamaConfig cfg = Cfg;
 #if UNITY_ANDROID || UNITY_IPHONE
             const bool mobile = true;
+#elif UNITY_WEBGL
+            bool mobile = ApplicationDataManager.IsMobile;
 #else
             const bool mobile = false;
 #endif

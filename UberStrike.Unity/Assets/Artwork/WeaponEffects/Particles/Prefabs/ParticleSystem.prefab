@@ -596,7 +596,6 @@ GameObject:
   serializedVersion: 3
   m_Component:
   - 4: {fileID: 400058}
-  - 114: {fileID: 11400000}
   - 114: {fileID: 11400002}
   m_Layer: 12
   m_Name: SplatParticleController
@@ -4225,19 +4224,6 @@ ParticleRenderer:
     y Tile: 1
     cycles: 1
 --- !u!1002 &2600055
-EditorExtensionImpl:
-  serializedVersion: 6
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: add5045804ac2bd48955065fdeb3ebbf, type: 1}
-  m_Name: 
---- !u!1002 &11400001
 EditorExtensionImpl:
   serializedVersion: 6
 --- !u!114 &11400002

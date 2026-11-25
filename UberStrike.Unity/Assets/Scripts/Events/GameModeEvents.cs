@@ -128,3 +128,5 @@ public class OnPlayerUnspecatingEvent { }
 public class OnCameraZoomInEvent { }
 
 public class OnCameraZoomOutEvent { }
+
+public class OnMobileBackPressed { }

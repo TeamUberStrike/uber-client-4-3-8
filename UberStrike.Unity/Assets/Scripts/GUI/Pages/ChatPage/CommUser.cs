@@ -10,11 +10,6 @@ public class CommUser
         SetActor(user);
     }
 
-    public CommUser(UberStrike.Core.Models.CommActorInfo user)
-    {
-        SetNewActor(user);
-    }
-
     public CommUser(CharacterInfo user)
     {
         IsInGame = true;
@@ -72,28 +67,8 @@ public class CommUser
         }
     }
 
-    public void SetNewActor(UberStrike.Core.Models.CommActorInfo actor)
-    {
-        if (actor != null)
-        {
-            Cmid = actor.Cmid;
-            AccessLevel = (MemberAccessLevel)actor.AccessLevel;
-            Name = actor.PlayerName;
-            Channel = actor.Channel;
-            ModerationFlag = actor.ModerationFlag;
-            ModerationInfo = actor.ModInformation;
-            CurrentGame = actor.CurrentRoom.RoomNumber != StaticRoomID.CommCenter ? new CmuneRoomID(actor.CurrentRoom.RoomNumber, actor.CurrentRoom.Server.ConnectionString) : CmuneRoomID.Empty;
-        }
-        else
-        {
-            ActorId = 0;
-            IsInGame = false;
-            CurrentGame = CmuneRoomID.Empty;
-        }
-    }
-
     #region Properties
-
+    
     public int Cmid { get; private set; }
     public string Name
     {

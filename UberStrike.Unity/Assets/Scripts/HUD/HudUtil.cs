@@ -104,15 +104,25 @@ class HudUtil : Singleton<HudUtil>
 
     private void OnRespawnButtonClicked()
     {
-        GamePageManager.Instance.UnloadCurrentPage();
-        GameState.LocalPlayer.UnPausePlayer();
-        GameState.CurrentGame.RespawnPlayer();
+        if (!SceneGuiController.ClosePanel(() =>
+        {
+            GameState.LocalPlayer.UnPausePlayer();
+            GameState.CurrentGame.RespawnPlayer();
+        }))
+        {
+            GamePageManager.Instance.UnloadCurrentPage();
+            GameState.LocalPlayer.UnPausePlayer();
+            GameState.CurrentGame.RespawnPlayer();
+        }
     }
 
     private void OnContinueButtonClicked()
     {
-        GamePageManager.Instance.UnloadCurrentPage();
-        GameState.LocalPlayer.UnPausePlayer();
+        if (!SceneGuiController.ClosePanel(() => GameState.LocalPlayer.UnPausePlayer()))
+        {
+            GamePageManager.Instance.UnloadCurrentPage();
+            GameState.LocalPlayer.UnPausePlayer();
+        }
     }
 
     private void CleanAllTemporaryHud()
@@ -135,11 +145,18 @@ class HudUtil : Singleton<HudUtil>
 
     private bool IsScreenResolutionChanged()
     {
+        float safeLeft = MobileMenuScale.SafeLeftPixels;
+        float safeRight = MobileMenuScale.SafeRightPixels;
+
         if (Screen.width != _lastScreenWidth ||
-             Screen.height != _lastScreenHeight)
+            Screen.height != _lastScreenHeight ||
+            safeLeft != _lastSafeLeft ||
+            safeRight != _lastSafeRight)
         {
             _lastScreenWidth = Screen.width;
             _lastScreenHeight = Screen.height;
+            _lastSafeLeft = safeLeft;
+            _lastSafeRight = safeRight;
             return true;
         }
         return false;
@@ -151,6 +168,8 @@ class HudUtil : Singleton<HudUtil>
 
     private int _lastScreenWidth;
     private int _lastScreenHeight;
+    private float _lastSafeLeft;
+    private float _lastSafeRight;
 
     #endregion
 }

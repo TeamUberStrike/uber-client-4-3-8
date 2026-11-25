@@ -239,6 +239,11 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
         return _weapons[1];
     }
 
+    public WeaponSlot GetCurrentWeapon()
+    {
+        return _weapon;
+    }
+
     public void InitializeAllWeapons(Transform _weaponAttachPoint)
     {
         for (int i = 0; i < _weapons.Length; i++)
@@ -686,6 +691,10 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
 
     private void PrimaryFireCallback(InputChangeEvent ev, LoadoutSlotType slotType)
     {
+        Debug.Log("[FireDiag] PrimaryFire isDown=" + ev.IsDown + " weapon=" + (_weapon != null) + " hasWeapon=" + (_weapon != null && _weapon.HasWeapon) +
+            " canShoot=" + CanPlayerShoot + " isEnabled=" + IsEnabled + " inputEnabled=" + InputManager.Instance.IsInputEnabled +
+            " alive=" + (GameState.HasCurrentPlayer && GameState.LocalCharacter != null && GameState.LocalCharacter.IsAlive) +
+            " switchDone=" + IsSwitchDone);
         if (_weapon == null || !_weapon.HasWeapon) return;
 
         if (ev.IsDown)
@@ -746,7 +755,7 @@ public class WeaponController : Singleton<WeaponController>, IWeaponController
             {
                 bool ready = IsWeaponReady;
 
-                if (Input.GetMouseButton(0))
+                if (!TouchInput.IsSupported && Input.GetMouseButton(0))
                 {
                     _bufferedTapTime = -1f;
 

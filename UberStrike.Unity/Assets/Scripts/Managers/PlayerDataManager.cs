@@ -346,7 +346,7 @@ public class PlayerDataManager : Singleton<PlayerDataManager>
 
     private PlayerDataManager()
     {
-        // Initializae secure memory
+        // Initialize secure memory
         _cmid = new SecureMemory<int>(0);
         _name = new SecureMemory<string>(string.Empty);
         _email = new SecureMemory<string>(string.Empty);

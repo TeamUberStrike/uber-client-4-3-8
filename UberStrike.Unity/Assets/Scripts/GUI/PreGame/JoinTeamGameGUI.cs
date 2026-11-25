@@ -22,13 +22,14 @@ public class JoinTeamGameGUI : BaseJoinGameGUI
 
         float marginLeft2 = margin.y - 130;
         int maxPlayersInTeam = Mathf.CeilToInt(_gameMode.GameData.MaxPlayers / 2f);
+        float joinY = rect.height * 0.15f;
 
-        DrawPlayers(new Rect(margin.x, 64 + 130, 130, 24), _gameMode.BlueTeamPlayerCount, maxPlayersInTeam, StormFront.DotBlue);
+        DrawPlayers(new Rect(margin.x, joinY + 130, 130, 24), _gameMode.BlueTeamPlayerCount, maxPlayersInTeam, StormFront.DotBlue);
 
         GUITools.PushGUIState();
         GUI.enabled = _gameMode.IsInitialized && PlayerDataManager.AccessLevel >= MemberAccessLevel.SeniorModerator || (_gameMode.CanJoinBlueTeam && _gameMode.GameData.ConnectedPlayers < _gameMode.GameData.MaxPlayers);
 
-        if (GUITools.Button(new Rect(margin.x, 64, 130, 130), GUIContent.none, StormFront.ButtonJoinBlue))
+        if (GUITools.Button(new Rect(margin.x, joinY, 130, 130), GUIContent.none, StormFront.ButtonJoinBlue))
         {
             GameState.LocalDecorator.HideWeapons();
             GameState.LocalDecorator.MeshRenderer.enabled = false;
@@ -40,9 +41,9 @@ public class JoinTeamGameGUI : BaseJoinGameGUI
         GUITools.PushGUIState();
         GUI.enabled = _gameMode.IsInitialized && _gameMode.CanJoinRedTeam;
 
-        DrawPlayers(new Rect(marginLeft2, 64 + 130, 130, 24), _gameMode.RedTeamPlayerCount, maxPlayersInTeam, StormFront.DotRed);
+        DrawPlayers(new Rect(marginLeft2, joinY + 130, 130, 24), _gameMode.RedTeamPlayerCount, maxPlayersInTeam, StormFront.DotRed);
 
-        if (GUITools.Button(new Rect(marginLeft2, 64, 130, 130), GUIContent.none, StormFront.ButtonJoinRed))
+        if (GUITools.Button(new Rect(marginLeft2, joinY, 130, 130), GUIContent.none, StormFront.ButtonJoinRed))
         {
             GameState.LocalDecorator.HideWeapons();
             GameState.LocalDecorator.MeshRenderer.enabled = false;

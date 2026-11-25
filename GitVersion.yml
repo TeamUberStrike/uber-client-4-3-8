@@ -1,0 +1,22 @@
+calculation:
+  branches:
+    main:
+      label: main
+    feature:
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      regex: "^(?<BranchName>features?[\\/-].+)"
+    release:
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      regex: "^(?<BranchName>releases?[\\/-].+)"
+    pull-request:
+      label: "PullRequest{Number}.{env:GITHUB_HEAD_REF ?? \"unknown\"}"
+    unknown:
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+  mode: ContinuousDelivery
+  next-version: 4.3.8
+output:
+  assembly-informational-format: "{SemVer}.{Sha}"
+workflow: GitHubFlow/v1

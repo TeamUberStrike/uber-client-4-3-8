@@ -21,6 +21,29 @@ class SceneGuiController : MonoBehaviour
             }
             _guiPages = keep.ToArray();
         }
+        else
+        {
+            // Join screen: only the join page (+ chat); no Loadout & Shop tab.
+            bool isJoinScreen = false;
+            for (int i = 0; i < _guiPages.Length; i++)
+            {
+                if (_guiPages[i] is PregameLoadoutPageGUI)
+                {
+                    isJoinScreen = true;
+                    break;
+                }
+            }
+            if (isJoinScreen)
+            {
+                var keep = new System.Collections.Generic.List<PageGUI>();
+                foreach (PageGUI p in _guiPages)
+                {
+                    if (p is ShopPageGUI) p.enabled = false;
+                    else keep.Add(p);
+                }
+                _guiPages = keep.ToArray();
+            }
+        }
         if (_includeInGameChat)
         {
             GameObject chatObject = new GameObject("InGameChat");
@@ -37,8 +60,13 @@ class SceneGuiController : MonoBehaviour
         _guiPageAnim = new FloatAnim((float oldValue, float newValue) =>
         {
             _offset = newValue;
-            CameraRectController.Instance.Width = (Screen.width - _rect.width + _offset) / Screen.width;
+            CameraRectController.Instance.Width = GetCameraWidth();
         });
+
+        for (int i = 0; i < _guiPages.Length; i++)
+        {
+            _guiPages[i].IsOnGUIEnabled = false;
+        }
 
         _guiPageTabs = new GUIContent[_guiPages.Length];
         for (int i = 0; i < _guiPages.Length; i++)
@@ -91,19 +119,45 @@ class SceneGuiController : MonoBehaviour
         {
             _closing = false;
             GamePageManager.Instance.UnloadCurrentPage();
+
+            if (GameState.HasCurrentGame &&
+                GameStateController.Instance.StateMachine.CurrentStateId == (int)GameStateId.PregameLoadout)
+            {
+                GamePageManager.Instance.LoadPage(PageType.PreGame);
+            }
+
+            System.Action onClosed = _onClosed;
+            _onClosed = null;
+            if (onClosed != null)
+            {
+                onClosed();
+            }
         }
     }
 
     private void OnGUI()
     {
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+
         GUI.depth = (int)GuiDepth.Page;
 
         _rect.y = GlobalUIRibbon.Instance.GetHeight();
-        _rect.height = Screen.height - _rect.y;
-        _rect.x = Screen.width - _rect.width + _offset;
+        //anchor against the virtual (scaled) screen
+        _rect.height = MobileMenuScale.VirtualHeight - _rect.y;
+        _rect.x = PanelX;
 
         GUI.skin = BlueStonez.Skin;
-        GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
+
+        for (int i = 0; i < _guiPages.Length; i++)
+        {
+            _guiPages[i].IsOnGUIEnabled = false;
+        }
+
+        // The background (and the title strip drawn below) run on to the real right screen edge, so no
+        // strip of the game shows beside the panel. Content stays inside the safe menu area.
+        MobileMenuScale.DrawBackground(_rect, BlueStonez.window_standard_grey38);
+        MobileMenuScale.DrawBleed(new Rect(_rect.x, _rect.y, _rect.width, 56), BlueStonez.tab_strip);
+        GUI.BeginGroup(_rect);
         {
             string title = _hideTitleWhenAlive && GameState.HasCurrentPlayer && GameState.LocalCharacter.IsAlive ? string.Empty : _title;
             GUI.Label(new Rect(0, 0, _rect.width, 56), title, BlueStonez.tab_strip);
@@ -119,6 +173,8 @@ class SceneGuiController : MonoBehaviour
         }
         GUI.EndGroup();
         _guiPages[_currentGuiPageIndex].DrawGUI(new Rect(_rect.x, _rect.y + 57, _rect.width, _rect.height - 56));
+
+        MobileMenuScale.End(scaleMatrix);
 
         GuiManager.DrawTooltip();
     }
@@ -154,13 +210,28 @@ class SceneGuiController : MonoBehaviour
         _guiPageAnim.AnimTo(_rect.width, 0.3f, EaseType.Out);
     }
 
+    public static bool ClosePanel(System.Action onClosed)
+    {
+        SceneGuiController panel = _open ? _open : _deathShop;
+        if (panel != null && panel.isActiveAndEnabled && !GamePageManager.IsCurrentPage(PageType.None))
+        {
+            panel._onClosed = onClosed;
+            panel.SlideOut();
+            return true;
+        }
+        return false;
+    }
+
     private void SetCurrentPage(int index)
     {
         if (_currentGuiPageIndex == index) return;
         for (int i = 0; i < _guiPages.Length; i++)
         {
             _guiPages[i].IsOnGUIEnabled = false;
-            _guiPages[i].enabled = false;
+            if (i != index)
+            {
+                _guiPages[i].enabled = false;
+            }
         }
         if (index >= 0 && index < _guiPages.Length)
         {
@@ -171,7 +242,31 @@ class SceneGuiController : MonoBehaviour
 
     private void OnScreenResolutionChange(ScreenResolutionEvent ev)
     {
-        CameraRectController.Instance.Width = (Screen.width - _rect.width + _offset) / Screen.width;
+        CameraRectController.Instance.Width = GetCameraWidth();
+    }
+
+    /// <summary>
+    /// Panel x in menu space. Open (offset 0) the panel sits at VirtualWidth - width; closed (offset =
+    /// width) it is fully off screen. On mobile its background extends BleedRight past the panel to the
+    /// screen edge, so the slide distance includes that. PC: VirtualWidth - width + offset, as before.
+    /// </summary>
+    private float PanelX
+    {
+        get
+        {
+            float slide = _rect.width > 0f ? _offset * (_rect.width + MobileMenuScale.BleedRight) / _rect.width : _offset;
+            return MobileMenuScale.VirtualWidth - _rect.width + slide;
+        }
+    }
+
+    /// <summary>
+    /// Camera viewport width (fraction of the screen): the screen area left of the panel. The panel is
+    /// laid out in menu units, so its left edge is converted to screen pixels (menu scale + safe-area
+    /// inset). PC: (Screen.width - width + offset) / Screen.width, as before.
+    /// </summary>
+    private float GetCameraWidth()
+    {
+        return Mathf.Clamp01(MobileMenuScale.MenuToScreenX(PanelX) / Screen.width);
     }
 
     [SerializeField]
@@ -190,5 +285,6 @@ class SceneGuiController : MonoBehaviour
     private GUIContent[] _guiPageTabs;
     private float _offset;
     private int _currentGuiPageIndex = -1;
+    private System.Action _onClosed;
     private FloatAnim _guiPageAnim;
 }

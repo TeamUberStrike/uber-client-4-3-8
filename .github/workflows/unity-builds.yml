@@ -1,0 +1,147 @@
+name: Unity Builds
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build ("all" runs the full matrix)
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - iOS
+          - Android
+          - Windows
+          - WebGL
+
+jobs:
+  prepare:
+    name: Prepare matrix
+    runs-on: ubuntu-latest
+    outputs:
+      include: ${{ steps.set.outputs.include }}
+    steps:
+      - name: Select platforms
+        id: set
+        env:
+          PLATFORM: ${{ github.event.inputs.platform || 'all' }}
+        run: |
+          include='[
+            {"platform":"Windows","target":"StandaloneWindows","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildWindowsStandaloneDev","artifactPath":"UberStrike.Unity/Latest/WindowsStandalone"},
+            {"platform":"Android","target":"Android","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildAndroidDev","artifactPath":"UberStrike.Unity/Latest/Android/*.apk"},
+            {"platform":"iOS","target":"iOS","runner":"macos-15-intel","buildMethod":"SceneExporter.BuildiOS"},
+            {"platform":"WebGL","target":"WebGL","runner":"ubuntu-latest","buildMethod":"SceneExporter.BuildWebPlayerDevMain","artifactPath":"UberStrike.Unity/Latest/WebPlayer"}
+          ]'
+          if [ "$PLATFORM" != "all" ]; then
+            include=$(printf '%s' "$include" | jq -c --arg p "$PLATFORM" '[.[] | select(.platform == $p)]')
+          else
+            include=$(printf '%s' "$include" | jq -c '.')
+          fi
+          echo "include=$include" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: ${{ matrix.platform }}
+    needs: prepare
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.prepare.outputs.include) }}
+    runs-on: ${{ matrix.runner }}
+    environment: Unity
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v5
+        with:
+          versionSpec: '7.0.x'
+
+      - name: Determine version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v5
+
+      - name: Compute project hash
+        id: project
+        run: echo "hash=$(git rev-parse HEAD:UberStrike.Unity)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: UberStrike.Unity/Library
+          key: Library-${{ matrix.target }}-${{ steps.project.outputs.hash }}
+          restore-keys: |
+            Library-${{ matrix.target }}-
+
+      # linux unity encodes webgl audio (aac) with ffmpeg. stock image has none = silent build
+      - name: WebGL editor image with ffmpeg
+        if: matrix.platform == 'WebGL'
+        id: webglimage
+        run: |
+          UNITY_VERSION=$(sed -n 's/^m_EditorVersion: //p' UberStrike.Unity/ProjectSettings/ProjectVersion.txt | tr -d '\r')
+          mkdir -p /tmp/webgl-image
+          {
+            echo "FROM unityci/editor:ubuntu-${UNITY_VERSION}-webgl-3"
+            echo "RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*"
+          } > /tmp/webgl-image/Dockerfile
+          docker build -t "uberstrike/unity-webgl-ffmpeg:${UNITY_VERSION}" /tmp/webgl-image
+          docker run --rm --entrypoint ffmpeg "uberstrike/unity-webgl-ffmpeg:${UNITY_VERSION}" -hide_banner -version | head -1
+          echo "image=uberstrike/unity-webgl-ffmpeg:${UNITY_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build ${{ matrix.platform }} in Unity
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: UberStrike.Unity
+          targetPlatform: ${{ matrix.target }}
+          buildMethod: ${{ matrix.buildMethod }}
+          versioning: Custom
+          version: ${{ steps.gitversion.outputs.informationalVersion }}
+          customImage: ${{ steps.webglimage.outputs.image }}
+
+      - name: Build iOS .ipa in Xcode
+        if: matrix.platform == 'iOS'
+        run: |
+          xcodebuild \
+            -project UberStrike.Unity/BuildIos/Unity-iPhone.xcodeproj \
+            -scheme Unity-iPhone \
+            -configuration Debug \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath UberStrike.Unity/BuildIos/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+          APP_PATH="UberStrike.Unity/BuildIos/DerivedData/Build/Products/Debug-iphoneos/uberstrike.app"
+          VERSION="${{ steps.gitversion.outputs.informationalVersion }}"
+          VERSION="${VERSION//[^A-Za-z0-9._+-]/-}"
+          IPA_PATH="$PWD/UberStrike.Unity/BuildIos/UberStrike-iOS-${VERSION}.ipa"
+          STAGE="UberStrike.Unity/BuildIos/ipa-stage"
+
+          test -d "$APP_PATH"
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE/Payload"
+          cp -R "$APP_PATH" "$STAGE/Payload/"
+          (cd "$STAGE" && ditto -c -k --sequesterRsrc --keepParent Payload "$IPA_PATH")
+
+          unzip -l "$IPA_PATH" | head -20
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform == 'iOS' && format('UberStrike-iOS-{0}', steps.gitversion.outputs.informationalVersion) || format('UberStrike-{0}-{1}', matrix.platform, steps.gitversion.outputs.informationalVersion) }}
+          path: ${{ matrix.platform == 'iOS' && 'UberStrike.Unity/BuildIos/*.ipa' || matrix.artifactPath }}

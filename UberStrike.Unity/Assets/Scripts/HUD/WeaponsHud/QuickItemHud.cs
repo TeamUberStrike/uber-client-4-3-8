@@ -104,6 +104,34 @@ public class QuickItemHud
         get { return _quickItemGroup; }
     }
 
+    public void HideEditorDecorations()
+    {
+        _recharge.Alpha = 0;
+        _cooldown.Alpha = 0;
+        _cooldownFlash.Alpha = 0;
+        _descriptionText.Text = string.Empty;
+        _descriptionText.Hide();
+        _selection.IsEnabled = false;
+    }
+
+    public void HideDescription()
+    {
+        _descriptionText.Text = string.Empty;
+        _descriptionText.Hide();
+    }
+
+    public Texture GetIcon()
+    {
+        return _icon.Texture;
+    }
+
+    public Rect GetButtonRect()
+    {
+        Vector2 center = _quickItemGroup.Position + _background.Position;
+        Vector2 size = _background.Size;
+        return new Rect(center.x - size.x / 2, center.y - size.y / 2, size.x, size.y);
+    }
+
     public QuickItemHud(string name)
     {
         Name = name;
@@ -140,22 +168,26 @@ public class QuickItemHud
             Depth = 6,
         };
 
-        _selection = new MeshGUIQuad(ConsumableHudTextures.CircleBlue, TextAnchor.MiddleCenter)
-        {
-            Name = name + "Selection",
-            Depth = 4,
-        };
-
         _countText = new MeshGUIText(_amount.ToString(), HudAssets.Instance.HelveticaBitmapFont, TextAnchor.LowerCenter)
         {
             NamePrefix = name,
             Depth = 7,
         };
 
+        // Created unconditionally: SetSelected()/HideEditorDecorations()/ConfigureSlot()/Scale()
+        // dereference these without null checks, and on the device (TouchInput.IsSupported) the
+        // SetSelected path uses _selection. On mobile they're just not added to the rendered
+        // group below, so they stay invisible.
         _descriptionText = new MeshGUIText("Key: 7", HudAssets.Instance.HelveticaBitmapFont, TextAnchor.LowerCenter)
         {
             NamePrefix = name,
             Depth = 8,
+        };
+
+        _selection = new MeshGUIQuad(ConsumableHudTextures.CircleBlue, TextAnchor.MiddleCenter)
+        {
+            Name = name + "Selection",
+            Depth = 4,
         };
 
         _icon = new MeshGUIQuad(ConsumableHudTextures.AmmoBlue, TextAnchor.MiddleCenter)
@@ -172,13 +204,22 @@ public class QuickItemHud
         _quickItemGroup.Group.Add(_background);
         _quickItemGroup.Group.Add(_icon);
         _quickItemGroup.Group.Add(_countText);
-        _quickItemGroup.Group.Add(_descriptionText);
-        _quickItemGroup.Group.Add(_selection);
+        if (!ApplicationDataManager.IsMobile)
+        {
+            _quickItemGroup.Group.Add(_descriptionText);
+            _quickItemGroup.Group.Add(_selection);
+        }
     }
 
     public void SetKeyBinding(string binding)
     {
-        _descriptionText.Text = "Key: " + binding;
+        if (!ApplicationDataManager.IsMobile)
+        {
+#if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
+            if (MobileControlLayout.EditMode) return;
+#endif
+            _descriptionText.Text = "Key: " + binding;
+        }
     }
 
     public void SetRechargeBarVisible(bool isVisible)
@@ -206,6 +247,24 @@ public class QuickItemHud
         IsExpanded = true;
     }
 
+    public void Expand(bool moveNext = true)
+    {
+        ResetHud();
+
+        float startPos = 40;
+        if (moveNext) startPos = -40;
+
+        _quickItemGroup.Position = new Vector2(startPos, CollapsedHeight);
+        _quickItemGroup.MoveTo(new Vector2(0, CollapsedHeight), 0.3f, EaseType.Berp, 0.0f);
+        _quickItemGroup.FadeAlphaTo(1.0f, 0.3f);
+        _cooldown.StopFading();
+        _cooldown.Alpha = 0;
+        _cooldownFlash.StopFading();
+        _cooldownFlash.Alpha = 0;
+
+        IsExpanded = true;
+    }
+
     public void Collapse(Vector2 destPos, float delay = 0)
     {
         ResetHud();
@@ -213,9 +272,9 @@ public class QuickItemHud
         Vector2 descriptionTextPos = new Vector2(_background.Size.x / 2, _background.Size.y + 5);
         if (_quickItemGroup.IsVisible)
         {
-            _quickItemGroup.MoveTo(_collapseGroupPos, 0.3f, EaseType.Berp, delay);
-            _descriptionText.FadeAlphaTo(0, 0.3f, EaseType.Out);
-            _descriptionText.MoveTo(descriptionTextPos, 0.3f, EaseType.Berp, delay);
+            _quickItemGroup.Position = _collapseGroupPos;
+            _descriptionText.Alpha = 0;
+            _descriptionText.Position = descriptionTextPos;
         }
         else
         {
@@ -226,10 +285,40 @@ public class QuickItemHud
         IsExpanded = false;
     }
 
-    public void SetSelected(bool selected)
+    public void Collapse(bool moveNext = true)
+    {
+        ResetHud();
+
+        float startPos = -40;
+        if (moveNext) startPos = 40;
+
+        _quickItemGroup.Position = new Vector2(0, CollapsedHeight);
+        _quickItemGroup.MoveTo(new Vector2(startPos, CollapsedHeight), 0.3f, EaseType.Berp, 0.0f);
+        _quickItemGroup.FadeAlphaTo(0.0f, 0.3f);
+        
+
+        IsExpanded = false;
+    }
+
+    public void SetSelected(bool selected, bool moveNext = true)
     {
         if (IsEmpty) selected = false;
-        _selection.IsEnabled = selected;
+
+        if (ApplicationDataManager.IsMobile && !TouchInput.IsSupported)
+        {
+            if (!selected)
+            {
+                Collapse(moveNext);
+            }
+            else
+            {
+                Expand(moveNext);
+            }
+        }
+        else
+        {
+            _selection.IsEnabled = selected;
+        }
     }
 
     public float ExpandedHeight { get; private set; }
@@ -254,7 +343,8 @@ public class QuickItemHud
         Texture selectionTexture, Texture2D icon)
     {
         HudStyleUtility.Instance.SetDefaultStyle(_countText);
-        HudStyleUtility.Instance.SetDefaultStyle(_descriptionText);
+        if (!ApplicationDataManager.IsMobile)
+            HudStyleUtility.Instance.SetDefaultStyle(_descriptionText);
 
         _recharge.Texture = rechargingTexture;
         _cooldown.Texture = cooldownTexture;
@@ -263,15 +353,18 @@ public class QuickItemHud
         _cooldownFlash.Alpha = 0;
         _background.Texture = backgroundTexture;
         _background.Alpha = BackgroundAlpha;
-        _selection.Texture = selectionTexture;
+        
         _icon.Texture = icon;
 
         _countText.BitmapMeshText.ShadowColor = textColor;
         _countText.BitmapMeshText.AlphaMin = 0.40f;
-        _descriptionText.BitmapMeshText.ShadowColor = textColor;
-        _descriptionText.BitmapMeshText.AlphaMin = 0.40f;
-        _descriptionText.BitmapMeshText.MainColor = _descriptionText.BitmapMeshText.MainColor.SetAlpha(0.5f);
-
+        if (!ApplicationDataManager.IsMobile)
+        {
+            _selection.Texture = selectionTexture;
+            _descriptionText.BitmapMeshText.ShadowColor = textColor;
+            _descriptionText.BitmapMeshText.AlphaMin = 0.40f;
+            _descriptionText.BitmapMeshText.MainColor = _descriptionText.BitmapMeshText.MainColor.SetAlpha(0.5f);
+        }
         _quickItemGroup.Show();
 
         IsEmpty = false;
@@ -301,9 +394,12 @@ public class QuickItemHud
         _recharge.Scale = scale * 0.8f;
         _cooldown.Scale = scale;
         _cooldownFlash.Scale = scale;
-        _selection.Scale = scale;
         _countText.Scale = Vector2.one * textScaleFactor;
-        _descriptionText.Scale = Vector2.one * textScaleFactor;
+        if (!ApplicationDataManager.IsMobile)
+        {
+            _selection.Scale = scale;
+            _descriptionText.Scale = Vector2.one * textScaleFactor;
+        }
 
         Vector2 iconPos = _background.Size / 2;
         _icon.Position = iconPos;
@@ -311,14 +407,18 @@ public class QuickItemHud
         _cooldown.Position = _background.Size / 2;
         _cooldownFlash.Position = _background.Size / 2;
         _background.Position = _background.Size / 2;
-        _selection.Position = _selection.Size / 2;
         _countText.Position = new Vector2(_background.Size.x * 0.95f, _background.Size.y + _countText.Size.y * 0.5f);
-
+        if (!ApplicationDataManager.IsMobile)
+        {
+            _selection.Position = _selection.Size / 2;
+        }
         UpdateExpandedHeight();
     }
 
     private void UpdateCollapsedHeight()
     {
+        if (ApplicationDataManager.IsMobile) return;
+        
         Vector2 pos = _descriptionText.Position;
         _descriptionText.Position = new Vector2(_background.Size.x / 2, _background.Size.y + 5);
         float h = Group.Rect.height;
@@ -341,7 +441,10 @@ public class QuickItemHud
         }
         else
         {
-            _icon.Alpha = 1;
+            if (!ApplicationDataManager.IsMobile || IsExpanded)
+                _icon.Alpha = 1;
+            else
+                _icon.Alpha = 0;
         }
         _countText.Text = _amount.ToString();
         if (isDecreasing)
@@ -380,7 +483,7 @@ public class QuickItemHud
             {
                 OnCooldownStart();
             }
-            if (_isCooliingDown && _amount > 0) _cooldown.Alpha = CooldownAlpha;
+            if (_isCooliingDown && _amount > 0 && (!ApplicationDataManager.IsMobile || IsExpanded)) _cooldown.Alpha = CooldownAlpha;
         }
         else
         {
@@ -426,6 +529,7 @@ public class QuickItemHud
         _cooldownFlash.Flicker(animTime);
         _cooldownFlash.FadeAlphaTo(0.0f, animTime);
         yield return new WaitForSeconds(animTime + 0.1f);
+        
         if (_isAnimating == true)
         {
             ResetCooldownFlashView(0);
@@ -434,6 +538,7 @@ public class QuickItemHud
 
     private void ResetCooldownFlashView(float alpha)
     {
+        if (ApplicationDataManager.IsMobile && !IsExpanded) alpha = 0;
         _cooldownFlash.Alpha = alpha;
         _cooldownFlash.Scale = Vector2.one * 0.8f;
         _cooldownFlash.Position = _background.Size / 2;

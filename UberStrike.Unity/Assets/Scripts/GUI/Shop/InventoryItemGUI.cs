@@ -38,7 +38,14 @@ public class InventoryItemGUI : BaseItemGUI
                 }
                 else if (!GameState.HasCurrentGame)
                 {
-                    _alpha = Mathf.Lerp(_alpha, selected ? 1 : 0, Time.deltaTime * (selected ? 2 : 10));
+#if !UNITY_ANDROID && !UNITY_IPHONE
+                    if (ApplicationDataManager.IsMobile)
+                        _alpha = 1.0f;
+                    else
+                        _alpha = Mathf.Lerp(_alpha, selected ? 1 : 0, Time.deltaTime * (selected ? 2 : 10));
+#else
+                    _alpha = 1.0f;
+#endif
                     GUI.color = new Color(1, 1, 1, _alpha);
                     DrawTryButton(new Rect(rect.width - 100, 7, 46, 46));
                     GUI.color = Color.white;

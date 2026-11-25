@@ -19,12 +19,13 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
             if (_white == null)
             {
                 _white = new Texture2D(16, 16, TextureFormat.RGBA32, false);
-                var colors = new Color[16 * 16];
-                for (int i = 0; i < colors.Length; i++)
+                for (int i = 0; i < _white.height; i++)
                 {
-                    colors[i] = Color.white;
+                    for (int j = 0; j < _white.width; j++)
+                    {
+                        _white.SetPixel(j, i, Color.white);
+                    }
                 }
-                _white.SetPixels(colors);
                 _white.Apply();
             }
             return _white;
@@ -270,7 +271,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
 
         return tex;
     }
-
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     [SerializeField]
     private VideoClip[] _achievementBadges;
     public static VideoClip GetAchievementBadge(AchievementType achievementType)
@@ -299,6 +300,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
                 return null;
         }
     }
+#endif
 
     public static string GetAchievementTitle(AchievementType type)
     {
@@ -323,6 +325,7 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
         }
     }
 
+#if !UNITY_ANDROID && !UNITY_IPHONE && !UNITY_WEBGL
     [SerializeField]
     private VideoClip[] _recommendationBadges;
     public static VideoClip GetRecommendBadge(RecommendType recomType)
@@ -331,20 +334,33 @@ public class UberstrikeIcons : MonoSingleton<UberstrikeIcons>
         {
             return null;
         }
+        int index = -1;
         switch (recomType)
         {
             case RecommendType.MostEfficient:
-                return Instance._recommendationBadges[0];
+                index = 0;
+                break;
             case RecommendType.RecommendedWeapon:
-                return Instance._recommendationBadges[1];
+                index = 1;
+                break;
             case RecommendType.StaffPick:
-                return Instance._recommendationBadges[2];
+                index = 2;
+                break;
             case RecommendType.RecommendedArmor:
-                return Instance._recommendationBadges[3];
+                index = 3;
+                break;
             default:
                 return null;
         }
+
+        VideoClip[] badges = Instance._recommendationBadges;
+        if (badges == null || index >= badges.Length)
+        {
+            return null;
+        }
+        return badges[index];
     }
+#endif
 
     [SerializeField]
     private Texture2D[] _stats;

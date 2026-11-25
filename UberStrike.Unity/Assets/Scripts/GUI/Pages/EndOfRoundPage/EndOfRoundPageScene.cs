@@ -25,6 +25,8 @@ public class EndOfRoundPageScene : PageScene
 
     private void OnGUI()
     {
+        // Not mobile-menu-scaled: this is an in-game results overlay whose MeshGUIText splats are
+        // drawn in screen space and do not respect GUI.matrix, so a scale would desync them.
         GUI.depth = (int)GuiDepth.Hud;
 
         if (GameState.HasCurrentGame)
@@ -67,7 +69,13 @@ public class EndOfRoundPageScene : PageScene
                 }
                 GUI.EndGroup();
             }
-            DrawReadyButton(new Rect((pixelRect.width - x * 2 - 60) / 2, GlobalUIRibbon.HEIGHT + x + 40, x * 2 + 60, 50));
+            // Scale the READY toggle like the other menu buttons; the MeshGUI score splats stay
+            // in raw screen space (they ignore GUI.matrix).
+            Matrix4x4 readyScale = MobileMenuScale.Begin();
+            Rect readyRect = new Rect(MobileMenuScale.ScreenToMenu(new Vector2((pixelRect.width - x * 2 - 60) / 2, GlobalUIRibbon.HEIGHT + x + 40)),
+                new Vector2((x * 2 + 60) / MobileMenuScale.Scale, 50f));
+            DrawReadyButton(readyRect);
+            MobileMenuScale.End(readyScale);
         }
     }
 
@@ -122,7 +130,20 @@ public class EndOfRoundPageScene : PageScene
                 GUITools.PushGUIState();
                 GUI.enabled = !GameState.IsReadyForNextGame;
 
-                bool b = GUI.Toggle(new Rect(rect.width / 2 - 70, rect.height / 2 - 23, 140, 45), GameState.IsReadyForNextGame, caption, StormFront.ButtonGray);
+                if (_readyButtonStyle == null)
+                {
+                    _readyButtonStyle = new GUIStyle(StormFront.ButtonGray);
+                    _readyButtonStyle.normal.background = StormFront.ButtonGray.normal.background;
+                    _readyButtonStyle.hover.background = StormFront.ButtonGray.normal.background;
+                    _readyButtonStyle.active.background = StormFront.ButtonGray.normal.background;
+                    _readyButtonStyle.focused.background = StormFront.ButtonGray.normal.background;
+                    _readyButtonStyle.onNormal.background = StormFront.ButtonGray.normal.background;
+                    _readyButtonStyle.onHover.background = StormFront.ButtonGray.normal.background;
+                    _readyButtonStyle.onActive.background = StormFront.ButtonGray.normal.background;
+                    _readyButtonStyle.onFocused.background = StormFront.ButtonGray.normal.background;
+                }
+
+                bool b = GUI.Toggle(new Rect(rect.width / 2 - 70, rect.height / 2 - 23, 140, 45), GameState.IsReadyForNextGame, caption, _readyButtonStyle);
 
                 GUITools.PopGUIState();
                 
@@ -153,6 +174,7 @@ public class EndOfRoundPageScene : PageScene
     }
 
     private int _endOfMatchCountdown;
+    private GUIStyle _readyButtonStyle;
     private MeshGUIText _redTeamText;
     private MeshGUIText _blueTeamText;
     private MeshGUIText _redTeamSplats;

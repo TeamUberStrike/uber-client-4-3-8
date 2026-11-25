@@ -15,7 +15,10 @@ class SearchBarGUI
     public void Draw(Rect rect)
     {
         GUI.SetNextControlName(_guiName);
-        FilterText = GUI.TextField(new Rect(rect.x, rect.y, IsSearching ? rect.width - 22 : rect.width, rect.height), 
+
+        int closeSearchWidth = 20;
+        if (ApplicationDataManager.IsMobile) closeSearchWidth = 30;
+        FilterText = GUI.TextField(new Rect(rect.x, rect.y, IsSearching ? rect.width - closeSearchWidth - 2 : rect.width, rect.height), 
             FilterText, BlueStonez.textField);
         if (string.IsNullOrEmpty(FilterText) && GUI.GetNameOfFocusedControl() != _guiName)
         {
@@ -24,7 +27,7 @@ class SearchBarGUI
             GUI.color = Color.white;
         }
 
-        if (IsSearching && GUITools.Button(new Rect(rect.x + rect.width - 20, 8, 20, 20),
+        if (IsSearching && GUITools.Button(new Rect(rect.x + rect.width - closeSearchWidth, 8, closeSearchWidth, closeSearchWidth),
                                            new GUIContent("x"), BlueStonez.buttondark_medium))
         {
             ClearFilter();

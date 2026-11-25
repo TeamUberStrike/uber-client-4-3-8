@@ -10,8 +10,12 @@ public class InputManager : AutoMonoBehaviour<InputManager>
         SetDefaultKeyMapping();
     }
 
+#if !UNITY_ANDROID && !UNITY_IPHONE
     private void Update()
     {
+#if UNITY_WEBGL
+        if (ApplicationDataManager.IsMobile) return;
+#endif
         KeyInput.Update();
 
         if (IsInputEnabled)
@@ -39,6 +43,9 @@ public class InputManager : AutoMonoBehaviour<InputManager>
 
     private void OnGUI()
     {
+#if UNITY_WEBGL
+        if (ApplicationDataManager.IsMobile) return;
+#endif
         KeyInput.OnGUI();
 
         MouseInput.Instance.OnGUI();
@@ -58,6 +65,7 @@ public class InputManager : AutoMonoBehaviour<InputManager>
             }
         }
     }
+#endif
 
     /// <summary>
     /// GetKeyDown return true for the moment a key is pressed down
