@@ -15,6 +15,8 @@ public sealed class MeleeWeaponDecorator : BaseWeaponDecorator
     [SerializeField]
     private AudioClip _equipSound;
 
+    [SerializeField]
+    private float _equipVolume = 1f;
 
     protected override void Awake()
     {
@@ -48,7 +50,7 @@ public sealed class MeleeWeaponDecorator : BaseWeaponDecorator
     public override void PlayEquipSound()
     {
         if (_mainAudioSource && _equipSound)
-            _mainAudioSource.PlayOneShot(_equipSound);
+            _mainAudioSource.PlayOneShot(_equipSound, _equipVolume);
     }
 
     /* Melee weaopn tends to have its own impact sound */
