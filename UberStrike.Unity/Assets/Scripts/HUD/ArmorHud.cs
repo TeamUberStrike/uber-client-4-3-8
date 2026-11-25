@@ -56,20 +56,24 @@ public class ArmorHud : Singleton<ArmorHud>
 
     public void Update()
     {
-        float delta = (Screen.height * 20 / 660) - 20;
+        // Laid out next to the shop's loadout panel, in the same scaled menu units as the panels on
+        // desktop (1440p/4K). Mobile has its own shop layout and keeps screen pixels.
+        float s = MobileMenuScale.Active ? 1f : MobileMenuScale.Scale;
+        float right = Screen.width / s;
+        float delta = (Screen.height / s * 20 / 660) - 20;
 
-        _armorCarriedValue.Position = new Vector2(Screen.width - 625 - delta, 327);
-        _armorCarriedValue.Scale = Vector2.one * 0.4f;
-        _armorCarriedSymbol.Position = new Vector2(Screen.width - 605, 331.2f);
-        _armorCarriedSymbol.Scale = Vector2.one * 0.25f;
-        _armorCarriedText.Position = new Vector2(Screen.width - 602, 352);
-        _armorCarriedText.Scale = Vector2.one * 0.25f;
+        _armorCarriedValue.Position = new Vector2(right - 625 - delta, 327) * s;
+        _armorCarriedValue.Scale = Vector2.one * 0.4f * s;
+        _armorCarriedSymbol.Position = new Vector2(right - 605, 331.2f) * s;
+        _armorCarriedSymbol.Scale = Vector2.one * 0.25f * s;
+        _armorCarriedText.Position = new Vector2(right - 602, 352) * s;
+        _armorCarriedText.Scale = Vector2.one * 0.25f * s;
 
-        _defenseBonusValue.Position = new Vector2(Screen.width - 620 - delta, 417);
-        _defenseBonusValue.Scale = Vector2.one * 0.4f;
-        _defenseBonusSymbol.Position = new Vector2(Screen.width - 602, 421);
-        _defenseBonusSymbol.Scale = Vector2.one * 0.3f;
-        _defenseBonusText.Position = new Vector2(Screen.width - 602, 442);
-        _defenseBonusText.Scale = Vector2.one * 0.25f;
+        _defenseBonusValue.Position = new Vector2(right - 620 - delta, 417) * s;
+        _defenseBonusValue.Scale = Vector2.one * 0.4f * s;
+        _defenseBonusSymbol.Position = new Vector2(right - 602, 421) * s;
+        _defenseBonusSymbol.Scale = Vector2.one * 0.3f * s;
+        _defenseBonusText.Position = new Vector2(right - 602, 442) * s;
+        _defenseBonusText.Scale = Vector2.one * 0.25f * s;
     }
 }

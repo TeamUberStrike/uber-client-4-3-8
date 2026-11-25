@@ -113,7 +113,19 @@ public static class MobileMenuScale
             if (ForcePreviewInEditor)
                 return EditorPreviewScale;
 #endif
-            return 1f;
+            return DesktopScale;
+        }
+    }
+
+    /// <summary>Desktop: the menu was authored for 1080p, keep that size on taller screens (1440p, 4K).</summary>
+    public const float DesktopReferenceHeight = 1080f;
+
+    private static float DesktopScale
+    {
+        get
+        {
+            float fit = Screen.width / MinVirtualWidth;
+            return Mathf.Clamp(Mathf.Min(Screen.height / DesktopReferenceHeight, fit), 1f, MaxScale);
         }
     }
 
