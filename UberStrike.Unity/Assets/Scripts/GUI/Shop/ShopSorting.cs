@@ -85,7 +85,62 @@ public static class ShopSorting
         }
     }
 
+    public class TypeComparer : ItemComparer<BaseItemGUI>
+    {
+        public TypeComparer()
+        {
+            Column = ShopSortedColumns.Type;
+            Ascending = true;
+        }
+
+        public override int Compare(BaseItemGUI a, BaseItemGUI b)
+        {
+            int result = CompareType(a.Item, b.Item, Ascending);
+            return result != 0 ? result : CompareName(a.Item, b.Item, true);
+        }
+    }
+
     #region sorting algorithms
+
+    // Gear first (head to boots, then holo), then weapons in the shop's tab order, then the rest.
+    private static readonly UberstrikeItemClass[] TypeOrder =
+    {
+        UberstrikeItemClass.GearHead,
+        UberstrikeItemClass.GearFace,
+        UberstrikeItemClass.GearGloves,
+        UberstrikeItemClass.GearUpperBody,
+        UberstrikeItemClass.GearLowerBody,
+        UberstrikeItemClass.GearBoots,
+        UberstrikeItemClass.GearHolo,
+        UberstrikeItemClass.WeaponMelee,
+        UberstrikeItemClass.WeaponHandgun,
+        UberstrikeItemClass.WeaponMachinegun,
+        UberstrikeItemClass.WeaponShotgun,
+        UberstrikeItemClass.WeaponSniperRifle,
+        UberstrikeItemClass.WeaponCannon,
+        UberstrikeItemClass.WeaponSplattergun,
+        UberstrikeItemClass.WeaponLauncher,
+    };
+
+    private static int TypeRank(IUnityItem item)
+    {
+        int index = System.Array.IndexOf(TypeOrder, item.ItemClass);
+        if (index >= 0) return index;
+        switch (item.ItemType)
+        {
+            case UberstrikeItemType.Gear: return TypeOrder.Length;
+            case UberstrikeItemType.Weapon: return TypeOrder.Length + 1;
+            case UberstrikeItemType.QuickUse: return TypeOrder.Length + 2;
+            case UberstrikeItemType.Functional: return TypeOrder.Length + 3;
+            default: return TypeOrder.Length + 4;
+        }
+    }
+
+    private static int CompareType(IUnityItem a, IUnityItem b, bool ascending)
+    {
+        int result = TypeRank(a).CompareTo(TypeRank(b));
+        return ascending ? result : -result;
+    }
 
     private static int CompareDuration(InventoryItem a, InventoryItem b, bool ascending)
     {
