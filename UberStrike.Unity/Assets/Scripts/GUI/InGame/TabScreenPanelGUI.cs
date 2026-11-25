@@ -19,7 +19,8 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         _blueTeam = new List<UberStrike.Realtime.Common.CharacterInfo>(0);
     }
 
-    // Called inside OnGUI's both-sides block, so the layout uses the same scale and inset as the drawing.
+    // Called inside OnGUI's both-sides block: the layout uses the same scale as the drawing, and the same
+    // inset on each side of the screen, so the panel is centred on the screen.
     private void UpdateLayout()
     {
         // Laid out in menu units (the scaled space DrawTabScreen runs in), so rows and text keep the
@@ -30,32 +31,13 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
         if (MobileMenuScale.Active)
         {
-            // Phones only get 540 x 960 units: use the full width so the team columns keep their
-            // deaths / KDR cells, and all the height between the ribbon and the bottom edge so a
-            // full team of eight fits without scrolling.
+            // Phones only get 540 units of height: use all of it between the ribbon and the bottom edge, so a
+            // full team of eight fits without scrolling. Full width up to MobileMaxWidth, centred.
             float top = ribbon ? GlobalUIRibbon.Instance.GetHeight() + MobileMargin : MobileMargin;
-            float bottom = virtualHeight - MobileMargin;
-            // The safe area on both sides, whatever the symmetric screen edge option says, with a small
-            // margin on every side...
-            virtualWidth = MobileMenuScale.BothSidesVirtualWidth;
-            float left = MobileMargin;
-            float right = virtualWidth - MobileMargin;
+            _panelSize.x = Mathf.Floor(Mathf.Min(virtualWidth - 2 * MobileMargin, MobileMaxWidth));
+            _panelSize.y = Mathf.Floor(virtualHeight - top - MobileMargin);
 
-            // ...and clear of the scoreboard button, the only touch control left on screen while the
-            // scoreboard is held open. It can be moved with Edit Controls, so use where it really is.
-            Rect button;
-            if (TryGetScoreButtonMenuRect(out button) && button.yMax > top && button.yMin < bottom)
-            {
-                if (button.center.x < virtualWidth * 0.5f)
-                    left = Mathf.Max(left, button.xMax + MobileMargin);
-                else
-                    right = Mathf.Min(right, button.xMin - MobileMargin);
-            }
-
-            _panelSize.x = Mathf.Floor(right - left);
-            _panelSize.y = Mathf.Floor(bottom - top);
-
-            _rect.x = left;
+            _rect.x = (virtualWidth - _panelSize.x) * 0.5f;
             _rect.y = top;
         }
         else
@@ -72,24 +54,6 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
         _rect.width = _panelSize.x;
         _rect.height = _panelSize.y;
-    }
-
-    // The scoreboard touch button in the scoreboard's both-sides menu units, if it is on screen.
-    private static bool TryGetScoreButtonMenuRect(out Rect rect)
-    {
-        rect = new Rect();
-        TouchButton button;
-        if (!TouchInput.Exists || TouchInput.Instance.Buttons == null ||
-            !TouchInput.Instance.Buttons.TryGetValue((int)TouchInput.TouchKeyType.Score, out button) ||
-            button == null || !button.Enabled)
-            return false;
-
-        // Both-sides space has the same inset on each side of the screen.
-        float scale = MobileMenuScale.Scale;
-        float insetLeft = (Screen.width - MobileMenuScale.BothSidesVirtualWidth * scale) * 0.5f;
-        Rect screen = button.Boundary;
-        rect = new Rect((screen.x - insetLeft) / scale, screen.y / scale, screen.width / scale, screen.height / scale);
-        return true;
     }
 
     private void OnGUI()
@@ -526,6 +490,10 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
     // Gap (menu units) between the panel and the screen edges / ribbon on mobile.
     private const float MobileMargin = 8f;
+    // Widest the panel gets on mobile (menu units). Most phones are narrower; on 21:9 phones and large
+    // tablets the rows would only stretch, and team columns over 640 would add a weapon name column that
+    // other phones don't have.
+    private const float MobileMaxWidth = 1200f;
 
     private static GUIStyle _largeName;
     private static GUIStyle _largeValue;

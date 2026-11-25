@@ -1707,6 +1707,9 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = true;
+            // Hidden while held: the finger covers it, and the scoreboard never has to make room for it wherever
+            // it was placed. A hidden button still takes touches, so lifting the finger closes the scoreboard.
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Visible = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.SecondaryFire].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Loadout].Enabled = false;
@@ -1750,6 +1753,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
             if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = true;
             TouchInput.Instance.Joystick.Visible = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Visible = true;
         }
 
         public void OnUpdate()
