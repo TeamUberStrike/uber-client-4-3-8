@@ -16,6 +16,9 @@ public class ForceField : MonoBehaviour
 
     private const bool VerboseJumpPad = false;
 
+    // Jump pad whoosh (2.5 s, full scale) and the pad's looping hum were far louder than other effects; play both at about -8 dB.
+    private const float JumpPadVolume = 0.4f;
+
     #endregion
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -113,6 +116,9 @@ public class ForceField : MonoBehaviour
 
     private void Awake()
     {
+        var hum = GetComponent<AudioSource>();
+        if (hum != null) hum.volume *= JumpPadVolume;
+
         var collider = GetComponent<Collider>();
         collider.isTrigger = true;
         gameObject.layer = (int)UberstrikeLayer.IgnoreRaycast;
@@ -373,11 +379,11 @@ public class ForceField : MonoBehaviour
         {
             GameState.LocalPlayer.MoveController.ApplyForce(_direction.normalized * _force, CharacterMoveController.ForceType.Exclusive);
 
-            SfxManager.Play2dAudioClip(SoundEffectType.PropsJumpPad2D);
+            SfxManager.Play2dAudioClipWithVolume(SoundEffectType.PropsJumpPad2D, JumpPadVolume);
         }
         else if (collider.gameObject.layer == (int)UberstrikeLayer.RemotePlayer)
         {
-            SfxManager.Play3dAudioClip(SoundEffectType.PropsJumpPad, 1.0f, 0.1f, 10.0f, AudioRolloffMode.Linear, transform.position);
+            SfxManager.Play3dAudioClip(SoundEffectType.PropsJumpPad, JumpPadVolume, 0.1f, 10.0f, AudioRolloffMode.Linear, transform.position);
         }
 
         //else if (collider.tag == "Prop")
