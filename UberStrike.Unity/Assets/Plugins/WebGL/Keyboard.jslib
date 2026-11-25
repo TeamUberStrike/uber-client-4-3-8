@@ -37,6 +37,7 @@ var UberKeyboardBridge = {
                     var shift = false;
                     var symbols = false;
                     var layoutMenuOpen = false;
+                    var pausedByOrientation = false;
                     var keyboardLayout = "qwerty";
                     var layoutDetected = false;
                     var manualLayout = false;
@@ -917,10 +918,19 @@ var UberKeyboardBridge = {
                         }
                     }
 
+                    function isPortrait() {
+                        try {
+                            return window.innerHeight > window.innerWidth;
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+
                     function hide() {
                         if (root) root.style.display = "none";
                         if (inputEl) inputEl.value = "";
                         layoutMenuOpen = false;
+                        pausedByOrientation = false;
                         if (menuBackdrop) menuBackdrop.style.display = "none";
                         if (caretText) caretText.style.display = "none";
                         if (caretPass) caretPass.style.display = "none";
@@ -1016,6 +1026,33 @@ var UberKeyboardBridge = {
                         root.addEventListener("pointerdown", refocusSoon, false);
                         root.addEventListener("touchstart", refocusSoon, false);
                         window.addEventListener("focus", refocusSoon, false);
+
+                        var checkOrientation = function() {
+                            if (!root) return;
+                            var portrait = isPortrait();
+                            if (portrait && root.style.display === "flex") {
+                                root.style.display = "none";
+                                pausedByOrientation = true;
+                                if (caretText) caretText.style.display = "none";
+                                if (caretPass) caretPass.style.display = "none";
+                                clearFocusTimer();
+                            } else if (!portrait && pausedByOrientation && root.style.display !== "flex") {
+                                pausedByOrientation = false;
+                                root.style.display = "flex";
+                                try {
+                                    if (inputEl) inputEl.focus();
+                                } catch (e) {
+                                }
+                                updateCaret();
+                                clearFocusTimer();
+                                try {
+                                    focusTimer = setInterval(ensureFocus, 400);
+                                } catch (e) {
+                                }
+                            }
+                        };
+                        window.addEventListener("resize", checkOrientation, false);
+                        window.addEventListener("orientationchange", checkOrientation, false);
 
                         var makeCircleButton = function(label, ariaLabel, fontSize, onClick) {
                             var b = document.createElement("button");
@@ -1165,12 +1202,18 @@ var UberKeyboardBridge = {
                             layoutMenuOpen = false;
                             applyTheme();
                             renderKeys();
-                            root.style.display = "flex";
+
+                            pausedByOrientation = isPortrait();
+                            root.style.display = pausedByOrientation ? "none" : "flex";
                             ensureAudio();
                             loadKeySounds();
                             syncInputHeight();
 
                             inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
+                            if (pausedByOrientation) {
+                                return;
+                            }
+
                             inputEl.focus();
                             updateCaret();
                             try {
