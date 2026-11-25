@@ -32,9 +32,12 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         if (MobileMenuScale.Active)
         {
             // Phones only get 540 units of height: use all of it between the ribbon and the bottom edge, so a
-            // full team of eight fits without scrolling. Full width up to MobileMaxWidth, centred.
+            // full team of eight fits without scrolling. Centred, up to MobileMaxWidth wide, and pushed in by up
+            // to MobileSideInset on each side when there is room, so the names start clear of a finger holding
+            // the scoreboard button at its default spot. Narrow screens keep MobileMargin so every column fits.
             float top = ribbon ? GlobalUIRibbon.Instance.GetHeight() + MobileMargin : MobileMargin;
-            _panelSize.x = Mathf.Floor(Mathf.Min(virtualWidth - 2 * MobileMargin, MobileMaxWidth));
+            float side = Mathf.Clamp((virtualWidth - 2 * MobileMinTeamWidth) * 0.5f, MobileMargin, MobileSideInset);
+            _panelSize.x = Mathf.Floor(Mathf.Min(virtualWidth - 2 * side, MobileMaxWidth));
             _panelSize.y = Mathf.Floor(virtualHeight - top - MobileMargin);
 
             _rect.x = (virtualWidth - _panelSize.x) * 0.5f;
@@ -494,6 +497,10 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
     // tablets the rows would only stretch, and team columns over 640 would add a weapon name column that
     // other phones don't have.
     private const float MobileMaxWidth = 1200f;
+    // Most the panel is pushed in on each side on mobile (menu units).
+    private const float MobileSideInset = 32f;
+    // Narrowest team column that still shows every column cleanly on mobile (what 16:9 phones get).
+    private const float MobileMinTeamWidth = 472f;
 
     private static GUIStyle _largeName;
     private static GUIStyle _largeValue;
