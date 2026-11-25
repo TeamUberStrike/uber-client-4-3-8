@@ -7,7 +7,7 @@ using UberStrike.Helper;
 
 public class InGameChatHud : Singleton<InGameChatHud>
 {
-    private int _maxMessageLength = 280;
+    private int _maxMessageLength = 140;
 
     private bool _isEnabled;
     public bool Enabled { get { return _isEnabled; } set { _isEnabled = value; } }

@@ -174,7 +174,7 @@ var UberDeviceBridge = {
 
             if (!window.uberChatKeyboard) {
                 window.uberChatKeyboard = (function() {
-                    var MAX_LENGTH = 280;
+                    var MAX_LENGTH = 140;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
                     var shift = false;
@@ -927,7 +927,7 @@ var UberDeviceBridge = {
                             b.setAttribute("aria-label", ariaLabel);
                             b.style.cssText =
                                 "display:flex;align-items:center;justify-content:center;flex:none;" +
-                                "width:clamp(38px,9vh,46px);height:clamp(38px,9vh,46px);" +
+                                "width:clamp(52px,12vh,64px);height:clamp(52px,12vh,64px);" +
                                 "border-radius:50%;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0") + ";" +
                                 "background:" + (transparentMode ? "rgba(51,51,51,0.35)" : "#333") + ";color:#fff;outline:none;cursor:pointer;" +
                                 "font:700 " + fontSize + "px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
@@ -937,7 +937,7 @@ var UberDeviceBridge = {
                             return b;
                         };
 
-                        cancelButtonEl = makeCircleButton("\u2715", "Cancel", 18, function() {
+                        cancelButtonEl = makeCircleButton("\u2715", "Cancel", 24, function() {
                             try {
                                 SendMessage(targetObject, sendMethod, "");
                             } catch (e) {
@@ -945,7 +945,7 @@ var UberDeviceBridge = {
                             hide();
                         });
 
-                        okButtonEl = makeCircleButton("OK", "OK", 14, function() {
+                        okButtonEl = makeCircleButton("OK", "OK", 18, function() {
                             setTimeout(function() {
                                 send();
                             }, 120);

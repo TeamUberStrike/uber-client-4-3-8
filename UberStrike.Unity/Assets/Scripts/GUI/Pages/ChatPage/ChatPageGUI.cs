@@ -903,7 +903,7 @@ public class ChatPageGUI : PageGUI
 #endif
             {
                 // Chat Input Textfield
-                _currentChatMessage = GUI.TextField(new Rect(6, 6, rect.width - 60, rect.height - 12), _currentChatMessage, 280, BlueStonez.textField);
+                _currentChatMessage = GUI.TextField(new Rect(6, 6, rect.width - 60, rect.height - 12), _currentChatMessage, 140, BlueStonez.textField);
                 _currentChatMessage = _currentChatMessage.Trim(new char[] { '\n' });
 
                 if (_spammingNotificationTime > Time.time)
@@ -1102,7 +1102,7 @@ public class ChatPageGUI : PageGUI
 
     private void SendChatMessage(TabArea? context = null)
     {
-        _currentChatMessage = TextUtilities.ShortenText(TextUtilities.Trim(_currentChatMessage), 280, false);
+        _currentChatMessage = TextUtilities.ShortenText(TextUtilities.Trim(_currentChatMessage), 140, false);
 
         switch (context ?? SelectedTab)
         {
