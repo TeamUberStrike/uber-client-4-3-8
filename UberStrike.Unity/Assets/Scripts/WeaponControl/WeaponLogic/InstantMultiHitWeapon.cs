@@ -64,7 +64,7 @@ public class InstantMultiHitWeapon : BaseWeaponLogic
             }
             else
             {
-                allHitsArray[i].point = ray.origin + ray.direction * 1000f;
+                allHitsArray[i].point = ray.origin + dir * 1000f;
                 allHitsArray[i].normal = hit.normal;
             }
         }
