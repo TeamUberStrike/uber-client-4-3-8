@@ -36,6 +36,7 @@ public enum ShopSortedColumns
     Level,
     Duration,
     Name,
+    Type,
 }
 
 public enum ShopArea
