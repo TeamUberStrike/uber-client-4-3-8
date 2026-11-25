@@ -1571,7 +1571,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             TouchInput.Instance.Buttons[(int)TouchKeyType.Jump].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Crouch].Enabled = false;
-            TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = true;
+            TouchInput.Instance.Buttons[(int)TouchKeyType.Menu].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Chat].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.Score].Enabled = false;
             TouchInput.Instance.Buttons[(int)TouchKeyType.PrimaryFire].Enabled = false;
