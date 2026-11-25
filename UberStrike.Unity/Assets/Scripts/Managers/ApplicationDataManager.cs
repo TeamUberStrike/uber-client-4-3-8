@@ -267,6 +267,8 @@ public class ApplicationDataManager : MonoSingleton<ApplicationDataManager>
                     {
                         QualitySettings.SetQualityLevel(applicationOptions.VideoQualityLevel);
                     }
+
+                    ScreenResolutionManager.RestoreSavedResolution();
                 }
 #endif
 
