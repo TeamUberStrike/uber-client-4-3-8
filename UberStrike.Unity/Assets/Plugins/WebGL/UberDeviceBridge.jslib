@@ -239,23 +239,21 @@ var UberDeviceBridge = {
                     }
 
                     function bindPress(button, onPress, repeat) {
-                        var maxTimer = null;
                         var releaseTimer = null;
                         var repeatDelayTimer = null;
                         var repeatInterval = null;
+                        var repeatCount = 0;
                         var pressedAt = 0;
+                        var activePointerId = null;
+                        var activeTouchId = null;
+                        var mouseActive = false;
+                        var ignoreMouseUntil = 0;
+                        var listening = false;
 
                         function setPressed(pressed) {
                             button.style.filter = pressed ? "brightness(1.8)" : "";
                             button.style.transform = pressed ? "scale(0.92)" : "";
                             button.style.boxShadow = pressed ? "inset 0 0 0 2px rgba(255,255,255,0.7)" : "";
-                        }
-
-                        function clearMaxTimer() {
-                            if (maxTimer) {
-                                clearTimeout(maxTimer);
-                                maxTimer = null;
-                            }
                         }
 
                         function stopRepeat() {
@@ -267,49 +265,151 @@ var UberDeviceBridge = {
                                 clearInterval(repeatInterval);
                                 repeatInterval = null;
                             }
+                            repeatCount = 0;
                         }
 
-                        function release() {
-                            clearMaxTimer();
-                            stopRepeat();
+                        function isInside(x, y) {
+                            if (x === undefined || x === null || y === undefined || y === null) return false;
+                            var rect = button.getBoundingClientRect();
+                            return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+                        }
+
+                        function findTouch(list, id) {
+                            if (!list) return null;
+                            for (var i = 0; i < list.length; i++) {
+                                if (list[i].identifier === id) return list[i];
+                            }
+                            return null;
+                        }
+
+                        function unpress() {
                             var elapsed = Date.now() - pressedAt;
                             var delay = Math.max(0, 80 - elapsed);
                             if (releaseTimer) clearTimeout(releaseTimer);
                             releaseTimer = setTimeout(function() {
+                                releaseTimer = null;
                                 setPressed(false);
                             }, delay);
                         }
 
-                        var handler = function(ev) {
-                            fire(ev);
+                        function detachWindowListeners() {
+                            if (!listening) return;
+                            listening = false;
+                            window.removeEventListener("pointerup", onWindowPointerUp, true);
+                            window.removeEventListener("pointercancel", onWindowPointerCancel, true);
+                            window.removeEventListener("touchend", onWindowTouchEnd, true);
+                            window.removeEventListener("touchcancel", onWindowTouchCancel, true);
+                            window.removeEventListener("mouseup", onWindowMouseUp, true);
+                            window.removeEventListener("blur", onWindowBlur, true);
+                            document.removeEventListener("visibilitychange", onVisibilityChange, true);
+                        }
+
+                        function finish(commit) {
+                            detachWindowListeners();
+                            stopRepeat();
+                            activePointerId = null;
+                            activeTouchId = null;
+                            mouseActive = false;
+                            if (!repeat && commit) onPress();
+                            unpress();
+                        }
+
+                        function onWindowPointerUp(ev) {
+                            if (activePointerId === null || ev.pointerId !== activePointerId) return;
+                            finish(isInside(ev.clientX, ev.clientY));
+                        }
+
+                        function onWindowPointerCancel(ev) {
+                            if (activePointerId === null || ev.pointerId !== activePointerId) return;
+                            finish(false);
+                        }
+
+                        function onWindowTouchEnd(ev) {
+                            if (activeTouchId === null) return;
+                            var touch = findTouch(ev.changedTouches, activeTouchId);
+                            if (!touch) return;
+                            finish(isInside(touch.clientX, touch.clientY));
+                        }
+
+                        function onWindowTouchCancel(ev) {
+                            if (activeTouchId === null) return;
+                            if (!findTouch(ev.changedTouches, activeTouchId)) return;
+                            finish(false);
+                        }
+
+                        function onWindowMouseUp(ev) {
+                            if (!mouseActive || ev.button !== 0) return;
+                            finish(isInside(ev.clientX, ev.clientY));
+                        }
+
+                        function onWindowBlur() {
+                            finish(false);
+                        }
+
+                        function onVisibilityChange() {
+                            if (document.hidden) finish(false);
+                        }
+
+                        function begin() {
                             pressedAt = Date.now();
                             if (releaseTimer) {
                                 clearTimeout(releaseTimer);
                                 releaseTimer = null;
                             }
                             setPressed(true);
-                            clearMaxTimer();
-                            maxTimer = setTimeout(release, 1200);
-                            onPress();
+
+                            if (!listening) {
+                                listening = true;
+                                if (window.PointerEvent) {
+                                    window.addEventListener("pointerup", onWindowPointerUp, true);
+                                    window.addEventListener("pointercancel", onWindowPointerCancel, true);
+                                } else {
+                                    window.addEventListener("touchend", onWindowTouchEnd, true);
+                                    window.addEventListener("touchcancel", onWindowTouchCancel, true);
+                                    window.addEventListener("mouseup", onWindowMouseUp, true);
+                                }
+                                window.addEventListener("blur", onWindowBlur, true);
+                                document.addEventListener("visibilitychange", onVisibilityChange, true);
+                            }
 
                             if (repeat) {
                                 stopRepeat();
+                                onPress();
                                 repeatDelayTimer = setTimeout(function() {
-                                    repeatInterval = setInterval(repeat, 110);
+                                    repeatDelayTimer = null;
+                                    repeatInterval = setInterval(function() {
+                                        onPress();
+                                        repeatCount++;
+                                        if (repeatCount > 20) onPress();
+                                    }, 50);
                                 }, 400);
                             }
-                        };
+                        }
 
                         if (window.PointerEvent) {
-                            button.addEventListener("pointerdown", handler, false);
-                            button.addEventListener("pointerup", release, false);
-                            button.addEventListener("pointercancel", release, false);
+                            button.addEventListener("pointerdown", function(ev) {
+                                fire(ev);
+                                if (activePointerId !== null) return;
+                                activePointerId = ev.pointerId;
+                                begin();
+                            }, false);
                         } else {
-                            button.addEventListener("touchstart", handler, false);
-                            button.addEventListener("touchend", release, false);
-                            button.addEventListener("touchcancel", release, false);
-                            button.addEventListener("mousedown", handler, false);
-                            button.addEventListener("mouseup", release, false);
+                            button.addEventListener("touchstart", function(ev) {
+                                fire(ev);
+                                if (activeTouchId !== null) return;
+                                var touch = ev.changedTouches && ev.changedTouches[0];
+                                if (!touch) return;
+                                activeTouchId = touch.identifier;
+                                ignoreMouseUntil = Date.now() + 1000;
+                                begin();
+                            }, false);
+                            button.addEventListener("mousedown", function(ev) {
+                                if (ev.button !== 0 || mouseActive) return;
+                                if (activeTouchId !== null || Date.now() < ignoreMouseUntil) return;
+                                mouseActive = true;
+                                fire(ev);
+                                begin();
+                            }, false);
                         }
                     }
 
