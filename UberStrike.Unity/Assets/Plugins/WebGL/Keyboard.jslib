@@ -1166,6 +1166,8 @@ var UberKeyboardBridge = {
                             applyTheme();
                             renderKeys();
                             root.style.display = "flex";
+                            ensureAudio();
+                            loadKeySounds();
                             syncInputHeight();
 
                             inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
