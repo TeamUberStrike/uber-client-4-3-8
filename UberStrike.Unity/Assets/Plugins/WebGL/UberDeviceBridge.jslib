@@ -999,6 +999,15 @@ var UberDeviceBridge = {
                             sendMethod = methodName || "OnWebGLChatSend";
                             maskedMode = !!masked;
 
+                            var placeholder;
+                            if (sendMethod === "OnWebGLTextInput") {
+                                placeholder = maskedMode ? "Password" : "Email";
+                            } else {
+                                placeholder = "Type a message...";
+                            }
+                            textInput.placeholder = placeholder;
+                            passInput.placeholder = placeholder;
+
                             if (maskedMode) {
                                 textInput.value = "";
                                 inputEl = passInput;
