@@ -219,25 +219,30 @@ public class RocketProjectile : Projectile
 
     protected override void OnTriggerEnter(Collider c)
     {
-        if (!IsProjectileExploded)
+        if (!IsProjectileExploded && LayerUtil.IsLayerInMask(CollisionMask, c.gameObject.layer))
         {
-            if (LayerUtil.IsLayerInMask(CollisionMask, c.gameObject.layer))
-            {
-                ProjectileManager.Instance.RemoveProjectile(ID, true);
-                GameState.CurrentGame.RemoveProjectile(ID, true);
-            }
+            OnHit(c.gameObject.layer);
         }
     }
 
     protected override void OnCollisionEnter(Collision c)
     {
-        if (!IsProjectileExploded)
+        if (!IsProjectileExploded && LayerUtil.IsLayerInMask(CollisionMask, c.gameObject.layer))
         {
-            if (LayerUtil.IsLayerInMask(CollisionMask, c.gameObject.layer))
-            {
-                ProjectileManager.Instance.RemoveProjectile(ID, true);
-                GameState.CurrentGame.RemoveProjectile(ID, true);
-            }
+            OnHit(c.gameObject.layer);
+        }
+    }
+
+    // Every client simulates every rocket. Only the shooter's copy decides that it hit the level; another
+    // client's copy only reports a hit on that client's own player. Otherwise a wall that is somewhere else on
+    // another client (moving walls, latency) blows the rocket up mid-air for everyone, the shooter included.
+    private void OnHit(int hitLayer)
+    {
+        ProjectileManager.Instance.RemoveProjectile(ID, true);
+
+        if (gameObject.layer != (int)UberstrikeLayer.RemoteProjectile || hitLayer == (int)UberstrikeLayer.LocalPlayer)
+        {
+            GameState.CurrentGame.RemoveProjectile(ID, true);
         }
     }
 }
