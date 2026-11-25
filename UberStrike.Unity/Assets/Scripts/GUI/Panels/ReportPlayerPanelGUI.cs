@@ -37,8 +37,9 @@ public class ReportPlayerPanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        // Both-sides safe area, so the panel is centred on the screen.
-        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
+        // Both-sides safe area, so the panel is centred on the screen. 1.2x on mobile: about the screen share
+        // of the Options panel, so the form is easier to read and tap.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides(1.2f);
 
         // centre against the virtual screen for mobile menu scale
         _rect = new Rect((MobileMenuScale.VirtualWidth - 570) * 0.5f, (MobileMenuScale.VirtualHeight - 345) * 0.5f, 570, 345);
