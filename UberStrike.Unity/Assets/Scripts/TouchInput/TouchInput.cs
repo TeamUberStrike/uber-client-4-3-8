@@ -1720,7 +1720,15 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
-            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag & ~HudDrawFlags.Weapons;
+            // Hide the weapons HUD while the scoreboard is held, and remember the flags left behind so OnExit
+            // only undoes this change. Kept set if already set: a second enter must not forget the first.
+            HudDrawFlags baseFlag = HudDrawFlagGroup.Instance.BaseDrawFlag;
+            if ((baseFlag & HudDrawFlags.Weapons) != 0)
+            {
+                _hidWeapons = true;
+                HudDrawFlagGroup.Instance.BaseDrawFlag = baseFlag & ~HudDrawFlags.Weapons;
+            }
+            _baseWhileHeld = HudDrawFlagGroup.Instance.BaseDrawFlag;
 
             if (UseMultiTouch)
             {
@@ -1744,7 +1752,12 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         public void OnExit()
         {
-            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+            // Bring the weapons back only if this state hid them and nothing set new HUD flags meanwhile. The
+            // end-of-match screen sets its own (chat and XP only), and so does spectating; the weapons must
+            // not come back over them.
+            if (_hidWeapons && HudDrawFlagGroup.Instance.BaseDrawFlag == _baseWhileHeld)
+                HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+            _hidWeapons = false;
 
             TouchInput.Instance.Dpad.Visible = true;
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
@@ -1762,6 +1775,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
 
         }
+
+        private bool _hidWeapons;           // OnEnter took the weapons flag away
+        private HudDrawFlags _baseWhileHeld; // the base flags OnEnter left behind
     }
 
     #endregion
