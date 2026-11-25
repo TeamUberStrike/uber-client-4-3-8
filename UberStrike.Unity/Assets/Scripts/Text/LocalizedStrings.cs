@@ -215,6 +215,7 @@ public static class LocalizedStrings
 	public static string DragToEquipTheN = "Drag to equip the {0}";
 	public static string Draw = "Draw!";
 	public static string Duration = "Duration";
+	public static string Type = "Type";
 	public static string EffectsVolume = "Effects Volume:";
 	public static string Email = "Email";
 	public static string EmailAddressAndNameInUseMsg = "By some miracle coincidence, both the email address AND the name you've chosen are in use. You'll have to choose different ones.";

@@ -851,6 +851,10 @@ public class ShopPageGUI : PageGUI
         }
     }
 
+    // Inventory sort bar: the Type column sits left of Duration (which starts 181 from the right).
+    private const float InventoryTypeColumnRight = 182;
+    private const float InventoryTypeColumnWidth = 80;
+
     private void DrawSortBar(Rect sortRect, bool showLevel, bool showExpDay)
     {
         ShopSorting.ItemComparer<BaseItemGUI> comparer = _shopAreaSelection.Current == ShopArea.Shop ? _shopComparer : _inventoryComparer;
@@ -859,19 +863,30 @@ public class ShopPageGUI : PageGUI
         {
             if (!showLevel && showExpDay) // inventory
             {
-                if (GUI.Button(new Rect(0, 0, sortRect.width - 134, sortRect.height), string.Empty, BlueStonez.box_grey50)) // name
+                if (GUI.Button(new Rect(0, 0, sortRect.width - InventoryTypeColumnRight - InventoryTypeColumnWidth, sortRect.height), string.Empty, BlueStonez.box_grey50)) // name
                 {
                     SortShopPages(ShopSortedColumns.Name);
                 }
                 if (comparer.Column == ShopSortedColumns.Name)
                 {
                     if (comparer.Ascending)
-                        GUI.Label(new Rect(0, 0, sortRect.width - 134, sortRect.height), new GUIContent(LocalizedStrings.Name, UberstrikeIcons.SortUpArrow), BlueStonez.label_interparkmed_11pt);
+                        GUI.Label(new Rect(0, 0, sortRect.width - InventoryTypeColumnRight - InventoryTypeColumnWidth, sortRect.height), new GUIContent(LocalizedStrings.Name, UberstrikeIcons.SortUpArrow), BlueStonez.label_interparkmed_11pt);
                     else
-                        GUI.Label(new Rect(0, 0, sortRect.width - 134, sortRect.height), new GUIContent(LocalizedStrings.Name, UberstrikeIcons.SortDownArrow), BlueStonez.label_interparkmed_11pt);
+                        GUI.Label(new Rect(0, 0, sortRect.width - InventoryTypeColumnRight - InventoryTypeColumnWidth, sortRect.height), new GUIContent(LocalizedStrings.Name, UberstrikeIcons.SortDownArrow), BlueStonez.label_interparkmed_11pt);
                 }
                 else
-                    GUI.Label(new Rect(0, 0, sortRect.width - 134, sortRect.height), new GUIContent(LocalizedStrings.Name), BlueStonez.label_interparkmed_11pt);
+                    GUI.Label(new Rect(0, 0, sortRect.width - InventoryTypeColumnRight - InventoryTypeColumnWidth, sortRect.height), new GUIContent(LocalizedStrings.Name), BlueStonez.label_interparkmed_11pt);
+
+                // type: gear first, then weapons by class
+                Rect typeRect = new Rect(sortRect.width - InventoryTypeColumnRight - InventoryTypeColumnWidth, 0, InventoryTypeColumnWidth, sortRect.height);
+                if (GUI.Button(typeRect, string.Empty, BlueStonez.box_grey50))
+                {
+                    SortShopPages(ShopSortedColumns.Type);
+                }
+                if (comparer.Column == ShopSortedColumns.Type)
+                    GUI.Label(typeRect, new GUIContent(LocalizedStrings.Type, comparer.Ascending ? UberstrikeIcons.SortUpArrow : UberstrikeIcons.SortDownArrow), BlueStonez.label_interparkmed_11pt);
+                else
+                    GUI.Label(typeRect, new GUIContent(LocalizedStrings.Type), BlueStonez.label_interparkmed_11pt);
 
                 if (GUI.Button(new Rect(sortRect.width - 181, 0, 113, sortRect.height), string.Empty, BlueStonez.box_grey50)) // duration
                 {
@@ -1571,6 +1586,9 @@ public class ShopPageGUI : PageGUI
                 break;
             case ShopSortedColumns.Name:
                 compare = new ShopSorting.NameComparer();
+                break;
+            case ShopSortedColumns.Type:
+                compare = new ShopSorting.TypeComparer();
                 break;
         }
 
