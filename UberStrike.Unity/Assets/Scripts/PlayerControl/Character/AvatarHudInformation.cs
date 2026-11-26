@@ -9,7 +9,7 @@ public class AvatarHudInformation : MonoBehaviour
         //_feedbackSize = new Vector2(64, 64);
         if (_mode == Mode.Robot)
             SetAvatarLabel(_text);
-        _nameTextStyle = BlueStonez.label_interparkbold_11pt;
+        _nameTextStyle = NameStyle;
     }
 
     private void OnGUI()
@@ -19,6 +19,13 @@ public class AvatarHudInformation : MonoBehaviour
         bool isGameFrozen = false;// GameState.HasCurrentGame && GameState.CurrentGame.IsFrozen;
 
         GUI.depth = (int)GuiDepth.Hud;
+
+        GUIStyle nameStyle = NameStyle;
+        if (nameStyle != _nameTextStyle)
+        {
+            _nameTextStyle = nameStyle;
+            SetAvatarLabel(_text);
+        }
 
         Rect barPos = new Rect(_screenPosition.x - 50, (Screen.height - _screenPosition.y) + _barOffset.y, 100, 6);
         Rect namePos = new Rect(barPos.xMin, (Screen.height - _screenPosition.y) - _textSize.y - 6, _textSize.x, _textSize.y);
@@ -199,7 +206,8 @@ public class AvatarHudInformation : MonoBehaviour
         if (Visibility > 0)
         {
             GUI.color = new Color(0, 0, 0, Visibility);
-            GUI.Label(new Rect(position.x + 1, position.y + 1, position.width, position.height), _text, _nameTextStyle);
+            float shadow = Mathf.Max(1f, Mathf.Round(Screen.height / 1080f));
+            GUI.Label(new Rect(position.x + shadow, position.y + shadow, position.width, position.height), _text, _nameTextStyle);
             GUI.color = _color;
             GUI.Label(position, _text, _nameTextStyle);
             GUI.color = Color.white;
@@ -252,8 +260,9 @@ public class AvatarHudInformation : MonoBehaviour
         _text = name;
 
         //TODO: get rid of this call - just use a wide rect and center the name
-        if (BlueStonez.label_interparkbold_11pt != null)
-            _textSize = BlueStonez.label_interparkbold_11pt.CalcSize(new GUIContent(_text));
+        GUIStyle style = _nameTextStyle ?? NameStyle;
+        if (style != null)
+            _textSize = style.CalcSize(new GUIContent(_text));
         else
             _textSize = new Vector2(name.Length * 10, 20);
     }
@@ -365,6 +374,33 @@ public class AvatarHudInformation : MonoBehaviour
     }
 
     private GUIStyle _nameTextStyle;
+
+    // Name above the players: about 13 px at 1080p (was 11 px), growing with the screen height (~17 px at
+    // 1440p, ~28 px at 4K). Picks the closest of the fixed-size bold fonts, which are drawn 1:1 and stay sharp.
+    private static GUIStyle NameStyle
+    {
+        get
+        {
+            if (_nameStyle == null || _nameStyleHeight != Screen.height)
+            {
+                _nameStyleHeight = Screen.height;
+                float target = 13f * Mathf.Max(1f, Screen.height / 1080f);
+                GUIStyle[] styles = { BlueStonez.label_interparkbold_13pt, BlueStonez.label_interparkbold_16pt, BlueStonez.label_interparkbold_18pt, BlueStonez.label_interparkbold_32pt };
+                float bestDiff = float.MaxValue;
+                foreach (GUIStyle style in styles)
+                {
+                    if (style == null || style.font == null) continue;
+                    float diff = Mathf.Abs(style.font.fontSize - target);
+                    if (diff < bestDiff) { bestDiff = diff; _nameStyle = style; }
+                }
+                if (_nameStyle == null) _nameStyle = BlueStonez.label_interparkbold_11pt;
+            }
+            return _nameStyle;
+        }
+    }
+
+    private static GUIStyle _nameStyle;
+    private static int _nameStyleHeight;
 
     private bool _isInViewport;
 
