@@ -113,7 +113,19 @@ public static class MobileMenuScale
             if (ForcePreviewInEditor)
                 return EditorPreviewScale;
 #endif
-            return 1f;
+            return DesktopScale;
+        }
+    }
+
+    /// <summary>Desktop: the menu was authored for 1080p, keep that size on taller screens (1440p, 4K).</summary>
+    public const float DesktopReferenceHeight = 1080f;
+
+    private static float DesktopScale
+    {
+        get
+        {
+            float fit = Screen.width / MinVirtualWidth;
+            return Mathf.Clamp(Mathf.Min(Screen.height / DesktopReferenceHeight, fit), 1f, MaxScale);
         }
     }
 
@@ -566,6 +578,8 @@ public static class MobileMenuScale
         _activeExtra = Active ? Mathf.Max(0.1f, extra) : 1f;
         Matrix4x4 prev = GUI.matrix;
         float s = Scale;
+        // Desktop: menu fonts get glyphs rendered at the scaled size, so text stays sharp at 1440p/4K.
+        if (!Active) CrispMenuFonts.Ensure(s);
         float inset = InsetLeftPixels;
         // Menu point p lands at screen pixel (inset + s * p.x, s * p.y).
         if (s != 1f || inset != 0f)
