@@ -387,7 +387,7 @@ public class ChatPageGUI : PageGUI
                 GUI.SetNextControlName("@ModSearch");
 
                 GUI.changed = false;
-                pane.SearchText = WebGLKeyboard.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, BlueStonez.textField, 220, false, 20);
+                pane.SearchText = Keyboard.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, BlueStonez.textField, 220, false, 20);
 
                 if (!hasSearchString && GUI.GetNameOfFocusedControl() != "@ModSearch")
                 {
@@ -544,7 +544,7 @@ public class ChatPageGUI : PageGUI
             GUI.SetNextControlName("@LobbySearch");
 
             GUI.changed = false;
-            pane.SearchText = WebGLKeyboard.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, BlueStonez.textField, 220, false, 20);
+            pane.SearchText = Keyboard.TextField(new Rect(6, rect.height - 30, rect.width - (hasSearchString ? 37 : 12), SEARCH_HEIGHT - 12), pane.SearchText, BlueStonez.textField, 220, false, 20);
 
             if (!hasSearchString && GUI.GetNameOfFocusedControl() != "@LobbySearch")
             {
@@ -869,7 +869,7 @@ public class ChatPageGUI : PageGUI
             bool canSend = GUI.enabled && _lastMessageSentTimer > 0.29f;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-            if (WebGLKeyboard.IsMobile)
+            if (Keyboard.IsMobile)
             {
                 // The message bar must always be tappable (the gating conditions
                 // above disable GUI for e.g. an unselected private chat), so the
@@ -881,7 +881,7 @@ public class ChatPageGUI : PageGUI
                 {
                     _webGLChatTarget = context;
                     _webGLCanSend = canSend;
-                    WebGLKeyboard.Open(_currentChatMessage, gameObject, "OnWebGLChatInput", false);
+                    Keyboard.Open(_currentChatMessage, gameObject, "OnWebGLChatInput", false);
                 }
 
                 GUI.enabled = gatedEnabled;
@@ -1291,17 +1291,17 @@ public class ChatPageGUI : PageGUI
     public void OpenChatKeyboard()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        if (!WebGLKeyboard.IsMobile) return;
+        if (!Keyboard.IsMobile) return;
 
         _webGLChatTarget = SelectedTab;
         _webGLCanSend = true;
-        WebGLKeyboard.Open(_currentChatMessage, gameObject, "OnWebGLChatInput", false);
+        Keyboard.Open(_currentChatMessage, gameObject, "OnWebGLChatInput", false);
 #endif
     }
 
     public void OnWebGLChatInput(string text)
     {
-        WebGLKeyboard.Close();
+        Keyboard.Close();
 
         if (string.IsNullOrWhiteSpace(text))
         {

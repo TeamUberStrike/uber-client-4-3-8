@@ -40,14 +40,14 @@ public class LoginPanelGUI : PanelGuiBase
     public override void Hide()
     {
         base.Hide();
-        WebGLKeyboard.Close();
+        Keyboard.Close();
         _errorAlpha = 0.0f;
         ErrorMessage = string.Empty;
     }
 
     public void OnWebGLTextInput(string text)
     {
-        WebGLKeyboard.Close();
+        Keyboard.Close();
 
         if (string.IsNullOrEmpty(text))
             return;
@@ -182,12 +182,12 @@ public class LoginPanelGUI : PanelGuiBase
                 _passwordKeyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true, false);
             }
         }
-        else if (Application.platform == RuntimePlatform.WebGLPlayer && WebGLKeyboard.IsMobile)
+        else if (Application.platform == RuntimePlatform.WebGLPlayer && Keyboard.IsMobile)
         {
             if (GUI.Button(new Rect(8, 64, 220, 24), new GUIContent(_emailAddress), BlueStonez.textField))
             {
                 _webGLField = 1;
-                WebGLKeyboard.Open(_emailAddress, gameObject, "OnWebGLTextInput", false);
+                Keyboard.Open(_emailAddress, gameObject, "OnWebGLTextInput", false);
             }
             if (string.IsNullOrEmpty(_emailAddress))
             {
@@ -200,7 +200,7 @@ public class LoginPanelGUI : PanelGuiBase
             if (GUI.Button(new Rect(8, 92, 220, 24), new GUIContent(maskedPassword), BlueStonez.textField))
             {
                 _webGLField = 2;
-                WebGLKeyboard.Open(_password, gameObject, "OnWebGLTextInput", true);
+                Keyboard.Open(_password, gameObject, "OnWebGLTextInput", true);
             }
             if (string.IsNullOrEmpty(_password))
             {

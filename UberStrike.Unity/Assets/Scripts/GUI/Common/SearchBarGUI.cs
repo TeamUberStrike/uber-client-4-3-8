@@ -18,7 +18,7 @@ class SearchBarGUI
 
         int closeSearchWidth = 20;
         if (ApplicationDataManager.IsMobile) closeSearchWidth = 30;
-        FilterText = WebGLKeyboard.TextField(new Rect(rect.x, rect.y, IsSearching ? rect.width - closeSearchWidth - 2 : rect.width, rect.height),
+        FilterText = Keyboard.TextField(new Rect(rect.x, rect.y, IsSearching ? rect.width - closeSearchWidth - 2 : rect.width, rect.height),
             FilterText, BlueStonez.textField, 100);
         if (string.IsNullOrEmpty(FilterText) && GUI.GetNameOfFocusedControl() != _guiName)
         {

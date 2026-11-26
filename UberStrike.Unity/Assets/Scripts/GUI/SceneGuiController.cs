@@ -195,12 +195,12 @@ class SceneGuiController : MonoBehaviour
             else if (_open._hideTitleWhenAlive)
             {
                 _open.SlideOut();
-                WebGLKeyboard.Close();
+                Keyboard.Close();
             }
             else
             {
                 _open.SetCurrentPage(_open._returnIndex);
-                WebGLKeyboard.Close();
+                Keyboard.Close();
             }
             return;
         }
@@ -217,7 +217,7 @@ class SceneGuiController : MonoBehaviour
     public void FocusChatInput()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        if (!WebGLKeyboard.IsMobile) return;
+        if (!Keyboard.IsMobile) return;
 
         int chat = _guiPages.Length - 1;
         if (chat < 0 || !(_guiPages[chat] is ChatPageGUI)) return;

@@ -1,17 +1,18 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public static class WebGLKeyboard
+public static class Keyboard
 {
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern int UberGetDeviceType();
 
     [DllImport("__Internal")]
-    private static extern void UberOpenTextKeyboard(string text, string gameObjectName, string methodName, bool masked);
+    private static extern void UberOpenTextKeyboard(string text, string gameObjectName, string methodName, bool masked, int maxLength);
 
     [DllImport("__Internal")]
-    private static extern void UberCloseChatKeyboard();
+    private static extern void UberCloseKeyboard();
 
     [DllImport("__Internal")]
     private static extern void UberAddKeyboardLayout(string id, string label, string rowsJson);
@@ -20,68 +21,92 @@ public static class WebGLKeyboard
     private static extern void UberLoadKeyboardLayout(string url, string id, string label);
 #endif
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+    private static bool? _isMobileCache;
+#endif
+
     public static bool IsMobile
     {
         get
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            return UberGetDeviceType() != 0;
+            if (!_isMobileCache.HasValue)
+                _isMobileCache = UberGetDeviceType() != 0;
+
+            return _isMobileCache.Value;
 #else
             return false;
 #endif
         }
     }
 
-    public static void Open(string text, GameObject receiver, string methodName, bool masked)
+    public static void Open(string text, GameObject receiver, string methodName, bool masked, int maxLength = -1)
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         if (receiver != null && IsMobile)
-            UberOpenTextKeyboard(text ?? string.Empty, receiver.name, methodName, masked);
+            UberOpenTextKeyboard(text ?? string.Empty, receiver.name, methodName, masked, maxLength);
 #endif
     }
 
     public static void Close()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        UberCloseChatKeyboard();
+        UberCloseKeyboard();
+#endif
+#if UNITY_WEBGL
+        if (_router != null)
+        {
+            _router.ActiveFieldId = 0;
+            _router.HasResult = false;
+            _router.Result = null;
+            _router.OpenedValue = null;
+        }
 #endif
     }
 
-    private static WebGLKeyboardRouter _router;
+#if UNITY_WEBGL
+    private static KeyboardRouter _router;
 
-    public static WebGLKeyboardRouter Router
+    public static KeyboardRouter Router
     {
         get
         {
             if (_router == null)
             {
-                var go = new GameObject("WebGLKeyboardRouter");
+                var go = new GameObject("KeyboardRouter");
+                go.hideFlags = HideFlags.HideInHierarchy;
                 Object.DontDestroyOnLoad(go);
-                _router = go.AddComponent<WebGLKeyboardRouter>();
+                _router = go.AddComponent<KeyboardRouter>();
             }
 
             return _router;
         }
     }
+#endif
 
     // Drop-in replacement for GUI.TextField/GUI.PasswordField on mobile WebGL.
     // fieldId must be unique for the field (any other field with the same id
     // currently on screen would steal the result, so use distinct ids).
     public static string TextField(Rect rect, string value, GUIStyle style, int fieldId, bool password = false, int maxLength = -1)
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
         if (IsMobile)
         {
-            WebGLKeyboardRouter router = Router;
+            KeyboardRouter router = Router;
 
             if (router.ActiveFieldId == fieldId && router.HasResult)
             {
-                string result = router.Result ?? string.Empty;
-                if (maxLength > 0 && result.Length > maxLength)
-                    result = result.Substring(0, maxLength);
-                value = result;
+                if (router.OpenedValue == null || router.OpenedValue == value)
+                {
+                    string result = router.Result ?? string.Empty;
+                    if (maxLength > 0 && result.Length > maxLength)
+                        result = result.Substring(0, maxLength);
+                    value = result;
+                }
+
                 router.HasResult = false;
                 router.ActiveFieldId = 0;
+                router.OpenedValue = null;
             }
 
             string shown = password && !string.IsNullOrEmpty(value) ? "".PadLeft(value.Length, '*') : value;
@@ -90,7 +115,8 @@ public static class WebGLKeyboard
             {
                 router.ActiveFieldId = fieldId;
                 router.HasResult = false;
-                Open(value, router.gameObject, "OnWebGLFieldInput", password);
+                router.OpenedValue = value;
+                Open(value, router.gameObject, "OnWebGLFieldInput", password, maxLength);
             }
 
             return value;
@@ -129,16 +155,36 @@ public static class WebGLKeyboard
     }
 }
 
-public class WebGLKeyboardRouter : MonoBehaviour
+#if UNITY_WEBGL
+public class KeyboardRouter : MonoBehaviour
 {
     public int ActiveFieldId;
     public bool HasResult;
     public string Result;
+    public string OpenedValue;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ActiveFieldId = 0;
+        HasResult = false;
+        Result = null;
+        OpenedValue = null;
+    }
 
     public void OnWebGLFieldInput(string text)
     {
-        WebGLKeyboard.Close();
         Result = text ?? string.Empty;
         HasResult = true;
     }
 }
+#endif

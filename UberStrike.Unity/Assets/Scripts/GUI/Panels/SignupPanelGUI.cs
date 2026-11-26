@@ -37,12 +37,12 @@ public class SignupPanelGUI : PanelGuiBase
     public override void Hide()
     {
         base.Hide();
-        WebGLKeyboard.Close();
+        Keyboard.Close();
     }
 
     public void OnWebGLTextInput(string text)
     {
-        WebGLKeyboard.Close();
+        Keyboard.Close();
 
         if (string.IsNullOrEmpty(text))
             return;
@@ -193,11 +193,11 @@ public class SignupPanelGUI : PanelGuiBase
                         GUI.color = Color.white;
                     }
                 }
-                else if (Application.platform == RuntimePlatform.WebGLPlayer && WebGLKeyboard.IsMobile)
+                else if (Application.platform == RuntimePlatform.WebGLPlayer && Keyboard.IsMobile)
                 {
                     if (GUI.Button(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField)) {
                         _webGLField = 1;
-                        WebGLKeyboard.Open(_emailAddress, gameObject, "OnWebGLTextInput", false);
+                        Keyboard.Open(_emailAddress, gameObject, "OnWebGLTextInput", false);
                     }
 
                     if (string.IsNullOrEmpty(_emailAddress))
@@ -210,7 +210,7 @@ public class SignupPanelGUI : PanelGuiBase
                     string maskedPassword1 = "".PadLeft(_password1.Length, '*');
                     if (GUI.Button(new Rect(180, 168 - 64, 180, 22), maskedPassword1, BlueStonez.textField)) {
                         _webGLField = 2;
-                        WebGLKeyboard.Open(_password1, gameObject, "OnWebGLTextInput", true);
+                        Keyboard.Open(_password1, gameObject, "OnWebGLTextInput", true);
                     }
 
                     if (string.IsNullOrEmpty(_password1))
@@ -224,7 +224,7 @@ public class SignupPanelGUI : PanelGuiBase
                     if (GUI.Button(new Rect(180, 204 - 64, 180, 22), maskedPassword2, BlueStonez.textField))
                     {
                         _webGLField = 3;
-                        WebGLKeyboard.Open(_password2, gameObject, "OnWebGLTextInput", true);
+                        Keyboard.Open(_password2, gameObject, "OnWebGLTextInput", true);
                     }
 
                     if (string.IsNullOrEmpty(_password2))

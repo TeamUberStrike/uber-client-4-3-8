@@ -69,11 +69,11 @@ public class FriendRequestPanelGUI : PanelGuiBase
             bool tmp = GUI.enabled;
 
             GUI.enabled = tmp && !_isSelectionLocked;
-            _friendName = WebGLKeyboard.TextField(new Rect(textCol, nameRow, textWidth, 24), _friendName, BlueStonez.textField, 170);
+            _friendName = Keyboard.TextField(new Rect(textCol, nameRow, textWidth, 24), _friendName, BlueStonez.textField, 170);
 
             GUI.enabled = tmp;
             GUI.changed = false;
-            _friendMessage = WebGLKeyboard.TextField(new Rect(textCol, msgRow, textWidth, 24), _friendMessage, BlueStonez.textField, 171);
+            _friendMessage = Keyboard.TextField(new Rect(textCol, msgRow, textWidth, 24), _friendMessage, BlueStonez.textField, 171);
             _friendMessage = _friendMessage.Trim(new char[] { '\n' });
 
             // player list

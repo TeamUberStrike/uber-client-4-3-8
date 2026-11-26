@@ -13,7 +13,7 @@
 //
 // The C# caller passes the GameObject and method that receive the typed text.
 var UberKeyboardBridge = {
-    UberOpenTextKeyboard: function(initialTextPtr, gameObjectNamePtr, methodNamePtr, maskedPtr) {
+    UberOpenTextKeyboard: function(initialTextPtr, gameObjectNamePtr, methodNamePtr, maskedPtr, maxLength) {
         try {
             var initial = initialTextPtr ? UTF8ToString(initialTextPtr) : "";
             var gameObjectName = gameObjectNamePtr ? UTF8ToString(gameObjectNamePtr) : "TouchInputManager";
@@ -948,6 +948,7 @@ var UberKeyboardBridge = {
                             SendMessage(targetObject, sendMethod, message);
                         } catch (e) {
                         }
+                        hide();
                     }
 
                     function build() {
@@ -1072,10 +1073,6 @@ var UberKeyboardBridge = {
                         };
 
                         cancelButtonEl = makeCircleButton("\u2715", "Cancel", 24, function() {
-                            try {
-                                SendMessage(targetObject, sendMethod, "");
-                            } catch (e) {
-                            }
                             hide();
                         });
 
@@ -1150,8 +1147,9 @@ var UberKeyboardBridge = {
                     }
 
                     return {
-                        show: function(initialText, targetName, methodName, masked) {
+                        show: function(initialText, targetName, methodName, masked, maxLength) {
                             transparentMode = methodName === "OnWebGLChatSend";
+                            MAX_LENGTH = (typeof maxLength === "number" && maxLength > 0) ? maxLength : 140;
                             if (!root) build();
                             detectKeyboardLayout();
                             var pending = window.__uberPendingLayouts;
@@ -1278,7 +1276,7 @@ var UberKeyboardBridge = {
                 })();
             }
 
-            window.uberChatKeyboard.show(initial, gameObjectName, methodName, masked);
+            window.uberChatKeyboard.show(initial, gameObjectName, methodName, masked, maxLength);
         } catch (e) {
             try {
                 if (window.console && window.console.error) window.console.error("UberOpenTextKeyboard failed:", e);
@@ -1334,7 +1332,7 @@ var UberKeyboardBridge = {
         }
     },
 
-    UberCloseChatKeyboard: function() {
+    UberCloseKeyboard: function() {
         try {
             if (window.uberChatKeyboard) window.uberChatKeyboard.hide();
         } catch (e) {
