@@ -29,12 +29,19 @@ public class ReticleHud : Singleton<ReticleHud>
             Primary = weapon.ShowReticleForPrimaryAction ? reticle : null,
             Secondary = (weapon.SecondaryActionReticle == ReticuleForSecondaryAction.Default) ? reticle : null,
         };
+        _weaponClass = weapon.ItemClass;
     }
 
     public void Draw()
     {
         if (_reticle == null) return;
         if (!WeaponController.Instance.HasAnyWeapon) return;
+
+        // Machine guns aim down their iron sights when zoomed: no crosshair then, it is back as soon as
+        // the zoom ends. Spinning guns (Battlesnake) never iron-sight, so they keep theirs.
+        if (_weaponClass == UberstrikeItemClass.WeaponMachinegun && WeaponController.Instance.IsSecondaryAction
+            && WeaponFeedbackManager.Instance.IsIronSighted)
+            return;
 
         //check if we are focusing on a friend
         if (_curState == ReticleState.Friend)
@@ -162,6 +169,7 @@ public class ReticleHud : Singleton<ReticleHud>
     }
 
     private ReticleConfiguration _reticle;
+    private UberstrikeItemClass _weaponClass;
     private ReticleState _curState;
     private bool _isDisplayingEnemyReticle;
     private float _enemyReticleHideTime;
