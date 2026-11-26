@@ -34,6 +34,17 @@ public class InGameHelpHud : Singleton<InGameHelpHud>
     public void Draw()
     {
         _entireGroup.Draw();
+        // The whole loadout box opens the loadout, not only the small gun icon in it.
+        if (_entireGroup.IsVisible && ClickArea(_loadoutHelpGroup))
+            OnToggleLoadout();
+    }
+
+    private bool ClickArea(Animatable2DGroup group)
+    {
+        Rect rect = group.Rect;
+        rect.x += _entireGroup.Position.x;
+        rect.y += _entireGroup.Position.y;
+        return GUI.Button(rect, GUIContent.none, GUIStyle.none);
     }
 
     public void Update()
