@@ -67,6 +67,15 @@ public class SfxManager : MonoSingleton<SfxManager>
         get { return ApplicationDataManager.Exists ? ApplicationDataManager.ApplicationOptions.AudioMasterVolume : 0.5f; }
     }
 
+    /// <summary>
+    /// One option for the sounds placed in the map (ambience, jump pads, doors; see MapAudioVolume) and
+    /// the spin-up / run-down of spinning guns (minigun warm-up, machine gun tail).
+    /// </summary>
+    public static float WorldAudioVolume
+    {
+        get { return ApplicationDataManager.Exists ? Mathf.Clamp01(ApplicationDataManager.ApplicationOptions.AudioWorldVolume) : 1f; }
+    }
+
     #endregion
 
     #region Classes
@@ -380,6 +389,12 @@ public class SfxManager : MonoSingleton<SfxManager>
         {
             Instance.uiAudioSource.volume = ApplicationDataManager.ApplicationOptions.AudioEffectsVolume;
         }
+    }
+
+    public static void UpdateMapVolume()
+    {
+        if (GameState.HasCurrentSpace)
+            global::MapAudioVolume.Apply(GameState.CurrentSpace);
     }
 
     public static float GetSoundLength(SoundEffectType soundEffectType)

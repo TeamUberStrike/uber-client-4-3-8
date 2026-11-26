@@ -73,6 +73,9 @@ public class ApplicationOptions
     public float AudioEffectsVolume = 0.7f;
     public float AudioMusicVolume = 0.3f;
     public float AudioMasterVolume = 0.5f;
+    // One slider for the sounds placed in the map (ambience, jump pads, doors) and the
+    // spin-up/run-down of spinning guns.
+    public float AudioWorldVolume = 1f;
 
     public void Initialize()
     {
@@ -166,6 +169,7 @@ public class ApplicationOptions
         AudioEffectsVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioEffectsVolume, 0.7f);
         AudioMusicVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioMusicVolume, 0.3f);
         AudioMasterVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioMasterVolume, 0.5f);
+        AudioWorldVolume = CmunePrefs.ReadKey(CmunePrefs.Key.Options_AudioWorldVolume, 1f);
 
         if (isReset) SaveApplicationOptions();
     }
@@ -222,5 +226,6 @@ public class ApplicationOptions
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_AudioEffectsVolume, AudioEffectsVolume);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_AudioMusicVolume, AudioMusicVolume);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_AudioMasterVolume, AudioMasterVolume);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_AudioWorldVolume, AudioWorldVolume);
     }
 }
