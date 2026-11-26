@@ -44,6 +44,7 @@ public static class CmunePrefs
         Options_AudioEffectsVolume = 121,
         Options_AudioMusicVolume = 122,
         Options_AudioMasterVolume = 123,
+        Options_AudioWorldVolume = 140,
         Options_VideoHardcoreMode = 124,
         Options_VideoScreenRes = 125,
         Options_VideoIsFullscreen = 126,

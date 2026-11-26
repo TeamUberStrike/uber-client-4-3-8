@@ -62,6 +62,8 @@ public class MapConfiguration : MonoBehaviour
 
     public bool HasWaterPlane { get { return _waterPlane != null; } }
 
+    public GameObject StaticContent { get { return _staticContentParent; } }
+
     public float WaterPlaneHeight { get { return (_waterPlane) ? _waterPlane.position.y : float.MinValue; } }
 
     #endregion
@@ -144,6 +146,8 @@ public class MapConfiguration : MonoBehaviour
         if (enabled)
         {
             BeastLightmapLoader.RestoreByName(gameObject.name);
+            // "Map Volume" option on the sounds placed in this map.
+            MapAudioVolume.Apply(this);
         }
     }
 }

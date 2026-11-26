@@ -576,14 +576,16 @@ public class OptionsPanelGUI : PanelGuiBase
 
     private void DoAudioGroup()
     {
-        float height = 130;
+        // One more row than 4.3.8: the world volume (map sounds + weapon spin).
+        float groupHeight = 160;
+        float height = groupHeight + 20;
         float width = (_rect.height - 55 - 46) < height ? _rect.width - 65 : _rect.width - 50;
         _scrollControls = GUITools.BeginScrollView(new Rect(1, 1, _rect.width - 33, _rect.height - 55 - 46), _scrollControls, new Rect(0, 0, _rect.width - 50, height));
         {
-            DrawGroupControl(new Rect(GroupMarginX, 20, width, 130), LocalizedStrings.Volume, BlueStonez.label_group_interparkbold_18pt);
-            GUI.BeginGroup(new Rect(GroupMarginX, 20, width, 130));
+            DrawGroupControl(new Rect(GroupMarginX, 20, width, groupHeight), LocalizedStrings.Volume, BlueStonez.label_group_interparkbold_18pt);
+            GUI.BeginGroup(new Rect(GroupMarginX, 20, width, groupHeight));
             {
-                ApplicationDataManager.ApplicationOptions.AudioEnabled = !GUI.Toggle(new Rect(15, 105, 100, 30), !ApplicationDataManager.ApplicationOptions.AudioEnabled, LocalizedStrings.Mute, BlueStonez.toggle);
+                ApplicationDataManager.ApplicationOptions.AudioEnabled = !GUI.Toggle(new Rect(15, 135, 100, 30), !ApplicationDataManager.ApplicationOptions.AudioEnabled, LocalizedStrings.Mute, BlueStonez.toggle);
                 if (GUI.changed)
                 {
                     GUI.changed = false;
@@ -622,6 +624,17 @@ public class OptionsPanelGUI : PanelGuiBase
                     //PlayAudioVolumnChangeSound(ApplicationDataManager.Settings.AudioEffectsVolume);
                 }
                 GUI.Label(new Rect(320, 70, 100, 30), (ApplicationDataManager.ApplicationOptions.AudioEffectsVolume * 100).ToString("f0") + " %", BlueStonez.label_interparkbold_11pt_left);
+
+                // Map sounds (ambience, jump pads, doors) and the spin-up / run-down of spinning guns
+                // (Battlesnake right click, UMG after shooting). Weapons read it when the sound starts.
+                GUI.Label(new Rect(15, 100, 100, 30), LocalizedStrings.WorldVolume, BlueStonez.label_interparkbold_11pt_left);
+                ApplicationDataManager.ApplicationOptions.AudioWorldVolume = GUI.HorizontalSlider(new Rect(115, 107, 200, 30), Mathf.Clamp01(ApplicationDataManager.ApplicationOptions.AudioWorldVolume), 0, 1, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+                if (GUI.changed)
+                {
+                    GUI.changed = false;
+                    SfxManager.UpdateMapVolume();
+                }
+                GUI.Label(new Rect(320, 100, 100, 30), (ApplicationDataManager.ApplicationOptions.AudioWorldVolume * 100).ToString("f0") + " %", BlueStonez.label_interparkbold_11pt_left);
 
                 GUITools.PopGUIState();
             }

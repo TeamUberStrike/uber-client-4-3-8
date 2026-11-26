@@ -86,6 +86,8 @@ public class MinigunWeaponDecorator : BaseWeaponDecorator
 
         if (_warmUpAudioSource)
         {
+            // spin-up (e.g. Battlesnake on right click): world volume option
+            _warmUpAudioSource.volume = SfxManager.WorldAudioVolume;
             _warmUpAudioSource.time = time;
             _warmUpAudioSource.Play();
         }
@@ -101,6 +103,7 @@ public class MinigunWeaponDecorator : BaseWeaponDecorator
 
         if (_warmDownAudioSource)
         {
+            _warmDownAudioSource.volume = SfxManager.WorldAudioVolume;
             _warmDownAudioSource.time = time;
             _warmDownAudioSource.Play();
         }
@@ -108,6 +111,8 @@ public class MinigunWeaponDecorator : BaseWeaponDecorator
 
     public void PlayDuringSound()
     {
+        // the spinning loop after the spin-up: same volume as the spin-up, or it jumps back to full volume
+        _duringShootAudioSource.volume = SfxManager.WorldAudioVolume;
         if (!_duringShootAudioSource.isPlaying)
             _duringShootAudioSource.Play();
     }
