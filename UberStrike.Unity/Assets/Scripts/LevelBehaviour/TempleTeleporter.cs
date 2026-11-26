@@ -10,14 +10,10 @@ public class TempleTeleporter : SecretDoor
     {
         _audios = GetComponents<AudioSource>();
 
-        EnsurePortalParticles();
+        // The portal's old LightningParticles child stays inactive: the veil's own
+        // swirl replaces it (the particles looked like smoke from the side).
         EnsurePortalVeil();
 
-        if (_particles != null)
-        {
-            var emission = _particles.emission;
-            emission.enabled = false;
-        }
         if (_visuals != null)
         {
             foreach(Renderer r in _visuals)
@@ -43,11 +39,6 @@ public class TempleTeleporter : SecretDoor
         {
             foreach (AudioSource s in _audios) s.Stop();
 
-            if (_particles != null)
-            {
-                var emission = _particles.emission;
-                emission.enabled = false;
-            }
             if (_visuals != null)
             {
                 foreach (Renderer r in _visuals)
@@ -96,11 +87,6 @@ public class TempleTeleporter : SecretDoor
     {
         enabled = true;
 
-        if (_particles != null)
-        {
-            var emission = _particles.emission;
-            emission.enabled = true;
-        }
         if (_visuals != null)
         {
             foreach (Renderer r in _visuals)
@@ -117,74 +103,18 @@ public class TempleTeleporter : SecretDoor
         get { return _doorID; }
     }
 
-    // Builds the SecretDoor portal's LightningParticles child if the Unity 3.5 →
-    // 2022 prefab migration stripped its EllipsoidParticleEmitter / ParticleAnimator /
-    // ParticleRenderer components. The child GameObject + Transform survive but
-    // emit nothing without us recreating the modern ParticleSystem stack here.
-    //
-    // No-op if _particles is already wired (serialised reference still good) or
-    // the prefab is structured without a LightningParticles child.
-    private void EnsurePortalParticles()
-    {
-        if (_particles != null) return;
-
-        Transform lightning = null;
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            var c = transform.GetChild(i);
-            if (c.name == "LightningParticles") { lightning = c; break; }
-        }
-        if (lightning == null) return;
-
-        // Authored m_IsActive=0 in 3.5 — activate so the PS runs once OpenDoor
-        // flips emission on. Activation alone does not start emission.
-        lightning.gameObject.SetActive(true);
-
-        var ps = lightning.GetComponent<ParticleSystem>();
-        if (ps == null)
-        {
-            var bluePlasma = Resources.Load<Material>("BluePlasmaLightning");
-            if (bluePlasma == null)
-                Debug.LogWarning("[TempleTeleporter] BluePlasmaLightning.mat missing from Resources — portal lightning will render untinted.");
-            ps = BuildLightningPS(lightning.gameObject, bluePlasma, small: true);
-
-            // Same lightning, but faded out past the arch so it stays inside the doorway.
-            var masked = CreateArchMaskedLightning(bluePlasma);
-            if (masked != null)
-                lightning.GetComponent<ParticleSystemRenderer>().sharedMaterial = masked;
-        }
-
-        _particles = ps;
-    }
-
-    private Material CreateArchMaskedLightning(Material bluePlasma)
-    {
-        var shader = Resources.Load<Shader>("Shaders/TemplePortalLightning");
-        if (shader == null || !shader.isSupported || bluePlasma == null) return null;
-        WarmUp(shader);
-
-        var mat = new Material(shader);
-        mat.mainTexture = bluePlasma.mainTexture;
-        if (bluePlasma.HasProperty("_TintColor"))
-            mat.SetColor("_TintColor", bluePlasma.GetColor("_TintColor"));
-        mat.SetVector("_DoorSize", DoorSize);
-        mat.SetMatrix("_DoorWorldToLocal", transform.worldToLocalMatrix);
-        return mat;
-    }
-
     // The temple wall surface is at door-local z 0.379 (the box face at 0.5 stuck out
     // ~7 cm). The veil sits ~1 cm in front of the stones so the arch reads as an
     // opening in the wall, not a plate on it.
     private const float VeilPlaneZ = 0.4f;
 
-    // Door width/height in metres (the SecretDoor is a unit cube scaled to the
-    // opening); z = the veil plane in door-local z, used by the lightning mask.
+    // Door width/height in metres (the SecretDoor is a unit cube scaled to the opening).
     private Vector4 DoorSize
     {
-        get { return new Vector4(transform.lossyScale.x, transform.lossyScale.y, VeilPlaneZ, 0f); }
+        get { return new Vector4(transform.lossyScale.x, transform.lossyScale.y, 0f, 0f); }
     }
 
-    // Compiles the portal shaders on map load instead of the frame the portal opens.
+    // Compiles the portal shader on map load instead of the frame the portal opens.
     private static void WarmUp(Shader shader)
     {
         try
@@ -242,12 +172,10 @@ public class TempleTeleporter : SecretDoor
     }
 
     // Builds a Unity-2022 ParticleSystem matching the legacy 3.5 lightning emitter
-    // parameters. Two variants:
-    //   small=true  → SecretDoor portal lightning (10/s, ellipsoid 1×2×0, local space, size 1)
-    //   small=false → standalone TeleporterParticles inside the Secret Temple
-    //                 (100/s, ellipsoid 5×20×20, world space, size 4-5.5)
+    // parameters of the standalone TeleporterParticles inside the Secret Temple
+    // (100/s, ellipsoid 5×20×20, world space, size 4-5.5).
     // Material lookup is the caller's job — passed in as `mat` (BluePlasmaLightning).
-    private static ParticleSystem BuildLightningPS(GameObject host, Material mat, bool small)
+    private static ParticleSystem BuildLightningPS(GameObject host, Material mat)
     {
         var ps = host.AddComponent<ParticleSystem>();
 
@@ -257,15 +185,12 @@ public class TempleTeleporter : SecretDoor
         main.playOnAwake = true;
         main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 1f);
         main.startSpeed = 0f;
-        // 3.5 small variant: minSize=maxSize=1, here 1.5x so the open portal reads better
-        // from the hall. Big variant: 4-5.5 from 3.5 TeleporterParticles emitter.
-        main.startSize = small ? (ParticleSystem.MinMaxCurve)1.5f
-                               : new ParticleSystem.MinMaxCurve(4f, 5.5f);
+        // 4-5.5 from the 3.5 TeleporterParticles emitter.
+        main.startSize = new ParticleSystem.MinMaxCurve(4f, 5.5f);
         main.startColor = Color.white; // material _TintColor bakes the blue
-        main.maxParticles = small ? 45 : 150;
-        // 3.5 "Simulate in Worldspace": SecretDoor=false, TeleporterParticles=true.
-        main.simulationSpace = small ? ParticleSystemSimulationSpace.Local
-                                     : ParticleSystemSimulationSpace.World;
+        main.maxParticles = 150;
+        // 3.5 "Simulate in Worldspace" = true for TeleporterParticles.
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
         // Particle size in absolute world units (predictable across SecretDoor
         // transforms 2.96×5.86×0.61 etc.). Hierarchy mode multiplies through the
         // whole parent chain and produced wildly inconsistent sizes.
@@ -273,31 +198,26 @@ public class TempleTeleporter : SecretDoor
         main.gravityModifier = 0f;
 
         var emission = ps.emission;
-        emission.enabled = false; // Awake/OpenDoor toggles emission for the portal variant.
-        // 3.5 EllipsoidParticleEmitter min=max emission: small=10/s (15/s here for the 1.5x
-        // larger portal cluster, so it doesn't look thinner), big=100/s.
-        emission.rateOverTime = small ? 15f : 100f;
+        emission.enabled = false; // the caller turns emission on
+        // 3.5 EllipsoidParticleEmitter min=max emission: 100/s.
+        emission.rateOverTime = 100f;
 
         // Box shape as stand-in for the legacy ellipsoid volume. Dimensions match
         // the 3.5 m_Ellipsoid field; Unity 2022 dropped the ellipsoid primitive.
         var shape = ps.shape;
         shape.enabled = true;
         shape.shapeType = ParticleSystemShapeType.Box;
-        // small: the 3.5 ellipsoid 1x2 widened 1.5x for the open portal
-        shape.scale = small ? new Vector3(1.5f, 3f, 0.01f) : new Vector3(5f, 20f, 20f);
+        shape.scale = new Vector3(5f, 20f, 20f);
         shape.randomDirectionAmount = 0f;
 
         // rndVelocity (7,7,7) in 3.5 means each particle gets random [-7,7] per
-        // axis in world space. Big variant only.
-        if (!small)
-        {
-            var velocity = ps.velocityOverLifetime;
-            velocity.enabled = true;
-            velocity.space = ParticleSystemSimulationSpace.World;
-            velocity.x = new ParticleSystem.MinMaxCurve(-7f, 7f);
-            velocity.y = new ParticleSystem.MinMaxCurve(-7f, 7f);
-            velocity.z = new ParticleSystem.MinMaxCurve(-7f, 7f);
-        }
+        // axis in world space.
+        var velocity = ps.velocityOverLifetime;
+        velocity.enabled = true;
+        velocity.space = ParticleSystemSimulationSpace.World;
+        velocity.x = new ParticleSystem.MinMaxCurve(-7f, 7f);
+        velocity.y = new ParticleSystem.MinMaxCurve(-7f, 7f);
+        velocity.z = new ParticleSystem.MinMaxCurve(-7f, 7f);
 
         // ParticleAnimator damping=0.7 → LimitVelocityOverLifetime.dampen.
         var limit = ps.limitVelocityOverLifetime;
@@ -325,13 +245,12 @@ public class TempleTeleporter : SecretDoor
         colorOverLife.color = gradient;
 
         // sizeGrow=2 in 3.5 is additive growth per second; over ~1s lifetime
-        // particles ~triple. Emulate with curve 1 → 3. The portal variant only
-        // doubles so the cluster stays inside the doorway.
+        // particles ~triple. Emulate with curve 1 → 3.
         var sizeOverLife = ps.sizeOverLifetime;
         sizeOverLife.enabled = true;
         var sizeCurve = new AnimationCurve();
         sizeCurve.AddKey(0f, 1f);
-        sizeCurve.AddKey(1f, small ? 2f : 3f);
+        sizeCurve.AddKey(1f, 3f);
         sizeOverLife.size = new ParticleSystem.MinMaxCurve(1f, sizeCurve);
 
         // 4×4 UV grid, 1 cycle — matches the source ParticleRenderer UV Animation.
@@ -493,7 +412,7 @@ public class TempleTeleporter : SecretDoor
                 lightning.gameObject.SetActive(true);
                 if (lightning.GetComponent<ParticleSystem>() == null)
                 {
-                    var ps = BuildLightningPS(lightning.gameObject, bluePlasma, small: false);
+                    var ps = BuildLightningPS(lightning.gameObject, bluePlasma);
                     var em = ps.emission; em.enabled = true; // no MB controls this — turn on directly
                 }
             }
@@ -558,8 +477,6 @@ public class TempleTeleporter : SecretDoor
     private Renderer[] _visuals;
     [SerializeField]
     private Transform _spawnpoint;
-    [SerializeField]
-    private ParticleSystem _particles;
 
     private int _doorID;
     private float _timeOut = 0;

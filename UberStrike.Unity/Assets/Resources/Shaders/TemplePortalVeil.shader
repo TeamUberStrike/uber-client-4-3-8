@@ -60,7 +60,8 @@ Shader "UberStrike/TemplePortalVeil"
                 float3 lv = float3(dot(V, normalize(unity_ObjectToWorld._m00_m10_m20)),
                                    dot(V, normalize(unity_ObjectToWorld._m01_m11_m21)),
                                    dot(V, normalize(unity_ObjectToWorld._m02_m12_m22)));
-                float2 slope = lv.xy / max(abs(lv.z), 0.25);
+                // Capped so steep side views don't smear the swirl into streaks.
+                float2 slope = lv.xy / max(abs(lv.z), 0.5);
                 float2 pDeep = p + slope * 1.2;   // swirl layer, 1.2 m in
                 float2 pDeeper = p + slope * 2.5; // second layer + core, 2.5 m in
                 // Where the ray, 0.4 m in, is already outside the arch it hits the
@@ -76,8 +77,10 @@ Shader "UberStrike/TemplePortalVeil"
                 float r2 = length(v2) / PortalArchHalfWidth(size);
                 float ang2 = atan2(v2.y, v2.x);
 
-                float swirl = sin(ang * 3.0 + r * 7.0 - t * 1.6);
-                float swirl2 = sin(ang2 * 5.0 - r2 * 11.0 + t * 1.1 + sin(t * 0.7) * 2.0);
+                // The spiral arms all meet at the centre; fade them out there so the
+                // pinch point doesn't show up as a bright stripe.
+                float swirl = sin(ang * 3.0 + r * 7.0 - t * 1.6) * smoothstep(0.05, 0.35, r);
+                float swirl2 = sin(ang2 * 5.0 - r2 * 11.0 + t * 1.1 + sin(t * 0.7) * 2.0) * smoothstep(0.05, 0.35, r2);
                 float ripple = sin(pDeep.y * 3.1 - t * 1.3 + sin(pDeep.x * 2.3 + t * 0.6) * 1.5);
                 float pattern = saturate(0.45 + 0.45 * swirl + 0.3 * swirl2 + 0.2 * ripple);
 
