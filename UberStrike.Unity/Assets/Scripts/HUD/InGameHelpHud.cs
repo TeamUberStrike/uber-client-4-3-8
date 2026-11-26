@@ -25,8 +25,6 @@ public class InGameHelpHud : Singleton<InGameHelpHud>
             else
             {
                 _entireGroup.Hide();
-                // A scoreboard opened by clicking its box closes with the death screen.
-                if (TabScreenPanelGUI.Exists) TabScreenPanelGUI.Instance.ForceShow = false;
             }
         }
     }
@@ -36,33 +34,8 @@ public class InGameHelpHud : Singleton<InGameHelpHud>
     public void Draw()
     {
         _entireGroup.Draw();
-        if (_entireGroup.IsVisible) HandleClicks();
-    }
-
-    // The whole box of each hint is clickable, not only the small loadout icon.
-    private void HandleClicks()
-    {
-        if (TabScreenPanelGUI.Exists && TabScreenPanelGUI.Instance.ForceShow)
-        {
-            // Scoreboard opened by a click: the next click anywhere closes it again.
-            if (Event.current.type == EventType.MouseDown)
-            {
-                TabScreenPanelGUI.Instance.ForceShow = false;
-                Event.current.Use();
-            }
-            return;
-        }
-
-        if (ClickArea(_scoreBoardHelpGroup) && TabScreenPanelGUI.Exists)
-            TabScreenPanelGUI.Instance.ForceShow = true;
-        if (ClickArea(_fullScreenHelpGroup))
-            ScreenResolutionManager.IsFullScreen = !Screen.fullScreen;
-        if (EnableChangeTeamHelp && ClickArea(_changeTeamHelpGroup))
-        {
-            TeamDeathMatchGameMode teamMode = GameState.CurrentGame as TeamDeathMatchGameMode;
-            if (teamMode != null) teamMode.ChangeTeam();
-        }
-        if (ClickArea(_loadoutHelpGroup))
+        // The whole loadout box opens the loadout, not only the small gun icon in it.
+        if (_entireGroup.IsVisible && ClickArea(_loadoutHelpGroup))
             OnToggleLoadout();
     }
 
