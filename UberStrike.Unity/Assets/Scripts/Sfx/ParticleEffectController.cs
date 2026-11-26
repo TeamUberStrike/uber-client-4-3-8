@@ -255,10 +255,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                         break;
 
                     case SurfaceEffectType.Splat:
-                        if (CheckVisibility(hitPoint))
-                        {
-                            ParticleEmissionSystem.HitMaterialRotatingParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.Splat);
-                        }
+                        // Hit on a player ("Avatar"): no particles. The yellow splat cloud covered the target.
                         break;
 
                     case SurfaceEffectType.Default:
@@ -335,7 +332,7 @@ public class ParticleEffectController : MonoSingleton<ParticleEffectController>
                             ParticleEmissionSystem.HitMateriaHalfSphericParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.SandEffect);
                             break;
                         case SurfaceEffectType.Splat:
-                            ParticleEmissionSystem.HitMateriaFullSphericParticles(hitPoint, hitNormal, effect.WeaponImpactEffectConfiguration.SurfaceParameterSet.Splat);
+                            // Explosion on a player: no yellow splat cloud (the explosion itself still shows).
                             break;
                         default:
                             break;
