@@ -152,11 +152,18 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         {
             if (_hpIcon == null) _hpIcon = Resources.Load<Texture2D>("KillerHud/HealthIcon");
             if (_apIcon == null) _apIcon = Resources.Load<Texture2D>("KillerHud/ArmorIcon");
+            // With the loadout open the game view is narrower and the HUD texts move into its middle
+            // (by half the width given up, see InGameHelpHud); the icons follow the same shift.
+            float shift = -Screen.width * (1 - CameraRectController.Instance.Width) / 2;
+            Rect hpRect = _hpIconRect;
+            Rect apRect = _apIconRect;
+            hpRect.x += shift;
+            apRect.x += shift;
             Color previous = GUI.color;
             GUI.color = KillerHpColor;
-            if (_hpIcon != null) GUI.DrawTexture(_hpIconRect, _hpIcon);
+            if (_hpIcon != null) GUI.DrawTexture(hpRect, _hpIcon);
             GUI.color = KillerApColor;
-            if (_apIcon != null) GUI.DrawTexture(_apIconRect, _apIcon);
+            if (_apIcon != null) GUI.DrawTexture(apRect, _apIcon);
             GUI.color = previous;
         }
     }
