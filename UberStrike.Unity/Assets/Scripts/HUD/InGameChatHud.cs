@@ -179,7 +179,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
             float alpha = Mathf.Clamp01(msg.Timer);
             GUI.color = msg.Color.SetAlpha(alpha);
-            GUI.Label(new Rect(p.x + Scale, p.y + Scale, p.width, p.height), contentStr, MsgStyle);
+            GUI.Label(new Rect(p.x + ShadowOffset, p.y + ShadowOffset, p.width, p.height), contentStr, MsgStyle);
             GUI.color = new Color(1, 1, 1, alpha);
             GUI.Label(p, contentStr, MsgStyle);
             GUI.color = new Color(0, 0, 0, alpha * 0.4f);
@@ -254,7 +254,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
     {
         Rect r = Px(new Rect(0, MsgPosition.height - InputHeight, MsgPosition.width, InputHeight));
         GUI.color = shadow;
-        GUI.Label(new Rect(r.x + Scale, r.y + Scale, r.width, r.height), text, MsgStyle);
+        GUI.Label(new Rect(r.x + ShadowOffset, r.y + ShadowOffset, r.width, r.height), text, MsgStyle);
         GUI.color = color;
         GUI.Label(r, text, MsgStyle);
     }
@@ -401,11 +401,20 @@ public class InGameChatHud : Singleton<InGameChatHud>
         get { return Mathf.Max(1f, Screen.height / 1080f) * 1.2f; }
     }
 
+    // Shadow offset in whole pixels: a fractional offset smears the shadow and makes the text look soft.
+    private float ShadowOffset
+    {
+        get { return Mathf.Max(1f, Mathf.Round(Scale)); }
+    }
+
     // Chat is drawn at screen resolution with a dynamic font sized by Scale, instead of a 17 px bitmap font stretched by GUI.matrix.
+    // Rects are snapped to whole pixels so the glyphs land on the pixel grid.
     private Rect Px(Rect r)
     {
         float s = Scale;
-        return new Rect(r.x * s, r.y * s, r.width * s, r.height * s);
+        float x = Mathf.Round(r.x * s);
+        float y = Mathf.Round(r.y * s);
+        return new Rect(x, y, Mathf.Round((r.x + r.width) * s) - x, Mathf.Round((r.y + r.height) * s) - y);
     }
 
     private GUIStyle MsgStyle
