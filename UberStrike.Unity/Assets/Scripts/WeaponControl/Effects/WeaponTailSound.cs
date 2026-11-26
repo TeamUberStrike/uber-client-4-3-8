@@ -58,6 +58,8 @@ public class WeaponTailSound : BaseWeaponEffect
         if (_tailAudioSource)
         {
             _tailAudioSource.Stop();
+            // run-down sound after the last shot (e.g. UMG): world volume option
+            _tailAudioSource.volume = SfxManager.WorldAudioVolume;
             _tailAudioSource.Play();
         }
     }

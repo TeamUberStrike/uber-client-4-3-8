@@ -50,6 +50,22 @@ public class AudioFadeArea : MonoBehaviour
         }
     }
 
+    /// <summary>Sources this area has already faded and now sets itself (MapAudioVolume leaves them to it).</summary>
+    public void AddControlledSources(System.Collections.Generic.HashSet<AudioSource> set)
+    {
+        foreach (AudioArea area in new[] { outdoorAudio, indoorAudio })
+            if (area != null && area.Touched && area.Sources != null)
+                foreach (AudioSource s in area.Sources)
+                    if (s != null) set.Add(s);
+    }
+
+    /// <summary>Re-apply the current fade volume after the "Map Volume" option changed.</summary>
+    public void ApplyMapVolume()
+    {
+        if (outdoorAudio != null && outdoorAudio.Touched) outdoorAudio.ApplyVolume();
+        if (indoorAudio != null && indoorAudio.Touched) indoorAudio.ApplyVolume();
+    }
+
     [System.Serializable]
     private class AudioArea
     {
@@ -78,6 +94,20 @@ public class AudioFadeArea : MonoBehaviour
             }
         }
 
+        public AudioSource[] Sources { get { return sources; } }
+
+        // Set once this area has faded its sources; before that they keep the volume set in the map.
+        public bool Touched { get; private set; }
+
+        // The fade volume times the "Map Volume" option.
+        public void ApplyVolume()
+        {
+            if (sources == null) return;
+            Touched = true;
+            float volume = currentVolume * SfxManager.WorldAudioVolume;
+            Array.ForEach(sources, s => { if (s != null) s.volume = volume; });
+        }
+
         public bool Update()
         {
             if (enabled && currentVolume < maxVolume)
@@ -85,7 +115,7 @@ public class AudioFadeArea : MonoBehaviour
                 currentVolume = Mathf.Lerp(currentVolume, maxVolume, Time.deltaTime * fadeSpeed);
                 if (Mathf.Abs(currentVolume - maxVolume) < 0.01f) currentVolume = maxVolume;
 
-                Array.ForEach(sources, s => s.volume = currentVolume);
+                ApplyVolume();
                 return true;
             }
             else if (!enabled && currentVolume > 0)
@@ -93,7 +123,7 @@ public class AudioFadeArea : MonoBehaviour
                 currentVolume = Mathf.Lerp(currentVolume, 0, Time.deltaTime * fadeSpeed);
                 if (currentVolume < 0.01f) currentVolume = 0;
 
-                Array.ForEach(sources, s => s.volume = currentVolume);
+                ApplyVolume();
                 return true;
             }
             else

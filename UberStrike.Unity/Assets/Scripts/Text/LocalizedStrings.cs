@@ -386,6 +386,7 @@ public static class LocalizedStrings
 	public static string MouseSensitivity = "Mouse Sensitivity:";
 	public static string Movement = "Movement";
 	public static string MusicVolume = "Music Volume:";
+	public static string WorldVolume = "Atmosphere:";
 	public static string Mute = "Mute audio.";
 	public static string Name = "Name";
 	public static string NameInUseMsg = "This name has already been taken. Please choose another one.";
