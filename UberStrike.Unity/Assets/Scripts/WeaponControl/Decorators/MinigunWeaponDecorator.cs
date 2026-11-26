@@ -111,6 +111,8 @@ public class MinigunWeaponDecorator : BaseWeaponDecorator
 
     public void PlayDuringSound()
     {
+        // the spinning loop after the spin-up: same volume as the spin-up, or it jumps back to full volume
+        _duringShootAudioSource.volume = SfxManager.WorldAudioVolume;
         if (!_duringShootAudioSource.isPlaying)
             _duringShootAudioSource.Play();
     }
