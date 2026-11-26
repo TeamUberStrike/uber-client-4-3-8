@@ -157,7 +157,7 @@ var UberDeviceBridge = {
     },
 
     // Mobile WebGL keyboard lives in Keyboard.jslib (UberOpenTextKeyboard,
-    // UberAddKeyboardLayout, UberLoadKeyboardLayout, UberCloseChatKeyboard).
+    // UberAddKeyboardLayout, UberLoadKeyboardLayout, UberCloseKeyboard).
 
 };
 

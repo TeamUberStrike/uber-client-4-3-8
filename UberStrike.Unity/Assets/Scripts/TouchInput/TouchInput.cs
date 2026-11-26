@@ -257,10 +257,10 @@ public class TouchInput : MonoSingleton<TouchInput>
     private static extern int UberGetDeviceType();
 
     [DllImport("__Internal")]
-    private static extern void UberOpenTextKeyboard(string text, string gameObjectName, string methodName, bool masked);
+    private static extern void UberOpenTextKeyboard(string text, string gameObjectName, string methodName, bool masked, int maxLength);
 
     [DllImport("__Internal")]
-    private static extern void UberCloseChatKeyboard();
+    private static extern void UberCloseKeyboard();
 #endif
 
 
@@ -1345,7 +1345,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             _previousState = _stateMachine.CurrentStateId;
             _webGLKeyboardOpen = true;
             _stateMachine.SetState((int)TouchState.Chatting);
-            UberOpenTextKeyboard(string.Empty, gameObject.name, "OnWebGLChatSend", false);
+            UberOpenTextKeyboard(string.Empty, gameObject.name, "OnWebGLChatSend", false, -1);
             return;
         }
 #endif
@@ -1374,11 +1374,11 @@ public class TouchInput : MonoSingleton<TouchInput>
         _stateMachine.SetState(_previousState);
     }
 
-    private void CloseWebGLChatKeyboard()
+    private void CloseWebGLKeyboard()
     {
         _webGLKeyboardOpen = false;
 #if UNITY_WEBGL && !UNITY_EDITOR
-        UberCloseChatKeyboard();
+        UberCloseKeyboard();
 #endif
     }
 
@@ -1611,7 +1611,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         public void OnExit()
         {
-            TouchInput.Instance.CloseWebGLChatKeyboard();
+            TouchInput.Instance.CloseWebGLKeyboard();
 
             HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
 
