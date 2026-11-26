@@ -65,18 +65,18 @@ public static class Keyboard
     }
 
 #if UNITY_WEBGL
-    private static KeyboardRouter _router;
+    private static WebGLKeyboardRouter _router;
 
-    public static KeyboardRouter Router
+    public static WebGLKeyboardRouter Router
     {
         get
         {
             if (_router == null)
             {
-                var go = new GameObject("KeyboardRouter");
+                var go = new GameObject("WebGLKeyboardRouter");
                 go.hideFlags = HideFlags.HideInHierarchy;
                 Object.DontDestroyOnLoad(go);
-                _router = go.AddComponent<KeyboardRouter>();
+                _router = go.AddComponent<WebGLKeyboardRouter>();
             }
 
             return _router;
@@ -92,7 +92,7 @@ public static class Keyboard
 #if UNITY_WEBGL
         if (IsMobile)
         {
-            KeyboardRouter router = Router;
+            WebGLKeyboardRouter router = Router;
 
             if (router.ActiveFieldId == fieldId && router.HasResult)
             {
@@ -156,7 +156,7 @@ public static class Keyboard
 }
 
 #if UNITY_WEBGL
-public class KeyboardRouter : MonoBehaviour
+public class WebGLKeyboardRouter : MonoBehaviour
 {
     public int ActiveFieldId;
     public bool HasResult;
