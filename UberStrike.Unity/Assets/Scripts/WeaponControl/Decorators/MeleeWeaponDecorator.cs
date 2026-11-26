@@ -18,11 +18,57 @@ public sealed class MeleeWeaponDecorator : BaseWeaponDecorator
     [SerializeField]
     private float _equipVolume = 1f;
 
+    // Rest pose of the parts the swing animation moves (the decorator's own transform is left out:
+    // the weapon switch places it right before showing the weapon).
+    private Transform[] _restTransforms;
+    private Vector3[] _restPositions;
+    private Quaternion[] _restRotations;
+    private Vector3[] _restScales;
+
     protected override void Awake()
     {
         base.Awake();
 
         IsMelee = true;
+        CaptureRestPose();
+    }
+
+    // Switching away mid-swing deactivates the weapon with the swing half played, and the legacy
+    // Animation leaves the parts in that pose. Back to the rest pose whenever the weapon shows again.
+    private void OnEnable()
+    {
+        ResetToRestPose();
+    }
+
+    private void CaptureRestPose()
+    {
+        if (!_animation) return;
+        var parts = new System.Collections.Generic.List<Transform>();
+        foreach (Transform t in _animation.GetComponentsInChildren<Transform>(true))
+            if (t != transform) parts.Add(t);
+        _restTransforms = parts.ToArray();
+        _restPositions = new Vector3[_restTransforms.Length];
+        _restRotations = new Quaternion[_restTransforms.Length];
+        _restScales = new Vector3[_restTransforms.Length];
+        for (int i = 0; i < _restTransforms.Length; i++)
+        {
+            _restPositions[i] = _restTransforms[i].localPosition;
+            _restRotations[i] = _restTransforms[i].localRotation;
+            _restScales[i] = _restTransforms[i].localScale;
+        }
+    }
+
+    private void ResetToRestPose()
+    {
+        if (!_animation || _restTransforms == null) return;
+        _animation.Stop();
+        for (int i = 0; i < _restTransforms.Length; i++)
+        {
+            if (!_restTransforms[i]) continue;
+            _restTransforms[i].localPosition = _restPositions[i];
+            _restTransforms[i].localRotation = _restRotations[i];
+            _restTransforms[i].localScale = _restScales[i];
+        }
     }
 
     public override void ShowShootEffect(RaycastHit[] hits)
