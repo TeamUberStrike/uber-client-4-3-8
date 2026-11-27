@@ -41,7 +41,7 @@ var UberKeyboardBridge = {
 
                     // Volume knob for the keyboard click sounds (samples and the synthetic
                     // fallback click alike). 1 keeps the original loudness, lower is quieter.
-                    var KEY_SOUND_VOLUME = 0.45;
+                    var KEY_SOUND_VOLUME = 0.8;
                     var shift = false;
                     var symbols = false;
                     var layoutMenuOpen = false;
@@ -142,14 +142,19 @@ var UberKeyboardBridge = {
 
                     // Runs the given playback function once the AudioContext is actually
                     // running. Android Chrome / iOS Safari create the context suspended and
-                    // resume() is asynchronous, so a click started while suspended is either
-                    // swallowed or delayed. When the context is not running yet, the click is
-                    // scheduled after the resume settles so the first key press is audible.
+                    // resume() is asynchronous and can be rejected (no user activation yet),
+                    // so the click is queued and played the moment the context starts: the
+                    // first press stays audible and a rejected resume no longer means the
+                    // keyboard goes permanently silent. Only one click is queued at a time
+                    // so a late unlock never fires a burst of stale clicks.
+                    var pendingClick = null;
+
                     function playWhenRunning(fn) {
                         var ctx = ensureAudio();
                         if (!ctx) return;
 
                         if (ctx.state === "running") {
+                            pendingClick = null;
                             try {
                                 fn(ctx);
                             } catch (e) {
@@ -157,10 +162,13 @@ var UberKeyboardBridge = {
                             return;
                         }
 
+                        pendingClick = fn;
                         try {
                             var p = ctx.resume();
                             if (p && typeof p.then === "function") {
                                 p.then(function() {
+                                    if (!pendingClick) return;
+                                    pendingClick = null;
                                     try {
                                         fn(ctx);
                                     } catch (e) {
@@ -1210,6 +1218,23 @@ var UberKeyboardBridge = {
                         root.addEventListener("touchend", unlockAudioOnGesture, true);
                         root.addEventListener("mousedown", unlockAudioOnGesture, true);
                         root.addEventListener("keydown", unlockAudioOnGesture, true);
+
+                        // Returning from the home screen leaves the AudioContext in the
+                        // "interrupted"/"suspended" state on mobile browsers. Resume it as
+                        // soon as the page is visible again; if the resume is rejected
+                        // (no gesture yet) the next key press retries through playWhenRunning.
+                        document.addEventListener("visibilitychange", function() {
+                            if (!document.hidden) {
+                                ensureAudio();
+                                if (root && root.style.display === "flex") {
+                                    ensureFocus();
+                                    updateCaret();
+                                }
+                            }
+                        }, false);
+                        window.addEventListener("focus", function() {
+                            ensureAudio();
+                        }, false);
 
                         var checkOrientation = function() {
                             if (!root) return;
