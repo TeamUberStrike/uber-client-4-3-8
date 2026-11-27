@@ -653,7 +653,10 @@ var UberKeyboardBridge = {
                         inputEl.value = inputEl.value.slice(0, start) + ch + inputEl.value.slice(end);
                         selectInput(start + ch.length, start + ch.length);
                         if (ch === " ") {
-                            playKeySound("spacebar", 1200);
+                            // The iOS spacebar sample is byte-identical to the letter-key
+                            // sample, so pitch it down to give the spacebar its own deeper
+                            // thock. Android ships a real, distinct spacebar recording.
+                            playKeySound("spacebar", 1200, keyboardPlatform() === "ios" ? 0.5 : 1);
                         } else {
                             playKeySound("standard", 1600 + Math.floor(Math.random() * 600));
                         }
@@ -1233,7 +1236,10 @@ var UberKeyboardBridge = {
                         });
 
                         okButtonEl = makeCircleButton("OK", "OK", 18, function() {
-                            playKeySound("return", 1500);
+                            // Same deal as the spacebar: the iOS "return" sample is identical
+                            // to the letter-key click, so pitch it down for a distinct, deeper
+                            // confirm sound.
+                            playKeySound("return", 1500, keyboardPlatform() === "ios" ? 0.45 : 1);
                             setTimeout(function() {
                                 send();
                             }, 120);
