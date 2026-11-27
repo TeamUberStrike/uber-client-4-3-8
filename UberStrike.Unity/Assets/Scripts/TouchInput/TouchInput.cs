@@ -261,6 +261,9 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     [DllImport("__Internal")]
     private static extern void UberCloseKeyboard();
+
+    [DllImport("__Internal")]
+    private static extern int UberIsKeyboardVisible();
 #endif
 
 
@@ -269,8 +272,17 @@ public class TouchInput : MonoSingleton<TouchInput>
         // if keyboard is open, detect if it was done
         if (_keyboard != null && _keyboard.done)
         {
-            InGameChatHud.Instance.PushMessage(_keyboard.text);
+            string text = _keyboard.text;
             _keyboard = null;
+
+            try
+            {
+                InGameChatHud.Instance.PushMessage(text);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("TouchInput: chat PushMessage threw: " + e);
+            }
 
             // pop state, but use set to force OnEnter
             _stateMachine.SetState(_previousState);
@@ -278,11 +290,64 @@ public class TouchInput : MonoSingleton<TouchInput>
         else if (_keyboard != null && _keyboard.active == false)
         {
             _keyboard = null;
-            InGameChatHud.Instance.CancelChat();
 
             // pop state, but use set to force OnEnter
-            _stateMachine.SetState(_previousState);
+            CancelChatAndRestoreState();
         }
+    }
+
+    // GameState is a MonoSingleton whose Instance accessor throws while its GameObject
+    // is inactive (scene transitions, respawns, match end). Never let that take the
+    // touch state machine down with it: probing is done through this safe accessor.
+    private static bool TryGetLocalPlayer(out LocalPlayer player)
+    {
+        try
+        {
+            player = GameState.LocalPlayer;
+            return player != null;
+        }
+        catch
+        {
+            player = null;
+            return false;
+        }
+    }
+
+    // HudDrawFlagGroup forwards to HudController, another throwing MonoSingleton. The
+    // chat and scoreboard states toggle the weapons HUD through this helper so a missing
+    // HUD controller can never break a state transition and lock all touch input.
+    private static void SetWeaponsHudVisible(bool visible)
+    {
+        try
+        {
+            if (visible)
+                HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+            else
+                HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag & ~HudDrawFlags.Weapons;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("TouchInput: failed to toggle weapons HUD visibility: " + e.Message);
+        }
+    }
+
+    // Cancels the in-game chat and pops back out of the Chatting state. Both steps are
+    // exception-safe so a broken chat HUD or game state restores the controls instead of
+    // leaving every touch control disabled forever.
+    private void CancelChatAndRestoreState()
+    {
+        _webGLKeyboardOpen = false;
+
+        try
+        {
+            InGameChatHud.Instance.CancelChat();
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("TouchInput: chat CancelChat threw: " + e);
+        }
+
+        _stateMachine.SetState(_previousState);
     }
 
 
@@ -1336,14 +1401,28 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnChatBegan()
     {
+        // Ignore repeat taps while the chat state is already active: a second open would
+        // wipe the text the player already typed (the DOM keyboard resets its input field
+        // to the initial text on every show()).
+        if (_stateMachine.CurrentStateId == (int)TouchState.Chatting)
+            return;
+
 #if UNITY_WEBGL && !UNITY_EDITOR
         if (UberGetDeviceType() != 0)
         {
-            InGameChatHud.Instance.OpenChat(false);
+            try
+            {
+                InGameChatHud.Instance.OpenChat(false);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("TouchInput: OpenChat threw: " + e);
+            }
 
             // need to force push because it doesn't automatically call OnEnter
             _previousState = _stateMachine.CurrentStateId;
             _webGLKeyboardOpen = true;
+            _chatKeyboardOpenedAt = Time.time;
             _stateMachine.SetState((int)TouchState.Chatting);
             UberOpenTextKeyboard(string.Empty, gameObject.name, "OnWebGLChatSend", false, -1);
             return;
@@ -1357,6 +1436,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         // need to force push because it doesn't automatically call OnEnter
         _previousState = _stateMachine.CurrentStateId;
+        _chatKeyboardOpenedAt = Time.time;
         _stateMachine.SetState((int)TouchState.Chatting);
     }
 
@@ -1366,10 +1446,17 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         _webGLKeyboardOpen = false;
 
-        if (string.IsNullOrEmpty(text) || text.Trim().Length == 0)
-            InGameChatHud.Instance.CancelChat();
-        else
-            InGameChatHud.Instance.PushMessage(text);
+        try
+        {
+            if (string.IsNullOrEmpty(text) || text.Trim().Length == 0)
+                InGameChatHud.Instance.CancelChat();
+            else
+                InGameChatHud.Instance.PushMessage(text);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("TouchInput: WebGL chat send threw: " + e);
+        }
 
         _stateMachine.SetState(_previousState);
     }
@@ -1468,9 +1555,13 @@ public class TouchInput : MonoSingleton<TouchInput>
             UpdateWalkingEnabled();
 
 #if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
-            Rect qiRect = WeaponsHud.Instance.QuickItems.GetSimpleCombinedRect();
+            Rect qiRect = default(Rect);
+            if (WeaponsHud.Instance != null && WeaponsHud.Instance.QuickItems != null)
+                qiRect = WeaponsHud.Instance.QuickItems.GetSimpleCombinedRect();
 #else
-            Rect qiRect = WeaponsHud.Instance.QuickItems.GetCombinedRect();
+            Rect qiRect = default(Rect);
+            if (WeaponsHud.Instance != null && WeaponsHud.Instance.QuickItems != null)
+                qiRect = WeaponsHud.Instance.QuickItems.GetCombinedRect();
 #endif
             if (qiRect.width <= 0 || qiRect.height <= 0)
                 qiRect = new Rect(Screen.width * 0.9f, Screen.height * 0.3f, 63, 60);
@@ -1490,7 +1581,14 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         private void UpdateWalkingEnabled()
         {
-            _walkingEnabled = GameState.LocalPlayer.IsWalkingEnabled;
+            // GameState.LocalPlayer is null (and GameState.Instance even throws) for brief
+            // windows during scene transitions and respawns. Keep the previous control
+            // setup in that case; OnUpdate re-runs this once the player is available.
+            LocalPlayer player;
+            if (!TouchInput.TryGetLocalPlayer(out player))
+                return;
+
+            _walkingEnabled = player.IsWalkingEnabled;
             _inputEnabled = InputManager.Instance.IsInputEnabled;
             if (_walkingEnabled && _inputEnabled)
             {
@@ -1539,7 +1637,8 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         public void OnUpdate()
         {
-            if (_walkingEnabled != GameState.LocalPlayer.IsWalkingEnabled)
+            LocalPlayer player;
+            if (TouchInput.TryGetLocalPlayer(out player) && _walkingEnabled != player.IsWalkingEnabled)
                 UpdateWalkingEnabled();
             if (_inputEnabled != InputManager.Instance.IsInputEnabled)
                 UpdateWalkingEnabled();
@@ -1593,7 +1692,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
             // Same HUD hiding as the scoreboard: the transparent in-game keyboard
             // must not have the weapon HUD or the movement controls behind it.
-            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag & ~HudDrawFlags.Weapons;
+            TouchInput.SetWeaponsHudVisible(false);
 
             if (UseMultiTouch)
             {
@@ -1613,7 +1712,7 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             TouchInput.Instance.CloseWebGLKeyboard();
 
-            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+            TouchInput.SetWeaponsHudVisible(true);
 
             TouchInput.Instance.Dpad.Visible = true;
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
@@ -1625,6 +1724,21 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             TouchInput ti = TouchInput.Instance;
             ti.CheckKeyboardDone();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // The DOM keyboard only reports back through the OnWebGLChatSend callback. When
+            // that callback never arrives (JS error while building or showing the keyboard,
+            // a failed SendMessage, the browser swallowing the keyboard, ...) the game would
+            // otherwise sit in the Chatting state forever with every touch control disabled.
+            // Give the keyboard a grace period to appear and, if it is still not visible,
+            // cancel the chat so the game always recovers.
+            if (ti._webGLKeyboardOpen && ti._chatKeyboardOpenedAt > 0f &&
+                Time.time - ti._chatKeyboardOpenedAt > 2.0f && UberIsKeyboardVisible() == 0)
+            {
+                ti.CancelChatAndRestoreState();
+                return;
+            }
+#endif
 
             if (ti._keyboard == null && !ti._webGLKeyboardOpen && !InGameChatHud.Instance.CanInput &&
                 ti._stateMachine.CurrentStateId == (int)TouchState.Chatting)
@@ -1673,8 +1787,11 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
-            ZoomInfo zoomInfo = WeaponController.Instance.GetCurrentWeapon().Item.Configuration.ZoomInformation;
-            if (zoomInfo.DefaultMultiplier != 1 && zoomInfo.MaxMultiplier != zoomInfo.MinMultiplier)
+            WeaponSlot slot = WeaponController.Instance.GetCurrentWeapon();
+            ZoomInfo zoomInfo = slot != null && slot.Item != null && slot.Item.Configuration != null
+                ? slot.Item.Configuration.ZoomInformation
+                : null;
+            if (zoomInfo != null && zoomInfo.DefaultMultiplier != 1 && zoomInfo.MaxMultiplier != zoomInfo.MinMultiplier)
                 TouchInput.Instance.ScopeSwipe.Enabled = true;
             else
                 TouchInput.Instance.ScopeSwipe.Enabled = false;
@@ -1809,11 +1926,14 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
-            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag & ~HudDrawFlags.Weapons;
+            TouchInput.SetWeaponsHudVisible(false);
+
+            LocalPlayer player;
+            bool playerBlocked = !TouchInput.TryGetLocalPlayer(out player) || player.IsDead || player.IsGamePaused;
 
             if (UseMultiTouch)
             {
-                TouchInput.Instance.Dpad.Enabled = !GameState.LocalPlayer.IsDead && !GameState.LocalPlayer.IsGamePaused;
+                TouchInput.Instance.Dpad.Enabled = !playerBlocked;
                 TouchInput.Instance.Dpad.Visible = false;
                 if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = false;
                 if (TouchInput.Instance.Dpad.CrouchButton != null) TouchInput.Instance.Dpad.CrouchButton.Visible = false;
@@ -1822,7 +1942,7 @@ public class TouchInput : MonoSingleton<TouchInput>
             }
             else
             {
-                TouchInput.Instance.Joystick.Enabled = !GameState.LocalPlayer.IsDead && !GameState.LocalPlayer.IsGamePaused;
+                TouchInput.Instance.Joystick.Enabled = !playerBlocked;
                 TouchInput.Instance.Joystick.Visible = false;
 
                 TouchInput.Instance.Dpad.Enabled = false;
@@ -1833,7 +1953,7 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         public void OnExit()
         {
-            HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+            TouchInput.SetWeaponsHudVisible(true);
 
             TouchInput.Instance.Dpad.Visible = true;
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
@@ -1862,7 +1982,10 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             ReleasePrimaryFire("application lost focus");
 #if !UNITY_EDITOR
-            if (_keyboard == null)
+            // While the WebGL chat keyboard is open the touch state machine already
+            // disables all game input; pausing here would stack the pause menu on top
+            // of the Chatting state and leave the player stuck paused after resume.
+            if (_keyboard == null && !_webGLKeyboardOpen)
             {
                 OnMenu();
             }
@@ -2016,6 +2139,12 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private TouchScreenKeyboard _keyboard;
     private bool _webGLKeyboardOpen;
+
+    // Time.time when the chat state was entered. Used by the WebGL watchdog to give
+    // the DOM keyboard a grace period to appear before cancelling the chat, so a lost
+    // JS callback can never leave the game stuck in the Chatting state forever.
+    private float _chatKeyboardOpenedAt = -1f;
+
     private float _loadoutDebugTimer;
 
     private StateMachine _stateMachine;

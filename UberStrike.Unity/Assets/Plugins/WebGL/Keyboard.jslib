@@ -440,16 +440,22 @@ var UberKeyboardBridge = {
                         if (window.PointerEvent) {
                             button.addEventListener("pointerdown", function(ev) {
                                 fire(ev);
-                                if (activePointerId !== null) return;
+                                // Settle any previous press whose pointerup never arrived.
+                                // Chrome on Android can swallow the up event (system back
+                                // gesture, notification shade, page freeze) and later REUSE
+                                // the pointer id, so a same-id redelivery must be treated as
+                                // a fresh press: one lost pointerup would otherwise wedge
+                                // the whole keyboard in the pressed state forever.
+                                if (activePointerId !== null) finish(false);
                                 activePointerId = ev.pointerId;
                                 begin();
                             }, false);
                         } else {
                             button.addEventListener("touchstart", function(ev) {
                                 fire(ev);
-                                if (activeTouchId !== null) return;
                                 var touch = ev.changedTouches && ev.changedTouches[0];
                                 if (!touch) return;
+                                if (activeTouchId !== null) finish(false);
                                 activeTouchId = touch.identifier;
                                 ignoreMouseUntil = Date.now() + 1000;
                                 begin();
@@ -719,7 +725,10 @@ var UberKeyboardBridge = {
 
                     function selectInput(start, end) {
                         if (!inputEl) return;
-                        inputEl.setSelectionRange(start, end);
+                        try {
+                            inputEl.setSelectionRange(start, end);
+                        } catch (e) {
+                        }
                         updateCaret();
                     }
 
@@ -1263,6 +1272,9 @@ var UberKeyboardBridge = {
                     }
 
                     return {
+                        isVisible: function() {
+                            return !!(root && root.style.display === "flex");
+                        },
                         show: function(initialText, targetName, methodName, masked, maxLength) {
                             transparentMode = methodName === "OnWebGLChatSend";
                             MAX_LENGTH = (typeof maxLength === "number" && maxLength > 0) ? maxLength : 140;
@@ -1323,7 +1335,10 @@ var UberKeyboardBridge = {
                             loadKeySounds();
                             syncInputHeight();
 
-                            inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
+                            try {
+                                inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
+                            } catch (e) {
+                            }
                             if (pausedByOrientation) {
                                 return;
                             }
@@ -1398,6 +1413,12 @@ var UberKeyboardBridge = {
                 if (window.console && window.console.error) window.console.error("UberOpenTextKeyboard failed:", e);
             } catch (e2) {
             }
+            // Never leave the game waiting in the Chatting state: tell Unity the
+            // keyboard gave up so it cancels the chat instead of freezing input.
+            try {
+                SendMessage(gameObjectName || "TouchInputManager", methodName || "OnWebGLChatSend", "");
+            } catch (e3) {
+            }
         }
     },
 
@@ -1453,6 +1474,14 @@ var UberKeyboardBridge = {
             if (window.uberChatKeyboard) window.uberChatKeyboard.hide();
         } catch (e) {
         }
+    },
+
+    UberIsKeyboardVisible: function() {
+        try {
+            if (window.uberChatKeyboard && window.uberChatKeyboard.isVisible()) return 1;
+        } catch (e) {
+        }
+        return 0;
     },
 };
 
