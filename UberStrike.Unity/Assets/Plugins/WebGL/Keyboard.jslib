@@ -470,7 +470,7 @@ var UberKeyboardBridge = {
                         button.textContent = label;
                         button.style.cssText =
                             "flex:" + flex + ";min-width:0;height:" + (height || "clamp(34px,10vh,42px)") +
-                            ";margin:0;padding:0;outline:none;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0") + ";border-radius:7px;" +
+                            ";margin:0;padding:0;outline:none;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "1px solid rgba(255,255,255,0.18)") + ";border-radius:7px;" +
                             "background:" + (transparentMode ? "rgba(51,51,51,0.35)" : "#333") + ";color:#fff;" +
                             "font:600 17px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                             "cursor:pointer;touch-action:manipulation;-webkit-touch-callout:none;" +
@@ -871,7 +871,7 @@ var UberKeyboardBridge = {
                         if (textInput) textInput.style.background = solidInput;
                         if (passInput) passInput.style.background = solidInput;
                         var circleBg = transparentMode ? "rgba(51,51,51,0.35)" : "#333";
-                        var circleBorder = transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0";
+                        var circleBorder = transparentMode ? "1px solid rgba(255,255,255,0.45)" : "1px solid rgba(255,255,255,0.18)";
                         if (cancelButtonEl) {
                             cancelButtonEl.style.background = circleBg;
                             cancelButtonEl.style.border = circleBorder;
@@ -1160,7 +1160,7 @@ var UberKeyboardBridge = {
                             b.style.cssText =
                                 "display:flex;align-items:center;justify-content:center;flex:none;" +
                                 "width:clamp(52px,12vh,64px);height:clamp(52px,12vh,64px);" +
-                                "border-radius:50%;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "0") + ";" +
+                                "border-radius:50%;border:" + (transparentMode ? "1px solid rgba(255,255,255,0.45)" : "1px solid rgba(255,255,255,0.18)") + ";" +
                                 "background:" + (transparentMode ? "rgba(51,51,51,0.35)" : "#333") + ";color:#fff;outline:none;cursor:pointer;" +
                                 "font:700 " + fontSize + "px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;" +
                                 "letter-spacing:0.3px;touch-action:manipulation;-webkit-touch-callout:none;" +
