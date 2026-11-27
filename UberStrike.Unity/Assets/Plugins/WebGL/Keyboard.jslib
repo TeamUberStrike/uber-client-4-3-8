@@ -123,7 +123,10 @@ var UberKeyboardBridge = {
                             var AC = window.AudioContext || window.webkitAudioContext;
                             if (!AC) return null;
                             if (!audioCtx) audioCtx = new AC();
-                            if (audioCtx.state === "suspended") {
+                            if (audioCtx.state !== "running") {
+                                // Also covers "interrupted", the state Android Chrome puts
+                                // the context in while the page is hidden. If this resume
+                                // is rejected (no user gesture), the next key press retries.
                                 audioCtx.resume().catch(function() {
                                 });
                             }
