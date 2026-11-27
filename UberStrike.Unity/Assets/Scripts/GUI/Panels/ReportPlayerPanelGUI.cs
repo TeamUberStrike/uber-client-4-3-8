@@ -242,7 +242,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
             }
 
             GUI.SetNextControlName("SearchUser");
-            _searchPattern = GUI.TextField(new Rect(325, 20, 196, 22), _searchPattern);
+            _searchPattern = Keyboard.TextField(new Rect(325, 20, 196, 22), _searchPattern, BlueStonez.textField, 180);
             if (string.IsNullOrEmpty(_searchPattern) && GUI.GetNameOfFocusedControl() != "SearchUser")
             {
                 GUI.color = Color.gray;
@@ -350,7 +350,7 @@ public class ReportPlayerPanelGUI : PanelGuiBase
         GUI.enabled = !(_isDropdownActive && _currentActiveItems != items);
         if (canEdit)
         {
-            defaultText = GUI.TextField(new Rect(position.x, position.y, position.width - position.height, position.height - 1), defaultText, BlueStonez.textArea);
+            defaultText = Keyboard.TextField(new Rect(position.x, position.y, position.width - position.height, position.height - 1), defaultText, BlueStonez.textArea, 181);
         }
         else
         {

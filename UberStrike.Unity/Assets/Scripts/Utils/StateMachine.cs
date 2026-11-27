@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 public interface IState
 {
@@ -19,30 +20,61 @@ public class StateMachine
 
     public void SetState(int stateId)
     {
-        if (ContainsState(stateId))
-        {
-            PopAllStates();
-            _curStates.Push(stateId);
-            GetState(stateId).OnEnter();
-        }
-        else
+        if (!ContainsState(stateId))
         {
             throw new Exception("ChangeState failed - cannot found state [" + stateId +
                 "] from state machine");
+        }
+
+        while (_curStates.Count > 0)
+        {
+            try
+            {
+                CurrentState.OnExit();
+            }
+            catch (Exception e)
+            {
+                LogError("StateMachine::SetState - OnExit of state [" + CurrentStateId +
+                    "] threw: " + e);
+            }
+
+            _curStates.Pop();
+        }
+
+        _curStates.Push(stateId);
+
+        try
+        {
+            GetState(stateId).OnEnter();
+        }
+        catch (Exception e)
+        {
+            LogError("StateMachine::SetState - OnEnter of state [" + stateId +
+                "] threw: " + e);
         }
     }
 
     public void PushState(int stateId)
     {
-        if (ContainsState(stateId))
-        {
-            _curStates.Push(stateId);
-            GetState(stateId).OnEnter();
-        }
-        else
+        if (!ContainsState(stateId))
         {
             throw new Exception("PushState failed - cannot found state[" + stateId +
                 "] from state machine");
+        }
+
+        _curStates.Push(stateId);
+
+        try
+        {
+            GetState(stateId).OnEnter();
+        }
+        catch (Exception e)
+        {
+            LogError("StateMachine::PushState - OnEnter of state [" + stateId +
+                "] threw: " + e);
+
+            if (_curStates.Count > 0)
+                _curStates.Pop();
         }
     }
 
@@ -50,7 +82,16 @@ public class StateMachine
     {
         if (_curStates.Count != 0)
         {
-            CurrentState.OnExit();
+            try
+            {
+                CurrentState.OnExit();
+            }
+            catch (Exception e)
+            {
+                LogError("StateMachine::PopState - OnExit of state [" + CurrentStateId +
+                    "] threw: " + e);
+            }
+
             _curStates.Pop();
         }
     }
@@ -85,7 +126,15 @@ public class StateMachine
     {
         if (_curStates.Count > 0)
         {
-            CurrentState.OnUpdate();
+            try
+            {
+                CurrentState.OnUpdate();
+            }
+            catch (Exception e)
+            {
+                LogError("StateMachine::Update - OnUpdate of state [" + CurrentStateId +
+                    "] threw: " + e);
+            }
         }
     }
 
@@ -93,7 +142,15 @@ public class StateMachine
     {
         if (_curStates.Count > 0)
         {
-            CurrentState.OnGUI();
+            try
+            {
+                CurrentState.OnGUI();
+            }
+            catch (Exception e)
+            {
+                LogError("StateMachine::OnGUI - OnGUI of state [" + CurrentStateId +
+                    "] threw: " + e);
+            }
         }
     }
 
@@ -111,6 +168,13 @@ public class StateMachine
         return state;
     }
 
+    private void LogError(string message)
+    {
+        if (_lastError == message) return;
+        _lastError = message;
+        Debug.LogError(message);
+    }
+
     private IState CurrentState
     {
         get { return GetState(CurrentStateId); }
@@ -118,4 +182,5 @@ public class StateMachine
 
     private Dictionary<int, IState> _statesGroup;
     private Stack<int> _curStates;
+    private string _lastError;
 }

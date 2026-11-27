@@ -67,6 +67,59 @@ var UberDeviceBridge = {
         }
     },
 
+
+    // iOS: touchstart is no gesture, so unlock again on touchend/click (howler.js style).
+    UberWebAudioSetup__deps: ['$WEBAudio'],
+    UberWebAudioSetup: function() {
+        try {
+            if (navigator.audioSession) navigator.audioSession.type = "playback";
+        } catch (e) {}
+
+        var unlock = function(ev) {
+            try {
+                if (!WEBAudio || !WEBAudio.audioContext) return;
+                var ctx = WEBAudio.audioContext;
+                if (ctx.state !== "running" && ctx.state !== "closed") {
+                    var p = ctx.resume();
+                    if (p && typeof p.then === "function") {
+                        p.catch(function() {
+                        });
+                    }
+                    var src = ctx.createBufferSource();
+                    src.buffer = ctx.createBuffer(1, 1, 22050);
+                    src.connect(ctx.destination);
+                    src.start(0);
+                }
+                var cache = WEBAudio.audioCache;
+                if (cache) {
+                    while (cache.length < 20) cache.push(new Audio());
+                    for (var i = 0; i < cache.length; i++) {
+                        if (!cache[i].uberUnlocked) {
+                            cache[i].autoplay = false;
+                            cache[i].load();
+                            cache[i].uberUnlocked = true;
+                        }
+                    }
+                }
+            } catch (e) {
+            }
+        };
+
+        var events = ["touchend", "pointerup", "click", "keydown", "focus"];
+        for (var i = 0; i < events.length; i++) {
+            window.addEventListener(events[i], unlock, true);
+        }
+        document.addEventListener("visibilitychange", function(ev) {
+            if (!document.hidden) unlock(ev);
+        });
+        window.addEventListener("pageshow", function(ev) {
+            if (ev.persisted) {
+                setTimeout(unlock, 0);
+                setTimeout(unlock, 250);
+            }
+        });
+    },
+
     // Open a URL in a new browser tab. Application.OpenURL is unreliable on
     // WebGL (often swallowed by popup blockers). window.open within the click
     // gesture normally works. If it is blocked (iOS Safari blocks it because
@@ -110,7 +163,13 @@ var UberDeviceBridge = {
         overlay.appendChild(link);
         overlay.appendChild(cancel);
         document.body.appendChild(overlay);
+
     },
+
+    // Mobile WebGL keyboard lives in Keyboard.jslib (UberOpenTextKeyboard,
+    // UberAddKeyboardLayout, UberLoadKeyboardLayout, UberCloseKeyboard).
+
 };
+
 
 mergeInto(LibraryManager.library, UberDeviceBridge);

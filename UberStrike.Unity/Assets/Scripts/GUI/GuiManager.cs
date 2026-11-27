@@ -4,7 +4,8 @@ public static class GuiManager
 {
     public static void DrawTooltip()
     {
-        if (!string.IsNullOrEmpty(GUI.tooltip))
+        // Not during a finger scroll (stale pointer).
+        if (!string.IsNullOrEmpty(GUI.tooltip) && !GUITools.IsHoverSuppressedByTouchScroll)
         {
             Matrix4x4 currentMatrix = GUI.matrix;
             // reset scaling, so GUI tooltip stay same size
