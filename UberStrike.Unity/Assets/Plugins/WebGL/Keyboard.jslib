@@ -57,6 +57,13 @@ var UberKeyboardBridge = {
                     var targetObject = "TouchInputManager";
                     var sendMethod = "OnWebGLChatSend";
                     var maskedMode = false;
+
+                    // The real password text. The visible passInput is a plain text field
+                    // whose value holds our own bullet characters, so the caret mirror can
+                    // measure the exact glyphs the input actually renders (native password
+                    // inputs draw UA-specific bullets that are wider than the text bullet,
+                    // which made the caret drift left of the true position).
+                    var maskedValue = "";
                     var transparentMode = false;
 
                     var LAYOUTS = {
@@ -648,9 +655,14 @@ var UberKeyboardBridge = {
                             start = end = inputEl.value.length;
                         }
 
-                        if (inputEl.value.length - (end - start) + ch.length > MAX_LENGTH) return;
-
-                        inputEl.value = inputEl.value.slice(0, start) + ch + inputEl.value.slice(end);
+                        if (inputEl === passInput) {
+                            if (maskedValue.length - (end - start) + ch.length > MAX_LENGTH) return;
+                            maskedValue = maskedValue.slice(0, start) + ch + maskedValue.slice(end);
+                            inputEl.value = inputEl.value.slice(0, start) + "\u2022" + inputEl.value.slice(end);
+                        } else {
+                            if (inputEl.value.length - (end - start) + ch.length > MAX_LENGTH) return;
+                            inputEl.value = inputEl.value.slice(0, start) + ch + inputEl.value.slice(end);
+                        }
                         selectInput(start + ch.length, start + ch.length);
                         if (ch === " ") {
                             playKeySound("spacebar", 1200);
@@ -669,6 +681,14 @@ var UberKeyboardBridge = {
                             start = end = inputEl.value.length;
                         }
 
+                        if (inputEl === passInput) {
+                            if (start !== end) {
+                                maskedValue = maskedValue.slice(0, start) + maskedValue.slice(end);
+                            } else if (start > 0) {
+                                maskedValue = maskedValue.slice(0, start - 1) + maskedValue.slice(start);
+                            }
+                        }
+
                         if (start !== end) {
                             inputEl.value = inputEl.value.slice(0, start) + inputEl.value.slice(end);
                             selectInput(start, start);
@@ -677,7 +697,7 @@ var UberKeyboardBridge = {
                             selectInput(start - 1, start - 1);
                         }
 
-                        playKeySound("delete", 900);
+                        playKeySound("delete", 900, 1.15);
                         syncInputHeight();
                     }
 
@@ -732,7 +752,8 @@ var UberKeyboardBridge = {
                     }
 
                     function getText() {
-                        return inputEl ? inputEl.value : "";
+                        if (!inputEl) return "";
+                        return inputEl === passInput ? maskedValue : inputEl.value;
                     }
 
                     var pendingHeightSync = false;
@@ -793,11 +814,12 @@ var UberKeyboardBridge = {
                         var rects = [];
 
                         if (inputEl === passInput) {
-                            var masked = "";
-                            for (var i = 0; i < inputEl.value.length; i++) masked += "\u2022";
-                            mirrorInput.textContent = masked.slice(0, s);
+                            // The visible value already consists of the same bullets the
+                            // mirror measures, so the selection rectangle always matches
+                            // the rendered glyph positions.
+                            mirrorInput.textContent = inputEl.value.slice(0, s);
                             var x1 = mirrorInput.offsetWidth;
-                            mirrorInput.textContent = masked.slice(0, e);
+                            mirrorInput.textContent = inputEl.value.slice(0, e);
                             var x2 = mirrorInput.offsetWidth;
                             var py = 1 + Math.max(0, Math.round((inputEl.clientHeight - 22) / 2)) - 7;
                             rects.push([x1 - sl, py, Math.max(2, x2 - x1), 22]);
@@ -877,9 +899,7 @@ var UberKeyboardBridge = {
 
                         var x, y, h;
                         if (inputEl === passInput) {
-                            var masked = "";
-                            for (var i = 0; i < pos; i++) masked += "\u2022";
-                            mirrorInput.textContent = masked;
+                            mirrorInput.textContent = inputEl.value.slice(0, pos);
                             x = 1 + 10 + mirrorInput.offsetWidth - (inputEl.scrollLeft || 0);
                             y = 1 + Math.max(0, Math.round((inputEl.clientHeight - 22) / 2));
                             h = Math.min(22, inputEl.clientHeight - 2);
@@ -1067,6 +1087,7 @@ var UberKeyboardBridge = {
                     function hide() {
                         if (root) root.style.display = "none";
                         if (inputEl) inputEl.value = "";
+                        maskedValue = "";
                         layoutMenuOpen = false;
                         pausedByOrientation = false;
                         if (menuBackdrop) menuBackdrop.style.display = "none";
@@ -1138,7 +1159,15 @@ var UberKeyboardBridge = {
 
                         passInput = document.createElement("input");
                         passInput.className = "uber-input";
-                        passInput.type = "password";
+                        // A plain text field whose value holds our own bullet characters:
+                        // native type=password inputs draw UA-specific bullets that are
+                        // wider than the text bullet used for caret measuring, so the caret
+                        // drifted further left with every typed character.
+                        passInput.type = "text";
+                        passInput.autocapitalize = "none";
+                        passInput.autocorrect = "off";
+                        passInput.autocomplete = "off";
+                        passInput.spellcheck = false;
                         passInput.inputMode = "none";
                         passInput.placeholder = "Type a message...";
                         passInput.style.cssText =
@@ -1222,7 +1251,7 @@ var UberKeyboardBridge = {
                         };
 
                         cancelButtonEl = makeCircleButton("\u2715", "Cancel", 24, function() {
-                        playKeySound("delete", 900, 1.15);
+                            playKeySound("delete", 900);
                             if (sendMethod !== "OnWebGLFieldInput") {
                                 try {
                                     SendMessage(targetObject, sendMethod, "");
@@ -1352,21 +1381,25 @@ var UberKeyboardBridge = {
                             if (maskedMode) {
                                 textInput.value = "";
                                 inputEl = passInput;
+                                maskedValue = initialText || "";
+                                if (maskedValue.length > MAX_LENGTH) maskedValue = maskedValue.slice(0, MAX_LENGTH);
+                                passInput.value = maskedValue.replace(/[\s\S]/g, "\u2022");
                                 textInput.style.display = "none";
                                 passInput.style.display = "block";
                                 textWrap.style.display = "none";
                                 passWrap.style.display = "block";
                             } else {
                                 passInput.value = "";
+                                maskedValue = "";
                                 inputEl = textInput;
                                 passInput.style.display = "none";
                                 textInput.style.display = "block";
                                 passWrap.style.display = "none";
                                 textWrap.style.display = "block";
-                            }
 
-                            inputEl.value = initialText || "";
-                            if (inputEl.value.length > MAX_LENGTH) inputEl.value = inputEl.value.slice(0, MAX_LENGTH);
+                                inputEl.value = initialText || "";
+                                if (inputEl.value.length > MAX_LENGTH) inputEl.value = inputEl.value.slice(0, MAX_LENGTH);
+                            }
 
                             symbols = false;
                             shift = false;
