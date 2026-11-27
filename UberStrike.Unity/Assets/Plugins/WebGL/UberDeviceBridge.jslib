@@ -81,6 +81,10 @@ var UberDeviceBridge = {
                 var ctx = WEBAudio.audioContext;
                 if (ctx.state !== "running" && ctx.state !== "closed") {
                     var p = ctx.resume();
+                    if (p && typeof p.then === "function") {
+                        p.catch(function() {
+                        });
+                    }
                     var src = ctx.createBufferSource();
                     src.buffer = ctx.createBuffer(1, 1, 22050);
                     src.connect(ctx.destination);
@@ -101,12 +105,18 @@ var UberDeviceBridge = {
             }
         };
 
-        var events = ["touchend", "pointerup", "click", "keydown"];
+        var events = ["touchend", "pointerup", "click", "keydown", "focus"];
         for (var i = 0; i < events.length; i++) {
             window.addEventListener(events[i], unlock, true);
         }
         document.addEventListener("visibilitychange", function(ev) {
             if (!document.hidden) unlock(ev);
+        });
+        window.addEventListener("pageshow", function(ev) {
+            if (ev.persisted) {
+                setTimeout(unlock, 0);
+                setTimeout(unlock, 250);
+            }
         });
     },
 
@@ -155,6 +165,11 @@ var UberDeviceBridge = {
         document.body.appendChild(overlay);
 
     },
+
+    // Mobile WebGL keyboard lives in Keyboard.jslib (UberOpenTextKeyboard,
+    // UberAddKeyboardLayout, UberLoadKeyboardLayout, UberCloseKeyboard).
+
 };
+
 
 mergeInto(LibraryManager.library, UberDeviceBridge);

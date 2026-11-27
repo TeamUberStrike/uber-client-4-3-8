@@ -25,6 +25,9 @@ public class GameModeObjectiveHud : Singleton<GameModeObjectiveHud>
 
     public void Draw()
     {
+        if (TouchInput.IsSupported && TouchInput.Exists && TouchInput.IsChatKeyboardOpen)
+            return;
+
         _entireGroup.Draw();
     }
 

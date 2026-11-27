@@ -77,6 +77,14 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
         }
 #endif
 
+        // The JS chat keyboard is transparent in-game, so the mid-screen
+        // messages (waiting for players etc.) would show through it.
+        if (TouchInput.IsSupported && TouchInput.Exists && TouchInput.IsChatKeyboardOpen)
+        {
+            _temporaryMsgText.Hide();
+            _permanentMsgText.Hide();
+        }
+
         // The buttons are laid out in menu units, inside the same scaled and safe-area shifted space
         // as the menus, so they match the ribbon's size on phones. On PC menu units are screen pixels.
         Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
@@ -89,7 +97,8 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
             {
 #if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
                 if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
-                    !InGameChatHud.Instance.CanInput && !controlsEditing)
+                    !InGameChatHud.Instance.CanInput && !controlsEditing &&
+                    !TouchInput.IsChatKeyboardOpen)
                 {
                     // Row 0 of the column is TouchInput's Loadout button.
                     float stackTop = TouchStackTop + TouchStackRowPitch;
@@ -125,7 +134,8 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                 SceneGuiController.OpenChat();
             }
         }
-        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing)
+        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing &&
+            !(TouchInput.IsSupported && TouchInput.Exists && TouchInput.IsChatKeyboardOpen))
         {
             // Centred on the camera view (the part of the screen left of an open side panel).
             if (GameState.CurrentSpace != null && GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth * 0.5f) - 100,

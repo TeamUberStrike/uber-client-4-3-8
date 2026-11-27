@@ -55,7 +55,7 @@ public class InviteToClanPanelGUI : PanelGuiBase
 
             GUI.SetNextControlName("Message Receiver");
             GUI.enabled = !_fixReceiver;
-            _name = GUI.TextField(new Rect(textCol, subRow, textWidth, 24), _name, BlueStonez.textField);
+            _name = Keyboard.TextField(new Rect(textCol, subRow, textWidth, 24), _name, BlueStonez.textField, 150);
             if (string.IsNullOrEmpty(_name) && !GUI.GetNameOfFocusedControl().Equals("Message Receiver"))
             {
                 GUI.color = new Color(1, 1, 1, 0.3f);

@@ -1094,7 +1094,7 @@ public class PlayPageGUI : MonoSingleton<PlayPageGUI>
             GUI.SetNextControlName("EnterPassword");
             Rect nameRect = new Rect((position.width - 188) / 2, 56 + 24, 188, 24);
 
-            _inputedPassword = GUI.PasswordField(nameRect, _inputedPassword, '*', 18, BlueStonez.textField);
+            _inputedPassword = Keyboard.TextField(nameRect, _inputedPassword, BlueStonez.textField, 140, true, 18);
             _inputedPassword = _inputedPassword.Trim(new char[] { '\n' });
 
             if (string.IsNullOrEmpty(_inputedPassword) && GUI.GetNameOfFocusedControl() != "EnterPassword")
