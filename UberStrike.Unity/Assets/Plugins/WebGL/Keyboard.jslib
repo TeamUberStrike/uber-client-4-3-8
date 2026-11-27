@@ -31,6 +31,7 @@ var UberKeyboardBridge = {
                     var mirrorInput = null;
                     var selLayerText = null;
                     var selLayerPass = null;
+                    var selTick = null;
                     var textWrap = null;
                     var passWrap = null;
                     var audioCtx = null;
@@ -726,16 +727,25 @@ var UberKeyboardBridge = {
                         if (!selLayerText || !selLayerPass) return;
                         selLayerText.style.display = "none";
                         selLayerPass.style.display = "none";
-                        if (!inputEl || !root || root.style.display !== "flex") return;
-                        if (document.activeElement !== inputEl) return;
 
-                        var s = inputEl.selectionStart;
-                        var e = inputEl.selectionEnd;
-                        if (typeof s !== "number" || typeof e !== "number" || s === e) return;
+                        var active = !!(inputEl && root && root.style.display === "flex" &&
+                            document.activeElement === inputEl);
+                        var s = active ? inputEl.selectionStart : null;
+                        var e = active ? inputEl.selectionEnd : null;
+                        active = active && typeof s === "number" && typeof e === "number" && s !== e;
+
+                        if (!active) {
+                            if (selTick) {
+                                cancelAnimationFrame(selTick);
+                                selTick = null;
+                            }
+                            return;
+                        }
 
                         var layer = inputEl === passInput ? selLayerPass : selLayerText;
                         var sl = inputEl.scrollLeft || 0;
                         var st = inputEl.scrollTop || 0;
+                        var lineH = 22.5;
                         var rects = [];
 
                         if (inputEl === passInput) {
@@ -763,12 +773,12 @@ var UberKeyboardBridge = {
                             var ey = mirrorMark2.offsetTop;
 
                             if (sy === ey) {
-                                rects.push([sx - sl, sy - st, Math.max(2, ex - sx), 22]);
+                                rects.push([sx - sl, sy - st, Math.max(2, ex - sx), lineH]);
                             } else {
-                                rects.push([sx - sl, sy - st, Math.max(2, contentW - sx), 22]);
-                                var midTop = sy + 22;
+                                rects.push([sx - sl, sy - st, Math.max(2, contentW - sx), lineH]);
+                                var midTop = sy + lineH;
                                 if (ey - midTop > 2) rects.push([0, midTop - st, contentW, ey - midTop]);
-                                rects.push([0, ey - st, Math.max(2, ex), 22]);
+                                rects.push([0, ey - st, Math.max(2, ex), lineH]);
                             }
                         }
 
@@ -787,6 +797,14 @@ var UberKeyboardBridge = {
 
                         var caretEl = inputEl === passInput ? caretPass : caretText;
                         if (caretEl && caretEl.style.display !== "none") caretEl.style.display = "none";
+
+                        if (!selTick) {
+                            var tick = function() {
+                                selTick = requestAnimationFrame(tick);
+                                updateSelectionLayer();
+                            };
+                            selTick = requestAnimationFrame(tick);
+                        }
                     }
 
                     function updateCaret() {
@@ -804,6 +822,8 @@ var UberKeyboardBridge = {
                         var s = inputEl.selectionStart;
                         var e = inputEl.selectionEnd;
                         if (typeof s !== "number" || typeof e !== "number") return;
+
+                        if (s !== e) return;
 
                         var pos = e;
                         try {

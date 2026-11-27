@@ -97,7 +97,8 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
             {
 #if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
                 if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
-                    !InGameChatHud.Instance.CanInput && !controlsEditing)
+                    !InGameChatHud.Instance.CanInput && !controlsEditing &&
+                    !TouchInput.IsChatKeyboardOpen)
                 {
                     // Row 0 of the column is TouchInput's Loadout button.
                     float stackTop = TouchStackTop + TouchStackRowPitch;
@@ -133,7 +134,8 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                 SceneGuiController.OpenChat();
             }
         }
-        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing)
+        if (ButtonEnabled && !PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled && !controlsEditing &&
+            !(TouchInput.IsSupported && TouchInput.Exists && TouchInput.IsChatKeyboardOpen))
         {
             // Centred on the camera view (the part of the screen left of an open side panel).
             if (GameState.CurrentSpace != null && GUITools.Button(new Rect(ScreenToMenuX(Screen.width * cameraWidth * 0.5f) - 100,
