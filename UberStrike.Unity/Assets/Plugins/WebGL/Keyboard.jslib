@@ -38,6 +38,10 @@ var UberKeyboardBridge = {
                     var keyNoiseBuf = null;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
+
+                    // Volume knob for the keyboard click sounds (samples and the synthetic
+                    // fallback click alike). 1 keeps the original loudness, lower is quieter.
+                    var KEY_SOUND_VOLUME = 0.45;
                     var shift = false;
                     var symbols = false;
                     var layoutMenuOpen = false;
@@ -209,7 +213,7 @@ var UberKeyboardBridge = {
                             filt.type = "lowpass";
                             filt.frequency.value = Math.min(3500, Math.max(1200, freq || 2000));
                             var gain = ctx.createGain();
-                            gain.gain.value = 0.2;
+                            gain.gain.value = 0.2 * KEY_SOUND_VOLUME;
                             src.connect(filt);
                             filt.connect(gain);
                             gain.connect(ctx.destination);
@@ -293,7 +297,7 @@ var UberKeyboardBridge = {
                                 src.buffer = buf;
                                 src.playbackRate.value = rate || 1;
                                 var g = ctx.createGain();
-                                g.gain.value = 0.6;
+                                g.gain.value = 0.6 * KEY_SOUND_VOLUME;
                                 src.connect(g);
                                 g.connect(ctx.destination);
                                 src.start(0);
