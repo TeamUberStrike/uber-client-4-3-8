@@ -80,7 +80,13 @@ var UberDeviceBridge = {
                 if (!WEBAudio || !WEBAudio.audioContext) return;
                 var ctx = WEBAudio.audioContext;
                 if (ctx.state !== "running" && ctx.state !== "closed") {
+                    // Also covers "interrupted", the state mobile browsers leave the
+                    // context in after the app returns from the home screen.
                     var p = ctx.resume();
+                    if (p && typeof p.then === "function") {
+                        p.catch(function() {
+                        });
+                    }
                     var src = ctx.createBufferSource();
                     src.buffer = ctx.createBuffer(1, 1, 22050);
                     src.connect(ctx.destination);
@@ -101,12 +107,21 @@ var UberDeviceBridge = {
             }
         };
 
-        var events = ["touchend", "pointerup", "click", "keydown"];
+        var events = ["touchend", "pointerup", "click", "keydown", "focus"];
         for (var i = 0; i < events.length; i++) {
             window.addEventListener(events[i], unlock, true);
         }
         document.addEventListener("visibilitychange", function(ev) {
             if (!document.hidden) unlock(ev);
+        });
+        // Returning via bfcache (mobile back-forward navigation) restores the page with
+        // the context suspended and no fresh events; re-arm the unlock so the next user
+        // gesture definitely resumes it.
+        window.addEventListener("pageshow", function(ev) {
+            if (ev.persisted) {
+                setTimeout(unlock, 0);
+                setTimeout(unlock, 250);
+            }
         });
     },
 
