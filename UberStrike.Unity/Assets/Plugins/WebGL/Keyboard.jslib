@@ -126,6 +126,47 @@ var UberKeyboardBridge = {
                         }
                     }
 
+                    // Runs the given playback function once the AudioContext is actually
+                    // running. Android Chrome / iOS Safari create the context suspended and
+                    // resume() is asynchronous, so a click started while suspended is either
+                    // swallowed or delayed. When the context is not running yet, the click is
+                    // scheduled after the resume settles so the first key press is audible.
+                    function playWhenRunning(fn) {
+                        var ctx = ensureAudio();
+                        if (!ctx) return;
+
+                        if (ctx.state === "running") {
+                            try {
+                                fn(ctx);
+                            } catch (e) {
+                            }
+                            return;
+                        }
+
+                        try {
+                            var p = ctx.resume();
+                            if (p && typeof p.then === "function") {
+                                p.then(function() {
+                                    try {
+                                        fn(ctx);
+                                    } catch (e) {
+                                    }
+                                }).catch(function() {
+                                });
+                            }
+                        } catch (e) {
+                        }
+                    }
+
+                    // Unlocks the AudioContext during a genuine user gesture. pointerdown /
+                    // touchstart are cancelled by the key handlers (cancelled pointerdowns
+                    // grant no user activation in Chrome), so the unlock is wired to the
+                    // release events instead: the first release anywhere on the keyboard
+                    // resumes the context and the following clicks are audible.
+                    function unlockAudioOnGesture() {
+                        ensureAudio();
+                    }
+
                     function keyNoise() {
                         if (keyNoiseBuf) return keyNoiseBuf;
                         var ctx = ensureAudio();
@@ -144,9 +185,7 @@ var UberKeyboardBridge = {
                     }
 
                     function playKeyClick(freq) {
-                        var ctx = ensureAudio();
-                        if (!ctx) return;
-                        try {
+                        playWhenRunning(function(ctx) {
                             var t = ctx.currentTime;
                             var osc = ctx.createOscillator();
                             var gain = ctx.createGain();
@@ -169,8 +208,7 @@ var UberKeyboardBridge = {
                                 ng.connect(ctx.destination);
                                 src.start(t);
                             }
-                        } catch (e) {
-                        }
+                        });
                     }
 
                     var soundBuffers = {};
@@ -193,7 +231,8 @@ var UberKeyboardBridge = {
                         var files = {
                             standard: "KeypressStandard.wav",
                             spacebar: "KeypressSpacebar.wav",
-                            "delete": "KeypressDelete.wav"
+                            "delete": "KeypressDelete.wav",
+                            "return": "KeypressReturn.wav"
                         };
                         for (var key in files) {
                             if (!files.hasOwnProperty(key)) continue;
@@ -241,11 +280,9 @@ var UberKeyboardBridge = {
 
                     function playKeySound(key, fallbackFreq) {
                         loadKeySounds();
-                        var ctx = ensureAudio();
-                        if (!ctx) return;
                         var buf = soundBuffers[key];
                         if (buf) {
-                            try {
+                            playWhenRunning(function(ctx) {
                                 var src = ctx.createBufferSource();
                                 src.buffer = buf;
                                 var g = ctx.createGain();
@@ -253,9 +290,8 @@ var UberKeyboardBridge = {
                                 src.connect(g);
                                 g.connect(ctx.destination);
                                 src.start(0);
-                                return;
-                            } catch (e) {
-                            }
+                            });
+                            return;
                         }
                         playKeyClick(fallbackFreq);
                     }
@@ -571,6 +607,7 @@ var UberKeyboardBridge = {
                         }
                         if (ids.length < 2) return;
                         var index = ids.indexOf(keyboardLayout);
+                        playKeySound("standard", 1700);
                         setLayout(ids[(index + 1) % ids.length]);
                     }
 
@@ -589,6 +626,7 @@ var UberKeyboardBridge = {
                         var label = LAYOUT_LABELS[id] || id.toUpperCase();
                         var active = keyboardLayout === id;
                         var button = makeButton((active ? "\u2713  " : "\u2003  ") + label, 0, function() {
+                            playKeySound("standard", 1700);
                             setLayout(id);
                         }, "clamp(38px,7vh,48px)");
                         button.style.flex = "none";
@@ -930,6 +968,7 @@ var UberKeyboardBridge = {
                                 var key;
                                 if (label === "\u21E7" || label === "{shift}") {
                                     key = makeButton("\u21E7", 1.5, function() {
+                                        playKeySound("standard", 1700);
                                         shift = !shift;
                                         renderKeys();
                                     });
@@ -950,6 +989,7 @@ var UberKeyboardBridge = {
 
                         if (symbols) {
                             bottom.push(makeButton("ABC", 1.5, function() {
+                                playKeySound("standard", 1700);
                                 symbols = false;
                                 shift = false;
                                 renderKeys();
@@ -960,6 +1000,7 @@ var UberKeyboardBridge = {
                             }, null, null, openLayoutPicker));
                         } else {
                             bottom.push(makeButton("123", 1.5, function() {
+                                playKeySound("standard", 1700);
                                 symbols = true;
                                 shift = false;
                                 renderKeys();
@@ -1132,6 +1173,11 @@ var UberKeyboardBridge = {
                         root.addEventListener("touchstart", refocusSoon, false);
                         window.addEventListener("focus", refocusSoon, false);
 
+                        root.addEventListener("pointerup", unlockAudioOnGesture, true);
+                        root.addEventListener("touchend", unlockAudioOnGesture, true);
+                        root.addEventListener("mousedown", unlockAudioOnGesture, true);
+                        root.addEventListener("keydown", unlockAudioOnGesture, true);
+
                         var checkOrientation = function() {
                             if (!root) return;
                             var portrait = isPortrait();
@@ -1179,6 +1225,7 @@ var UberKeyboardBridge = {
                         };
 
                         cancelButtonEl = makeCircleButton("\u2715", "Cancel", 24, function() {
+                            playKeySound("delete", 900);
                             if (sendMethod !== "OnWebGLFieldInput") {
                                 try {
                                     SendMessage(targetObject, sendMethod, "");
@@ -1189,6 +1236,7 @@ var UberKeyboardBridge = {
                         });
 
                         okButtonEl = makeCircleButton("OK", "OK", 18, function() {
+                            playKeySound("return", 1500);
                             setTimeout(function() {
                                 send();
                             }, 120);
