@@ -38,7 +38,7 @@ var UberKeyboardBridge = {
                     var keyNoiseBuf = null;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
-                    var KEY_SOUND_VOLUME = 1.0;
+                    var KEY_SOUND_VOLUME = 0.8;
                     var shift = false;
                     var symbols = false;
                     var layoutMenuOpen = false;
@@ -130,6 +130,28 @@ var UberKeyboardBridge = {
 
                     var pendingClick = null;
 
+                    var keyboardBus = null;
+
+                    function getKeyboardBus(ctx) {
+                        if (keyboardBus) return keyboardBus;
+                        try {
+                            var comp = ctx.createDynamicsCompressor();
+                            comp.threshold.value = -22;
+                            comp.knee.value = 8;
+                            comp.ratio.value = 4;
+                            comp.attack.value = 0.001;
+                            comp.release.value = 0.06;
+                            var makeup = ctx.createGain();
+                            makeup.gain.value = 2.0;
+                            comp.connect(makeup);
+                            makeup.connect(ctx.destination);
+                            keyboardBus = comp;
+                            return keyboardBus;
+                        } catch (e) {
+                            return null;
+                        }
+                    }
+
                     function playWhenRunning(fn) {
                         var ctx = ensureAudio();
                         if (!ctx) return;
@@ -186,6 +208,7 @@ var UberKeyboardBridge = {
                         playWhenRunning(function(ctx) {
                             var buf = keyNoise();
                             if (!buf) return;
+                            var bus = getKeyboardBus(ctx) || ctx.destination;
                             var t = ctx.currentTime;
                             var src = ctx.createBufferSource();
                             src.buffer = buf;
@@ -196,7 +219,7 @@ var UberKeyboardBridge = {
                             gain.gain.value = 0.2 * KEY_SOUND_VOLUME;
                             src.connect(filt);
                             filt.connect(gain);
-                            gain.connect(ctx.destination);
+                            gain.connect(bus);
                             src.start(t);
                         });
                     }
@@ -279,7 +302,7 @@ var UberKeyboardBridge = {
                                 var g = ctx.createGain();
                                 g.gain.value = 0.6 * KEY_SOUND_VOLUME;
                                 src.connect(g);
-                                g.connect(ctx.destination);
+                                g.connect(getKeyboardBus(ctx) || ctx.destination);
                                 src.start(0);
                             });
                             return;
