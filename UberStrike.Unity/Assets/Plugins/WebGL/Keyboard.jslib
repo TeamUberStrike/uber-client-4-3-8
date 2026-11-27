@@ -38,7 +38,7 @@ var UberKeyboardBridge = {
                     var keyNoiseBuf = null;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
-                    var KEY_SOUND_VOLUME = 0.8;
+                    var KEY_SOUND_VOLUME = 1.0;
                     var shift = false;
                     var symbols = false;
                     var layoutMenuOpen = false;
@@ -136,13 +136,13 @@ var UberKeyboardBridge = {
                         if (keyboardBus) return keyboardBus;
                         try {
                             var comp = ctx.createDynamicsCompressor();
-                            comp.threshold.value = -22;
-                            comp.knee.value = 8;
-                            comp.ratio.value = 4;
+                            comp.threshold.value = -18;
+                            comp.knee.value = 10;
+                            comp.ratio.value = 2.5;
                             comp.attack.value = 0.001;
                             comp.release.value = 0.06;
                             var makeup = ctx.createGain();
-                            makeup.gain.value = 2.0;
+                            makeup.gain.value = 2.5;
                             comp.connect(makeup);
                             makeup.connect(ctx.destination);
                             keyboardBus = comp;
