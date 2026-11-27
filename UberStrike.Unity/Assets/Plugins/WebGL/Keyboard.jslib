@@ -167,16 +167,20 @@ var UberKeyboardBridge = {
                         ensureAudio();
                     }
 
+                    // Short decaying noise burst used by the synthetic fallback click, built
+                    // once per AudioContext. A click is broadband noise with a fast decay,
+                    // not a pitched beep: the old sine-oscillator fallback sounded like an
+                    // error tone, especially while the real samples were still loading.
                     function keyNoise() {
                         if (keyNoiseBuf) return keyNoiseBuf;
                         var ctx = ensureAudio();
                         if (!ctx) return null;
                         try {
-                            var dur = 0.008;
+                            var dur = 0.015;
                             keyNoiseBuf = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * dur)), ctx.sampleRate);
                             var data = keyNoiseBuf.getChannelData(0);
                             for (var i = 0; i < data.length; i++) {
-                                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
+                                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3);
                             }
                             return keyNoiseBuf;
                         } catch (e) {
@@ -186,28 +190,20 @@ var UberKeyboardBridge = {
 
                     function playKeyClick(freq) {
                         playWhenRunning(function(ctx) {
-                            var t = ctx.currentTime;
-                            var osc = ctx.createOscillator();
-                            var gain = ctx.createGain();
-                            osc.type = "sine";
-                            osc.frequency.value = freq || 1800;
-                            gain.gain.setValueAtTime(0.12, t);
-                            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
-                            osc.connect(gain);
-                            gain.connect(ctx.destination);
-                            osc.start(t);
-                            osc.stop(t + 0.05);
-
                             var buf = keyNoise();
-                            if (buf) {
-                                var src = ctx.createBufferSource();
-                                src.buffer = buf;
-                                var ng = ctx.createGain();
-                                ng.gain.value = 0.05;
-                                src.connect(ng);
-                                ng.connect(ctx.destination);
-                                src.start(t);
-                            }
+                            if (!buf) return;
+                            var t = ctx.currentTime;
+                            var src = ctx.createBufferSource();
+                            src.buffer = buf;
+                            var filt = ctx.createBiquadFilter();
+                            filt.type = "lowpass";
+                            filt.frequency.value = Math.min(3500, Math.max(1200, freq || 2000));
+                            var gain = ctx.createGain();
+                            gain.gain.value = 0.2;
+                            src.connect(filt);
+                            filt.connect(gain);
+                            gain.connect(ctx.destination);
+                            src.start(t);
                         });
                     }
 
