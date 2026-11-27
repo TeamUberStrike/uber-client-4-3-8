@@ -1073,6 +1073,12 @@ var UberKeyboardBridge = {
                         };
 
                         cancelButtonEl = makeCircleButton("\u2715", "Cancel", 24, function() {
+                            if (sendMethod !== "OnWebGLFieldInput") {
+                                try {
+                                    SendMessage(targetObject, sendMethod, "");
+                                } catch (e) {
+                                }
+                            }
                             hide();
                         });
 
