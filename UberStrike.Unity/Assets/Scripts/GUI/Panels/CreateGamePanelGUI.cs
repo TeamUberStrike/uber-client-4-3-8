@@ -302,7 +302,7 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
                 /* Game Name */
                 GUI.Label(new Rect(OFFSET, 3, 100, 30), LocalizedStrings.GameName, BlueStonez.label_interparkbold_18pt_left);
                 GUI.SetNextControlName("GameName");
-                _gameName = GUI.TextField(new Rect(120, 8, _textFieldWidth, 24), _gameName, 18, BlueStonez.textField);
+                _gameName = Keyboard.TextField(new Rect(120, 8, _textFieldWidth, 24), _gameName, BlueStonez.textField, 190, false, 18);
 
                 if (string.IsNullOrEmpty(_gameName) && !GUI.GetNameOfFocusedControl().Equals("GameName"))
                 {
@@ -320,7 +320,7 @@ public class CreateGamePanelGUI : MonoBehaviour, IPanelGui
                 /* Game Passwd */
                 GUI.Label(new Rect(OFFSET, 36, 100, 30), LocalizedStrings.Password, BlueStonez.label_interparkbold_18pt_left);
                 GUI.SetNextControlName("GamePasswd");
-                _password = GUI.PasswordField(new Rect(120, 38, _textFieldWidth, 24), _password, '*', 8);
+                _password = Keyboard.TextField(new Rect(120, 38, _textFieldWidth, 24), _password, null, 191, true, 8);
                 _password = _password.Trim(new char[] { '\n' });
 
                 if (string.IsNullOrEmpty(_password) && !GUI.GetNameOfFocusedControl().Equals("GamePasswd"))

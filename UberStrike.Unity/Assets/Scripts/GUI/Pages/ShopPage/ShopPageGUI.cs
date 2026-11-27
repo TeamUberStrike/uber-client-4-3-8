@@ -1000,7 +1000,8 @@ public class ShopPageGUI : PageGUI
                 Rect itemRect = new Rect(0, itemY, position.width - decreaseWidth, height);
                 Rect hoverRect = new Rect(itemRect.x, itemRect.y, itemRect.width - 100, itemRect.height);
 
-                list[i].Draw(itemRect, itemRect.Contains(Event.current.mousePosition));
+                // No highlight during a finger scroll (stale pointer).
+                list[i].Draw(itemRect, itemRect.Contains(Event.current.mousePosition) && !GUITools.IsHoverSuppressedByTouchScroll);
 
                 if (showTooltip && hoverRect.Contains(Event.current.mousePosition) && !DragAndDrop.Instance.IsDragging)
                 {

@@ -48,7 +48,7 @@ public class NameChangePanelGUI : PanelGuiBase
             GUI.SetNextControlName("@ChooseName");
             Rect rectName = new Rect(6 + 50, 22 + 80, 177 + 50, 24);
             GUI.changed = false;
-            newName = GUI.TextField(rectName, newName, 18, BlueStonez.textField);
+            newName = Keyboard.TextField(rectName, newName, BlueStonez.textField, 120, false, 18);
             newName = TextUtilities.Trim(newName);
 
             if (string.IsNullOrEmpty(newName) && GUI.GetNameOfFocusedControl() != "@ChooseName")

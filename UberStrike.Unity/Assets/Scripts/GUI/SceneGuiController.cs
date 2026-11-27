@@ -190,17 +190,40 @@ class SceneGuiController : MonoBehaviour
             {
                 _open._returnIndex = _open._currentGuiPageIndex;
                 _open.SetCurrentPage(chat);
+                _open.FocusChatInput();
             }
             else if (_open._hideTitleWhenAlive)
+            {
                 _open.SlideOut();
+                Keyboard.Close();
+            }
             else
+            {
                 _open.SetCurrentPage(_open._returnIndex);
+                Keyboard.Close();
+            }
             return;
         }
         GameState.LocalPlayer.Pause();
         GamePageManager.Instance.LoadPage(PageType.Shop);
         SceneGuiController target = _open ? _open : _deathShop;
-        if (target) target.SetCurrentPage(target._guiPages.Length - 1);
+        if (target)
+        {
+            target.SetCurrentPage(target._guiPages.Length - 1);
+            target.FocusChatInput();
+        }
+    }
+
+    public void FocusChatInput()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (!Keyboard.IsMobile) return;
+
+        int chat = _guiPages.Length - 1;
+        if (chat < 0 || !(_guiPages[chat] is ChatPageGUI)) return;
+
+        ((ChatPageGUI)_guiPages[chat]).OpenChatKeyboard();
+#endif
     }
 
     private void SlideOut()

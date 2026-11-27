@@ -19,10 +19,8 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     public void OpenChat(bool showHudInput)
     {
-        if (showHudInput)
-            _canInput = true;
-
-        BeginChat();
+        _canInput = showHudInput;
+        BeginChat(showHudInput);
     }
 
     public void CancelChat()
@@ -61,7 +59,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
                 if (_canInput)
                 {
-                    BeginChat();
+                    BeginChat(true);
                 }
                 else
                 {
@@ -349,9 +347,9 @@ public class InGameChatHud : Singleton<InGameChatHud>
     }
 
     #region Private
-    private void BeginChat()
+    private void BeginChat(bool focusHud)
     {
-        _doFocusOnChat = true;
+        _doFocusOnChat = focusHud;
         _skipEnterUp = true;
         _closeOnMouseUp = false;
         _inputFocused = true;

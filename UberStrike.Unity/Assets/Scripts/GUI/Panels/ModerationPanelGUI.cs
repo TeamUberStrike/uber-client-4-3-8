@@ -152,7 +152,7 @@ public class ModerationPanelGUI : PanelGuiBase
             bool hasSearchString = !string.IsNullOrEmpty(_filterText);
 
             GUI.SetNextControlName("Filter");
-            _filterText = GUI.TextField(new Rect(0, 26, hasSearchString ? position.width - 26 : position.width, 24), _filterText, 20, BlueStonez.textField);
+            _filterText = Keyboard.TextField(new Rect(0, 26, hasSearchString ? position.width - 26 : position.width, 24), _filterText, BlueStonez.textField, 200, false, 20);
 
             if (!hasSearchString && GUI.GetNameOfFocusedControl() != "Filter")
             {
@@ -294,7 +294,7 @@ public class ModerationPanelGUI : PanelGuiBase
 
             GUI.enabled = (_moderationSelection == Actions.SEND_MESSAGE);
             GUI.SetNextControlName("ModCustom");
-            _message = GUI.TextField(new Rect(0, 70, 250, 24), _message, BlueStonez.textField);
+            _message = Keyboard.TextField(new Rect(0, 70, 250, 24), _message, BlueStonez.textField, 201);
             GUI.enabled = true;
 
             bool result = GUI.Toggle(new Rect(0, 7, position.width, 16), moderation.Selected, GUIContent.none, BlueStonez.radiobutton);

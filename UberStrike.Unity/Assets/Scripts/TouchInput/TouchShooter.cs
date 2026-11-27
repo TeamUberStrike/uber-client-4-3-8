@@ -103,20 +103,9 @@ public class TouchShooter : TouchBaseControl
         {
             if (_primaryFinger.FingerId == touch.fingerId)
             {
-#if UNITY_WEBGL && !UNITY_EDITOR
-                // Unity's Touch.deltaPosition on WebGL reports the ABSOLUTE position on the
-                // first Moved/Stationary frame (difference from (0,0)), so a tap would snap
-                // the camera to the touch point. Track the delta manually, like the native
-                // players effectively do.
-                TouchFinger f = _primaryFinger;
-                Vector2 delta = touch.position - f.LastPos;
-                f.LastPos = touch.position;
-                _primaryFinger = f;
-                Aim = delta * 500 / Screen.width;
-#else
                 // record finger movement scaling for screen size
                 Aim = touch.deltaPosition * 500 / Screen.width;
-#endif
+
                 if (_diagSamples < 15)
                 {
                     _diagSamples++;
@@ -166,10 +155,7 @@ public class TouchShooter : TouchBaseControl
         return false;
     }
 
-    // Replaces the full set of zones that do not participate in the look/shoot finger counting
-    // (D-pad, joystick, fire/jump/... buttons, quick items, weapon changer, scope swipe).
-    // TouchInput rebuilds this every frame from the controls that are currently enabled, so it
-    // always matches the current state, mode and custom layout.
+    // Replaces the set of zones that do not participate in the look/shoot finger counting.
     public void SetIgnoreRects(IEnumerable<Rect> rects)
     {
         _ignoreTouches.Clear();
@@ -181,14 +167,50 @@ public class TouchShooter : TouchBaseControl
         }
     }
 
+    public void SetDpadIgnoreZones(Rect[] rects, Vector2[] circleCenters, float[] circleRadii,
+        Vector2 pivot, float rotation)
+    {
+        _dpadIgnoreRects = rects;
+        _dpadIgnoreCircleCenters = circleCenters;
+        _dpadIgnoreCircleRadii = circleRadii;
+        _dpadIgnorePivot = pivot;
+        _dpadIgnoreRotation = rotation;
+    }
+
     private bool ValidArea(Vector2 pos)
     {
-        if (_ignoreTouches.Count == 0) return true;
-
         foreach (Rect r in _ignoreTouches)
         {
             if (r.ContainsTouch(pos)) return false;
         }
+
+        if (_dpadIgnoreRects != null)
+        {
+            Vector2 dpadPos = pos;
+            if (_dpadIgnoreRotation != 0)
+            {
+                dpadPos = Mathfx.RotateVector2AboutPoint(pos,
+                    new Vector2(_dpadIgnorePivot.x, Screen.height - _dpadIgnorePivot.y),
+                    _dpadIgnoreRotation);
+            }
+
+            foreach (Rect r in _dpadIgnoreRects)
+            {
+                if (r.ContainsTouch(dpadPos)) return false;
+            }
+
+            if (_dpadIgnoreCircleCenters != null)
+            {
+                for (int i = 0; i < _dpadIgnoreCircleCenters.Length; i++)
+                {
+                    Vector2 center = _dpadIgnoreCircleCenters[i];
+                    center.y = Screen.height - center.y;
+                    float radius = _dpadIgnoreCircleRadii[i];
+                    if ((center - dpadPos).sqrMagnitude < radius * radius) return false;
+                }
+            }
+        }
+
         return true;
     }
 
@@ -203,6 +225,12 @@ public class TouchShooter : TouchBaseControl
     private Vector2 _lastFirePosition = Vector2.zero;
 
     private ArrayList _ignoreTouches;
+
+    private Rect[] _dpadIgnoreRects;
+    private Vector2[] _dpadIgnoreCircleCenters;
+    private float[] _dpadIgnoreCircleRadii;
+    private Vector2 _dpadIgnorePivot;
+    private float _dpadIgnoreRotation;
 
     #endregion
 }

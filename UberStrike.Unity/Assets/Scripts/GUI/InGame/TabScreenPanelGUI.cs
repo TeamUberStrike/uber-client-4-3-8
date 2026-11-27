@@ -312,7 +312,11 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             // Seperating line
             GUI.Label(new Rect(10, headerHeight - 4, position.width - 20, 1), GUIContent.none, BlueStonez.horizontal_line_grey95);
 
-            scroll = GUI.BeginScrollView(new Rect(10, headerHeight, position.width - 20, position.height - headerHeight - 9), scroll, new Rect(0, 0, position.width - 40, players.Count * rowHeight));
+            // Finger scrolling via GUITools. The scoreboard shows only while its button is held, so a second
+            // finger may drag it.
+            GUITools.AllowSecondFingerScroll = true;
+            scroll = GUITools.BeginScrollView(new Rect(10, headerHeight, position.width - 20, position.height - headerHeight - 9), scroll, new Rect(0, 0, position.width - 40, players.Count * rowHeight));
+            GUITools.AllowSecondFingerScroll = false;
             {
                 int i = 0;
 
@@ -402,7 +406,7 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
                     i++;
                 }
             }
-            GUI.EndScrollView();
+            GUITools.EndScrollView();
         }
         GUI.EndGroup();
 

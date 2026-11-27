@@ -21,6 +21,8 @@ public class SignupPanelGUI : PanelGuiBase
     private TouchScreenKeyboard _password1Keyboard;
     private TouchScreenKeyboard _password2Keyboard;
 
+    private int _webGLField;
+
     private const float NORMAL_HEIGHT = 300;
     private const float EXTENDED_HEIGHT = 340;
 
@@ -30,6 +32,29 @@ public class SignupPanelGUI : PanelGuiBase
     private void Awake()
     {
         _errorMessages = new Dictionary<MemberRegistrationResult, string>();
+    }
+
+    public override void Hide()
+    {
+        base.Hide();
+        Keyboard.Close();
+    }
+
+    public void OnWebGLTextInput(string text)
+    {
+        Keyboard.Close();
+
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        if (_webGLField == 1)
+            _emailAddress = text;
+        else if (_webGLField == 2)
+            _password1 = text;
+        else if (_webGLField == 3)
+            _password2 = text;
+
+        _webGLField = 0;
     }
 
     private void Start()
@@ -160,6 +185,47 @@ public class SignupPanelGUI : PanelGuiBase
                     if (GUI.Button(new Rect(180, 204 - 64, 180, 22), maskedPassword2, BlueStonez.textField))
                     {
                         _password2Keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true, false);
+                    }
+
+                    if (string.IsNullOrEmpty(_password2))
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 208 - 62, 180, 22), LocalizedStrings.RetypeYourPassword, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
+                }
+                else if (Application.platform == RuntimePlatform.WebGLPlayer && Keyboard.IsMobile)
+                {
+                    if (GUI.Button(new Rect(180, 133 - 64, 180, 22), _emailAddress, BlueStonez.textField)) {
+                        _webGLField = 1;
+                        Keyboard.Open(_emailAddress, gameObject, "OnWebGLTextInput", false);
+                    }
+
+                    if (string.IsNullOrEmpty(_emailAddress))
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 137 - 62, 180, 22), LocalizedStrings.EnterYourEmailAddress, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
+
+                    string maskedPassword1 = "".PadLeft(_password1.Length, '*');
+                    if (GUI.Button(new Rect(180, 168 - 64, 180, 22), maskedPassword1, BlueStonez.textField)) {
+                        _webGLField = 2;
+                        Keyboard.Open(_password1, gameObject, "OnWebGLTextInput", true);
+                    }
+
+                    if (string.IsNullOrEmpty(_password1))
+                    {
+                        GUI.color = new Color(1, 1, 1, 0.3f);
+                        GUI.Label(new Rect(188, 172 - 62, 172, 18), LocalizedStrings.EnterYourPassword, BlueStonez.label_interparkmed_11pt_left);
+                        GUI.color = Color.white;
+                    }
+
+                    string maskedPassword2 = "".PadLeft(_password2.Length, '*');
+                    if (GUI.Button(new Rect(180, 204 - 64, 180, 22), maskedPassword2, BlueStonez.textField))
+                    {
+                        _webGLField = 3;
+                        Keyboard.Open(_password2, gameObject, "OnWebGLTextInput", true);
                     }
 
                     if (string.IsNullOrEmpty(_password2))

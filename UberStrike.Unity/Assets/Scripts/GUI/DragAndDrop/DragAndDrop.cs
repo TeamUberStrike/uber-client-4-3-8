@@ -97,9 +97,8 @@ public class DragAndDrop : Singleton<DragAndDrop>
     {
         int id = GUIUtility.GetControlID(_itemSlotButtonHash, FocusType.Passive);
 
-        if ((ApplicationDataManager.Channel == ChannelType.Android 
-            || ApplicationDataManager.Channel == ChannelType.IPad 
-            || ApplicationDataManager.Channel == ChannelType.IPhone)
+        // On touch an item-list row is picked up by its icon (left 50 units); the rest scrolls the list.
+        if (MobileMenuScale.Active
             && Event.current.GetTypeForControl(id) == EventType.MouseDown
             && isItemList)
         {
@@ -113,6 +112,10 @@ public class DragAndDrop : Singleton<DragAndDrop>
                 {
                     GUIUtility.hotControl = id;
                     Event.current.Use();
+
+                    // Picking up the item: don't scroll its list.
+                    if (isItemList)
+                        GUITools.CancelTouchScroll();
                 } break;
 
             case EventType.MouseUp:
