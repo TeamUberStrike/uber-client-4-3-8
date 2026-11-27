@@ -27,7 +27,10 @@ var UberKeyboardBridge = {
                     var caretPass = null;
                     var mirrorDiv = null;
                     var mirrorMark = null;
+                    var mirrorMark2 = null;
                     var mirrorInput = null;
+                    var selLayerText = null;
+                    var selLayerPass = null;
                     var textWrap = null;
                     var passWrap = null;
                     var audioCtx = null;
@@ -719,8 +722,76 @@ var UberKeyboardBridge = {
                         updateCaret();
                     }
 
+                    function updateSelectionLayer() {
+                        if (!selLayerText || !selLayerPass) return;
+                        selLayerText.style.display = "none";
+                        selLayerPass.style.display = "none";
+                        if (!inputEl || !root || root.style.display !== "flex") return;
+                        if (document.activeElement !== inputEl) return;
+
+                        var s = inputEl.selectionStart;
+                        var e = inputEl.selectionEnd;
+                        if (typeof s !== "number" || typeof e !== "number" || s === e) return;
+
+                        var layer = inputEl === passInput ? selLayerPass : selLayerText;
+                        var sl = inputEl.scrollLeft || 0;
+                        var st = inputEl.scrollTop || 0;
+                        var rects = [];
+
+                        if (inputEl === passInput) {
+                            var masked = "";
+                            for (var i = 0; i < inputEl.value.length; i++) masked += "\u2022";
+                            mirrorInput.textContent = masked.slice(0, s);
+                            var x1 = mirrorInput.offsetWidth;
+                            mirrorInput.textContent = masked.slice(0, e);
+                            var x2 = mirrorInput.offsetWidth;
+                            var py = 1 + Math.max(0, Math.round((inputEl.clientHeight - 22) / 2)) - 7;
+                            rects.push([x1 - sl, py, Math.max(2, x2 - x1), 22]);
+                        } else {
+                            var contentW = Math.max(10, inputEl.clientWidth - 20);
+                            mirrorDiv.style.width = contentW + "px";
+                            while (mirrorDiv.firstChild) mirrorDiv.removeChild(mirrorDiv.firstChild);
+                            mirrorDiv.appendChild(document.createTextNode(inputEl.value.slice(0, s)));
+                            mirrorDiv.appendChild(mirrorMark);
+                            mirrorDiv.appendChild(document.createTextNode(inputEl.value.slice(s, e)));
+                            mirrorDiv.appendChild(mirrorMark2);
+                            mirrorDiv.appendChild(document.createTextNode(inputEl.value.slice(e)));
+
+                            var sx = mirrorMark.offsetLeft;
+                            var sy = mirrorMark.offsetTop;
+                            var ex = mirrorMark2.offsetLeft;
+                            var ey = mirrorMark2.offsetTop;
+
+                            if (sy === ey) {
+                                rects.push([sx - sl, sy - st, Math.max(2, ex - sx), 22]);
+                            } else {
+                                rects.push([sx - sl, sy - st, Math.max(2, contentW - sx), 22]);
+                                var midTop = sy + 22;
+                                if (ey - midTop > 2) rects.push([0, midTop - st, contentW, ey - midTop]);
+                                rects.push([0, ey - st, Math.max(2, ex), 22]);
+                            }
+                        }
+
+                        while (layer.firstChild) layer.removeChild(layer.firstChild);
+                        for (var r = 0; r < rects.length; r++) {
+                            var rc = rects[r];
+                            var d = document.createElement("div");
+                            d.style.cssText = "position:absolute;background:rgba(26,115,232,0.7);border-radius:2px;";
+                            d.style.left = rc[0] + "px";
+                            d.style.top = rc[1] + "px";
+                            d.style.width = rc[2] + "px";
+                            d.style.height = rc[3] + "px";
+                            layer.appendChild(d);
+                        }
+                        layer.style.display = "block";
+
+                        var caretEl = inputEl === passInput ? caretPass : caretText;
+                        if (caretEl && caretEl.style.display !== "none") caretEl.style.display = "none";
+                    }
+
                     function updateCaret() {
                         if (!inputEl || !root || root.style.display !== "flex") return;
+                        updateSelectionLayer();
                         var caretEl = inputEl === passInput ? caretPass : caretText;
                         if (caretText && caretText !== caretEl && caretText.style.display !== "none") caretText.style.display = "none";
                         if (caretPass && caretPass !== caretEl && caretPass.style.display !== "none") caretPass.style.display = "none";
@@ -934,6 +1005,8 @@ var UberKeyboardBridge = {
                         if (menuBackdrop) menuBackdrop.style.display = "none";
                         if (caretText) caretText.style.display = "none";
                         if (caretPass) caretPass.style.display = "none";
+                        if (selLayerText) selLayerText.style.display = "none";
+                        if (selLayerPass) selLayerPass.style.display = "none";
                         clearFocusTimer();
                     }
 
@@ -975,6 +1048,8 @@ var UberKeyboardBridge = {
                         placeholderStyle.textContent =
                             "#uber-chat-keyboard .uber-input::placeholder { color:#777; }" +
                             "#uber-chat-keyboard .uber-input::-webkit-input-placeholder { color:#777; }" +
+                            "#uber-chat-keyboard .uber-input::selection { background:#1a73e8; }" +
+                            "#uber-chat-keyboard .uber-input::-moz-selection { background:#1a73e8; }" +
                             "#uber-chat-keyboard .uber-caret { position:absolute;width:2px;height:22px;background:#fff;" +
                             "border-radius:1px;pointer-events:none;display:none;z-index:5;" +
                             "animation:uberCaretBlink 1.06s linear infinite; }" +
@@ -1036,6 +1111,8 @@ var UberKeyboardBridge = {
                                 pausedByOrientation = true;
                                 if (caretText) caretText.style.display = "none";
                                 if (caretPass) caretPass.style.display = "none";
+                                if (selLayerText) selLayerText.style.display = "none";
+                                if (selLayerPass) selLayerPass.style.display = "none";
                                 clearFocusTimer();
                             } else if (!portrait && pausedByOrientation && root.style.display !== "flex") {
                                 pausedByOrientation = false;
@@ -1102,12 +1179,25 @@ var UberKeyboardBridge = {
                         caretPass.className = "uber-caret";
                         passWrap.appendChild(caretPass);
 
+                        selLayerText = document.createElement("div");
+                        selLayerText.style.cssText =
+                            "position:absolute;left:11px;top:7px;right:11px;bottom:7px;overflow:hidden;" +
+                            "pointer-events:none;z-index:2;display:none;-webkit-user-select:none;user-select:none;";
+                        textWrap.appendChild(selLayerText);
+
+                        selLayerPass = document.createElement("div");
+                        selLayerPass.style.cssText =
+                            "position:absolute;left:11px;top:7px;right:11px;bottom:7px;overflow:hidden;" +
+                            "pointer-events:none;z-index:2;display:none;-webkit-user-select:none;user-select:none;";
+                        passWrap.appendChild(selLayerPass);
+
                         mirrorDiv = document.createElement("div");
                         mirrorDiv.style.cssText =
                             "position:absolute;top:-9999px;left:-9999px;visibility:hidden;" +
                             "white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;" +
                             "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:18px;line-height:1.25;";
                         mirrorMark = document.createElement("span");
+                        mirrorMark2 = document.createElement("span");
 
                         mirrorInput = document.createElement("span");
                         mirrorInput.style.cssText =
