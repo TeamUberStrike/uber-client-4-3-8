@@ -932,6 +932,24 @@ public class TouchInput : MonoSingleton<TouchInput>
         TabScreenPanelGUI.Instance.ForceShow = true;
     }
 
+    /// <summary>
+    /// The end-of-match screen stops touch processing, so a scoreboard held as the match ends never sees its
+    /// finger lift. Release it here instead: into Paused, as every mode pauses the player at match end (when
+    /// the player was paused already, no pause event comes to do it), and drop the finger so a later touch
+    /// that reuses its id can't count as the lift.
+    /// </summary>
+    public void ReleaseScoreboardForEndOfMatch()
+    {
+        TouchButton score;
+        if (Buttons != null && Buttons.TryGetValue((int)TouchKeyType.Score, out score) && score != null && score.IsActive)
+            score.CancelTouch();
+
+        if (_stateMachine != null && _stateMachine.CurrentStateId == (int)TouchState.Scoreboard)
+            _stateMachine.SetState((int)TouchState.Paused);
+
+        if (TabScreenPanelGUI.Exists) TabScreenPanelGUI.Instance.ForceShow = false;
+    }
+
     void OnWeaponChanged()
     {
         TouchInput.Instance.WeaponChanger.CheckWeaponChanged();
@@ -1905,7 +1923,15 @@ public class TouchInput : MonoSingleton<TouchInput>
             TouchInput.Instance.AimHelpText.IsEnabled = false;
             TouchInput.Instance.ShootHelpText.IsEnabled = false;
 
-            TouchInput.SetWeaponsHudVisible(false);
+            // Hide the weapons HUD while the scoreboard is held, and remember the flags left behind so OnExit
+            // only undoes this change. Kept set if already set: a second enter must not forget the first.
+            HudDrawFlags baseFlag = HudDrawFlagGroup.Instance.BaseDrawFlag;
+            if ((baseFlag & HudDrawFlags.Weapons) != 0)
+            {
+                _hidWeapons = true;
+                HudDrawFlagGroup.Instance.BaseDrawFlag = baseFlag & ~HudDrawFlags.Weapons;
+            }
+            _baseWhileHeld = HudDrawFlagGroup.Instance.BaseDrawFlag;
 
             LocalPlayer player;
             bool playerBlocked = !TouchInput.TryGetLocalPlayer(out player) || player.IsDead || player.IsGamePaused;
@@ -1932,7 +1958,12 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         public void OnExit()
         {
-            TouchInput.SetWeaponsHudVisible(true);
+            // Bring the weapons back only if this state hid them and nothing set new HUD flags meanwhile. The
+            // end-of-match screen sets its own (chat and XP only), and so does spectating; the weapons must
+            // not come back over them.
+            if (_hidWeapons && HudDrawFlagGroup.Instance.BaseDrawFlag == _baseWhileHeld)
+                HudDrawFlagGroup.Instance.BaseDrawFlag = HudDrawFlagGroup.Instance.BaseDrawFlag | HudDrawFlags.Weapons;
+            _hidWeapons = false;
 
             TouchInput.Instance.Dpad.Visible = true;
             if (TouchInput.Instance.Dpad.JumpButton != null) TouchInput.Instance.Dpad.JumpButton.Visible = true;
@@ -1950,6 +1981,9 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
 
         }
+
+        private bool _hidWeapons;           // OnEnter took the weapons flag away
+        private HudDrawFlags _baseWhileHeld; // the base flags OnEnter left behind
     }
 
     #endregion
@@ -1961,9 +1995,15 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             ReleasePrimaryFire("application lost focus");
 #if !UNITY_EDITOR
-            if (_keyboard == null && !_webGLKeyboardOpen)
+            // Only ever pause a running match. This used to call OnMenu(), the menu button's toggle: on Recents it
+            // closed the pregame, Loadout/Chat or end-of-match panel, or unpaused a paused player.
+            // Try Weapon quits to the shop on pause, so it keeps running.
+            if (_keyboard == null && !_webGLKeyboardOpen && GameState.HasCurrentGame && GamePageManager.IsCurrentPage(PageType.None) &&
+                !GameState.LocalPlayer.IsGamePaused &&
+                GameStateController.Instance.StateMachine.CurrentStateId != (int)GameStateId.TryWeapon)
             {
-                OnMenu();
+                GameState.LocalPlayer.Pause();
+                if (GlobalUIRibbon.Exists) GlobalUIRibbon.Instance.Show();
             }
 #endif
         }

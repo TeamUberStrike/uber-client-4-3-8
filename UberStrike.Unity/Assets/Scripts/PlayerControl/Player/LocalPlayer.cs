@@ -690,6 +690,10 @@ public class LocalPlayer : MonoBehaviour
     /// </summary>
     public void Pause(bool force = false)
     {
+        // Touch devices: never pause on the join screen. Nobody has spawned yet, and pausing switches on the
+        // in-game touch controls and Edit Controls over it. One rule for every caller: chat tab, Android back, focus loss.
+        if (GamePageManager.IsCurrentPage(PageType.PreGame) && TouchInput.IsSupported) return;
+
         if (force || !_isPaused.HasValue || !_isPaused.Value)
         {
             _isPaused = true;

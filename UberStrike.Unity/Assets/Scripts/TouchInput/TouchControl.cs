@@ -151,6 +151,12 @@ public class TouchControl : TouchBaseControl
         _inside = false;
     }
 
+    /// <summary>Drops the finger this control is bound to, without firing OnTouchEnded.</summary>
+    public void CancelTouch()
+    {
+        ResetTouch();
+    }
+
     protected virtual bool TouchInside(Vector2 position)
     {
         return Boundary.ContainsTouch(position);

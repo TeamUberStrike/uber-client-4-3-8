@@ -98,6 +98,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 #if UNITY_EDITOR || UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID || UNITY_WEBGL
                 if (!PanelManager.IsAnyPanelOpen && !TabScreenPanelGUI.Enabled &&
                     !InGameChatHud.Instance.CanInput && !controlsEditing &&
+                    !GamePageManager.IsCurrentPage(PageType.EndOfMatch) &&
                     !TouchInput.IsChatKeyboardOpen)
                 {
                     // Row 0 of the column is TouchInput's Loadout button.
