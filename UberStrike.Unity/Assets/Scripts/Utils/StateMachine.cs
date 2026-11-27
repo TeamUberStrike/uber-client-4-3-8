@@ -26,10 +26,6 @@ public class StateMachine
                 "] from state machine");
         }
 
-        // Pop every current state. An OnExit failure is logged but must never keep a
-        // zombie state on the stack: a single exception in an OnExit handler used to
-        // leave the machine half-transitioned, which wedged the touch input in a state
-        // whose controls are all disabled.
         while (_curStates.Count > 0)
         {
             try
@@ -53,9 +49,6 @@ public class StateMachine
         }
         catch (Exception e)
         {
-            // The machine keeps the new state as current so it always has a state to run
-            // and the next transition can still recover. OnUpdate is exception-safe too,
-            // so a state that cannot initialize does not kill the frame loop.
             LogError("StateMachine::SetState - OnEnter of state [" + stateId +
                 "] threw: " + e);
         }
@@ -77,8 +70,6 @@ public class StateMachine
         }
         catch (Exception e)
         {
-            // OnEnter failed: pop the broken state back off so the previous state keeps
-            // driving the machine instead of an erroring state sitting on top.
             LogError("StateMachine::PushState - OnEnter of state [" + stateId +
                 "] threw: " + e);
 
@@ -179,8 +170,6 @@ public class StateMachine
 
     private void LogError(string message)
     {
-        // Suppress identical repeated errors (e.g. a broken state throwing on every
-        // Update frame) so the console is not flooded while the machine recovers.
         if (_lastError == message) return;
         _lastError = message;
         Debug.LogError(message);

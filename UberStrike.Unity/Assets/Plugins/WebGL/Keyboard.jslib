@@ -38,9 +38,6 @@ var UberKeyboardBridge = {
                     var keyNoiseBuf = null;
                     var LONG_PRESS_MS = 450;
                     var LAYOUT_STORAGE_KEY = "uber.keyboardLayout";
-
-                    // Volume knob for the keyboard click sounds (samples and the synthetic
-                    // fallback click alike). 1 keeps the original loudness, lower is quieter.
                     var KEY_SOUND_VOLUME = 0.8;
                     var shift = false;
                     var symbols = false;
@@ -61,12 +58,6 @@ var UberKeyboardBridge = {
                     var targetObject = "TouchInputManager";
                     var sendMethod = "OnWebGLChatSend";
                     var maskedMode = false;
-
-                    // The real password text. The visible passInput is a plain text field
-                    // whose value holds our own bullet characters, so the caret mirror can
-                    // measure the exact glyphs the input actually renders (native password
-                    // inputs draw UA-specific bullets that are wider than the text bullet,
-                    // which made the caret drift left of the true position).
                     var maskedValue = "";
                     var transparentMode = false;
 
@@ -128,9 +119,6 @@ var UberKeyboardBridge = {
                             if (!AC) return null;
                             if (!audioCtx) audioCtx = new AC();
                             if (audioCtx.state !== "running") {
-                                // Also covers "interrupted", the state Android Chrome puts
-                                // the context in while the page is hidden. If this resume
-                                // is rejected (no user gesture), the next key press retries.
                                 audioCtx.resume().catch(function() {
                                 });
                             }
@@ -140,13 +128,6 @@ var UberKeyboardBridge = {
                         }
                     }
 
-                    // Runs the given playback function once the AudioContext is actually
-                    // running. Android Chrome / iOS Safari create the context suspended and
-                    // resume() is asynchronous and can be rejected (no user activation yet),
-                    // so the click is queued and played the moment the context starts: the
-                    // first press stays audible and a rejected resume no longer means the
-                    // keyboard goes permanently silent. Only one click is queued at a time
-                    // so a late unlock never fires a burst of stale clicks.
                     var pendingClick = null;
 
                     function playWhenRunning(fn) {
@@ -180,19 +161,10 @@ var UberKeyboardBridge = {
                         }
                     }
 
-                    // Unlocks the AudioContext during a genuine user gesture. pointerdown /
-                    // touchstart are cancelled by the key handlers (cancelled pointerdowns
-                    // grant no user activation in Chrome), so the unlock is wired to the
-                    // release events instead: the first release anywhere on the keyboard
-                    // resumes the context and the following clicks are audible.
                     function unlockAudioOnGesture() {
                         ensureAudio();
                     }
 
-                    // Short decaying noise burst used by the synthetic fallback click, built
-                    // once per AudioContext. A click is broadband noise with a fast decay,
-                    // not a pitched beep: the old sine-oscillator fallback sounded like an
-                    // error tone, especially while the real samples were still loading.
                     function keyNoise() {
                         if (keyNoiseBuf) return keyNoiseBuf;
                         var ctx = ensureAudio();
@@ -495,12 +467,6 @@ var UberKeyboardBridge = {
                         if (window.PointerEvent) {
                             button.addEventListener("pointerdown", function(ev) {
                                 fire(ev);
-                                // Settle any previous press whose pointerup never arrived.
-                                // Chrome on Android can swallow the up event (system back
-                                // gesture, notification shade, page freeze) and later REUSE
-                                // the pointer id, so a same-id redelivery must be treated as
-                                // a fresh press: one lost pointerup would otherwise wedge
-                                // the whole keyboard in the pressed state forever.
                                 if (activePointerId !== null) finish(false);
                                 activePointerId = ev.pointerId;
                                 begin();
@@ -829,9 +795,6 @@ var UberKeyboardBridge = {
                         var rects = [];
 
                         if (inputEl === passInput) {
-                            // The visible value already consists of the same bullets the
-                            // mirror measures, so the selection rectangle always matches
-                            // the rendered glyph positions.
                             mirrorInput.textContent = inputEl.value.slice(0, s);
                             var x1 = mirrorInput.offsetWidth;
                             mirrorInput.textContent = inputEl.value.slice(0, e);
@@ -1174,10 +1137,6 @@ var UberKeyboardBridge = {
 
                         passInput = document.createElement("input");
                         passInput.className = "uber-input";
-                        // A plain text field whose value holds our own bullet characters:
-                        // native type=password inputs draw UA-specific bullets that are
-                        // wider than the text bullet used for caret measuring, so the caret
-                        // drifted further left with every typed character.
                         passInput.type = "text";
                         passInput.autocapitalize = "none";
                         passInput.autocorrect = "off";
@@ -1219,10 +1178,6 @@ var UberKeyboardBridge = {
                         root.addEventListener("mousedown", unlockAudioOnGesture, true);
                         root.addEventListener("keydown", unlockAudioOnGesture, true);
 
-                        // Returning from the home screen leaves the AudioContext in the
-                        // "interrupted"/"suspended" state on mobile browsers. Resume it as
-                        // soon as the page is visible again; if the resume is rejected
-                        // (no gesture yet) the next key press retries through playWhenRunning.
                         document.addEventListener("visibilitychange", function() {
                             if (!document.hidden) {
                                 ensureAudio();
@@ -1523,8 +1478,6 @@ var UberKeyboardBridge = {
                 if (window.console && window.console.error) window.console.error("UberOpenTextKeyboard failed:", e);
             } catch (e2) {
             }
-            // Never leave the game waiting in the Chatting state: tell Unity the
-            // keyboard gave up so it cancels the chat instead of freezing input.
             try {
                 SendMessage(gameObjectName || "TouchInputManager", methodName || "OnWebGLChatSend", "");
             } catch (e3) {

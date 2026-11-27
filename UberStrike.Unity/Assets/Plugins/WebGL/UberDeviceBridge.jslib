@@ -80,8 +80,6 @@ var UberDeviceBridge = {
                 if (!WEBAudio || !WEBAudio.audioContext) return;
                 var ctx = WEBAudio.audioContext;
                 if (ctx.state !== "running" && ctx.state !== "closed") {
-                    // Also covers "interrupted", the state mobile browsers leave the
-                    // context in after the app returns from the home screen.
                     var p = ctx.resume();
                     if (p && typeof p.then === "function") {
                         p.catch(function() {
@@ -114,9 +112,6 @@ var UberDeviceBridge = {
         document.addEventListener("visibilitychange", function(ev) {
             if (!document.hidden) unlock(ev);
         });
-        // Returning via bfcache (mobile back-forward navigation) restores the page with
-        // the context suspended and no fresh events; re-arm the unlock so the next user
-        // gesture definitely resumes it.
         window.addEventListener("pageshow", function(ev) {
             if (ev.persisted) {
                 setTimeout(unlock, 0);

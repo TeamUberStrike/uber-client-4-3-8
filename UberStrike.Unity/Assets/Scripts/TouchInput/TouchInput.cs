@@ -296,9 +296,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
     }
 
-    // GameState is a MonoSingleton whose Instance accessor throws while its GameObject
-    // is inactive (scene transitions, respawns, match end). Never let that take the
-    // touch state machine down with it: probing is done through this safe accessor.
     private static bool TryGetLocalPlayer(out LocalPlayer player)
     {
         try
@@ -313,9 +310,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
     }
 
-    // HudDrawFlagGroup forwards to HudController, another throwing MonoSingleton. The
-    // chat and scoreboard states toggle the weapons HUD through this helper so a missing
-    // HUD controller can never break a state transition and lock all touch input.
     private static void SetWeaponsHudVisible(bool visible)
     {
         try
@@ -331,9 +325,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         }
     }
 
-    // Cancels the in-game chat and pops back out of the Chatting state. Both steps are
-    // exception-safe so a broken chat HUD or game state restores the controls instead of
-    // leaving every touch control disabled forever.
     private void CancelChatAndRestoreState()
     {
         _webGLKeyboardOpen = false;
@@ -1401,9 +1392,6 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     void OnChatBegan()
     {
-        // Ignore repeat taps while the chat state is already active: a second open would
-        // wipe the text the player already typed (the DOM keyboard resets its input field
-        // to the initial text on every show()).
         if (_stateMachine.CurrentStateId == (int)TouchState.Chatting)
             return;
 
@@ -1581,9 +1569,6 @@ public class TouchInput : MonoSingleton<TouchInput>
 
         private void UpdateWalkingEnabled()
         {
-            // GameState.LocalPlayer is null (and GameState.Instance even throws) for brief
-            // windows during scene transitions and respawns. Keep the previous control
-            // setup in that case; OnUpdate re-runs this once the player is available.
             LocalPlayer player;
             if (!TouchInput.TryGetLocalPlayer(out player))
                 return;
@@ -1726,12 +1711,6 @@ public class TouchInput : MonoSingleton<TouchInput>
             ti.CheckKeyboardDone();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-            // The DOM keyboard only reports back through the OnWebGLChatSend callback. When
-            // that callback never arrives (JS error while building or showing the keyboard,
-            // a failed SendMessage, the browser swallowing the keyboard, ...) the game would
-            // otherwise sit in the Chatting state forever with every touch control disabled.
-            // Give the keyboard a grace period to appear and, if it is still not visible,
-            // cancel the chat so the game always recovers.
             if (ti._webGLKeyboardOpen && ti._chatKeyboardOpenedAt > 0f &&
                 Time.time - ti._chatKeyboardOpenedAt > 2.0f && UberIsKeyboardVisible() == 0)
             {
@@ -1982,9 +1961,6 @@ public class TouchInput : MonoSingleton<TouchInput>
         {
             ReleasePrimaryFire("application lost focus");
 #if !UNITY_EDITOR
-            // While the WebGL chat keyboard is open the touch state machine already
-            // disables all game input; pausing here would stack the pause menu on top
-            // of the Chatting state and leave the player stuck paused after resume.
             if (_keyboard == null && !_webGLKeyboardOpen)
             {
                 OnMenu();
@@ -2139,10 +2115,6 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     private TouchScreenKeyboard _keyboard;
     private bool _webGLKeyboardOpen;
-
-    // Time.time when the chat state was entered. Used by the WebGL watchdog to give
-    // the DOM keyboard a grace period to appear before cancelling the chat, so a lost
-    // JS callback can never leave the game stuck in the Chatting state forever.
     private float _chatKeyboardOpenedAt = -1f;
 
     private float _loadoutDebugTimer;
