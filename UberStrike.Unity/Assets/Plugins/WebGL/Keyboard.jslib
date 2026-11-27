@@ -274,13 +274,14 @@ var UberKeyboardBridge = {
                         }
                     }
 
-                    function playKeySound(key, fallbackFreq) {
+                    function playKeySound(key, fallbackFreq, rate) {
                         loadKeySounds();
                         var buf = soundBuffers[key];
                         if (buf) {
                             playWhenRunning(function(ctx) {
                                 var src = ctx.createBufferSource();
                                 src.buffer = buf;
+                                src.playbackRate.value = rate || 1;
                                 var g = ctx.createGain();
                                 g.gain.value = 0.6;
                                 src.connect(g);
@@ -1221,7 +1222,7 @@ var UberKeyboardBridge = {
                         };
 
                         cancelButtonEl = makeCircleButton("\u2715", "Cancel", 24, function() {
-                            playKeySound("delete", 900);
+                        playKeySound("delete", 900, 1.15);
                             if (sendMethod !== "OnWebGLFieldInput") {
                                 try {
                                     SendMessage(targetObject, sendMethod, "");
