@@ -34,7 +34,34 @@ public static class MobileMenuScale
 
     [DllImport("__Internal")]
     private static extern int UberGetLandscapeNotchOnLeft();
+
+    [DllImport("__Internal")]
+    private static extern int UberGetDeviceType();
+
+    private static int _deviceType = -1;
+
+    private static int DeviceType
+    {
+        get
+        {
+            if (_deviceType < 0)
+                _deviceType = UberGetDeviceType();
+            return _deviceType;
+        }
+    }
 #endif
+
+    public static float TopDeadZonePixels
+    {
+        get
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return DeviceType == 1 ? 84f : 0f;
+#else
+            return 0f;
+#endif
+        }
+    }
 
     // ---------------------------------------------------------------------------------------------
     // Scale model (mobile)
@@ -127,7 +154,7 @@ public static class MobileMenuScale
         {
             float ppmm = RenderPixelsPerMm;
             float wanted = ppmm > 0f ? ppmm / ReferenceUnitsPerMm : Screen.height / ReferenceHeight;
-            float fit = Mathf.Min(Screen.height / MinVirtualHeight, SafeWidthPixels / MinVirtualWidth);
+            float fit = Mathf.Min((Screen.height - TopDeadZonePixels) / MinVirtualHeight, SafeWidthPixels / MinVirtualWidth);
             return Mathf.Clamp(Mathf.Min(wanted, fit), 1f, MaxScale);
         }
     }
