@@ -187,25 +187,50 @@ var UberDeviceBridge = {
     // Mobile WebGL keyboard lives in Keyboard.jslib (UberOpenTextKeyboard,
     // UberAddKeyboardLayout, UberLoadKeyboardLayout, UberCloseKeyboard).
 
-    // Gyro for WebGL: devicemotion rates (deg/s) + deviceorientation tilt. iOS needs a tap to grant.
+    // Gyro for WebGL. Rates (deg/s) and gravity both come from devicemotion: accelerationIncludingGravity has no
+    // singularity, unlike deviceorientation beta/gamma, which jump around near gamma +-90 = phone held in landscape
+    // facing you (the normal aiming pose). deviceorientation is only used to learn the gravity sign once (browsers
+    // differ in the sign of accelerationIncludingGravity). iOS needs a tap to grant.
     UberGyroStart: function() {
         if (window.__uberGyro) return;
-        var g = window.__uberGyro = { rate: [0, 0, 0], beta: 0, gamma: 0, motionAt: 0, tiltAt: 0, perm: 3 };
+        var g = window.__uberGyro = {
+            rate: [0, 0, 0], grav: [0, 0, 0], hasGrav: false, motionAt: 0,
+            sign: 0, votes: 0, n: 0, hz: 0, hzN: 0, hzAt: performance.now(),
+            perm: window.isSecureContext === false ? 4 : 3
+        };
         var listen = function() {
             window.addEventListener("devicemotion", function(e) {
+                var now = performance.now();
                 var r = e.rotationRate;
-                if (!r || r.alpha === null) return;
-                g.rate = [r.beta || 0, r.gamma || 0, r.alpha || 0];
-                g.motionAt = performance.now();
+                if (r && r.alpha !== null && r.alpha !== undefined) {
+                    g.rate = [r.beta || 0, r.gamma || 0, r.alpha || 0];
+                    g.motionAt = now;
+                }
+                var a = e.accelerationIncludingGravity;
+                if (a && a.x !== null && a.x !== undefined) {
+                    // down vector (device axes), low-passed so hand shake does not tilt the yaw axis
+                    var d = [-(a.x || 0), -(a.y || 0), -(a.z || 0)];
+                    if (!g.hasGrav) { g.grav = d; g.hasGrav = true; }
+                    else for (var k = 0; k < 3; k++) g.grav[k] = g.grav[k] * 0.8 + d[k] * 0.2;
+                }
+                g.n++;
+                if (now - g.hzAt >= 1000) { g.hz = g.n - g.hzN; g.hzN = g.n; g.hzAt = now; }
             });
             window.addEventListener("deviceorientation", function(e) {
-                if (e.beta === null) return;
-                g.beta = e.beta; g.gamma = e.gamma || 0;
-                g.tiltAt = performance.now();
+                if (g.sign !== 0 || !g.hasGrav || e.beta === null || e.gamma === null) return;
+                if (Math.abs(e.gamma) > 60) return; // calibrate away from the singularity only
+                var b = e.beta * Math.PI / 180, c = e.gamma * Math.PI / 180;
+                var p = [Math.cos(b) * Math.sin(c), -Math.sin(b), -Math.cos(b) * Math.cos(c)];
+                var m = Math.sqrt(g.grav[0] * g.grav[0] + g.grav[1] * g.grav[1] + g.grav[2] * g.grav[2]);
+                if (m < 1) return;
+                var dot = (p[0] * g.grav[0] + p[1] * g.grav[1] + p[2] * g.grav[2]) / m;
+                if (Math.abs(dot) < 0.5) return;
+                g.votes += dot > 0 ? 1 : -1;
+                if (Math.abs(g.votes) >= 10) g.sign = g.votes > 0 ? 1 : -1;
             });
         };
         if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
-            g.perm = 0;
+            if (g.perm !== 4) g.perm = 0;
             var ask = function() {
                 window.removeEventListener("touchend", ask, true);
                 window.removeEventListener("click", ask, true);
@@ -213,7 +238,7 @@ var UberDeviceBridge = {
                 var p2 = (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function")
                     ? DeviceOrientationEvent.requestPermission() : Promise.resolve("granted");
                 Promise.all([p1, p2]).then(function(s) {
-                    g.perm = (s[0] === "granted" && s[1] === "granted") ? 1 : 2;
+                    g.perm = s[0] === "granted" ? 1 : 2; // orientation only calibrates the sign
                     if (g.perm === 1) listen();
                 }).catch(function() { g.perm = 2; });
             };
@@ -224,20 +249,25 @@ var UberDeviceBridge = {
         }
     },
 
-    // 0 waiting for tap, 1 granted, 2 denied, 3 no prompt needed.
+    // 0 waiting for tap, 1 granted, 2 denied, 3 no prompt needed, 4 page not HTTPS (browsers send no motion data).
     UberGyroPermission: function() {
         return window.__uberGyro ? window.__uberGyro.perm : 0;
     },
 
-    // out[0..5] = valid, rate x/y/z (deg/s, device axes), beta, gamma (deg).
+    // out[0] valid, [1..3] rate x/y/z (deg/s, device axes), [4..6] gravity down (m/s^2, device axes),
+    // [7] motion events per second, [8] 1 = gravity sign calibrated.
     UberGyroRead: function(ptr) {
         var g = window.__uberGyro, i = ptr >> 2;
+        for (var k = 0; k < 9; k++) HEAPF32[i + k] = 0;
+        if (!g) return;
         var now = performance.now();
-        var ok = g && now - g.motionAt < 500 && now - g.tiltAt < 500;
-        HEAPF32[i] = ok ? 1 : 0;
-        if (!ok) return;
+        HEAPF32[i + 7] = now - g.hzAt < 2500 ? g.hz : 0;
+        HEAPF32[i + 8] = g.sign !== 0 ? 1 : 0;
+        if (now - g.motionAt >= 500 || !g.hasGrav) return;
+        var sg = g.sign === 0 ? 1 : g.sign;
+        HEAPF32[i] = 1;
         HEAPF32[i + 1] = g.rate[0]; HEAPF32[i + 2] = g.rate[1]; HEAPF32[i + 3] = g.rate[2];
-        HEAPF32[i + 4] = g.beta; HEAPF32[i + 5] = g.gamma;
+        HEAPF32[i + 4] = g.grav[0] * sg; HEAPF32[i + 5] = g.grav[1] * sg; HEAPF32[i + 6] = g.grav[2] * sg;
     },
 };
 
