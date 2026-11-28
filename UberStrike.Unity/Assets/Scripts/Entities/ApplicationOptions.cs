@@ -36,6 +36,12 @@ public class ApplicationOptions
 
     public bool UseMultiTouch = false;
 
+    // Gyro aim, scope-only.
+    public bool GyroAimEnabled = false;
+    public float GyroStrength = 1.5f;
+    public bool GyroInvertY = false;
+    public bool GyroInvertX = false;
+
     // Menu safe-area margin on each side in millimetres; negative = Auto (use the reported camera
     // cutout). Symmetric mirrors the larger side inset to both sides. See MobileMenuScale
     // "Safe-area layout".
@@ -151,6 +157,10 @@ public class ApplicationOptions
 #endif
         MobileScreenEdgeMargin = Mathf.Clamp(Mathf.Round(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileScreenEdgeMargin, MobileMenuScale.EdgeMarginAuto)), MobileMenuScale.EdgeMarginAuto, MobileMenuScale.MaxEdgeMarginMm);
         MobileScreenEdgeSymmetric = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileScreenEdgeSymmetric, false);
+        GyroAimEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroAimEnabled, false);
+        GyroStrength = Mathf.Clamp(CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroStrength, 1.5f), 0.2f, 4.0f);
+        GyroInvertY = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroInvertY, false);
+        GyroInvertX = CmunePrefs.ReadKey(CmunePrefs.Key.Options_MobileGyroInvertX, false);
 
         // Gameplay
         GameplayAutoPickupEnabled = CmunePrefs.ReadKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, true);
@@ -205,6 +215,10 @@ public class ApplicationOptions
 #endif
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileScreenEdgeMargin, MobileScreenEdgeMargin);
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileScreenEdgeSymmetric, MobileScreenEdgeSymmetric);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroAimEnabled, GyroAimEnabled);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroStrength, GyroStrength);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroInvertY, GyroInvertY);
+        CmunePrefs.WriteKey(CmunePrefs.Key.Options_MobileGyroInvertX, GyroInvertX);
 
         // Gameplay
         CmunePrefs.WriteKey(CmunePrefs.Key.Options_GameplayAutoPickupEnabled, GameplayAutoPickupEnabled);

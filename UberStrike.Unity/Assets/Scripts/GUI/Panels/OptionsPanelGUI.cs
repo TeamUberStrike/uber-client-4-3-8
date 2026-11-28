@@ -694,8 +694,12 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         else
         {
-        _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, 100));
+        bool showGyro = GyroAim.Supported;
+        _scrollControls = GUITools.BeginScrollView(new Rect(1, 3, _rect.width - 33, _rect.height - 55 - 50), _scrollControls, new Rect(0, 0, _rect.width - 50, showGyro ? 250 : 100));
         {
+            if (showGyro)
+                DrawGyroGroup(new Rect(GroupMarginX, 135, _rect.width - 65, 110));
+
             GUI.BeginGroup(new Rect(8, 20, _rect.width - 65, 95), string.Empty, BlueStonez.group_grey81);
             {
                 bool multiTouch = GUI.Toggle(new Rect(15, 17, 200, 30), ApplicationDataManager.ApplicationOptions.UseMultiTouch, LocalizedStrings.UseMultiTouchInput, BlueStonez.toggle);
@@ -738,6 +742,46 @@ public class OptionsPanelGUI : PanelGuiBase
         GUITools.EndScrollView();
         }
         GUITools.PopGUIState();
+    }
+
+    private void DrawGyroGroup(Rect area)
+    {
+        ApplicationOptions opt = ApplicationDataManager.ApplicationOptions;
+        DrawGroupControl(area, "Gyroscope (scope only)", BlueStonez.label_group_interparkbold_18pt);
+        GUI.BeginGroup(area);
+        {
+            opt.GyroAimEnabled = GUI.Toggle(new Rect(12, 15, 110, 26), opt.GyroAimEnabled, " Gyroscope", BlueStonez.toggle);
+            if (opt.GyroAimEnabled) GyroAim.EnsureRunning();
+            opt.GyroInvertY = GUI.Toggle(new Rect(128, 15, 130, 26), opt.GyroInvertY, " Invert Vertical", BlueStonez.toggle);
+            opt.GyroInvertX = GUI.Toggle(new Rect(268, 15, 150, 26), opt.GyroInvertX, " Invert Horizontal", BlueStonez.toggle);
+
+            GUI.Label(new Rect(15, 45, 130, 24), "Strength", BlueStonez.label_interparkbold_11pt_left);
+            float s = GUI.HorizontalSlider(new Rect(155, 51, 200, 24), opt.GyroStrength, 0.2f, 4f, BlueStonez.horizontalSlider, BlueStonez.horizontalSliderThumb);
+            GUI.Label(new Rect(370, 45, 60, 24), s.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
+            if (s != opt.GyroStrength) opt.GyroStrength = Mathf.Round(s * 10f) / 10f;
+
+            int perm = GyroAim.WebPermission;
+            if (opt.GyroAimEnabled && (perm == 0 || perm == 2))
+                GUI.Label(new Rect(225, 79, 220, 24), perm == 0 ? "Tap the screen to allow motion" : "Motion blocked: allow in browser settings", BlueStonez.label_interparkbold_11pt_left);
+
+            if (!GameState.HasCurrentGame && GUI.Button(new Rect(15, 75, 200, 28), "Try Gyroscope", BlueStonez.button))
+            {
+                opt.GyroAimEnabled = true;
+                GyroAim.EnsureRunning();
+                opt.SaveApplicationOptions();
+                PanelManager.Instance.ClosePanel(PanelType.Options);
+                CoroutineManager.StartCoroutine(EnterGyroTryRange);
+            }
+        }
+        GUI.EndGroup();
+    }
+
+    // Wait for the panel close + GUI lock release, else spawn pauses back to the shop.
+    private System.Collections.IEnumerator EnterGyroTryRange()
+    {
+        yield return null;
+        yield return null;
+        GameStateController.Instance.LoadTryWeaponMode();
     }
 
     private void UseMultiTouch()

@@ -62,6 +62,10 @@ public static class CmunePrefs
         // Outside the #if so the Editor mobile preview (PC build target) can store it too.
         Options_MobileScreenEdgeMargin = 153,
         Options_MobileScreenEdgeSymmetric = 154,
+        Options_MobileGyroAimEnabled = 155,
+        Options_MobileGyroStrength = 156,
+        Options_MobileGyroInvertY = 157,
+        Options_MobileGyroInvertX = 158,
 
         Keymap_None = 300,
         Keymap_HorizontalLook = 301,
