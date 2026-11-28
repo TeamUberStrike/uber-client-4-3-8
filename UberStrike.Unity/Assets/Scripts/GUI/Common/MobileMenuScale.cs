@@ -38,6 +38,9 @@ public static class MobileMenuScale
     [DllImport("__Internal")]
     private static extern int UberGetDeviceType();
 
+    [DllImport("__Internal")]
+    private static extern int UberGetTopDeadZonePixels();
+
     private static int _deviceType = -1;
 
     private static int DeviceType
@@ -49,6 +52,8 @@ public static class MobileMenuScale
             return _deviceType;
         }
     }
+
+    private static float _deadZonePixels = -1f;
 #endif
 
     public static float TopDeadZonePixels
@@ -56,7 +61,9 @@ public static class MobileMenuScale
         get
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            return DeviceType == 1 ? 84f : 0f;
+            if (_deadZonePixels < 0f)
+                _deadZonePixels = DeviceType == 1 ? UberGetTopDeadZonePixels() : 0f;
+            return _deadZonePixels;
 #else
             return 0f;
 #endif
