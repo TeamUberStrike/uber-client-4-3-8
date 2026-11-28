@@ -23,7 +23,8 @@ class SceneGuiController : MonoBehaviour
         }
         else
         {
-            // Join screen: only the join page (+ chat); no Loadout & Shop tab.
+            // Join screen on mobile: only the join page (+ chat); no Loadout & Shop tab.
+            // On desktop the tab stays, so the loadout can be changed before joining a team.
             bool isJoinScreen = false;
             for (int i = 0; i < _guiPages.Length; i++)
             {
@@ -33,7 +34,7 @@ class SceneGuiController : MonoBehaviour
                     break;
                 }
             }
-            if (isJoinScreen)
+            if (isJoinScreen && ApplicationDataManager.IsMobile)
             {
                 var keep = new System.Collections.Generic.List<PageGUI>();
                 foreach (PageGUI p in _guiPages)
