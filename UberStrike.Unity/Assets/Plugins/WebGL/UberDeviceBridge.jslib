@@ -49,6 +49,24 @@ var UberDeviceBridge = {
         }
     },
 
+    // iOS Safari tap-to-reveal zone: the top strip of the page where taps are consumed by the
+    // browser UI instead of reaching the game. The strip is a fixed CSS-pixel height on every
+    // iPhone (browser chrome does not scale with the screen), but Unity sees canvas pixels, so
+    // it is converted with the canvas' CSS-to-buffer scale (device pixel ratio and any render
+    // resolution scaling). The C# side only uses this on iOS (UberGetDeviceType == 1).
+    UberGetTopDeadZonePixels: function() {
+        try {
+            var cssPixels = 28;
+            var canvas = document.getElementById("unity-canvas");
+            var scale = (canvas && canvas.clientWidth > 0)
+                ? (canvas.width / canvas.clientWidth)
+                : (window.devicePixelRatio || 1);
+            return Math.round(cssPixels * scale);
+        } catch (e) {
+            return 0;
+        }
+    },
+
     // 1 = the physical notch is on the left in landscape, 0 = on the right,
     // -1 = unknown/portrait. iOS reports equal left/right safe-area insets for
     // landscape (notch plus rounded corners), so the menu needs the orientation

@@ -5,10 +5,6 @@ using Cmune.Util;
 using UberStrike.DataCenter.Common.Entities;
 using UnityEngine;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-using System.Runtime.InteropServices;
-#endif
-
 public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
 {
     // Note: HEIGHT deliberately excludes MobileTopOffset - GetHeight() adds the live _yOffset,
@@ -16,25 +12,13 @@ public class GlobalUIRibbon : MonoSingleton<GlobalUIRibbon>
     // gap between the ribbon and the page panels.
     public static int HEIGHT { get { return NEWSFEED_HEIGHT + PAGETABS_HEIGHT + STATUSBAR_HEIGHT; } }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-    // iOS reserves the top ~22 CSS px of the screen for the system status bar / Safari
-    // tap-to-reveal zone; touches there never reach the page. On iOS WebGL the ribbon
-    // starts below that dead zone (Krunker-style: full-bleed scene, UI below the system UI).
-    // Android has no such dead zone, so it keeps the original edge-to-edge layout.
-    // 28 CSS px * 3 (dpr) = 84 physical px; menu units = px / MobileMenuScale.Scale.
-    [DllImport("__Internal")]
-    private static extern int UberGetDeviceType();
-
+    // iOS reserves the top of the screen for the system status bar / Safari tap-to-reveal zone;
+    // touches there never reach the page, so the ribbon starts below it. Android has no such
+    // dead zone, so it keeps the original edge-to-edge layout.
     private static float MobileTopOffset
     {
-        get { return UberGetDeviceType() == 1 ? (84f / MobileMenuScale.Scale) : 0f; }
+        get { return MobileMenuScale.TopDeadZonePixels / MobileMenuScale.Scale; }
     }
-#else
-    private static float MobileTopOffset
-    {
-        get { return 0f; }
-    }
-#endif
 
 #if UNITY_ANDROID || UNITY_IPHONE
     private const int NEWSFEED_HEIGHT = 0;
