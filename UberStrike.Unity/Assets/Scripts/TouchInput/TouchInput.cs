@@ -238,18 +238,11 @@ public class TouchInput : MonoSingleton<TouchInput>
 
     /// <summary>
     /// Height of the untouchable strip at the top of the screen on iOS WebGL (system status bar /
-    /// Safari tap-to-reveal zone; matches GlobalUIRibbon.MobileTopOffset). 0 everywhere else.
+    /// Safari tap-to-reveal zone). 0 everywhere else.
     /// </summary>
     public static float TopDeadZonePixels
     {
-        get
-        {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            return UberGetDeviceType() == 1 ? 84f : 0f;
-#else
-            return 0f;
-#endif
-        }
+        get { return MobileMenuScale.TopDeadZonePixels; }
     }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
