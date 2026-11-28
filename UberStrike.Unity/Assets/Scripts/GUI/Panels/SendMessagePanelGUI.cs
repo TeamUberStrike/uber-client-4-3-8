@@ -30,11 +30,12 @@ public class SendMessagePanelGUI : PanelGuiBase
 
     private void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         if (!_showComposeMessage)
         {
-            MobileMenuScale.End(scaleMatrix);
+            MobileMenuScale.EndBothSides(scaleMatrix);
             return;
         }
 
@@ -56,7 +57,7 @@ public class SendMessagePanelGUI : PanelGuiBase
 
         GUI.enabled = true;
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     private void DoCompose(Rect rect)

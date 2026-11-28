@@ -437,6 +437,10 @@ public class InboxPageGUI : MonoBehaviour
     {
         bool onFocus = !PopupSystem.IsAnyPopupOpen && GUI.enabled && new Rect(0, y - 1, width, PanelHeight + 10).Contains(Event.current.mousePosition);
 
+        // Touch screens have no hover, so the row buttons would stay hidden until a blind tap (which
+        // could land right on the hidden remove button). On mobile every row shows its buttons.
+        bool showButtons = onFocus || ApplicationDataManager.IsMobile;
+
         Rect friRect = new Rect(4, y + 4, width - 1, PanelHeight);
         GUI.BeginGroup(friRect);
         {
@@ -459,7 +463,7 @@ public class InboxPageGUI : MonoBehaviour
             GUI.DrawTexture(new Rect(10, 8, 14, 20), presenceIcon);
             GUI.Label(new Rect(40, 8, 250, 20), view.Name, BlueStonez.label_interparkbold_16pt_left);
 
-            if (onFocus)
+            if (showButtons)
             {
                 if (GUITools.Button(new Rect(friRect.width - 20 - 10, 8, 20, 20), new GUIContent("x"), BlueStonez.buttondark_medium))
                 {

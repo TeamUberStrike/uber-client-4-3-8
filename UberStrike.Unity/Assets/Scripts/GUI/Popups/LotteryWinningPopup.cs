@@ -32,7 +32,8 @@ public abstract class LotteryWinningPopup : IPopupDialog
 
     public void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the popup is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         Rect rect = GetPosition();
 
@@ -96,7 +97,7 @@ public abstract class LotteryWinningPopup : IPopupDialog
 
         _tooltip.OnGui();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     public void OnHide()

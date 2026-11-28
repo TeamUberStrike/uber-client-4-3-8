@@ -101,26 +101,34 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
                     !GamePageManager.IsCurrentPage(PageType.EndOfMatch) &&
                     !TouchInput.IsChatKeyboardOpen)
                 {
-                    // Row 0 of the column is TouchInput's Loadout button.
-                    float stackTop = TouchStackTop + TouchStackRowPitch;
+                    // Row 0 of the column is TouchInput's Loadout button. The buttons below it stack with no
+                    // gaps: a hidden button (Change Team outside team modes or while alive) takes no row.
+                    float rowY = TouchStackTop + TouchStackRowPitch;
+                    bool pausedOrDead = GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead;
 
-                    if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
-                        GUITools.Button(new Rect(TouchStackX, stackTop, TouchStackButtonWidth, TouchStackButtonHeight),
-                            new GUIContent(ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Use Single Input" : LocalizedStrings.UseMultiTouchInput), StormFront.ButtonBlue))
+                    if (pausedOrDead)
                     {
-                        TouchInput.Instance.ToggleMovementMode();
+                        if (GUITools.Button(new Rect(TouchStackX, rowY, TouchStackButtonWidth, TouchStackButtonHeight),
+                            new GUIContent(ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Use Single Input" : LocalizedStrings.UseMultiTouchInput), StormFront.ButtonBlue))
+                        {
+                            TouchInput.Instance.ToggleMovementMode();
+                        }
+                        rowY += TouchStackRowPitch;
                     }
 
                     TeamDeathMatchGameMode teamMode = GameState.CurrentGame as TeamDeathMatchGameMode;
-                    if (GameState.LocalPlayer.IsDead && teamMode != null &&
-                        GUITools.Button(new Rect(TouchStackX, stackTop + TouchStackRowPitch, TouchStackButtonWidth, TouchStackButtonHeight),
-                            new GUIContent(LocalizedStrings.ChangeTeam), StormFront.ButtonBlue))
+                    if (GameState.LocalPlayer.IsDead && teamMode != null)
                     {
-                        teamMode.ChangeTeam();
+                        if (GUITools.Button(new Rect(TouchStackX, rowY, TouchStackButtonWidth, TouchStackButtonHeight),
+                            new GUIContent(LocalizedStrings.ChangeTeam), StormFront.ButtonBlue))
+                        {
+                            teamMode.ChangeTeam();
+                        }
+                        rowY += TouchStackRowPitch;
                     }
 
-                    if ((GameState.LocalPlayer.IsGamePaused || GameState.LocalPlayer.IsDead) &&
-                        GUITools.Button(new Rect(TouchStackX, stackTop + 2 * TouchStackRowPitch, TouchStackButtonWidth, TouchStackButtonHeight),
+                    if (pausedOrDead &&
+                        GUITools.Button(new Rect(TouchStackX, rowY, TouchStackButtonWidth, TouchStackButtonHeight),
                             new GUIContent("Edit Controls"), StormFront.ButtonBlue))
                     {
                         MobileControlLayout.EditMode = true;
@@ -155,7 +163,7 @@ public class PlayerStateMsgHud : Singleton<PlayerStateMsgHud>
 
     // ---------------------------------------------------------------------------------------------
     // Left-hand button column on touch devices, in menu units: Loadout (a TouchInput button), input
-    // mode, Change Team, Edit Controls. One fixed row per button.
+    // mode, Change Team, Edit Controls. Hidden buttons take no row.
     // ---------------------------------------------------------------------------------------------
 
     public const float TouchStackX = 20f;

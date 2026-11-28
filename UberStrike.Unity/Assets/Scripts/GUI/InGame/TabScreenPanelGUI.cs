@@ -19,7 +19,9 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         _blueTeam = new List<UberStrike.Realtime.Common.CharacterInfo>(0);
     }
 
-    private void Update()
+    // Called inside OnGUI's both-sides block: the layout uses the same scale as the drawing, and the same
+    // inset on each side of the screen, so the panel is centred on the screen.
+    private void UpdateLayout()
     {
         // Laid out in menu units (the scaled space DrawTabScreen runs in), so rows and text keep the
         // menu's size on phones. On PC menu units are screen pixels and the layout is as before.
@@ -29,11 +31,13 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
         if (MobileMenuScale.Active)
         {
-            // Phones only get 540 x 960 units: use the full width so the team columns keep their
-            // deaths / KDR cells, and all the height between the ribbon and the bottom edge so a
-            // full team of eight fits without scrolling.
+            // Phones only get 540 units of height: use all of it between the ribbon and the bottom edge, so a
+            // full team of eight fits without scrolling. Centred, up to MobileMaxWidth wide, and pushed in by up
+            // to MobileSideInset on each side when there is room, so the names start clear of a finger holding
+            // the scoreboard button at its default spot. Narrow screens keep MobileMargin so every column fits.
             float top = ribbon ? GlobalUIRibbon.Instance.GetHeight() + MobileMargin : MobileMargin;
-            _panelSize.x = Mathf.Floor(virtualWidth - 2 * MobileMargin);
+            float side = Mathf.Clamp((virtualWidth - 2 * MobileMinTeamWidth) * 0.5f, MobileMargin, MobileSideInset);
+            _panelSize.x = Mathf.Floor(Mathf.Min(virtualWidth - 2 * side, MobileMaxWidth));
             _panelSize.y = Mathf.Floor(virtualHeight - top - MobileMargin);
 
             _rect.x = (virtualWidth - _panelSize.x) * 0.5f;
@@ -79,10 +83,11 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
             //remove 1 to display even on top of end of the match screen
             GUI.depth = (int)GuiDepth.Page - 1;
 
-            // Same scale and safe-area shift as the menus; no-op on PC.
-            Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+            // Menu scale with the both-sides safe area, like the ribbon; no-op on PC.
+            Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
+            UpdateLayout();
             DrawTabScreen();
-            MobileMenuScale.End(scaleMatrix);
+            MobileMenuScale.EndBothSides(scaleMatrix);
         }
     }
 
@@ -256,8 +261,10 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
         int splatsWidth = large ? 40 : 30;
         int weaponWidth = large ? 40 : 32;
         int descriptionWidth = position.width > (large ? 640 : 540) ? (large ? 180 : 150) : 0;
-        int killedWidth = position.width > (large ? 440 : 420) ? (large ? 46 : 50) : 0;
-        int kdrWidth = position.width > (large ? 440 : 450) ? (large ? 42 : 30) : 0;
+        // Touch devices: at the large size "Deaths" is 43 units wide and "KDR" 27, so Deaths gets the wider cell
+        // and both titles keep a gap before the next column.
+        int killedWidth = position.width > (large ? 440 : 420) ? (large ? 52 : 50) : 0;
+        int kdrWidth = position.width > (large ? 440 : 450) ? (large ? 36 : 30) : 0;
         int pointsWidth = !large && position.width > 490 ? 40 : 0;
         int deadWidth = large ? 32 : 30;
         int pingWidth = large ? 56 : 50;
@@ -479,6 +486,14 @@ public class TabScreenPanelGUI : MonoSingleton<TabScreenPanelGUI>
 
     // Gap (menu units) between the panel and the screen edges / ribbon on mobile.
     private const float MobileMargin = 8f;
+    // Widest the panel gets on mobile (menu units). Most phones are narrower; on 21:9 phones and large
+    // tablets the rows would only stretch, and team columns over 640 would add a weapon name column that
+    // other phones don't have.
+    private const float MobileMaxWidth = 1200f;
+    // Most the panel is pushed in on each side on mobile (menu units).
+    private const float MobileSideInset = 32f;
+    // Narrowest team column that still shows every column cleanly on mobile (what 16:9 phones get).
+    private const float MobileMinTeamWidth = 472f;
 
     private static GUIStyle _largeName;
     private static GUIStyle _largeValue;

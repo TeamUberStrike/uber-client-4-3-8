@@ -46,7 +46,8 @@ public abstract class BaseEventPopup : IPopupDialog
 
     public void OnGUI()
     {
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the popup is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides();
 
         //on the first draw call we set the start time
         if (_startTime == 0) _startTime = Time.time;
@@ -57,7 +58,6 @@ public abstract class BaseEventPopup : IPopupDialog
         float offsetY = GlobalUIRibbon.HEIGHT + (MobileMenuScale.VirtualHeight - GlobalUIRibbon.HEIGHT - Height) * 0.5f;
         Rect rect = new Rect(offsetX, offsetY, Width, 64 + Height - (64 * Scale));
 
-        GUI.Label(new Rect(0, 0, 200, 20), offsetX + " " + offsetY);
         GUI.Box(new Rect(offsetX - 1, offsetY - 1, rect.width + 2, rect.height + 2), GUIContent.none, BlueStonez.window);
         GUI.BeginGroup(rect);
         {
@@ -82,7 +82,7 @@ public abstract class BaseEventPopup : IPopupDialog
 
         OnAfterGUI();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     public virtual void OnAfterGUI() { }

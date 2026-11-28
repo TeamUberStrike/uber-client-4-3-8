@@ -160,8 +160,9 @@ public class ChatPageGUI : PageGUI
         }
         GUI.EndGroup();
 
+        // The bleed terms centre it on the screen, not in the page's notch-side safe area.
         if (_checkForPassword)
-            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth - 280) * 0.5f, (MobileMenuScale.VirtualHeight - 200) * 0.5f, 280, 200));
+            PasswordCheck(new Rect((MobileMenuScale.VirtualWidth + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft - 280) * 0.5f, (MobileMenuScale.VirtualHeight - 200) * 0.5f, 280, 200));
 
         GuiManager.DrawTooltip();
     }
@@ -180,14 +181,14 @@ public class ChatPageGUI : PageGUI
     }
 
     /// <summary>
-    /// Position for the player popup menu. GUIToScreenPoint returns screen pixels (GUI.matrix applied);
-    /// on the chat page the menu is drawn at the top level of the scaled block, so convert back to page
-    /// units. Identity on PC (scale 1) and for the in-game panel.
+    /// Position for the player popup menu: the tap point at the top level of this page's scaled block,
+    /// where the menu is drawn. Under the mobile scale GUIToScreenPoint adds the offsets of the
+    /// enclosing groups unscaled, so dividing its result by the scale put the menu up and left of the
+    /// tap; ToTopLevel keeps those offsets in page units. Same as GUIToScreenPoint on PC.
     /// </summary>
     private Vector2 PopupMenuPosition()
     {
-        Vector2 screenPoint = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
-        return IsInGamePanel ? screenPoint : MobileMenuScale.ScreenToMenu(screenPoint);
+        return GUITools.ToTopLevel(new Rect(Event.current.mousePosition, Vector2.zero)).position;
     }
 
     protected void DrawInGamePanel(Rect rect)
@@ -208,8 +209,10 @@ public class ChatPageGUI : PageGUI
         float bottom = rect.height - (Debug.isDebugBuild ? 20 : 0);
         float footerHeight = 34;
         float playersHeight = Mathf.Clamp(26 + ChatManager.Instance.GameUsers.Count * 22, 48, rect.height * 0.3f);
+        // Mobile: the history runs down to the input row (the 6-unit gap shows as a black strip there).
+        float historyGap = MobileMenuScale.Active ? 0 : 6;
         DrawInGameArea(new Rect(0, 0, rect.width, playersHeight),
-            new Rect(0, playersHeight + 6, rect.width, Mathf.Max(1, bottom - footerHeight - playersHeight - 12)),
+            new Rect(0, playersHeight + 6, rect.width, Mathf.Max(1, bottom - footerHeight - playersHeight - 6 - historyGap)),
             new Rect(0, bottom - footerHeight, rect.width, footerHeight), _gamePane);
         GUI.EndGroup();
     }
@@ -425,14 +428,18 @@ public class ChatPageGUI : PageGUI
 
             float windowHeight = rect.height;
             float contentHeight = Mathf.Max(windowHeight, pane.ContentHeight);
+            // Mobile: the scrollbar only appears once the list overflows, so the 17-unit column for it
+            // is only kept free then; until then the rows and group title bars run to the right edge.
+            bool scrollbarColumn = !MobileMenuScale.Active || pane.ContentHeight > windowHeight;
+            float rowWidth = scrollbarColumn ? rect.width - 17 : rect.width;
             float y = 0;
-            pane.Scroll = GUITools.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rect.width - 17, contentHeight), false, true);
+            pane.Scroll = GUITools.BeginScrollView(new Rect(0, 0, rect.width, windowHeight), pane.Scroll, new Rect(0, 0, rowWidth, contentHeight), false, true);
             {
                 GUI.BeginGroup(new Rect(0, 0, rect.width, windowHeight + pane.Scroll.y));
                 {
                     foreach (ChatGroup g in pane.Groups)
                     {
-                        y += DrawPlayerGroup(g, y, rect.width - 17, pane.SearchText.ToLower());
+                        y += DrawPlayerGroup(g, y, rowWidth, pane.SearchText.ToLower());
                     }
                 }
                 GUI.EndGroup();

@@ -28,12 +28,12 @@ public class MobileControlLayoutEditor : MonoBehaviour
     private Vector2 _dragStartPos;  // GUI-space position where the pointer went down
     private Vector2 _dragOffset;
     private Rect _toolbarButtonsRect;   // raw-pixel rect of the editor toolbar buttons (reserved field)
+    private const float ToolbarScale = 1.25f; // toolbar buttons are drawn 1.25x the menu size
 
     // Finger/pointer must move this far (squared, 10px) before a touch becomes a drag, so a
     // second finger can still start a pinch on the control.
     private const float DragThresholdSqr = 100f;
     private Texture2D _pixel;
-    private MeshGUIText _hintText;
 
     private static bool ShouldShow
     {
@@ -62,12 +62,10 @@ public class MobileControlLayoutEditor : MonoBehaviour
         {
             _ribbonWasEnabled = GlobalUIRibbon.Exists && GlobalUIRibbon.Instance.IsEnabled;
             if (_ribbonWasEnabled) GlobalUIRibbon.Instance.Hide();
-            if (_hintText != null) _hintText.Show();
         }
         else if (!editMode && _editModePrev)
         {
             if (_ribbonWasEnabled && GlobalUIRibbon.Exists) GlobalUIRibbon.Instance.Show();
-            if (_hintText != null) _hintText.Hide();
             if (HudAssets.Exists) WeaponsHud.Instance.QuickItems.RefreshPosition();
         }
         _editModePrev = editMode;
@@ -312,12 +310,13 @@ public class MobileControlLayoutEditor : MonoBehaviour
         // space, so compute their RAW pixel footprint: only this rect is reserved — controls can
         // be moved freely everywhere else, including the top corners next to the toolbar. On iOS
         // WebGL the row starts below the system dead zone (same offset as the ribbon).
-        float ms = MobileMenuScale.Scale;
+        float ms = MobileMenuScale.Scale * ToolbarScale; // same scale DrawToolbar draws at
         float bw = 140f;
         float bh = 34f;
         float totalW = 4f * bw + 3f * 8f;
-        float x0 = (MobileMenuScale.VirtualWidth - totalW) / 2f;
-        _toolbarButtonsRect = new Rect(MobileMenuScale.MenuToScreenX(x0), 2f * ms + TouchInput.TopDeadZonePixels, totalW * ms, bh * ms);
+        // Same x0 as DrawToolbar, in toolbar units: centred on the screen.
+        float x0 = ((MobileMenuScale.VirtualWidth + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft) / ToolbarScale - totalW) / 2f;
+        _toolbarButtonsRect = new Rect(MobileMenuScale.InsetLeftPixels + x0 * ms, 2f * ms + TouchInput.TopDeadZonePixels, totalW * ms, bh * ms);
 
         // Dim the world behind the editor so the markers stay legible no matter what the paused
         // game shows behind them (a bright sky used to swallow the blue outline of the top-right
@@ -459,11 +458,12 @@ public class MobileControlLayoutEditor : MonoBehaviour
         // Draw in the ribbon's scaled space so the buttons sit on the exact same vertical row as the
         // PROFILE / CHAT tabs (next to them on the right). On iOS WebGL the row starts below the
         // system dead zone (same offset as the ribbon).
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(ToolbarScale);
         float vw = MobileMenuScale.VirtualWidth;
         float bw = 140, bh = 34;
         float totalW = 4 * bw + 3 * 8;
-        float x0 = (vw - totalW) / 2;
+        // The bleed terms centre the row on the screen, in line with the hint text.
+        float x0 = (vw + MobileMenuScale.BleedRight - MobileMenuScale.BleedLeft - totalW) / 2;
         float by = 2 + TouchInput.TopDeadZonePixels / MobileMenuScale.Scale;
 
         string modeLabel = ApplicationDataManager.ApplicationOptions.UseMultiTouch ? "Switch Single" : "Switch Multi";
@@ -491,14 +491,11 @@ public class MobileControlLayoutEditor : MonoBehaviour
             MobileControlLayout.EditMode = false;
         }
 
-        if (_hintText == null)
-        {
-            _hintText = new MeshGUIText("Drag to move, pinch to resize. Twist to rotate the D-Pad.", HudAssets.Instance.InterparkBitmapFont, TextAnchor.MiddleCenter);
-            HudStyleUtility.Instance.SetBlueStyle(_hintText);
-            _hintText.Scale = new Vector2(0.6f, 0.6f);
-        }
-        _hintText.Position = new Vector2(Screen.width / 2, Screen.height / 2 - 100);
-        _hintText.Draw();
+        // Drawn with the GUI after the dark overlay so it stays bright (a mesh text renders under it), centred on
+        // the full screen 100 pixels above the middle.
+        Rect hintRect = new Rect(-MobileMenuScale.BleedLeft, (Screen.height * 0.5f - 100f) / MobileMenuScale.Scale - 20f,
+            MobileMenuScale.BleedLeft + vw + MobileMenuScale.BleedRight, 40f);
+        GUITools.LabelShadow(hintRect, "Drag to move, pinch to resize. Twist to rotate the D-Pad.", BlueStonez.label_interparkbold_18pt, Color.white);
 
         MobileMenuScale.End(scaleMatrix);
     }

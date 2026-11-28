@@ -118,7 +118,9 @@ public class OptionsPanelGUI : PanelGuiBase
         GUI.depth = (int)GuiDepth.Panel - 100;
         // Options dialog renders 1.4x larger than the default menu scale on mobile (matches the
         // enlarged login/training screens). Mobile-only; desktop keeps its authored size.
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(1.4f);
+        // Both safe-area sides, like the ribbon: the panel stays centred on the screen instead of moving
+        // with the notch-side inset while the Screen Edge Margin slider is dragged.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides(1.4f);
 
         // Centre against the virtual (scaled) screen size so the panel stays centred under the mobile
         // menu scale; everything else is drawn relative to _rect and scales with it.
@@ -133,7 +135,7 @@ public class OptionsPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
         GuiManager.DrawTooltip();
     }
 

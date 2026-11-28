@@ -99,9 +99,12 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
         if (TabScreenPanelGUI.Enabled) return;
 
+        // Mobile: the menus' scale and safe-area shift. PC: its own scale as before.
         Matrix4x4 matrix = GUI.matrix;
-        float scale = Scale;
-        GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1)) * matrix;
+        if (MobileMenuScale.Active)
+            MobileMenuScale.Begin();
+        else
+            GUI.matrix = Matrix4x4.Scale(new Vector3(Scale, Scale, 1)) * matrix;
 
         GUI.BeginGroup(MsgPosition);
         {
@@ -399,7 +402,7 @@ public class InGameChatHud : Singleton<InGameChatHud>
 
     private float Scale
     {
-        get { return Mathf.Max(1f, Screen.height / 1080f) * 1.2f; }
+        get { return MobileMenuScale.Active ? MobileMenuScale.Scale : Mathf.Max(1f, Screen.height / 1080f) * 1.2f; }
     }
 
     private GUIStyle MsgStyle

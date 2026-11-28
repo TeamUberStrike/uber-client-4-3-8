@@ -192,10 +192,6 @@ public class ShopPageGUI : PageGUI
 
         StartCoroutine(StartNotifyLoadoutArea());
 
-        // override mouseorbit to prevent scrolling interfering with orbit
-        // (the panel's left edge in screen pixels: menu scale + safe-area inset on mobile, unchanged on PC)
-        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - ShopWidth);
-
         if (IsOnGUIEnabled)
         {
             StartCoroutine(ScrollShopFromRight(0.25f));
@@ -272,6 +268,8 @@ public class ShopPageGUI : PageGUI
     private void OnGUI()
     {
         Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Keep drag-to-rotate off the panel (its list scrolls); set every frame so it follows the panel.
+        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - ShopWidth);
 
         if (IsOnGUIEnabled)
         {

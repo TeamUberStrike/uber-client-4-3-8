@@ -137,6 +137,8 @@ public class StatsPageGUI : MonoBehaviour
     private void OnGUI()
     {
         Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Keep drag-to-rotate off the panel (its list scrolls); set every frame so it follows the panel.
+        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - StatsWidth);
 
         GUI.depth = (int)GuiDepth.Page;
         GUI.skin = BlueStonez.Skin;
@@ -194,10 +196,6 @@ public class StatsPageGUI : MonoBehaviour
         StartCoroutine(ScrollStatsFromRight(0.25f));
 
         UpdateWeaponStatList();
-
-        // override mouseorbit to prevent scrolling interfering with orbit
-        // (the panel's left edge in screen pixels: menu scale + safe-area inset on mobile, unchanged on PC)
-        MouseOrbit.Instance.MaxX = MobileMenuScale.MenuToScreenX(MobileMenuScale.VirtualWidth - StatsWidth);
     }
 
     private void OnDisable()

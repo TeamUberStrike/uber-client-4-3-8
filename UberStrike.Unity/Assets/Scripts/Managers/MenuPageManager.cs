@@ -37,8 +37,14 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
     {
         float width = MenuConfiguration.Exists ? GetPanelPixelWidth(_currentPageType) : 0;
 
+        // The side panel can also move without a page change (phone turned so the notch changes side,
+        // screen edge margin changed): follow it. A page change animates the camera itself.
+        bool panelMoved = _currentPageType == _lastPanelPage && !Mathf.Approximately(width, _lastPanelWidth);
+        _lastPanelPage = _currentPageType;
+        _lastPanelWidth = width;
+
         // Make sure camera pixel rect is always correct if window gets resized
-        if (GameState.HasCurrentSpace && IsScreenResolutionChanged() )
+        if (GameState.HasCurrentSpace && (IsScreenResolutionChanged() || panelMoved))
             GameState.CurrentSpace.Camera.pixelRect = new Rect(0, 0, Screen.width - width, Screen.height);
     }
 
@@ -94,11 +100,13 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
     {
         float t = 0;
         float oldCameraWidth = GameState.CurrentSpace.Camera.pixelWidth;
-        float panelWidth = GetPanelPixelWidth(type);
 
         while (t < time && type == _currentPageType)
         {
             t += Time.deltaTime;
+            // Read every frame: LoadPage can run inside another GUI's both-sides block (ribbon tab, popup
+            // button), where the insets differ from the ones the side panel is drawn with.
+            float panelWidth = GetPanelPixelWidth(type);
             GameState.CurrentSpace.Camera.pixelRect = new Rect(0, 0, Mathf.Lerp(oldCameraWidth, Screen.width - panelWidth, (t / time) * (t / time)), Screen.height);
             yield return new WaitForEndOfFrame();
         }
@@ -230,6 +238,8 @@ public class MenuPageManager : MonoSingleton<MenuPageManager>
 
     private int _lastScreenWidth;
     private int _lastScreenHeight;
+    private PageType _lastPanelPage = PageType.None;
+    private float _lastPanelWidth;
 
     #endregion
 }

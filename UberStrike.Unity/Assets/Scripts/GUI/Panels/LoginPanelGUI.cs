@@ -117,7 +117,8 @@ public class LoginPanelGUI : PanelGuiBase
     private void OnGUI()
     {
         // Login panel renders 1.5x larger than the default menu scale on mobile (it was too small on a phone).
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin(1.5f);
+        // Both-sides safe area, so the panel is centred on the screen.
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides(1.5f);
 
         // centre against the virtual screen for mobile menu scale
         _rect = new Rect((MobileMenuScale.VirtualWidth - 334) / 2, (MobileMenuScale.VirtualHeight - 200) / 2, 334, 200);
@@ -134,7 +135,7 @@ public class LoginPanelGUI : PanelGuiBase
             GUI.matrix = currentMatrix;
         }
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
 

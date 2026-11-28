@@ -16,11 +16,17 @@ public class HelpPanelGUI : PanelGuiBase
     {
         GUI.depth = (int)GuiDepth.Panel;
 
-        Matrix4x4 scaleMatrix = MobileMenuScale.Begin();
+        // Both-sides safe area, so the panel is centred on the screen. 1.15x on mobile: about the window size of
+        // the Options and Report Player panels.
+        float extra = MobileMenuScale.Active ? 1.15f : 1f;
+        Matrix4x4 scaleMatrix = MobileMenuScale.BeginBothSides(extra);
 
-        int height = Mathf.RoundToInt((MobileMenuScale.VirtualHeight - 56) * 0.75f);
-        // centre x against the virtual screen for mobile menu scale (y stays anchored to the ribbon)
-        _rect = new Rect((MobileMenuScale.VirtualWidth - 630) * 0.5f, GlobalUIRibbon.Instance.GetHeight(), 630, height);
+        // Anchored under the ribbon, whose height is in base menu units. On mobile the gap below matches it.
+        float top = GlobalUIRibbon.Instance.GetHeight() / extra;
+        int height = MobileMenuScale.Active
+            ? Mathf.RoundToInt(MobileMenuScale.VirtualHeight - 2f * top)
+            : Mathf.RoundToInt((MobileMenuScale.VirtualHeight - 56) * 0.75f);
+        _rect = new Rect((MobileMenuScale.VirtualWidth - 630) * 0.5f, top, 630, height);
 
         GUI.BeginGroup(_rect, GUIContent.none, BlueStonez.window_standard_grey38);
         {
@@ -28,7 +34,7 @@ public class HelpPanelGUI : PanelGuiBase
         }
         GUI.EndGroup();
 
-        MobileMenuScale.End(scaleMatrix);
+        MobileMenuScale.EndBothSides(scaleMatrix);
     }
 
     private void DrawHelpPanel()
