@@ -18,16 +18,34 @@ public static class GyroAim
     [DllImport("__Internal")] private static extern void UberGyroStart();
     [DllImport("__Internal")] private static extern int UberGyroPermission();
     [DllImport("__Internal")] private static extern void UberGyroRead(float[] values);
-    private static readonly float[] _web = new float[6];
+    private static readonly float[] _web = new float[9];
 
     public static bool Supported { get { return ApplicationDataManager.IsMobile; } }
 
     // 0 waiting for tap, 1 granted, 2 denied, 3 no prompt needed.
     public static int WebPermission { get { return _running ? UberGyroPermission() : 0; } }
+
+    // One line for the options panel, so a tester can see what the browser actually delivers.
+    public static string WebStatus
+    {
+        get
+        {
+            if (!_running) return string.Empty;
+            int perm = UberGyroPermission();
+            if (perm == 0) return "Tap the screen to allow motion";
+            if (perm == 2) return "Motion blocked: allow in browser settings";
+            if (perm == 4) return "Gyro needs the HTTPS page";
+            UberGyroRead(_web);
+            if (_web[7] < 1f) return "No motion data from the browser";
+            return "Motion " + Mathf.RoundToInt(_web[7]) + " Hz" + (_web[8] > 0.5f ? "" : " (calibrating)");
+        }
+    }
 #else
     public static bool Supported { get { return SystemInfo.supportsGyroscope; } }
 
     public static int WebPermission { get { return 3; } }
+
+    public static string WebStatus { get { return string.Empty; } }
 #endif
 
     public static void EnsureRunning()
@@ -80,7 +98,7 @@ public static class GyroAim
         return new Vector2(yawRate, pitchRate) * (strength * dt);
     }
 
-    // Device axes, rad/s + gravity (down). WebGL: browser rates are deg/s; gravity from beta/gamma tilt.
+    // Device axes, rad/s + gravity (down). WebGL: browser rates are deg/s; gravity from accelerationIncludingGravity.
     private static bool Sample(out Vector3 w, out Vector3 g)
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -88,8 +106,8 @@ public static class GyroAim
         w = g = Vector3.zero;
         if (_web[0] < 0.5f) return false;
         w = new Vector3(_web[1], _web[2], _web[3]) * Mathf.Deg2Rad;
-        float b = _web[4] * Mathf.Deg2Rad, c = _web[5] * Mathf.Deg2Rad;
-        g = new Vector3(Mathf.Cos(b) * Mathf.Sin(c), -Mathf.Sin(b), -Mathf.Cos(b) * Mathf.Cos(c));
+        // gravity from devicemotion (no beta/gamma singularity when the phone is held in landscape)
+        g = new Vector3(_web[4], _web[5], _web[6]);
         return true;
 #else
         w = Input.gyro.rotationRateUnbiased;

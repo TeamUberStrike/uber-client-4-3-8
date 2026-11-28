@@ -760,9 +760,10 @@ public class OptionsPanelGUI : PanelGuiBase
             GUI.Label(new Rect(370, 45, 60, 24), s.ToString("N1"), BlueStonez.label_interparkbold_11pt_left);
             if (s != opt.GyroStrength) opt.GyroStrength = Mathf.Round(s * 10f) / 10f;
 
-            int perm = GyroAim.WebPermission;
-            if (opt.GyroAimEnabled && (perm == 0 || perm == 2))
-                GUI.Label(new Rect(225, 79, 220, 24), perm == 0 ? "Tap the screen to allow motion" : "Motion blocked: allow in browser settings", BlueStonez.label_interparkbold_11pt_left);
+            // WebGL: live gyro status (permission, HTTPS, events per second); empty on native builds
+            string gyroStatus = opt.GyroAimEnabled ? GyroAim.WebStatus : string.Empty;
+            if (gyroStatus.Length > 0)
+                GUI.Label(new Rect(225, 79, 240, 24), gyroStatus, BlueStonez.label_interparkbold_11pt_left);
 
             if (!GameState.HasCurrentGame && GUI.Button(new Rect(15, 75, 200, 28), "Try Gyroscope", BlueStonez.button))
             {
