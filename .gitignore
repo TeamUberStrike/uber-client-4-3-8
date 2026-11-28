@@ -47,3 +47,7 @@ _log/
 # Build-time generated mobile config (SceneExporter)
 UberStrike.Unity/Assets/Resources/UberStrike.xml
 UberStrike.Unity/Assets/Resources/UberStrike.xml.meta
+
+UberStrike.Unity/EditorConfiguration.xml
+
+.venv/
